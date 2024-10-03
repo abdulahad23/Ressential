@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "CreateItem";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
+
+    
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-secondary"><b>Create Item</b></h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="text" class="form-control" id="floatingInput" placeholder="Item Name">
+                                <label for="floatingInput">Item Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <select class="form-control" id="unitID" name="">
+                                    <option selected value="0">Select Item Unit</option>
+                                    <option value="1">Kg  - Kilogram</option>
+                                    <option value="2">Pcs - Pieces</option>
+                                    <option value="3">G   - Gram</option>
+                                    <option value="4">L   - Liter</option>
+                                </select>
+                                <label for="floatingInput">Item Unit</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="number" class="form-control" id="floatingInput" placeholder="Item Quantity">
+                                <label for="floatingInput">Item Quantity</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="number" class="form-control" id="floatingInput" placeholder="Item Quantity">
+                                <label for="floatingInput">Stock Value</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="number" class="form-control" id="floatingInput" placeholder="Minimum Stock Level">
+                                <label for="floatingInput">Minimum Stock Level</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <select class="form-control" id="costingID" name="">
+                                    <option selected value="0">Select Costing Type</option>
+                                    <option value="1">FIFO</option>
+                                    <option value="2">Average</option>
+                                </select>
+                                <label for="floatingInput">Costing Type</label>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                            <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>

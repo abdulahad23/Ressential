@@ -49,7 +49,7 @@
             <div class="navbar-content">
                 <ul class="pc-navbar">
                     <li class="pc-item pc-caption">
-                        <label>Dashboard</label>
+                        <label>Dashboard Kitchen</label>
                         <i class="ti ti-dashboard"></i>
                     </li>
 
@@ -78,32 +78,87 @@
                         </ul>
                     </li>
 
-                    <li class="pc-item pc-caption">
-                        <label>Elements</label>
-                        <i class="ti ti-apps"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a href="../elements/bc_typography.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-typography"></i></span>
-                            <span class="pc-mtext">Typography</span>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Category
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+
+                        </ul>
                     </li>
-                    <li class="pc-item">
-                        <a href="../elements/bc_color.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-                            <span class="pc-mtext">Color</span>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Product
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+
+                        </ul>
                     </li>
-                    <li class="pc-item">
-                        <a href="../elements/icon-tabler.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-plant-2"></i></span>
-                            <span class="pc-mtext">Icons</span>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Receive Stock
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                            <li class="pc-item pc-hasmenu">
+                                <a href="#!" class="pc-link">Stock Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                <ul class="pc-submenu">
+                                    <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                                    <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
                     </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Sale
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                            <li class="pc-item pc-hasmenu">
+                                <a href="#!" class="pc-link">Sale Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                <ul class="pc-submenu">
+                                    <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                                    <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li>
+
 
                     <li class="pc-item pc-caption">
                         <label>Pages</label>
                         <i class="ti ti-news"></i>
+                    </li>
+                    <li class="pc-item">
+                        <a href="../pages/login-v3.html" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-user"></i></span>
+                            <span class="pc-mtext">Chef View</span>
+                        </a>
+                    </li>
+                    <li class="pc-item">
+                        <a href="../pages/login-v3.html" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-user"></i></span>
+                            <span class="pc-mtext">Customer View</span>
+                        </a>
                     </li>
                     <li class="pc-item">
                         <a href="../pages/login-v3.html" class="pc-link">
@@ -220,11 +275,14 @@
             <div class="ms-auto">
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item">
-                        <select class="form-select p-r-35">
-                            <option selected>Kitchen Management</option>
-                            <option>Warehouse Management</option>
+                        <select class="form-select p-r-35" id="managementSelect">
+                            <option selected value="@Url.Action("Index", "Kitchen")">Kitchen Management</option>
+                            <option value="@Url.Action("Index", "Warehouse")">Warehouse Management</option>
                         </select>
                     </li>
+
+
+
                     <li class="dropdown pc-h-item">
                         <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                            role="button" aria-haspopup="false" aria-expanded="false">
@@ -316,7 +374,7 @@
     </header>
     <!-- [ Header ] end -->
     <!-- [ Main Content ] start -->
-    
+
     <div class="pc-container">
         @RenderBody();
     </div>
@@ -349,13 +407,20 @@
     <script src="~/Content/assets/js/fonts/custom-font.js"></script>
     <script src="~/Content/assets/js/pcoded.js"></script>
     <script src="~/Content/assets/js/plugins/feather.min.js"></script>
-
-
-
-
-
     <script>layout_change('light');</script>
 
+
+    <script>
+        // Attach a 'change' event listener to the select element
+        document.getElementById('managementSelect').addEventListener('change', function () {
+            var selectedUrl = this.value;
+
+            // Redirect to the selected URL
+            if (selectedUrl) {
+                window.location.href = selectedUrl;
+            }
+        });
+    </script>
 
 
 

@@ -13,5 +13,22 @@ namespace Ressential.Controllers
         {
             return View();
         }
+
+        public ActionResult CreateItem()
+        {
+            return View();
+        }
+        public ActionResult ItemList()
+        {
+            return View();
+        }
+        public ActionResult CreateVendor()
+        {
+            return View();
+        }
+        public ActionResult VendorList()
+        {
+            return View();
+        }
     }
 }

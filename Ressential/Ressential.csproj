@@ -175,15 +175,15 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_WarehouseLayout.cshtml" />
-    <Content Include="Views\Kitchen\About.cshtml" />
-    <Content Include="Views\Kitchen\Contact.cshtml" />
     <Content Include="Views\Shared\_KitchenLayout.cshtml" />
     <Content Include="Views\Kitchen\Index.cshtml" />
+    <Content Include="Views\Warehouse\Index.cshtml" />
+    <Content Include="Views\Warehouse\CreateItem.cshtml" />
+    <Content Include="Views\Warehouse\ItemList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Warehouse\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

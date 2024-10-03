@@ -42,6 +42,16 @@ body {
   font-feature-settings: "salt";
 }
 
+/* Add light border lines around the edges */
+/*.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}*/
+
+/* Change row color on hover */
+/*.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}*/
+
 :root,
 [data-bs-theme=light] {
   --bs-blue: #2689E2;
