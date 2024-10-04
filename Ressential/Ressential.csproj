@@ -214,6 +214,7 @@
     <Content Include="Content\assets\fonts\tabler\tabler-icons.ttf" />
     <Content Include="Content\assets\fonts\tabler\tabler-icons.woff" />
     <Content Include="Content\assets\fonts\tabler\tabler-icons.woff2" />
+    <Content Include="Content\Todo List.xlsx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
