@@ -41,17 +41,20 @@
     <nav class="pc-sidebar">
         <div class="navbar-wrapper">
             <div class="m-header">
-                <a href="../dashboard/index.html" class="b-brand text-primary">
-                    <!-- ========   Change your logo from here   ============ -->
-                    <img src="~/Content/assets/images/logo-dark.svg" alt="" class="logo logo-lg">
-                </a>
+                <div class="col">
+                    <a href="../dashboard/index.html" class="b-brand text-primary">
+                        <!-- ========   Change your logo from here   ============ -->
+                        <img src="~/Content/assets/images/logo-dark.svg" alt="" class="logo pt-4 pb-4 ">
+                    </a>
+                </div> 
             </div>
             <div class="navbar-content">
                 <ul class="pc-navbar">
                     <li class="pc-item pc-caption">
-                        <label>Dashboard Kitchen</label>
+                        <h2 class="text-secondary border-bottom border-3 "><b>Kitchen</b></h2>
                         <i class="ti ti-dashboard"></i>
                     </li>
+
 
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
@@ -60,45 +63,52 @@
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
                         <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItem">Create</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Vendor
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Branch
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Purchase
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
                             <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Consume<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                <a href="#!" class="pc-link">Purchase Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                                 <ul class="pc-submenu">
                                     <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
                                     <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
                                 </ul>
                             </li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Wastage<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
-                                Category
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
-
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
-                                Product
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
 
                         </ul>
                     </li>
@@ -106,12 +116,13 @@
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
-                                Receive Stock
+                                Isuue
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                            <li class="pc-item"><a class="pc-link" href="#!">Requisition</a></li>
                             <li class="pc-item pc-hasmenu">
                                 <a href="#!" class="pc-link">Stock Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                                 <ul class="pc-submenu">
@@ -123,42 +134,50 @@
                         </ul>
                     </li>
 
+
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
-                                Sale
+                                Bank & Cash
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">
+                                Voucher
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
                             <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Sale Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                <a href="#!" class="pc-link"> Payment Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                                 <ul class="pc-submenu">
                                     <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
                                     <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
                                 </ul>
                             </li>
-
+                            <li class="pc-item pc-hasmenu">
+                                <a href="#!" class="pc-link"> Receipt Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                <ul class="pc-submenu">
+                                    <li class="pc-item"><a class="pc-link" href="#!">All</a></li>
+                                    <li class="pc-item"><a class="pc-link" href="#!">Create</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
+
+
 
 
                     <li class="pc-item pc-caption">
                         <label>Pages</label>
                         <i class="ti ti-news"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a href="../pages/login-v3.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-user"></i></span>
-                            <span class="pc-mtext">Chef View</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="../pages/login-v3.html" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-user"></i></span>
-                            <span class="pc-mtext">Customer View</span>
-                        </a>
                     </li>
                     <li class="pc-item">
                         <a href="../pages/login-v3.html" class="pc-link">
@@ -248,7 +267,10 @@
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
-                    <li class="dropdown pc-h-item d-inline-flex d-md-none">
+
+                    <!--[Removed Search Bar]-->
+
+                    @*<li class="dropdown pc-h-item d-inline-flex d-md-none">
                         <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none m-0" data-bs-toggle="dropdown" href="#"
                            role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="ti ti-search"></i>
@@ -268,7 +290,7 @@
                             <input type="search" class="form-control" placeholder="Search here. . .">
                             <button class="btn btn-light-secondary btn-search"><i class="ti ti-adjustments-horizontal"></i></button>
                         </form>
-                    </li>
+                    </li>*@
                 </ul>
             </div>
             <!-- [Mobile Media Block end] -->
@@ -379,7 +401,7 @@
         @RenderBody();
     </div>
     <!-- [ Main Content ] end -->
-    <footer class="pc-footer">
+    @*<footer class="pc-footer">
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm-6 my-1">
@@ -400,7 +422,9 @@
                 </div>
             </div>
         </div>
-    </footer> <!-- Required Js -->
+    </footer>*@
+    
+    <!-- Required Js -->
     <script src="~/Content/assets/js/plugins/popper.min.js"></script>
     <script src="~/Content/assets/js/plugins/simplebar.min.js"></script>
     <script src="~/Content/assets/js/plugins/bootstrap.min.js"></script>
