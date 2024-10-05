@@ -1,7 +1,52 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|c:\\users\\abdul\\desktop\\fyp project\\ressential\\ressential\\views\\warehouse\\vendorlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\vendorlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|c:\\users\\abdul\\desktop\\fyp project\\ressential\\ressential\\views\\warehouse\\itemlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\itemlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|c:\\users\\abdul\\desktop\\fyp project\\ressential\\ressential\\views\\warehouse\\createvendor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\createvendor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\views\\warehouse\\createitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\createitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\views\\shared\\_warehouselayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\shared\\_warehouselayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\views\\kitchen\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\views\\warehouse\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\controllers\\kitchencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\kitchencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\ressential\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\app_start\\routeconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +54,151 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VendorList.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\VendorList.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\VendorList.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\VendorList.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\VendorList.cshtml",
+              "ViewState": "AQIAACQAAAAAAAAAAAAAADEAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-03T09:44:43.242Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CreateVendor.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAAC4AAABrAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-03T09:34:12.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ItemList.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ItemList.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ItemList.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ItemList.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\ItemList.cshtml",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAUwHwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-01T08:35:21.886Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CreateItem.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItem.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateItem.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItem.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateItem.cshtml",
+              "ViewState": "AQIAAEIAAAAAAAAAAAAUwFgAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-01T06:29:21.128Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\Index.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\Index.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\Index.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\Index.cshtml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-01T06:22:39.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\Index.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\Index.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\Index.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Kitchen\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-30T15:38:26.312Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WarehouseController.cs",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Controllers\\WarehouseController.cs",
+              "RelativeDocumentMoniker": "Ressential\\Controllers\\WarehouseController.cs",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Controllers\\WarehouseController.cs",
+              "RelativeToolTip": "Ressential\\Controllers\\WarehouseController.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAAmwBwAAAAmAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T16:33:50.652Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_WarehouseLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "ViewState": "AQIAACcAAAAAAAAAAAAAAPEAAAAVAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-30T16:11:59.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_KitchenLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
+              "ViewState": "AQIAACQAAAAAAAAAAAAAAC4AAABgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-09-30T15:41:21.368Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "KitchenController.cs",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Controllers\\KitchenController.cs",
+              "RelativeDocumentMoniker": "Ressential\\Controllers\\KitchenController.cs",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\Controllers\\KitchenController.cs",
+              "RelativeToolTip": "Ressential\\Controllers\\KitchenController.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T15:38:44.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RouteConfig.cs",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\App_Start\\RouteConfig.cs",
+              "RelativeDocumentMoniker": "Ressential\\App_Start\\RouteConfig.cs",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\FYP Project\\Ressential\\Ressential\\App_Start\\RouteConfig.cs",
+              "RelativeToolTip": "Ressential\\App_Start\\RouteConfig.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-30T16:34:37.067Z",
+              "EditorCaption": ""
             }
           ]
         }
