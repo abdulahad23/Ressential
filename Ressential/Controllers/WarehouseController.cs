@@ -30,5 +30,58 @@ namespace Ressential.Controllers
         {
             return View();
         }
+        public ActionResult CreateBranch()
+        {
+            return View();
+        }
+        public ActionResult BranchList()
+        {
+            return View();
+        }
+        public ActionResult CreatePurchase()
+        {
+            return View();
+        }
+        public ActionResult PurchaseList()
+        {
+            return View();
+        }
+      
+        public ActionResult PurchaseReturnList()
+        {
+            return View();
+        }
+        public ActionResult CreateIssue()
+        {
+            return View();
+        }
+        public ActionResult IssueList()
+        {
+            return View();
+        }
+        public ActionResult CreateBankAndCash()
+        {
+            return View();
+        }
+        public ActionResult BankAndCashList()
+        {
+            return View();
+        }
+        public ActionResult CreatePaymentVouncher()
+        {
+            return View();
+        }
+        public ActionResult PaymentVouncherList()
+        {
+            return View();
+        }
+        public ActionResult CreateReceiptVouncher()
+        {
+            return View();
+        }
+        public ActionResult ReceiptVouncherList()
+        {
+            return View();
+        }
     }
 }

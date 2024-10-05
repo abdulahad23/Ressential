@@ -120,6 +120,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\KitchenController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
@@ -243,6 +244,21 @@
     <Content Include="Views\Warehouse\ItemList.cshtml" />
     <Content Include="Views\Warehouse\CreateVendor.cshtml" />
     <Content Include="Views\Warehouse\VendorList.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Warehouse\CreateBranch.cshtml" />
+    <Content Include="Views\Warehouse\BranchList.cshtml" />
+    <Content Include="Views\Warehouse\CreatePurchase.cshtml" />
+    <Content Include="Views\Warehouse\PurchaseList.cshtml" />
+    <Content Include="Views\Warehouse\PurchaseReturnList.cshtml" />
+    <Content Include="Views\Warehouse\CreateIssue.cshtml" />
+    <Content Include="Views\Warehouse\IssueList.cshtml" />
+    <Content Include="Views\Warehouse\CreateBankAndCash.cshtml" />
+    <Content Include="Views\Warehouse\BankAndCashList.cshtml" />
+    <Content Include="Views\Warehouse\CreatePaymentVouncher.cshtml" />
+    <Content Include="Views\Warehouse\PaymentVouncherList.cshtml" />
+    <Content Include="Views\Warehouse\CreateReceiptVouncher.cshtml" />
+    <Content Include="Views\Warehouse\ReceiptVouncherList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

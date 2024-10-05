@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "VendorList";
+    ViewBag.Title = "BranchList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
@@ -31,11 +31,12 @@
                         <th scope="col">
                             <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                         </th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Contact</th>
-                        <th scope="col">Address</th>
-                        <th scope="col">Balance</th>
+                        <th scope="col">Branch Name</th>
+                        <th scope="col">Branch Code</th>
+                        <th scope="col">Branch Contact</th>
+                        <th scope="col">Owner Name</th>
+                        <th scope="col">Branch Address</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Option</th>
 
 
@@ -44,15 +45,20 @@
                 <tbody>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Abdul Ahad</td>
-                        <td>abdulahad123@gmail.com</td>
-                        <td>03112428123</td>
-                        <td>PNT Society, Crossing</td>
-                        <td>500000</td>
+                        <td>Downtown Branch</td>
+                        <td>001</td>
+                        <td>(123) 456-7890</td>
+                        <td>John Doe</td>
+                        <td>123 Main St, Cityville</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Active
+                            </span>
+                        </td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Item
+                                    Branch
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><a class="dropdown-item" href="#">Edit</a></li>
@@ -63,17 +69,22 @@
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Haniya Fatima</td>
-                        <td>hanifatima@example.com</td>
-                        <td>03124567890</td>
-                        <td>Gulshan, Karachi</td>
-                        <td>700000</td>
+                        <td>Uptown Branch</td>
+                        <td>002</td>
+                        <td>(987) 654-3210</td>
+                        <td>Jane Smith</td>
+                        <td>456 Elm St, Townsville</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Active
+                            </span>
+                        </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Item
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Branch
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><a class="dropdown-item" href="#">Edit</a></li>
                                     <li><a class="dropdown-item" href="#">Delete</a></li>
                                 </ul>
@@ -82,61 +93,29 @@
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Saba</td>
-                        <td>saba@example.com</td>
-                        <td>03211223344</td>
-                        <td>Gulshan, Karachi</td>
-                        <td>600000</td>
+                        <td>Westside Branch</td>
+                        <td>003</td>
+                        <td>(555) 555-5555</td>
+                        <td>Michael Johnson</td>
+                        <td>789 Oak St, Westville</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Active
+                            </span>
+                        </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Item
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Branch
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><a class="dropdown-item" href="#">Edit</a></li>
                                     <li><a class="dropdown-item" href="#">Delete</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Waniya</td>
-                        <td>waniya@example.com</td>
-                        <td>03451234567</td>
-                        <td>Clifton, Karachi</td>
-                        <td>800000</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Item
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Abdul Basit</td>
-                        <td>abdulbasit@example.com</td>
-                        <td>03021234567</td>
-                        <td>DHA, Karachi</td>
-                        <td>900000</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Item
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                    
 
 
                 </tbody>
@@ -153,5 +132,6 @@
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
     }
 </script>
+
 
 
