@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "ReceiptVouncherList";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group input-group-sm mb-3">
+                    <select class="form-select" id="inputGroupSelectStart">
+                        <option selected>Choose Action</option>
+                        <option value="1">Delete</option>
+                    </select>
+                    <button class="btn btn-secondary" type="button">Apply</button>
+                </div>
+            </div>
+            <div class="col-md-3 ms-auto">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
+                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">
+                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                        </th>
+                        <th scope="col">Voucher No</th>
+                        <th scope="col">Voucher Date</th>
+                        <th scope="col">Vendor ID</th>
+                        <th scope="col">Payment Method</th>
+                        <th scope="col">Instrument No</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+
+                        <th scope="col">Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>VOUCH11223</td>
+                        <td>2024-09-25</td>
+                        <td>VND003</td>
+                        <td>Cheque</td>
+                        <td>INST12345</td>
+                        <td>23,5000</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Applied
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>VOUCH12345</td>
+                        <td>2024-09-15</td>
+                        <td>VND001</td>
+                        <td>Credit Card</td>
+                        <td>INST98765</td>
+                        <td>1,500000</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Applied
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>VOUCH67890</td>
+                        <td>2024-09-20</td>
+                        <td>VND002</td>
+                        <td>Bank Transfer</td>
+                        <td>INST54321</td>
+                        <td>22,0000</td>
+                        <td>
+                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Applied
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Status
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Function to toggle all checkboxes
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+    }
+</script>
+
+
+
+

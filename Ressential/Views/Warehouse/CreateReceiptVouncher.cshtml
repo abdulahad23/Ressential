@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewBag.Title = "CreateReceiptVouncher";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-secondary"><b>Create Receipt Vouncher</b></h2>
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="date" class="form-control" id="floatingVoucherDate" placeholder="Voucher Date">
+                            <label for="floatingVoucherDate">Voucher Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="VendorID" name="">
+                                <option selected value="0">Select Vendor ID</option>
+                                <option value="1">1001</option>
+                                <option value="1">1002</option>
+                                <option value="1">1003</option>
+                                <option value="1">1004</option>
+                                <option value="1">1005</option>
+
+
+                            </select>
+                            <label for="floatingInput">Vendor ID</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="floatingPaymentMethod" placeholder="Payment Method">
+                                <option value="Cash ">Cash</option>
+                                <option value="Bank ">Bank </option>
+                            </select>
+                            <label for="floatingPaymentMethod">Payment Method</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInstrumentNo" placeholder="Instrument No">
+                            <label for="floatingInstrumentNo">Instrument No</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="date" class="form-control" id="floatingInstrumentDate" placeholder="Instrument Date">
+                            <label for="floatingInstrumentDate">Instrument Date</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="number" class="form-control" id="floatingAmount" placeholder="Amount">
+                            <label for="floatingAmount">Amount</label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row mt-3">
+                        <div class=" row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                        <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
