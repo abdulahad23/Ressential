@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "StockReturnList";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group input-group-sm mb-3">
+                    <select class="form-select" id="inputGroupSelectStart">
+                        <option selected>Choose Action</option>
+                        <option value="1">Delete</option>
+                    </select>
+                    <button class="btn btn-secondary" type="button">Apply</button>
+                </div>
+            </div>
+            <div class="col-md-3 ms-auto">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
+                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="fit-content">
+                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                        </th>
+                        <th scope="col">Return Date</th>
+                        <th scope="col">Return No</th>
+                        <th scope="col">Reference No</th>
+                        <th scope="col">Status</th>
+
+                        <th scope="col" class="fit-content">Option</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>2024-10-01</td>
+                        <td>RET-001</td>
+                        <td>DV-58221</td>
+                        <td>
+                            <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Settled
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>2024-09-01</td>
+                        <td>RET-002</td>
+                        <td>DV-58200</td>
+                        <td>
+                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Pending
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td>2024-09-23</td>
+                        <td>RET-003</td>
+                        <td>DV-58211</td>
+                        <td>
+                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Pending
+                            </span>
+                        </td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Menu
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+// Function to toggle all checkboxes
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+    }</script>
+
+

@@ -1,0 +1,341 @@
+﻿
+@{
+    ViewBag.Title = "Shop";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<div class="hero-wrap hero-bread" style="background-image: url('/Content/CustomerAssets/images/BG1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"> <a href="@Url.Action("Index", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a> </span> <span>  <a href="@Url.Action("Shop", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Products</a> </span></p>
+                <h1 style="font-size: 48px; font-weight: bold; color: #fff; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin: 20px 0; ">Products</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 mb-5 text-center">
+                <ul class="product-category">
+                    <li><a href="#" class="active">All</a></li>
+                    <li><a href="#">Appetizers</a></li>
+                    <li><a href="#">Main Course</a></li>
+                    <li><a href="#">Side Dishes</a></li>
+                    <li><a href="#">Desserts</a></li>
+                    <li><a href="#">Beverages</a></li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img src="~/Content/CustomerAssets/images/App1.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">                       
+                        <span class="status">30%</span>
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3 style="margin-top: 10px;"><a href="#">FRENCH FRIES</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                                    <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                        <i class="ion-ios-cart"></i>
+                                        <span>Add to Cart</span>
+                                    </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img src="~/Content/CustomerAssets/images/App2.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">MOZZARELLA STICKS</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img src="~/Content/CustomerAssets/images/App3.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">GARLIC BREAD</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img src="~/Content/CustomerAssets/images/Prod1.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">BURGER</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img src="~/Content/CustomerAssets/images/Prod2.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <span class="status">30%</span>
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">PIZZA</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod3.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Fried Chicken</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod4.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Chicken Nuggets</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod5.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Fruit Juice</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod6.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <span class="status">30%</span>
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Steak</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod7.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Chow Mein</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod10.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Shawarma</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 ftco-animate">
+                <div class="product">
+                    <a href="#" class="img-prod">
+                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod9.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
+                        <div class="overlay"></div>
+                    </a>
+                    <div class="text py-3 pb-4 px-3 text-center">
+                        <h3><a href="#">Sandwich</a></h3>
+                        <div class="d-flex">
+                            <div class="pricing">
+                                <p class="price"><span>RS 120.00</span></p>
+                            </div>
+                        </div>
+                        <div class="bottom-area mt-5 text-center">
+                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
+                                <i class="ion-ios-cart"></i>
+                                <span>Add to Cart</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col text-center">
+                <div class="block-27">
+                    <ul>
+                        <li><a href="#">&lt;</a></li>
+                        <li class="active"><span>1</span></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">&gt;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
+    <div class="container py-4">
+        <div class="row d-flex justify-content-center py-5">
+            <div class="col-md-6">
+                <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+                <span>Get e-mail updates about our latest shops and special offers</span>
+            </div>
+            <div class="col-md-6 d-flex align-items-center">
+                <form action="#" class="subscribe-form">
+                    <div class="form-group d-flex">
+                        <input type="text" class="form-control" placeholder="Enter email address">
+                        <input type="submit" value="Subscribe" class="submit px-3">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

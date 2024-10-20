@@ -26,14 +26,15 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">
+                        <th scope="col" class="fit-content">
                             <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                         </th>
                         <th scope="col">Issue Date</th>
                         <th scope="col">Reference No</th>
-                        <th scope="col">Branch ID</th>
+                        <th scope="col">Requisition No</th>
+                        <th scope="col">Branch</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Option</th>
+                        <th scope="col" class="fit-content">Option</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,20 +42,21 @@
                         <td><input type="checkbox" class="form-check-input"></td>
                         <td>2024-10-01</td>
                         <td>ISSUE12345</td>
-                        <td>BR001</td>
+                        <td>REQ-001</td>
+                        <td>North Karachi</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Received
+                                Issued
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Payment
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -63,20 +65,21 @@
                         <td><input type="checkbox" class="form-check-input"></td>
                         <td>2024-10-05</td>
                         <td>ISSUE67890</td>
-                        <td>BR002</td>
+                        <td>REQ-003</td>
+                        <td>Korangi Crossing</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Received
+                                Issued
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Payment
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -85,20 +88,21 @@
                         <td><input type="checkbox" class="form-check-input"></td>
                         <td>2024-10-10</td>
                         <td>ISSUE54321</td>
-                        <td>BR003</td>
+                        <td>REQ-002</td>
+                        <td>Shahrah-e-Faisal</td>
                         <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Received
+                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
+                                Pending
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Payment
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>

@@ -28,7 +28,7 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">
+                        <th scope="col" class="fit-content">
                             <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                         </th>
                         <th scope="col">Branch Name</th>
@@ -37,7 +37,7 @@
                         <th scope="col">Owner Name</th>
                         <th scope="col">Branch Address</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Option</th>
+                        <th scope="col" class="fit-content">Option</th>
 
 
                     </tr>
@@ -45,11 +45,11 @@
                 <tbody>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Downtown Branch</td>
+                        <td>Shahrah-e-Faisal</td>
                         <td>001</td>
-                        <td>(123) 456-7890</td>
-                        <td>John Doe</td>
-                        <td>123 Main St, Cityville</td>
+                        <td>(021) 456-7890</td>
+                        <td>Shahzeb Naqvi</td>
+                        <td>PECHS, Block 2, Shahrah-e-faisal, Karachi</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                 Active
@@ -57,47 +57,47 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Branch
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Uptown Branch</td>
+                        <td>Korangi Crossing</td>
                         <td>002</td>
-                        <td>(987) 654-3210</td>
-                        <td>Jane Smith</td>
-                        <td>456 Elm St, Townsville</td>
+                        <td>(021) 654-3210</td>
+                        <td>Muhammad Waqas</td>
+                        <td>Sector 31/D, Korangi Crossing, Karachi</td>
                         <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
+                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Inactive
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Branch
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Westside Branch</td>
+                        <td>North Karachi</td>
                         <td>003</td>
-                        <td>(555) 555-5555</td>
-                        <td>Michael Johnson</td>
-                        <td>789 Oak St, Westville</td>
+                        <td>(021) 555-5555</td>
+                        <td>Yasir Abbas</td>
+                        <td>Main U.P more, North Karachi, Karachi</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                 Active
@@ -105,12 +105,12 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Branch
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>

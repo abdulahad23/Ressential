@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "CreateOrderReturn";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-secondary"><b>Create Order Return </b></h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="date" class="form-control" id="floatingInput" placeholder="Order Date">
+                            <label for="floatingInput">Order Return Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="OrderNo" name="">
+                                <option selected value="0">Select Order</option>
+                                <option value="1">12741</option>
+                                <option value="2">12742</option>
+                                <option value="3">12743</option>
+                            </select>
+                            <label for="floatingInput">Order No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Payment Method" value="Cash" readonly>
+                            <label for="floatingInput">Payment By</label>
+                        </div>
+                    </div>
+                    <h2 class="text-secondary pt-3"><b>Products</b></h2>
+                    <div class="row">
+                        <div class="container">
+                            <div class="table-responsive tab-content">
+                                <table id="itemsTable" class="table items-table-without-description table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td class="tbl-min-width-7 col-5 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <select class="form-control" name="ProductID[]">
+                                                        <option selected value="0">Select Product</option>
+                                                        <option value="1">Beef Burger</option>
+                                                        <option value="2">Chiniese</option>
+                                                        <option value="3">Pasta</option>
+                                                        <option value="4">Fries</option>
+                                                    </select>
+                                                    <label>Product</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <input type="number" class="form-control quantity"
+                                                           placeholder="Quantity" name="quantity[]">
+                                                    <label>Quantity</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <input type="number" class="form-control unit-price"
+                                                           placeholder="Unit Price" name="unitPrice[]" readonly>
+                                                    <label>Unit Price</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-5 col-2 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <input type="number" class="form-control total"
+                                                           placeholder="Total" name="total[]" readonly>
+                                                    <label>Total</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-1">
+                                                <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                        type="button" data-toggle="tooltip" data-placement="top"
+                                                        title="Remove">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Add Row Button -->
+                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
+                                    type="button">
+                                <i class="fa fa-plus-square d-flex p-1">
+                                    <span class="ps-2 m-0">Add More</span>
+                                </i>
+                            </button>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-3 ms-auto">
+                                <label for="totalAmount" class="form-label"><b>Total Amount:</b></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">Rs</span>
+                                    <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit"
+                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                Save
+                                            </button>
+                                            <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+

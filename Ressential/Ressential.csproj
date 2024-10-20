@@ -45,10 +45,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -121,15 +129,38 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\KitchenController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ressential.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ressential.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ressential.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ressential.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ressential.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Ressential.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Role.cs">
+      <DependentUpon>Ressential.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>Ressential.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\landing.css" />
+    <Content Include="Content\assets\css\myStyle.css" />
     <Content Include="Content\assets\css\plugins\bootstrap.min.css" />
     <Content Include="Content\assets\css\style-preset.css" />
     <Content Include="Content\assets\css\style.css" />
@@ -160,6 +191,7 @@
     <Content Include="Content\assets\images\user\avatar-9.jpg" />
     <Content Include="Content\assets\js\fonts\custom-font.js" />
     <Content Include="Content\assets\js\pages\dashboard-default.js" />
+    <Content Include="Content\assets\js\pages\item-management.js" />
     <Content Include="Content\assets\js\pcoded.js" />
     <Content Include="Content\assets\js\plugins\apexcharts.min.js" />
     <Content Include="Content\assets\js\plugins\bootstrap.min.js" />
@@ -183,9 +215,126 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\CustomerAssets\css\ajax-loader.gif" />
+    <Content Include="Content\CustomerAssets\css\animate.css" />
+    <Content Include="Content\CustomerAssets\css\aos.css" />
+    <Content Include="Content\CustomerAssets\css\bootstrap-datepicker.css" />
+    <Content Include="Content\CustomerAssets\css\bootstrap.min.css" />
+    <Content Include="Content\CustomerAssets\css\bootstrap\bootstrap-grid.css" />
+    <Content Include="Content\CustomerAssets\css\bootstrap\bootstrap-reboot.css" />
+    <Content Include="Content\CustomerAssets\css\css\bootstrap-reboot.css" />
+    <Content Include="Content\CustomerAssets\css\css\mixins\_text-hide.css" />
+    <Content Include="Content\CustomerAssets\css\flaticon.css" />
+    <Content Include="Content\CustomerAssets\css\icomoon.css" />
+    <Content Include="Content\CustomerAssets\css\ionicons.min.css" />
+    <Content Include="Content\CustomerAssets\css\jquery.timepicker.css" />
+    <Content Include="Content\CustomerAssets\css\magnific-popup.css" />
+    <Content Include="Content\CustomerAssets\css\open-iconic-bootstrap.min.css" />
+    <Content Include="Content\CustomerAssets\css\owl.carousel.min.css" />
+    <Content Include="Content\CustomerAssets\css\owl.theme.default.min.css" />
+    <Content Include="Content\CustomerAssets\css\style.css" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\backup.txt" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\flaticon.css" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\flaticon.html" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\Flaticon.svg" />
+    <Content Include="Content\CustomerAssets\fonts\icomoon\icomoon.svg" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\css\ionicons.min.css" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\ionicons.svg" />
+    <Content Include="Content\CustomerAssets\fonts\open-iconic\open-iconic.svg" />
+    <Content Include="Content\CustomerAssets\images\23.2.jpg" />
+    <Content Include="Content\CustomerAssets\images\23.jpg" />
+    <Content Include="Content\CustomerAssets\images\About.png" />
+    <Content Include="Content\CustomerAssets\images\App1.png" />
+    <Content Include="Content\CustomerAssets\images\App2.png" />
+    <Content Include="Content\CustomerAssets\images\App3.png" />
+    <Content Include="Content\CustomerAssets\images\BG1.jpg" />
+    <Content Include="Content\CustomerAssets\images\BG2.jpg" />
+    <Content Include="Content\CustomerAssets\images\BG3.jpg" />
+    <Content Include="Content\CustomerAssets\images\BG4.jpg" />
+    <Content Include="Content\CustomerAssets\images\BgPoster.png" />
+    <Content Include="Content\CustomerAssets\images\bg_1.jpg" />
+    <Content Include="Content\CustomerAssets\images\bg_2.jpg" />
+    <Content Include="Content\CustomerAssets\images\bg_3.jpg" />
+    <Content Include="Content\CustomerAssets\images\Burger Poster.png" />
+    <Content Include="Content\CustomerAssets\images\category-1.jpg" />
+    <Content Include="Content\CustomerAssets\images\category-2.jpg" />
+    <Content Include="Content\CustomerAssets\images\category-3.jpg" />
+    <Content Include="Content\CustomerAssets\images\category-4.jpg" />
+    <Content Include="Content\CustomerAssets\images\category.jpg" />
+    <Content Include="Content\CustomerAssets\images\Contact-Bg.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_1.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_2.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_3.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_4.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_5.jpg" />
+    <Content Include="Content\CustomerAssets\images\image_6.jpg" />
+    <Content Include="Content\CustomerAssets\images\Index1.jpg" />
+    <Content Include="Content\CustomerAssets\images\Index2.jpg" />
+    <Content Include="Content\CustomerAssets\images\Index3.jpg" />
+    <Content Include="Content\CustomerAssets\images\Index4.jpg" />
+    <Content Include="Content\CustomerAssets\images\Index5.jpg" />
+    <Content Include="Content\CustomerAssets\images\partner-1.png" />
+    <Content Include="Content\CustomerAssets\images\partner-2.png" />
+    <Content Include="Content\CustomerAssets\images\partner-3.png" />
+    <Content Include="Content\CustomerAssets\images\partner-4.png" />
+    <Content Include="Content\CustomerAssets\images\partner-5.png" />
+    <Content Include="Content\CustomerAssets\images\person_1.jpg" />
+    <Content Include="Content\CustomerAssets\images\person_2.jpg" />
+    <Content Include="Content\CustomerAssets\images\person_3.jpg" />
+    <Content Include="Content\CustomerAssets\images\person_4.jpg" />
+    <Content Include="Content\CustomerAssets\images\Prod1.png" />
+    <Content Include="Content\CustomerAssets\images\Prod10.png" />
+    <Content Include="Content\CustomerAssets\images\Prod2.png" />
+    <Content Include="Content\CustomerAssets\images\Prod3.png" />
+    <Content Include="Content\CustomerAssets\images\Prod4.png" />
+    <Content Include="Content\CustomerAssets\images\Prod5.png" />
+    <Content Include="Content\CustomerAssets\images\Prod6.png" />
+    <Content Include="Content\CustomerAssets\images\Prod7.png" />
+    <Content Include="Content\CustomerAssets\images\Prod8.png" />
+    <Content Include="Content\CustomerAssets\images\Prod9.png" />
+    <Content Include="Content\CustomerAssets\images\product-1.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-10.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-11.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-12.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-2.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-3.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-4.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-5.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-6.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-7.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-8.jpg" />
+    <Content Include="Content\CustomerAssets\images\product-9.jpg" />
+    <Content Include="Content\CustomerAssets\js\aos.js" />
+    <Content Include="Content\CustomerAssets\js\bootstrap-datepicker.js" />
+    <Content Include="Content\CustomerAssets\js\bootstrap.min.js" />
+    <Content Include="Content\CustomerAssets\js\google-map.js" />
+    <Content Include="Content\CustomerAssets\js\jquery-3.2.1.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery-migrate-3.0.1.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.animateNumber.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.easing.1.3.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.magnific-popup.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.stellar.min.js" />
+    <Content Include="Content\CustomerAssets\js\jquery.waypoints.min.js" />
+    <Content Include="Content\CustomerAssets\js\main.js" />
+    <Content Include="Content\CustomerAssets\js\owl.carousel.min.js" />
+    <Content Include="Content\CustomerAssets\js\popper.min.js" />
+    <Content Include="Content\CustomerAssets\js\range.js" />
+    <Content Include="Content\CustomerAssets\js\scrollax.min.js" />
+    <Content Include="Content\Database Script.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Ressential.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ressential.edmx</DependentUpon>
+      <LastGenOutput>Ressential.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Ressential.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Ressential.edmx</DependentUpon>
+      <LastGenOutput>Ressential.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -215,6 +364,131 @@
     <Content Include="Content\assets\fonts\tabler\tabler-icons.ttf" />
     <Content Include="Content\assets\fonts\tabler\tabler-icons.woff" />
     <Content Include="Content\assets\fonts\tabler\tabler-icons.woff2" />
+    <EntityDeploy Include="Ressential.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Ressential.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Ressential.edmx.diagram">
+      <DependentUpon>Ressential.edmx</DependentUpon>
+    </Content>
+    <Content Include="Content\CustomerAssets\css\.DS_Store" />
+    <Content Include="Content\CustomerAssets\css\bootstrap\.DS_Store" />
+    <Content Include="Content\CustomerAssets\css\css\.DS_Store" />
+    <Content Include="Content\CustomerAssets\css\css\mixins\.DS_Store" />
+    <Content Include="Content\CustomerAssets\fonts\.DS_Store" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\.DS_Store" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\.DS_Store" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\Flaticon.eot" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\Flaticon.ttf" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\Flaticon.woff" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\Flaticon.woff2" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\font\_flaticon.scss" />
+    <Content Include="Content\CustomerAssets\fonts\flaticon\license\license.pdf" />
+    <Content Include="Content\CustomerAssets\fonts\icomoon\icomoon.eot" />
+    <Content Include="Content\CustomerAssets\fonts\icomoon\icomoon.ttf" />
+    <Content Include="Content\CustomerAssets\fonts\icomoon\icomoon.woff" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\css\_ionicons.scss" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\.DS_Store" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\ionicons.eot" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\ionicons.ttf" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\ionicons.woff" />
+    <Content Include="Content\CustomerAssets\fonts\ionicons\fonts\ionicons.woff2" />
+    <Content Include="Content\CustomerAssets\fonts\open-iconic\open-iconic.eot" />
+    <Content Include="Content\CustomerAssets\fonts\open-iconic\open-iconic.otf" />
+    <Content Include="Content\CustomerAssets\fonts\open-iconic\open-iconic.ttf" />
+    <Content Include="Content\CustomerAssets\fonts\open-iconic\open-iconic.woff" />
+    <Content Include="Content\CustomerAssets\images\.DS_Store" />
+    <Content Include="Content\CustomerAssets\js\.DS_Store" />
+    <Content Include="Content\CustomerAssets\scss\.DS_Store" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\.DS_Store" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\bootstrap-grid.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\bootstrap-reboot.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\bootstrap.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_alert.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_background-variant.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_badge.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_border-radius.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_box-shadow.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_breakpoints.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_buttons.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_caret.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_clearfix.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_float.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_forms.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_gradients.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_grid-framework.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_grid.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_hover.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_image.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_list-group.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_lists.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_nav-divider.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_pagination.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_reset-text.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_resize.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_screen-reader.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_size.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_table-row.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_text-emphasis.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_text-hide.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_text-truncate.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_transition.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\mixins\_visibility.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_align.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_background.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_borders.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_clearfix.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_display.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_embed.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_flex.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_float.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_overflow.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_position.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_screenreaders.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_shadows.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_sizing.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_spacing.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_text.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\utilities\_visibility.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_alert.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_badge.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_breadcrumb.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_button-group.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_buttons.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_card.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_carousel.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_close.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_code.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_custom-forms.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_dropdown.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_forms.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_functions.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_grid.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_images.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_input-group.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_jumbotron.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_list-group.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_media.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_mixins.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_modal.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_nav.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_navbar.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_pagination.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_popover.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_print.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_progress.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_reboot.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_root.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_spinners.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_tables.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_toasts.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_tooltip.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_transitions.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_type.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_utilities.scss" />
+    <Content Include="Content\CustomerAssets\scss\bootstrap\_variables.scss" />
+    <Content Include="Content\CustomerAssets\scss\style.scss" />
+    <Content Include="Content\Todo List.xlsx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -248,7 +522,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Warehouse\CreateBranch.cshtml" />
     <Content Include="Views\Warehouse\BranchList.cshtml" />
-    <Content Include="Views\Warehouse\CreatePurchase.cshtml" />
+    <Content Include="Views\Warehouse\CreatePurchaseReturn.cshtml" />
     <Content Include="Views\Warehouse\PurchaseList.cshtml" />
     <Content Include="Views\Warehouse\PurchaseReturnList.cshtml" />
     <Content Include="Views\Warehouse\CreateIssue.cshtml" />
@@ -259,6 +533,40 @@
     <Content Include="Views\Warehouse\PaymentVouncherList.cshtml" />
     <Content Include="Views\Warehouse\CreateReceiptVouncher.cshtml" />
     <Content Include="Views\Warehouse\ReceiptVouncherList.cshtml" />
+    <Content Include="Views\Kitchen\ItemList.cshtml" />
+    <Content Include="Views\Kitchen\RequisitionList.cshtml" />
+    <Content Include="Views\Kitchen\CreateRequisition.cshtml" />
+    <Content Include="Views\Kitchen\ReceiveStockList.cshtml" />
+    <Content Include="Views\Kitchen\StockReturnList.cshtml" />
+    <Content Include="Views\Kitchen\CreateStockReturn.cshtml" />
+    <Content Include="Views\Kitchen\CreateConsume.cshtml" />
+    <Content Include="Views\Kitchen\ConsumeList.cshtml" />
+    <Content Include="Views\Kitchen\WastageList.cshtml" />
+    <Content Include="Views\Kitchen\CreateWastage.cshtml" />
+    <Content Include="Views\Kitchen\CategoryList.cshtml" />
+    <Content Include="Views\Kitchen\CreateCategory.cshtml" />
+    <Content Include="Views\Kitchen\ProductList.cshtml" />
+    <Content Include="Views\Kitchen\CreateProduct.cshtml" />
+    <Content Include="Views\Kitchen\OrderList.cshtml" />
+    <Content Include="Views\Kitchen\CreateOrder.cshtml" />
+    <Content Include="Views\Kitchen\OrderReturnList.cshtml" />
+    <Content Include="Views\Kitchen\CreateOrderReturn.cshtml" />
+    <Content Include="Views\Warehouse\CreatePurchase.cshtml" />
+    <Content Include="Views\Warehouse\RequisitionList.cshtml" />
+    <Content Include="Views\Warehouse\StockReturnList.cshtml" />
+    <Content Include="Views\Warehouse\UserList.cshtml" />
+    <Content Include="Views\Warehouse\CreateUser.cshtml" />
+    <Content Include="Views\Kitchen\CreateUser.cshtml" />
+    <Content Include="Views\Kitchen\UserList.cshtml" />
+    <Content Include="Views\Kitchen\OrderView.cshtml" />
+    <Content Include="Views\Kitchen\ChefView.cshtml" />
+    <Content Include="Views\Shared\CustomerLayout.cshtml" />
+    <Content Include="Views\Customer\About.cshtml" />
+    <Content Include="Views\Customer\Cart.cshtml" />
+    <Content Include="Views\Customer\Checkout.cshtml" />
+    <Content Include="Views\Customer\ContactUs.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\Shop.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -290,6 +598,9 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

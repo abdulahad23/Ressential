@@ -1,0 +1,513 @@
+-- Table: Users
+CREATE TABLE Users (
+    UserId INT PRIMARY KEY IDENTITY(1,1),
+    UserName NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    Password NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: Roles
+CREATE TABLE Roles (
+    RoleId INT PRIMARY KEY IDENTITY(1,1),
+    RoleName NVARCHAR(100) NOT NULL UNIQUE,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: Permissions
+CREATE TABLE Permissions (
+    PermissionId INT PRIMARY KEY IDENTITY(1,1),
+    PermissionName NVARCHAR(100) NOT NULL UNIQUE,
+    Description NVARCHAR(255) NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: RolePermissions
+CREATE TABLE RolePermissions (
+    RoleId INT NOT NULL,
+    PermissionId INT NOT NULL,
+    PRIMARY KEY (RoleId, PermissionId),
+    FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE,
+    FOREIGN KEY (PermissionId) REFERENCES Permissions(PermissionId) ON DELETE CASCADE
+);
+
+-- Table: UserRoles
+CREATE TABLE UserRoles (
+    UserId INT NOT NULL,
+    RoleId INT NOT NULL,
+    PRIMARY KEY (UserId, RoleId),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE
+);
+
+-- Table: UnitOfMeasure
+CREATE TABLE UnitOfMeasure (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(50) NOT NULL,
+    Symbol NVARCHAR(10) NOT NULL
+);
+
+-- Table: ItemCategory
+CREATE TABLE ItemCategory (
+    ItemCategoryID INT PRIMARY KEY IDENTITY(1,1),
+    ItemCategoryName NVARCHAR(100) NOT NULL
+);
+
+-- Table: Items
+CREATE TABLE Items (
+    ItemId INT PRIMARY KEY IDENTITY(1,1),
+    ItemName NVARCHAR(100) NOT NULL,
+    Sku NVARCHAR(50) NOT NULL UNIQUE,
+    ItemCategoryId INT NOT NULL,
+    UnitOfMeasureId INT NOT NULL,
+    MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
+    CostingMethod NVARCHAR(10) CHECK (CostingMethod IN ('FIFO', 'Average')),
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (ItemCategoryId) REFERENCES ItemCategory(ItemCategoryID),
+    FOREIGN KEY (UnitOfMeasureId) REFERENCES UnitOfMeasure(Id)
+);
+
+-- Table: Vendors
+CREATE TABLE Vendors (
+    VendorId INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    CompanyName NVARCHAR(100) NULL,
+    Email NVARCHAR(100) NULL,
+    Contact NVARCHAR(50) NOT NULL,
+    Address NVARCHAR(255) NULL,
+    City NVARCHAR(100) NOT NULL,
+    Country NVARCHAR(100) NOT NULL,
+    PostalCode NVARCHAR(20) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: Branches
+CREATE TABLE Branches (
+    BranchId INT PRIMARY KEY IDENTITY(1,1),
+    BranchName NVARCHAR(100) NOT NULL,
+    BranchCode NVARCHAR(50) NOT NULL UNIQUE,
+    BranchContact NVARCHAR(50) NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
+    City NVARCHAR(100) NOT NULL,
+    Country NVARCHAR(100) NOT NULL,
+    PostalCode NVARCHAR(20) NULL,
+    OwnerName NVARCHAR(100) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: Purchases
+CREATE TABLE Purchases (
+    PurchaseId INT PRIMARY KEY IDENTITY(1,1),
+    PurchaseDate DATETIME NOT NULL,
+    PurchaseNo NVARCHAR(50) NOT NULL UNIQUE,
+    ReferenceNo NVARCHAR(50) NULL,
+    VendorId INT NOT NULL,
+    Memo NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (VendorId) REFERENCES Vendors(VendorId)
+);
+
+-- Table: PurchaseDetails
+CREATE TABLE PurchaseDetails (
+    PurchaseDetailId INT PRIMARY KEY IDENTITY(1,1),
+    PurchaseId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    FOREIGN KEY (PurchaseId) REFERENCES Purchases(PurchaseId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: Requisitions
+CREATE TABLE Requisitions (
+    RequisitionId INT PRIMARY KEY IDENTITY(1,1),
+    RequisitionNo NVARCHAR(50) NOT NULL UNIQUE,
+    RequisitionDate DATETIME NOT NULL,
+    BranchId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId)
+);
+
+-- Table: RequisitionDetails
+CREATE TABLE RequisitionDetails (
+    RequisitionDetailId INT PRIMARY KEY IDENTITY(1,1),
+    RequisitionId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (RequisitionId) REFERENCES Requisitions(RequisitionId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: WarehouseIssues
+CREATE TABLE WarehouseIssues (
+    IssueId INT PRIMARY KEY IDENTITY(1,1),
+    IssueDate DATETIME NOT NULL,
+    IssueNo NVARCHAR(50) NOT NULL UNIQUE,
+    ReferenceNo NVARCHAR(50) NULL,
+    BranchID INT NOT NULL,
+    Memo NVARCHAR(255) NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (BranchID) REFERENCES Branches(BranchId)
+);
+
+-- Table: WarehouseIssueDetails
+CREATE TABLE WarehouseIssueDetails (
+    IssueDetailId INT PRIMARY KEY IDENTITY(1,1),
+    IssueId INT NOT NULL,
+    RequisitionId INT NULL,
+    ItemId INT NOT NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    CostApplied DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (IssueId) REFERENCES WarehouseIssues(IssueId) ON DELETE CASCADE,
+    FOREIGN KEY (RequisitionId) REFERENCES Requisitions(RequisitionId) ON DELETE SET NULL,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: FIFOCosting
+CREATE TABLE FIFOCosting (
+    FifoId INT PRIMARY KEY IDENTITY(1,1),
+    PurchaseDetailId INT NOT NULL,
+    IssueDetailId INT NOT NULL,
+    QuantityApplied DECIMAL(18,2) NOT NULL,
+    CostApplied DECIMAL(18,2) NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (PurchaseDetailId) REFERENCES PurchaseDetails(PurchaseDetailId),
+    FOREIGN KEY (IssueDetailId) REFERENCES WarehouseIssueDetails(IssueDetailId)
+);
+
+-- Table: InventoryTransaction
+CREATE TABLE InventoryTransaction (
+    TransactionId INT PRIMARY KEY IDENTITY(1,1),
+    ItemId INT NOT NULL,
+    LocationType NVARCHAR(20) NOT NULL CHECK (LocationType IN ('Warehouse', 'Branch')),
+    LocationId INT NOT NULL,
+    StockInBy INT NOT NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    MovementType NVARCHAR(20) NOT NULL CHECK (MovementType IN ('Purchase', 'Issue', 'Sale')),
+    MovementId INT NOT NULL,
+    CostingMethod NVARCHAR(10) CHECK (CostingMethod IN ('FIFO', 'Average')),
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: PurchasesReturn
+CREATE TABLE PurchasesReturn (
+    PurchaseReturnID INT PRIMARY KEY IDENTITY(1,1),
+    PurchaseReturnDate DATETIME NOT NULL,
+    PurchaseReturnNo NVARCHAR(50) NOT NULL UNIQUE,
+    ReferenceNo NVARCHAR(50) NULL,
+    VendorID INT NOT NULL,
+    Memo NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (VendorID) REFERENCES Vendors(VendorId)
+);
+
+-- Table: PurchasesReturnDetails
+CREATE TABLE PurchasesReturnDetails (
+    PurchasesReturnDetailId INT PRIMARY KEY IDENTITY(1,1),
+    PurchasesReturnId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    UnitPrice DECIMAL(18,2) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    FOREIGN KEY (PurchasesReturnId) REFERENCES PurchasesReturn(PurchaseReturnID) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: BranchItemDetails
+CREATE TABLE BranchItemDetails (
+    ItemDetailId INT PRIMARY KEY IDENTITY(1,1),
+    BranchId INT NOT NULL,
+    ItemId INT NOT NULL,
+    MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: ReturnStock
+CREATE TABLE ReturnStock (
+    ReturnStockId INT PRIMARY KEY IDENTITY(1,1),
+    ReturnDate DATETIME NOT NULL,
+    ReturnNo NVARCHAR(50) NOT NULL UNIQUE,
+    ReferenceNo NVARCHAR(50) NULL,
+    BranchId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId)
+);
+
+-- Table: ReturnStockDetails
+CREATE TABLE ReturnStockDetails (
+    ReturnStockDetailId INT PRIMARY KEY IDENTITY(1,1),
+    ReturnStockId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    ItemQuantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ReturnStockId) REFERENCES ReturnStock(ReturnStockId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: ConsumeItems
+CREATE TABLE ConsumeItems (
+    ConsumeItemId INT PRIMARY KEY IDENTITY(1,1),
+    ConsumeItemDate DATETIME NOT NULL,
+    ReferenceNo NVARCHAR(50) NOT NULL UNIQUE,
+    BranchID INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (BranchID) REFERENCES Branches(BranchId)
+);
+
+-- Table: ConsumeItemDetails
+CREATE TABLE ConsumeItemDetails (
+    ConsumeItemDetailId INT PRIMARY KEY IDENTITY(1,1),
+    ConsumeItemId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    ItemQuantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ConsumeItemId) REFERENCES ConsumeItems(ConsumeItemId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: WastageItems
+CREATE TABLE WastageItems (
+    WastageItemId INT PRIMARY KEY IDENTITY(1,1),
+    WastageItemDate DATETIME NOT NULL,
+    ReferenceNo NVARCHAR(50) NOT NULL UNIQUE,
+    BranchID INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (BranchID) REFERENCES Branches(BranchId)
+);
+
+-- Table: WastageItemDetails
+CREATE TABLE WastageItemDetails (
+    WastageItemDetailId INT PRIMARY KEY IDENTITY(1,1),
+    WastageId INT NOT NULL,
+    ItemId INT NOT NULL,
+    Description NVARCHAR(255) NULL,
+    ItemQuantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (WastageId) REFERENCES WastageItems(WastageItemId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: ProductCategories
+CREATE TABLE ProductCategories (
+    ProductCategoryId INT PRIMARY KEY IDENTITY(1,1),
+    ProductCategoryName NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+);
+
+-- Table: Products
+CREATE TABLE Products (
+    ProductId INT PRIMARY KEY IDENTITY(1,1),
+    ProductCode NVARCHAR(50) NOT NULL UNIQUE,
+    ProductName NVARCHAR(100) NOT NULL,
+    BranchId INT NOT NULL,
+    ProductImage VARBINARY(MAX) NULL,
+    ProductPrice DECIMAL(18,2) NOT NULL,
+    Description NVARCHAR(255) NULL,
+    CategoryID INT NOT NULL,
+    ChefID INT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Available', 'Not Available')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
+    FOREIGN KEY (CategoryID) REFERENCES ProductCategories(ProductCategoryId)
+);
+
+-- Table: ProductItemDetails
+CREATE TABLE ProductItemDetails (
+    ProductItemDetailId INT PRIMARY KEY IDENTITY(1,1),
+    ProductId INT NOT NULL,
+    ItemId INT NOT NULL,
+    ItemQuantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
+);
+
+-- Table: Customers
+CREATE TABLE Customers (
+    CustomerId INT PRIMARY KEY IDENTITY(1,1),
+    CustomerName NVARCHAR(100) NOT NULL,
+    ContactNo NVARCHAR(20) NOT NULL,
+    Address NVARCHAR(255) NULL,
+    City NVARCHAR(100) NULL,
+    Country NVARCHAR(100) NULL
+);
+
+-- Table: Orders
+CREATE TABLE Orders (
+    OrderId INT PRIMARY KEY IDENTITY(1,1),
+    OrderDate DATETIME NOT NULL,
+    OrderNo NVARCHAR(50) NOT NULL UNIQUE,
+    OrderType NVARCHAR(20) NOT NULL CHECK (OrderType IN ('Dine-in', 'Take-away', 'Online')),
+    TableNo NVARCHAR(10) NULL,
+    BranchId INT NOT NULL,
+    CustomerId INT NULL,
+    PaymentMethod NVARCHAR(20) NOT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Completed', 'Cancelled')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
+    FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId)
+);
+
+-- Table: OrderDetails
+CREATE TABLE OrderDetails (
+    OrderDetailId INT PRIMARY KEY IDENTITY(1,1),
+    OrderId INT NOT NULL,
+    ProductId INT NOT NULL,
+    ProductQuantity DECIMAL(18,2) NOT NULL,
+    ProductPrice DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
+    FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
+);
+
+-- Table: OrderReturns
+CREATE TABLE OrderReturns (
+    OrderReturnId INT PRIMARY KEY IDENTITY(1,1),
+    OrderReturnDate DATETIME NOT NULL,
+    OrderId INT NOT NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE
+);
+
+-- Table: OrderReturnDetails
+CREATE TABLE OrderReturnDetails (
+    OrderReturnDetailId INT PRIMARY KEY IDENTITY(1,1),
+    OrderReturnId INT NOT NULL,
+    ProductId INT NOT NULL,
+    ProductQuantity DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (OrderReturnId) REFERENCES OrderReturns(OrderReturnId) ON DELETE CASCADE,
+    FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
+);
+
+-- Table: BankAndCash
+CREATE TABLE BankAndCash (
+    AccountId INT PRIMARY KEY IDENTITY(1,1),
+    AccountType NVARCHAR(20) NOT NULL CHECK (AccountType IN ('Bank', 'Cash')),
+    AccountName NVARCHAR(100) NOT NULL,
+    BankName NVARCHAR(100) NULL,
+    AccountNumber NVARCHAR(50) NULL,
+    Description NVARCHAR(255) NULL,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL
+);
+
+-- Table: PaymentVouchers
+CREATE TABLE PaymentVouchers (
+    PaymentVoucherId INT PRIMARY KEY IDENTITY(1,1),
+    PaymentVoucherNo NVARCHAR(50) NOT NULL UNIQUE,
+    PaymentVoucherDate DATETIME NOT NULL,
+    VendorId INT NOT NULL,
+    PaymentMethod NVARCHAR(20) NOT NULL CHECK (PaymentMethod IN ('Bank', 'Cash')),
+    AccountId INT NOT NULL,
+    InstrumentNo NVARCHAR(50) NULL,
+    InstrumentDate DATETIME NULL,
+    Amount DECIMAL(18,2) NOT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (VendorId) REFERENCES Vendors(VendorId),
+    FOREIGN KEY (AccountId) REFERENCES BankAndCash(AccountId)
+);
+
+-- Table: PaymentApply
+CREATE TABLE PaymentApply (
+    PaymentApplyID INT PRIMARY KEY IDENTITY(1,1),
+    PaymentVoucherId INT NOT NULL,
+    PurchaseId INT NOT NULL,
+    AppliedAmount DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (PaymentVoucherId) REFERENCES PaymentVouchers(PaymentVoucherId) ON DELETE CASCADE,
+    FOREIGN KEY (PurchaseId) REFERENCES Purchases(PurchaseId)
+);
+
+-- Table: PaymentVoucherAttachments
+CREATE TABLE PaymentVoucherAttachments (
+    VoucherAttachmentId INT PRIMARY KEY IDENTITY(1,1),
+    PaymentVoucherId INT NOT NULL,
+    AttachmentPath NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (PaymentVoucherId) REFERENCES PaymentVouchers(PaymentVoucherId) ON DELETE CASCADE
+);
+
+-- Table: ReceiptVouchers
+CREATE TABLE ReceiptVouchers (
+    ReceiptVoucherId INT PRIMARY KEY IDENTITY(1,1),
+    ReceiptVoucherNo NVARCHAR(50) NOT NULL UNIQUE,
+    ReceiptVoucherDate DATETIME NOT NULL,
+    VendorId INT NOT NULL,
+    PaymentMethod NVARCHAR(20) NOT NULL CHECK (PaymentMethod IN ('Bank', 'Cash')),
+    AccountId INT NOT NULL,
+    InstrumentNo NVARCHAR(50) NULL,
+    InstrumentDate DATETIME NULL,
+    Amount DECIMAL(18,2) NOT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Approved', 'Rejected')),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME NULL,
+    FOREIGN KEY (VendorId) REFERENCES Vendors(VendorId),
+    FOREIGN KEY (AccountId) REFERENCES BankAndCash(AccountId)
+);
+
+-- Table: ReceiptApply
+CREATE TABLE ReceiptApply (
+    ReceiptApplyId INT PRIMARY KEY IDENTITY(1,1),
+    ReceiptVoucherId INT NOT NULL,
+    PurchaseReturnId INT NOT NULL,
+    AppliedAmount DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ReceiptVoucherId) REFERENCES ReceiptVouchers(ReceiptVoucherId) ON DELETE CASCADE,
+    FOREIGN KEY (PurchaseReturnId) REFERENCES PurchasesReturn(PurchaseReturnId)
+);
+
+-- Table: ReceiptVoucherAttachments
+CREATE TABLE ReceiptVoucherAttachments (
+    VoucherAttachmentId INT PRIMARY KEY IDENTITY(1,1),
+    ReceiptVoucherId INT NOT NULL,
+    AttachmentPath NVARCHAR(255) NOT NULL,
+    FOREIGN KEY (ReceiptVoucherId) REFERENCES ReceiptVouchers(ReceiptVoucherId) ON DELETE CASCADE
+);

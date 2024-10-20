@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "ContactUs";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<div class="hero-wrap hero-bread" style="background-image: url('/Content/CustomerAssets/images/BG4.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a href="@Url.Action("Index", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a> </span> <span>  <a href="@Url.Action("ContactUs", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;"> ContactUs</a> </span></p>
+                <h1 style="font-size: 48px; font-weight: bold; color: #fff; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin: 20px 0; ">Contact Us</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section contact-section ">
+    <div class="container">
+        <div class="row d-flex mb-5 contact-info">
+            <div class="w-100"></div>
+            <div class="col-md-3 d-flex">
+                <div class="info bg-white p-4">
+                    <p><span>Address:</span> Karachi,Pakistan</p>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex">
+                <div class="info bg-white p-4">
+                    <p><span>Phone:</span> <a href="tel://1234567920">+92 3369582365</a></p>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex">
+                <div class="info bg-white p-4">
+                    <p><span>Email:</span> <a href="mailto:info@yoursite.com">abc@xyz.com</a></p>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex">
+                <div class="info bg-white p-4">
+                    <p><span>Website</span> <a href="#">yoursite.com</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form and Image Section -->
+        <div class="row block-9 align-items-center">
+            <!-- Contact Form -->
+            <div class="col-md-6 order-md-last d-flex">
+                <form action="#" class="bg-white p-5 contact-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Subject">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="" id="" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Send Message" class="btn btn-primary py-3 px-5">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Image Section -->
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <img src="~/Content/CustomerAssets/images/Contact-Bg.jpg" style="max-width: 100%; height: auto; border-radius: 8px;" />
+            </div>
+        </div>
+    </div>
+</section>

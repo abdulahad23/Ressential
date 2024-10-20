@@ -27,37 +27,37 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">
+                        <th scope="col" class="fit-content">
                             <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                         </th>
-                        <th scope="col">Item Name</th>
+                        <th scope="col"  class="no-wrap">Item Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit</th>
                         <th scope="col">MSL</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Option</th>
+                        <th scope="col" class="no-wrap">Stock Level</th>
+                        <th scope="col" class="fit-content">Option</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
                         <td>Sugar</td>
-                        <td>15</td>
+                        <td>9</td>
                         <td>Kilogram</td>
                         <td>10</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
+                        <td class="no-wrap">
+                            <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Low Stock
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -68,19 +68,19 @@
                         <td>29</td>
                         <td>Kilogram</td>
                         <td>10</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
+                        <td  class="no-wrap">
+                            <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                In Stock
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -88,22 +88,22 @@
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
                         <td>Cooking Oil</td>
-                        <td>25</td>
+                        <td>0</td>
                         <td>Liter</td>
                         <td>10</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
+                        <td class="no-wrap">
+                            <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                Out of Stock
                             </span>
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>

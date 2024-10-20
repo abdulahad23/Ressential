@@ -1,0 +1,84 @@
+﻿@model Ressential.User
+
+@{
+    ViewBag.Title = "Create User";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-secondary"><b>Create User</b></h2>
+
+                @using (Html.BeginForm("CreateUser", "Warehouse", FormMethod.Post))
+                {
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First Name" })
+                        @Html.LabelFor(m => m.FirstName)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last Name" })
+                        @Html.LabelFor(m => m.LastName)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+                        @Html.LabelFor(m => m.Email)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.DropDownListFor(m => m.RoleID, (SelectList)ViewBag.Roles, "Select Role", new { @class = "form-control" })
+                        @Html.LabelFor(m => m.Role)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password", id = "Password" })
+                        @Html.LabelFor(m => m.Password)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Confirm Password">
+                        <label for="ConfirmPassword">Confirm Password</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-floating mb-3 mt-3">
+                        @Html.DropDownListFor(m => m.Status, new SelectList(new[] {
+                            new { Value = "1", Text = "Active" },
+                            new { Value = "2", Text = "Inactive" }
+                        }, "Value", "Text"), "Select Status", new { @class = "form-control" })
+                        @Html.LabelFor(m => m.Status)
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="col-sm-9">
+                                <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                <button type="button" class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

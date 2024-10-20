@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewBag.Title = "CreateProduct";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-secondary"><b>Create Product </b></h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Product Name">
+                            <label for="floatingInput">Product Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Product Code">
+                            <label for="floatingInput">Product Code</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Product Price">
+                            <label for="floatingInput">Product Price</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Product Image">
+                            <label for="floatingInput">Product Image</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="category" name="category">
+                                <option selected value="0">Select Category</option>
+                                <option value="2">Chinese</option>
+                                <option value="3">Italian</option>
+                                <option value="4">Mexican</option>
+                                <option value="5">Indian</option>
+                                <option value="6">Thai</option>
+                            </select>
+
+                            <label for="floatingInput">Category</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="chefId" name="chefId">
+                                <option selected value="0">Select Chef</option>
+                                <option value="1">Saba</option>
+                                <option value="2">Ahad</option>
+                                <option value="3">Waniya</option>
+                                <option value="4">Haniya</option>
+                                <option value="5">Abdul Basit</option>
+                            </select>
+                            <label for="chefId">Chef Name</label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="productStatus" name="productStatus">
+                                <option selected value="0">Select Status</option>
+                                <option value="1">Active</option>
+                                <option value="2">Inactive</option>
+                            </select>
+                            <label for="productStatus">Product Status</label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" id="floatingInput" placeholder="Description">
+                            <label for="floatingInput">Description</label>
+                        </div>
+                    </div>
+                    <h2 class="text-secondary pt-3"><b>Items Consumption</b></h2>
+                    <div class="row">
+                        <div class="container">
+                            <div class="table-responsive tab-content">
+                                <table id="itemsTable" class="table items-table-without-price table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <select class="form-control" name="unitID[]">
+                                                        <option selected value="0">Select Item</option>
+                                                        <option value="1">Sugar</option>
+                                                        <option value="2">Chicken</option>
+                                                        <option value="3">Beef</option>
+                                                        <option value="4">Fries</option>
+                                                    </select>
+                                                    <label>Item</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control"
+                                                           placeholder="Description" name="description[]">
+                                                    <label>Description</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                <div class="form-floating">
+                                                    <input type="number" class="form-control quantity"
+                                                           placeholder="Quantity" name="quantity[]">
+                                                    <label>Quantity</label>
+                                                </div>
+                                            </td>
+                                            <td class="tbl-min-width-1">
+                                                <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                        type="button" data-toggle="tooltip" data-placement="top"
+                                                        title="Remove">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Add Row Button -->
+                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
+                                    type="button">
+                                <i class="fa fa-plus-square d-flex p-1">
+                                    <span class="ps-2 m-0">Add More</span>
+                                </i>
+                            </button>
+                        </div>
+                        <div class="row mt-5">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit"
+                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                Save
+                                            </button>
+                                            <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

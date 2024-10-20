@@ -1,0 +1,51 @@
+﻿.no-wrap {
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+.fit-content {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.tbl-min-width-1 {
+    min-width: 30px;
+}
+.tbl-min-width-2 {
+    min-width: 60px;
+}
+.tbl-min-width-3 {
+    min-width: 90px;
+}
+.tbl-min-width-4 {
+    min-width: 120px;
+}
+
+.tbl-min-width-5 {
+    min-width: 150px;
+}
+
+.tbl-min-width-6 {
+    min-width: 180px;
+}
+.tbl-min-width-7 {
+    min-width: 210px;
+}
+
+.tbl-min-width-8 {
+    min-width: 240px;
+}
+
+.tbl-min-width-9 {
+    min-width: 270px;
+}
+
+.tbl-min-width-10 {
+    min-width: 300px;
+}
+
+.tbl-min-width-11 {
+    min-width: 350px;
+}
+
+.tbl-min-width-12 {
+    min-width: 400px;
+}

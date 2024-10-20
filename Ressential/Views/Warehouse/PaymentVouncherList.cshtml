@@ -28,30 +28,30 @@
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">
+                        <th scope="col" class="fit-content">
                             <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                         </th>
                         <th scope="col">Voucher No</th>
                         <th scope="col">Voucher Date</th>
-                        <th scope="col">Vendor ID</th>
+                        <th scope="col">Vendor</th>
                         <th scope="col">Payment Method</th>
                         <th scope="col">Instrument No</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Status</th>
 
-                        <th scope="col">Option</th>
+                        <th scope="col" class="fit-content">Option</th>
                     </tr>
                 </thead>
                 <tbody>
 
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>VOUCH11223</td>
+                        <td>PV-11223</td>
                         <td>2024-09-25</td>
-                        <td>VND003</td>
-                        <td>Cheque</td>
-                        <td>INST12345</td>
-                        <td>23,5000</td>
+                        <td>Shahrukh Khan</td>
+                        <td>Bank</td>
+                        <td>OT-19832</td>
+                        <td>235,000</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                 Applied
@@ -59,24 +59,24 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Status
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>VOUCH12345</td>
+                        <td>PV-12345</td>
                         <td>2024-09-15</td>
-                        <td>VND001</td>
-                        <td>Credit Card</td>
-                        <td>INST98765</td>
-                        <td>1,500000</td>
+                        <td>Zulfiqar</td>
+                        <td>Cash</td>
+                        <td>DV-1102</td>
+                        <td>1,500,000</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                 Applied
@@ -84,24 +84,24 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Status
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td><input type="checkbox" class="form-check-input"></td>
-                        <td>VOUCH67890</td>
+                        <td>PV-67890</td>
                         <td>2024-09-20</td>
-                        <td>VND002</td>
-                        <td>Bank Transfer</td>
-                        <td>INST54321</td>
-                        <td>22,0000</td>
+                        <td>Ashfaq Ahmed</td>
+                        <td>Bank</td>
+                        <td>DS-103131</td>
+                        <td>220,000</td>
                         <td>
                             <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                 Applied
@@ -109,12 +109,12 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Status
+                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                 </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
                                 </ul>
                             </div>
                         </td>
