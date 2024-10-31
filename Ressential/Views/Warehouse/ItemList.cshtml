@@ -6,6 +6,18 @@
 
 <div class="card">
     <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
@@ -138,3 +150,4 @@
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
     }
 </script>
+

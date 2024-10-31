@@ -98,7 +98,6 @@
           <ScalarProperty Name="ItemCategoryId" ColumnName="ItemCategoryId" />
           <ScalarProperty Name="UnitOfMeasureId" ColumnName="UnitOfMeasureId" />
           <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
-          <ScalarProperty Name="CostingMethod" ColumnName="CostingMethod" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
@@ -503,5 +502,14 @@
         <ScalarProperty Name="UserId" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="WarehouseItemStocks">
+      <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseItemStock">
+        <MappingFragment StoreEntitySet="WarehouseItemStock">
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

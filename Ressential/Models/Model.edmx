@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="AccountId" />
@@ -98,7 +98,6 @@
           <Property Name="ItemCategoryId" Type="int" Nullable="false" />
           <Property Name="UnitOfMeasureId" Type="int" Nullable="false" />
           <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="CostingMethod" Type="nvarchar" MaxLength="10" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -457,6 +456,14 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="WarehouseItemStock">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Cost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="WastageItemDetails">
           <Key>
@@ -1384,6 +1391,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Warehouse__ItemI__7849DB76">
+          <End Role="Items" Type="Self.Items" Multiplicity="1" />
+          <End Role="WarehouseItemStock" Type="Self.WarehouseItemStock" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Items">
+              <PropertyRef Name="ItemId" />
+            </Principal>
+            <Dependent Role="WarehouseItemStock">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Warehouse__Modif__6A30C649">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="WarehouseIssues" Type="Self.WarehouseIssues" Multiplicity="*" />
@@ -1509,6 +1528,7 @@
           <EntitySet Name="Vendors" EntityType="Self.Vendors" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseIssueDetails" EntityType="Self.WarehouseIssueDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseIssues" EntityType="Self.WarehouseIssues" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WarehouseItemStock" EntityType="Self.WarehouseItemStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WastageItemDetails" EntityType="Self.WastageItemDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WastageItems" EntityType="Self.WastageItems" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Accounts__Create__4A8310C6" Association="Self.FK__Accounts__Create__4A8310C6">
@@ -1799,6 +1819,10 @@
             <End Role="Items" EntitySet="Items" />
             <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK__Warehouse__ItemI__7849DB76" Association="Self.FK__Warehouse__ItemI__7849DB76">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="WarehouseItemStock" EntitySet="WarehouseItemStock" />
+          </AssociationSet>
           <AssociationSet Name="FK__Warehouse__Modif__6A30C649" Association="Self.FK__Warehouse__Modif__6A30C649">
             <End Role="Users" EntitySet="Users" />
             <End Role="WarehouseIssues" EntitySet="WarehouseIssues" />
@@ -1828,8 +1852,7 @@
             <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_RessentialModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1948,7 +1971,6 @@
           <Property Name="ItemCategoryId" Type="Int32" Nullable="false" />
           <Property Name="UnitOfMeasureId" Type="Int32" Nullable="false" />
           <Property Name="MinimumStockLevel" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="CostingMethod" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
@@ -1967,6 +1989,7 @@
           <NavigationProperty Name="ReturnStockDetails" Relationship="Self.FK__ReturnSto__ItemI__09A971A2" FromRole="Items" ToRole="ReturnStockDetails" />
           <NavigationProperty Name="WarehouseIssueDetails" Relationship="Self.FK__Warehouse__ItemI__6EF57B66" FromRole="Items" ToRole="WarehouseIssueDetails" />
           <NavigationProperty Name="WastageItemDetails" Relationship="Self.FK__WastageIt__ItemI__1EA48E88" FromRole="Items" ToRole="WastageItemDetails" />
+          <NavigationProperty Name="WarehouseItemStock" Relationship="DB_RessentialModel.FK__Warehouse__ItemI__7849DB76" FromRole="Item" ToRole="WarehouseItemStock" />
         </EntityType>
         <EntityType Name="OrderDetail">
           <Key>
@@ -3735,7 +3758,33 @@
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="WarehouseItemStocks" EntityType="DB_RessentialModel.WarehouseItemStock" />
+          <AssociationSet Name="FK__Warehouse__ItemI__7849DB76" Association="DB_RessentialModel.FK__Warehouse__ItemI__7849DB76">
+            <End Role="Item" EntitySet="Items" />
+            <End Role="WarehouseItemStock" EntitySet="WarehouseItemStocks" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="WarehouseItemStock">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Cost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="Item" Relationship="DB_RessentialModel.FK__Warehouse__ItemI__7849DB76" FromRole="WarehouseItemStock" ToRole="Item" />
+        </EntityType>
+        <Association Name="FK__Warehouse__ItemI__7849DB76">
+          <End Type="DB_RessentialModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="DB_RessentialModel.WarehouseItemStock" Role="WarehouseItemStock" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ItemId" />
+            </Principal>
+            <Dependent Role="WarehouseItemStock">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3839,7 +3888,6 @@
                 <ScalarProperty Name="ItemCategoryId" ColumnName="ItemCategoryId" />
                 <ScalarProperty Name="UnitOfMeasureId" ColumnName="UnitOfMeasureId" />
                 <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
-                <ScalarProperty Name="CostingMethod" ColumnName="CostingMethod" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
@@ -4244,6 +4292,15 @@
               <ScalarProperty Name="UserId" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="WarehouseItemStocks">
+            <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseItemStock">
+              <MappingFragment StoreEntitySet="WarehouseItemStock">
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -93,7 +93,6 @@
     <Property Name="ItemCategoryId" Type="int" Nullable="false" />
     <Property Name="UnitOfMeasureId" Type="int" Nullable="false" />
     <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-    <Property Name="CostingMethod" Type="nvarchar" MaxLength="10" />
     <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="CreatedBy" Type="int" Nullable="false" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -452,6 +451,14 @@
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="WarehouseItemStock">
+    <Key>
+      <PropertyRef Name="ItemId" />
+    </Key>
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Cost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
   </EntityType>
   <EntityType Name="WastageItemDetails">
     <Key>
@@ -1379,6 +1386,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Warehouse__ItemI__7849DB76">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="WarehouseItemStock" Type="Self.WarehouseItemStock" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="WarehouseItemStock">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__Warehouse__Modif__6A30C649">
     <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
     <End Role="WarehouseIssues" Type="Self.WarehouseIssues" Multiplicity="*" />
@@ -1504,6 +1523,7 @@
     <EntitySet Name="Vendors" EntityType="Self.Vendors" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WarehouseIssueDetails" EntityType="Self.WarehouseIssueDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WarehouseIssues" EntityType="Self.WarehouseIssues" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WarehouseItemStock" EntityType="Self.WarehouseItemStock" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WastageItemDetails" EntityType="Self.WastageItemDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WastageItems" EntityType="Self.WastageItems" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK__Accounts__Create__4A8310C6" Association="Self.FK__Accounts__Create__4A8310C6">
@@ -1793,6 +1813,10 @@
     <AssociationSet Name="FK__Warehouse__ItemI__6EF57B66" Association="Self.FK__Warehouse__ItemI__6EF57B66">
       <End Role="Items" EntitySet="Items" />
       <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Warehouse__ItemI__7849DB76" Association="Self.FK__Warehouse__ItemI__7849DB76">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="WarehouseItemStock" EntitySet="WarehouseItemStock" />
     </AssociationSet>
     <AssociationSet Name="FK__Warehouse__Modif__6A30C649" Association="Self.FK__Warehouse__Modif__6A30C649">
       <End Role="Users" EntitySet="Users" />

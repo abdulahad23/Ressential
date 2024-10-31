@@ -34,7 +34,6 @@ namespace Ressential.Models
         public int ItemCategoryId { get; set; }
         public int UnitOfMeasureId { get; set; }
         public decimal MinimumStockLevel { get; set; }
-        public string CostingMethod { get; set; }
         public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
@@ -63,5 +62,6 @@ namespace Ressential.Models
         public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WastageItemDetail> WastageItemDetails { get; set; }
+        public virtual WarehouseItemStock WarehouseItemStock { get; set; }
     }
 }

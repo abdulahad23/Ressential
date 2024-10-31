@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
-                    <select class="form-select" id="inputGroupSelectStart" aria-label="Select action">
+                    <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
                         <option value="delete">Delete</option>
                     </select>
@@ -46,7 +46,7 @@
                         @foreach (var user in Model)
                         {
                             <tr>
-                                <td><input type="checkbox" class="form-check-input user-checkbox"></td>
+                                <td><input type="checkbox" class="form-check-input user-checkbox" name="selectedItems" value="@user.UserId"></td>
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
                                 <td>Super Admin</td>

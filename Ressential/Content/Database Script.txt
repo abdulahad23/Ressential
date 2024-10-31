@@ -63,7 +63,6 @@ CREATE TABLE Items (
     ItemCategoryId INT NOT NULL,
     UnitOfMeasureId INT NOT NULL,
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
-    CostingMethod NVARCHAR(10) CHECK (CostingMethod IN ('FIFO', 'Average')),
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -74,6 +73,15 @@ CREATE TABLE Items (
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId)
 );
+
+-- Table: WarehouseItemStock
+CREATE TABLE WarehouseItemStock (
+    ItemId INT PRIMARY KEY,
+    Quantity DECIMAL(18,2) NOT NULL,
+    Cost DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+);
+
 
 -- Table: Vendors
 CREATE TABLE Vendors (

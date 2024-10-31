@@ -152,6 +152,7 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\KitchenController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Global.asax.cs">
@@ -280,6 +281,9 @@
     <Compile Include="Models\WarehouseIssueDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WarehouseItemStock.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\WastageItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -291,6 +295,7 @@
     <Compile Include="Utilities\UserDetails.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\assets\css\errorStyle.css" />
     <Content Include="Content\assets\css\landing.css" />
     <Content Include="Content\assets\css\myStyle.css" />
     <Content Include="Content\assets\css\plugins\bootstrap.min.css" />
@@ -454,6 +459,7 @@
     <Content Include="Content\CustomerAssets\js\range.js" />
     <Content Include="Content\CustomerAssets\js\scrollax.min.js" />
     <Content Include="Content\Database Script.txt" />
+    <Content Include="Content\Images\ErrorImage\errorbg.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -641,7 +647,6 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_WarehouseLayout.cshtml" />
     <Content Include="Views\Shared\_KitchenLayout.cshtml" />
     <Content Include="Views\Kitchen\Index.cshtml" />
@@ -703,6 +708,7 @@
     <Content Include="Views\Warehouse\ItemCategoryList.cshtml" />
     <Content Include="Views\Warehouse\EditItemCategory.cshtml" />
     <Content Include="Views\Warehouse\EditUser.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

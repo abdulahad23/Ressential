@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using Ressential.Models;
 using Ressential.Utilities;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 
 namespace Ressential.Controllers
 {
@@ -25,8 +27,16 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult CreateItemCategory(ItemCategory itemCategory)
         {
-            _db.ItemCategories.Add(itemCategory);
-            _db.SaveChanges();
+            try
+            {
+                _db.ItemCategories.Add(itemCategory);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item Category created successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Item Category.";
+            }
             return RedirectToAction("ItemCategoryList");
         }
         public ActionResult ItemCategoryList(string search)
@@ -58,9 +68,29 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult DeleteItemCategory(int itemCategoryId)
         {
-            var itemCategory = _db.ItemCategories.Find(itemCategoryId);
-            _db.ItemCategories.Remove(itemCategory);
-            _db.SaveChanges();
+            try
+            {
+                var itemCategory = _db.ItemCategories.Find(itemCategoryId);
+                if (itemCategory == null)
+                {
+                    TempData["ErrorMessage"] = "Item Category not found.";
+                    return RedirectToAction("ItemCategoryList");
+                }
+                _db.ItemCategories.Remove(itemCategory);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item Category deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Item Category is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Item Category.";
+                }
+            }
             return RedirectToAction("ItemCategoryList");
         }
         [HttpPost]
@@ -68,15 +98,63 @@ namespace Ressential.Controllers
         {
             if (selectedItems != null && selectedItems.Length > 0)
             {
-                var itemsToDelete = _db.ItemCategories.Where(c => selectedItems.Contains(c.ItemCategoryId)).ToList();
-                _db.ItemCategories.RemoveRange(itemsToDelete);
-                _db.SaveChanges();
+                try
+                {
+                    var itemsToDelete = _db.ItemCategories.Where(c => selectedItems.Contains(c.ItemCategoryId)).ToList();
+                    _db.ItemCategories.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Item Category deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "This Item Category is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Item Category.";
+                    }
+                }
             }
             return RedirectToAction("ItemCategoryList");
         }
         public ActionResult CreateItem()
         {
+            ViewBag.Units = _db.UnitOfMeasures.ToList();
+            ViewBag.Categories = _db.ItemCategories.ToList();
             return View();
+        }
+        [HttpPost]
+        public ActionResult CreateItem(Item item, decimal quantity, decimal cost)
+        {
+            try {
+                if (ModelState.IsValid)
+                {
+                    item.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    item.CreatedAt = DateTime.Now;
+                    _db.Items.Add(item);
+                    _db.SaveChanges();
+
+                    var warehouseItemStock = new WarehouseItemStock
+                    {
+                        ItemId = item.ItemId,
+                        Quantity = quantity,
+                        Cost = cost
+                    };
+                    _db.WarehouseItemStocks.Add(warehouseItemStock);
+                    _db.SaveChanges();
+
+                    return RedirectToAction("ItemList");
+                }
+                ViewBag.Units = _db.UnitOfMeasures.ToList();
+                ViewBag.Categories = _db.ItemCategories.ToList();
+                return View(item);
+            }
+            catch (DbUpdateException ex) {
+                return RedirectToAction("Index","Error");
+            }
+            
         }
         public ActionResult ItemList()
         {
