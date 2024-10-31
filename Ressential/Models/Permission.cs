@@ -7,23 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Ressential
+namespace Ressential.Models
 {
     using System;
     using System.Collections.Generic;
     
-    public partial class Role
+    public partial class Permission
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Role()
+        public Permission()
         {
-            this.Users = new HashSet<User>();
+            this.Roles = new HashSet<Role>();
         }
     
-        public int RoleID { get; set; }
-        public string RoleName { get; set; }
+        public int PermissionId { get; set; }
+        public string PermissionName { get; set; }
+        public string Description { get; set; }
+        public System.DateTime CreatedAt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
     }
 }

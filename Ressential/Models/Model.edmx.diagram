@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="00f7aed54cdb4d8489d480352e27d50f" Name="Diagram1" ZoomLevel="55">
+        <EntityTypeShape EntityType="DB_RessentialModel.Account" Width="1.5" PointX="7.5" PointY="41.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Branch" Width="1.5" PointX="8.25" PointY="36.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.BranchItemDetail" Width="1.5" PointX="15.75" PointY="46.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItemDetail" Width="1.5" PointX="18.75" PointY="40.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItem" Width="1.5" PointX="7.5" PointY="46.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Customer" Width="1.5" PointX="11.25" PointY="36.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ItemCategory" Width="1.5" PointX="8.25" PointY="33.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Item" Width="1.5" PointX="10.5" PointY="44.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderDetail" Width="1.5" PointX="17.75" PointY="53.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturnDetail" Width="1.5" PointX="12" PointY="56.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturn" Width="1.5" PointX="7.5" PointY="51.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Order" Width="1.5" PointX="13.5" PointY="45.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentApply" Width="1.5" PointX="18" PointY="66.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucherAttachment" Width="1.5" PointX="12" PointY="72.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucher" Width="1.5" PointX="9.75" PointY="63.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Permission" Width="1.5" PointX="0.75" PointY="46.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ProductCategory" Width="1.5" PointX="7.5" PointY="65.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ProductItemDetail" Width="1.5" PointX="14.75" PointY="55.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Product" Width="1.5" PointX="9.75" PointY="53" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseDetail" Width="1.5" PointX="15" PointY="58.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Purchase" Width="1.5" PointX="12.75" PointY="67.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchasesReturn" Width="1.5" PointX="9.75" PointY="70.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchasesReturnDetail" Width="1.5" PointX="17.75" PointY="58.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptApply" Width="1.5" PointX="15" PointY="68.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucherAttachment" Width="1.5" PointX="15" PointY="65.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucher" Width="1.5" PointX="12.75" PointY="60.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.RequisitionDetail" Width="1.5" PointX="15.75" PointY="42.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Requisition" Width="1.5" PointX="10.5" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStock" Width="1.5" PointX="12.5" PointY="51.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStockDetail" Width="1.5" PointX="17.75" PointY="49.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Role" Width="1.5" PointX="3" PointY="46.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.UnitOfMeasure" Width="1.5" PointX="8.25" PointY="58.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.User" Width="1.5" PointX="5.25" PointY="43.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Vendor" Width="1.5" PointX="7.5" PointY="86.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssueDetail" Width="1.5" PointX="18.75" PointY="43.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssue" Width="1.5" PointX="13.5" PointY="40.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WastageItemDetail" Width="1.5" PointX="20.75" PointY="48.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WastageItem" Width="1.5" PointX="15.5" PointY="50.75" IsExpanded="true" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Accounts__Create__4A8310C6" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Accounts__Modifi__4B7734FF" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Accou__531856C7" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Accou__634EBE90" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Branc__7D439ABD" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Branc__0E6E26BF" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Orders__BranchId__37703C52" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Products__Branch__282DF8C2" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Requisiti__Branc__5CD6CB2B" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Branc__03F0984C" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Branc__68487DD7" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Branc__18EBB532" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__ItemI__7E37BEF6" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Consu__1332DBDC" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__ItemI__14270015" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Creat__0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Modif__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Orders__Customer__3864608B" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Items__ItemCateg__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Items__CreatedBy__4316F928" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Items__ModifiedB__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Items__UnitOfMea__4222D4EF" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ProductIt__ItemI__2EDAF651" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PurchaseD__ItemI__571DF1D5" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__ItemI__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Requisiti__ItemI__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__ItemI__09A971A2" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__ItemI__6EF57B66" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__ItemI__1EA48E88" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderDeta__Order__3C34F16F" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderDeta__Produ__3D2915A8" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderRetu__Order__44CA3770" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderRetu__Produ__45BE5BA9" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderRetu__Creat__41EDCAC5" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OrderRetu__Order__40F9A68C" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Orders__CreatedB__395884C4" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentAp__Payme__57DD0BE4" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentAp__Purch__58D1301D" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Payme__5BAD9CC8" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Creat__540C7B00" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Modif__55009F39" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Vendo__5224328E" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ProductCa__Creat__22751F6C" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Products__Produc__29221CFB" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ProductIt__Produ__2DE6D218" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Products__Create__2A164134" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Products__Modifi__2B0A656D" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__PurchaseD__Purch__5629CD9C" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Creat__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Modif__534D60F1" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Vendo__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Creat__74AE54BC" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Modif__75A278F5" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Purch__787EE5A0" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Purchases__Vendo__73BA3083" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptAp__Purch__690797E6" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptAp__Recei__681373AD" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Recei__6BE40491" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Creat__6442E2C9" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Modif__65370702" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Vendo__625A9A57" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Requisiti__Requi__619B8048" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Requisiti__Creat__5DCAEF64" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Requisiti__Modif__5EBF139D" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Requi__6E01572D" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Creat__04E4BC85" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Modif__05D8E0BE" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Retur__08B54D69" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Vendors__Created__47DBAE45" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Creat__693CA210" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Modif__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Creat__19DFD96B" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Modif__1AD3FDA4" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Issue__6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Wasta__1DB06A4F" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.RolePermissions" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.UserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,1465 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="BankAndCash">
+    <Key>
+      <PropertyRef Name="AccountId" />
+    </Key>
+    <Property Name="AccountId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AccountType" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="AccountName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="BankName" Type="nvarchar" MaxLength="100" />
+    <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Branches">
+    <Key>
+      <PropertyRef Name="BranchId" />
+    </Key>
+    <Property Name="BranchId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BranchName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="BranchCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="BranchContact" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="City" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Country" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="PostalCode" Type="nvarchar" MaxLength="20" />
+    <Property Name="OwnerName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BranchItemDetails">
+    <Key>
+      <PropertyRef Name="ItemDetailId" />
+    </Key>
+    <Property Name="ItemDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ConsumeItemDetails">
+    <Key>
+      <PropertyRef Name="ConsumeItemDetailId" />
+    </Key>
+    <Property Name="ConsumeItemDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ConsumeItemId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ConsumeItems">
+    <Key>
+      <PropertyRef Name="ConsumeItemId" />
+    </Key>
+    <Property Name="ConsumeItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ConsumeItemDate" Type="datetime" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="BranchID" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Customers">
+    <Key>
+      <PropertyRef Name="CustomerId" />
+    </Key>
+    <Property Name="CustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CustomerName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="ContactNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" />
+    <Property Name="City" Type="nvarchar" MaxLength="100" />
+    <Property Name="Country" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="FIFOCosting">
+    <Key>
+      <PropertyRef Name="FifoId" />
+    </Key>
+    <Property Name="FifoId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchaseDetailId" Type="int" Nullable="false" />
+    <Property Name="IssueDetailId" Type="int" Nullable="false" />
+    <Property Name="QuantityApplied" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostApplied" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="InventoryTransaction">
+    <Key>
+      <PropertyRef Name="TransactionId" />
+    </Key>
+    <Property Name="TransactionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="LocationType" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="LocationId" Type="int" Nullable="false" />
+    <Property Name="StockInBy" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="MovementType" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="MovementId" Type="int" Nullable="false" />
+    <Property Name="CostingMethod" Type="nvarchar" MaxLength="10" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ItemCategory">
+    <Key>
+      <PropertyRef Name="ItemCategoryID" />
+    </Key>
+    <Property Name="ItemCategoryID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ItemCategoryName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="Items">
+    <Key>
+      <PropertyRef Name="ItemId" />
+    </Key>
+    <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Sku" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ItemCategoryId" Type="int" Nullable="false" />
+    <Property Name="UnitOfMeasureId" Type="int" Nullable="false" />
+    <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostingMethod" Type="nvarchar" MaxLength="10" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="OrderDetails">
+    <Key>
+      <PropertyRef Name="OrderDetailId" />
+    </Key>
+    <Property Name="OrderDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="ProductQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderReturnDetails">
+    <Key>
+      <PropertyRef Name="OrderReturnDetailId" />
+    </Key>
+    <Property Name="OrderReturnDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderReturnId" Type="int" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="ProductQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="OrderReturns">
+    <Key>
+      <PropertyRef Name="OrderReturnId" />
+    </Key>
+    <Property Name="OrderReturnId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderReturnDate" Type="datetime" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Orders">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderDate" Type="datetime" Nullable="false" />
+    <Property Name="OrderNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="OrderType" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="TableNo" Type="nvarchar" MaxLength="10" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="CustomerId" Type="int" />
+    <Property Name="PaymentMethod" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PaymentApply">
+    <Key>
+      <PropertyRef Name="PaymentApplyID" />
+    </Key>
+    <Property Name="PaymentApplyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PaymentVoucherId" Type="int" Nullable="false" />
+    <Property Name="PurchaseId" Type="int" Nullable="false" />
+    <Property Name="AppliedAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PaymentVoucherAttachments">
+    <Key>
+      <PropertyRef Name="VoucherAttachmentId" />
+    </Key>
+    <Property Name="VoucherAttachmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PaymentVoucherId" Type="int" Nullable="false" />
+    <Property Name="AttachmentPath" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PaymentVouchers">
+    <Key>
+      <PropertyRef Name="PaymentVoucherId" />
+    </Key>
+    <Property Name="PaymentVoucherId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PaymentVoucherNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="PaymentVoucherDate" Type="datetime" Nullable="false" />
+    <Property Name="VendorId" Type="int" Nullable="false" />
+    <Property Name="PaymentMethod" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="InstrumentNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="InstrumentDate" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Permissions">
+    <Key>
+      <PropertyRef Name="PermissionId" />
+    </Key>
+    <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PermissionName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProductCategories">
+    <Key>
+      <PropertyRef Name="ProductCategoryId" />
+    </Key>
+    <Property Name="ProductCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ProductCategoryName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ProductItemDetails">
+    <Key>
+      <PropertyRef Name="ProductItemDetailId" />
+    </Key>
+    <Property Name="ProductItemDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Products">
+    <Key>
+      <PropertyRef Name="ProductId" />
+    </Key>
+    <Property Name="ProductId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ProductCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ProductName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="ProductImage" Type="varbinary(max)" />
+    <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CategoryID" Type="int" Nullable="false" />
+    <Property Name="ChefID" Type="int" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PurchaseDetails">
+    <Key>
+      <PropertyRef Name="PurchaseDetailId" />
+    </Key>
+    <Property Name="PurchaseDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchaseId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="UnitPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="Purchases">
+    <Key>
+      <PropertyRef Name="PurchaseId" />
+    </Key>
+    <Property Name="PurchaseId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchaseDate" Type="datetime" Nullable="false" />
+    <Property Name="PurchaseNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="VendorId" Type="int" Nullable="false" />
+    <Property Name="Memo" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="PurchasesReturn">
+    <Key>
+      <PropertyRef Name="PurchaseReturnID" />
+    </Key>
+    <Property Name="PurchaseReturnID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchaseReturnDate" Type="datetime" Nullable="false" />
+    <Property Name="PurchaseReturnNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="VendorID" Type="int" Nullable="false" />
+    <Property Name="Memo" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="PurchasesReturnDetails">
+    <Key>
+      <PropertyRef Name="PurchasesReturnDetailId" />
+    </Key>
+    <Property Name="PurchasesReturnDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PurchasesReturnId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="UnitPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="ReceiptApply">
+    <Key>
+      <PropertyRef Name="ReceiptApplyId" />
+    </Key>
+    <Property Name="ReceiptApplyId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReceiptVoucherId" Type="int" Nullable="false" />
+    <Property Name="PurchaseReturnId" Type="int" Nullable="false" />
+    <Property Name="AppliedAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ReceiptVoucherAttachments">
+    <Key>
+      <PropertyRef Name="VoucherAttachmentId" />
+    </Key>
+    <Property Name="VoucherAttachmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReceiptVoucherId" Type="int" Nullable="false" />
+    <Property Name="AttachmentPath" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ReceiptVouchers">
+    <Key>
+      <PropertyRef Name="ReceiptVoucherId" />
+    </Key>
+    <Property Name="ReceiptVoucherId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReceiptVoucherNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ReceiptVoucherDate" Type="datetime" Nullable="false" />
+    <Property Name="VendorId" Type="int" Nullable="false" />
+    <Property Name="PaymentMethod" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="AccountId" Type="int" Nullable="false" />
+    <Property Name="InstrumentNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="InstrumentDate" Type="datetime" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="RequisitionDetails">
+    <Key>
+      <PropertyRef Name="RequisitionDetailId" />
+    </Key>
+    <Property Name="RequisitionDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RequisitionId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Requisitions">
+    <Key>
+      <PropertyRef Name="RequisitionId" />
+    </Key>
+    <Property Name="RequisitionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RequisitionNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="RequisitionDate" Type="datetime" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="ReturnStock">
+    <Key>
+      <PropertyRef Name="ReturnStockId" />
+    </Key>
+    <Property Name="ReturnStockId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReturnDate" Type="datetime" Nullable="false" />
+    <Property Name="ReturnNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="ReturnStockDetails">
+    <Key>
+      <PropertyRef Name="ReturnStockDetailId" />
+    </Key>
+    <Property Name="ReturnStockDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ReturnStockId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RolePermissions">
+    <Key>
+      <PropertyRef Name="RoleId" />
+      <PropertyRef Name="PermissionId" />
+    </Key>
+    <Property Name="RoleId" Type="int" Nullable="false" />
+    <Property Name="PermissionId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="RoleName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="UnitOfMeasure">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Symbol" Type="nvarchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RoleId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="IsActive" Type="bit" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Vendors">
+    <Key>
+      <PropertyRef Name="VendorId" />
+    </Key>
+    <Property Name="VendorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="CompanyName" Type="nvarchar" MaxLength="100" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Contact" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" />
+    <Property Name="City" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="Country" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="PostalCode" Type="nvarchar" MaxLength="20" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WarehouseIssueDetails">
+    <Key>
+      <PropertyRef Name="IssueDetailId" />
+    </Key>
+    <Property Name="IssueDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IssueId" Type="int" Nullable="false" />
+    <Property Name="RequisitionId" Type="int" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostApplied" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WarehouseIssues">
+    <Key>
+      <PropertyRef Name="IssueId" />
+    </Key>
+    <Property Name="IssueId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IssueDate" Type="datetime" Nullable="false" />
+    <Property Name="IssueNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="BranchID" Type="int" Nullable="false" />
+    <Property Name="Memo" Type="nvarchar" MaxLength="255" />
+    <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="WastageItemDetails">
+    <Key>
+      <PropertyRef Name="WastageItemDetailId" />
+    </Key>
+    <Property Name="WastageItemDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WastageId" Type="int" Nullable="false" />
+    <Property Name="ItemId" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <EntityType Name="WastageItems">
+    <Key>
+      <PropertyRef Name="WastageItemId" />
+    </Key>
+    <Property Name="WastageItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="WastageItemDate" Type="datetime" Nullable="false" />
+    <Property Name="ReferenceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="BranchID" Type="int" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+    <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+    <Property Name="ModifiedBy" Type="int" />
+    <Property Name="ModifiedAt" Type="datetime" />
+  </EntityType>
+  <Association Name="FK__BranchIte__Branc__395884C4">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BranchItemDetails" Type="Self.BranchItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="BranchItemDetails">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BranchIte__ItemI__3A4CA8FD">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="BranchItemDetails" Type="Self.BranchItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="BranchItemDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ConsumeIt__Branc__489AC854">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="ConsumeItems" Type="Self.ConsumeItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="ConsumeItems">
+        <PropertyRef Name="BranchID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ConsumeIt__Consu__4B7734FF">
+    <End Role="ConsumeItems" Type="Self.ConsumeItems" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ConsumeItemDetails" Type="Self.ConsumeItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ConsumeItems">
+        <PropertyRef Name="ConsumeItemId" />
+      </Principal>
+      <Dependent Role="ConsumeItemDetails">
+        <PropertyRef Name="ConsumeItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ConsumeIt__ItemI__4C6B5938">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="ConsumeItemDetails" Type="Self.ConsumeItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="ConsumeItemDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__FIFOCosti__Issue__2645B050">
+    <End Role="WarehouseIssueDetails" Type="Self.WarehouseIssueDetails" Multiplicity="1" />
+    <End Role="FIFOCosting" Type="Self.FIFOCosting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WarehouseIssueDetails">
+        <PropertyRef Name="IssueDetailId" />
+      </Principal>
+      <Dependent Role="FIFOCosting">
+        <PropertyRef Name="IssueDetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__FIFOCosti__Purch__25518C17">
+    <End Role="PurchaseDetails" Type="Self.PurchaseDetails" Multiplicity="1" />
+    <End Role="FIFOCosting" Type="Self.FIFOCosting" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchaseDetails">
+        <PropertyRef Name="PurchaseDetailId" />
+      </Principal>
+      <Dependent Role="FIFOCosting">
+        <PropertyRef Name="PurchaseDetailId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Inventory__ItemI__2CF2ADDF">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="InventoryTransaction" Type="Self.InventoryTransaction" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="InventoryTransaction">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Items__ItemCateg__7C4F7684">
+    <End Role="ItemCategory" Type="Self.ItemCategory" Multiplicity="1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ItemCategory">
+        <PropertyRef Name="ItemCategoryID" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="ItemCategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Items__UnitOfMea__7D439ABD">
+    <End Role="UnitOfMeasure" Type="Self.UnitOfMeasure" Multiplicity="1" />
+    <End Role="Items" Type="Self.Items" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UnitOfMeasure">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Items">
+        <PropertyRef Name="UnitOfMeasureId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OrderDeta__Order__6EC0713C">
+    <End Role="Orders" Type="Self.Orders" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Orders">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OrderDetails">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OrderDeta__Produ__6FB49575">
+    <End Role="Products" Type="Self.Products" Multiplicity="1" />
+    <End Role="OrderDetails" Type="Self.OrderDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="OrderDetails">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OrderRetu__Order__73852659">
+    <End Role="Orders" Type="Self.Orders" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OrderReturns" Type="Self.OrderReturns" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Orders">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OrderReturns">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OrderRetu__Order__76619304">
+    <End Role="OrderReturns" Type="Self.OrderReturns" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OrderReturnDetails" Type="Self.OrderReturnDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="OrderReturns">
+        <PropertyRef Name="OrderReturnId" />
+      </Principal>
+      <Dependent Role="OrderReturnDetails">
+        <PropertyRef Name="OrderReturnId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OrderRetu__Produ__7755B73D">
+    <End Role="Products" Type="Self.Products" Multiplicity="1" />
+    <End Role="OrderReturnDetails" Type="Self.OrderReturnDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="OrderReturnDetails">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__BranchId__6AEFE058">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Orders__Customer__6BE40491">
+    <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+    <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="CustomerId" />
+      </Principal>
+      <Dependent Role="Orders">
+        <PropertyRef Name="CustomerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PaymentAp__Payme__05A3D694">
+    <End Role="PaymentVouchers" Type="Self.PaymentVouchers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PaymentApply" Type="Self.PaymentApply" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaymentVouchers">
+        <PropertyRef Name="PaymentVoucherId" />
+      </Principal>
+      <Dependent Role="PaymentApply">
+        <PropertyRef Name="PaymentVoucherId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PaymentAp__Purch__0697FACD">
+    <End Role="Purchases" Type="Self.Purchases" Multiplicity="1" />
+    <End Role="PaymentApply" Type="Self.PaymentApply" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Purchases">
+        <PropertyRef Name="PurchaseId" />
+      </Principal>
+      <Dependent Role="PaymentApply">
+        <PropertyRef Name="PurchaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PaymentVo__Accou__02C769E9">
+    <End Role="BankAndCash" Type="Self.BankAndCash" Multiplicity="1" />
+    <End Role="PaymentVouchers" Type="Self.PaymentVouchers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BankAndCash">
+        <PropertyRef Name="AccountId" />
+      </Principal>
+      <Dependent Role="PaymentVouchers">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PaymentVo__Payme__09746778">
+    <End Role="PaymentVouchers" Type="Self.PaymentVouchers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PaymentVoucherAttachments" Type="Self.PaymentVoucherAttachments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaymentVouchers">
+        <PropertyRef Name="PaymentVoucherId" />
+      </Principal>
+      <Dependent Role="PaymentVoucherAttachments">
+        <PropertyRef Name="PaymentVoucherId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PaymentVo__Vendo__01D345B0">
+    <End Role="Vendors" Type="Self.Vendors" Multiplicity="1" />
+    <End Role="PaymentVouchers" Type="Self.PaymentVouchers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendors">
+        <PropertyRef Name="VendorId" />
+      </Principal>
+      <Dependent Role="PaymentVouchers">
+        <PropertyRef Name="VendorId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ProductIt__ItemI__625A9A57">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="ProductItemDetails" Type="Self.ProductItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="ProductItemDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ProductIt__Produ__6166761E">
+    <End Role="Products" Type="Self.Products" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductItemDetails" Type="Self.ProductItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Products">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="ProductItemDetails">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Products__Branch__5D95E53A">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="Products" Type="Self.Products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="Products">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Products__Catego__5E8A0973">
+    <End Role="ProductCategories" Type="Self.ProductCategories" Multiplicity="1" />
+    <End Role="Products" Type="Self.Products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductCategories">
+        <PropertyRef Name="ProductCategoryId" />
+      </Principal>
+      <Dependent Role="Products">
+        <PropertyRef Name="CategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PurchaseD__ItemI__0D7A0286">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="PurchaseDetails" Type="Self.PurchaseDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="PurchaseDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__PurchaseD__Purch__0C85DE4D">
+    <End Role="Purchases" Type="Self.Purchases" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PurchaseDetails" Type="Self.PurchaseDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Purchases">
+        <PropertyRef Name="PurchaseId" />
+      </Principal>
+      <Dependent Role="PurchaseDetails">
+        <PropertyRef Name="PurchaseId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Purchases__ItemI__3587F3E0">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="PurchasesReturnDetails" Type="Self.PurchasesReturnDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="PurchasesReturnDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Purchases__Purch__3493CFA7">
+    <End Role="PurchasesReturn" Type="Self.PurchasesReturn" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PurchasesReturnDetails" Type="Self.PurchasesReturnDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchasesReturn">
+        <PropertyRef Name="PurchaseReturnID" />
+      </Principal>
+      <Dependent Role="PurchasesReturnDetails">
+        <PropertyRef Name="PurchasesReturnId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Purchases__Vendo__09A971A2">
+    <End Role="Vendors" Type="Self.Vendors" Multiplicity="1" />
+    <End Role="Purchases" Type="Self.Purchases" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendors">
+        <PropertyRef Name="VendorId" />
+      </Principal>
+      <Dependent Role="Purchases">
+        <PropertyRef Name="VendorId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Purchases__Vendo__31B762FC">
+    <End Role="Vendors" Type="Self.Vendors" Multiplicity="1" />
+    <End Role="PurchasesReturn" Type="Self.PurchasesReturn" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendors">
+        <PropertyRef Name="VendorId" />
+      </Principal>
+      <Dependent Role="PurchasesReturn">
+        <PropertyRef Name="VendorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReceiptAp__Purch__2610A626">
+    <End Role="PurchasesReturn" Type="Self.PurchasesReturn" Multiplicity="1" />
+    <End Role="ReceiptApply" Type="Self.ReceiptApply" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PurchasesReturn">
+        <PropertyRef Name="PurchaseReturnID" />
+      </Principal>
+      <Dependent Role="ReceiptApply">
+        <PropertyRef Name="PurchaseReturnId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReceiptAp__Recei__251C81ED">
+    <End Role="ReceiptVouchers" Type="Self.ReceiptVouchers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ReceiptApply" Type="Self.ReceiptApply" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReceiptVouchers">
+        <PropertyRef Name="ReceiptVoucherId" />
+      </Principal>
+      <Dependent Role="ReceiptApply">
+        <PropertyRef Name="ReceiptVoucherId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReceiptVo__Accou__11158940">
+    <End Role="BankAndCash" Type="Self.BankAndCash" Multiplicity="1" />
+    <End Role="ReceiptVouchers" Type="Self.ReceiptVouchers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BankAndCash">
+        <PropertyRef Name="AccountId" />
+      </Principal>
+      <Dependent Role="ReceiptVouchers">
+        <PropertyRef Name="AccountId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReceiptVo__Recei__17C286CF">
+    <End Role="ReceiptVouchers" Type="Self.ReceiptVouchers" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ReceiptVoucherAttachments" Type="Self.ReceiptVoucherAttachments" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReceiptVouchers">
+        <PropertyRef Name="ReceiptVoucherId" />
+      </Principal>
+      <Dependent Role="ReceiptVoucherAttachments">
+        <PropertyRef Name="ReceiptVoucherId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReceiptVo__Vendo__10216507">
+    <End Role="Vendors" Type="Self.Vendors" Multiplicity="1" />
+    <End Role="ReceiptVouchers" Type="Self.ReceiptVouchers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendors">
+        <PropertyRef Name="VendorId" />
+      </Principal>
+      <Dependent Role="ReceiptVouchers">
+        <PropertyRef Name="VendorId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Requisiti__Branc__1332DBDC">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="Requisitions" Type="Self.Requisitions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="Requisitions">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Requisiti__ItemI__17036CC0">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="RequisitionDetails" Type="Self.RequisitionDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="RequisitionDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Requisiti__Requi__160F4887">
+    <End Role="Requisitions" Type="Self.Requisitions" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="RequisitionDetails" Type="Self.RequisitionDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requisitions">
+        <PropertyRef Name="RequisitionId" />
+      </Principal>
+      <Dependent Role="RequisitionDetails">
+        <PropertyRef Name="RequisitionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReturnSto__Branc__40058253">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="ReturnStock" Type="Self.ReturnStock" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="ReturnStock">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReturnSto__ItemI__43D61337">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="ReturnStockDetails" Type="Self.ReturnStockDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="ReturnStockDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ReturnSto__Retur__42E1EEFE">
+    <End Role="ReturnStock" Type="Self.ReturnStock" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ReturnStockDetails" Type="Self.ReturnStockDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReturnStock">
+        <PropertyRef Name="ReturnStockId" />
+      </Principal>
+      <Dependent Role="ReturnStockDetails">
+        <PropertyRef Name="ReturnStockId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__RolePermi__Permi__6D0D32F4">
+    <End Role="Permissions" Type="Self.Permissions" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Permissions">
+        <PropertyRef Name="PermissionId" />
+      </Principal>
+      <Dependent Role="RolePermissions">
+        <PropertyRef Name="PermissionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__RolePermi__RoleI__6C190EBB">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="RolePermissions" Type="Self.RolePermissions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="RolePermissions">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__RoleI__70DDC3D8">
+    <End Role="Roles" Type="Self.Roles" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Roles">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="UserRoles">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__UserI__6FE99F9F">
+    <End Role="Users" Type="Self.Users" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserRoles">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Warehouse__Branc__1CBC4616">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="WarehouseIssues" Type="Self.WarehouseIssues" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="WarehouseIssues">
+        <PropertyRef Name="BranchID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Warehouse__Issue__1F98B2C1">
+    <End Role="WarehouseIssues" Type="Self.WarehouseIssues" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="WarehouseIssueDetails" Type="Self.WarehouseIssueDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WarehouseIssues">
+        <PropertyRef Name="IssueId" />
+      </Principal>
+      <Dependent Role="WarehouseIssueDetails">
+        <PropertyRef Name="IssueId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Warehouse__ItemI__2180FB33">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="WarehouseIssueDetails" Type="Self.WarehouseIssueDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="WarehouseIssueDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Warehouse__Requi__208CD6FA">
+    <End Role="Requisitions" Type="Self.Requisitions" Multiplicity="0..1" />
+    <End Role="WarehouseIssueDetails" Type="Self.WarehouseIssueDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requisitions">
+        <PropertyRef Name="RequisitionId" />
+      </Principal>
+      <Dependent Role="WarehouseIssueDetails">
+        <PropertyRef Name="RequisitionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WastageIt__Branc__51300E55">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="WastageItems" Type="Self.WastageItems" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="WastageItems">
+        <PropertyRef Name="BranchID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WastageIt__ItemI__55009F39">
+    <End Role="Items" Type="Self.Items" Multiplicity="1" />
+    <End Role="WastageItemDetails" Type="Self.WastageItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemId" />
+      </Principal>
+      <Dependent Role="WastageItemDetails">
+        <PropertyRef Name="ItemId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__WastageIt__Wasta__540C7B00">
+    <End Role="WastageItems" Type="Self.WastageItems" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="WastageItemDetails" Type="Self.WastageItemDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WastageItems">
+        <PropertyRef Name="WastageItemId" />
+      </Principal>
+      <Dependent Role="WastageItemDetails">
+        <PropertyRef Name="WastageId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DB_RessentialModelStoreContainer">
+    <EntitySet Name="BankAndCash" EntityType="Self.BankAndCash" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Branches" EntityType="Self.Branches" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BranchItemDetails" EntityType="Self.BranchItemDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ConsumeItemDetails" EntityType="Self.ConsumeItemDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ConsumeItems" EntityType="Self.ConsumeItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="FIFOCosting" EntityType="Self.FIFOCosting" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="InventoryTransaction" EntityType="Self.InventoryTransaction" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderReturnDetails" EntityType="Self.OrderReturnDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OrderReturns" EntityType="Self.OrderReturns" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PaymentApply" EntityType="Self.PaymentApply" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PaymentVoucherAttachments" EntityType="Self.PaymentVoucherAttachments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PaymentVouchers" EntityType="Self.PaymentVouchers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductCategories" EntityType="Self.ProductCategories" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductItemDetails" EntityType="Self.ProductItemDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchaseDetails" EntityType="Self.PurchaseDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Purchases" EntityType="Self.Purchases" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchasesReturn" EntityType="Self.PurchasesReturn" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PurchasesReturnDetails" EntityType="Self.PurchasesReturnDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReceiptApply" EntityType="Self.ReceiptApply" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReceiptVoucherAttachments" EntityType="Self.ReceiptVoucherAttachments" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReceiptVouchers" EntityType="Self.ReceiptVouchers" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RequisitionDetails" EntityType="Self.RequisitionDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Requisitions" EntityType="Self.Requisitions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReturnStock" EntityType="Self.ReturnStock" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReturnStockDetails" EntityType="Self.ReturnStockDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RolePermissions" EntityType="Self.RolePermissions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UnitOfMeasure" EntityType="Self.UnitOfMeasure" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Vendors" EntityType="Self.Vendors" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WarehouseIssueDetails" EntityType="Self.WarehouseIssueDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WarehouseIssues" EntityType="Self.WarehouseIssues" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WastageItemDetails" EntityType="Self.WastageItemDetails" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="WastageItems" EntityType="Self.WastageItems" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__BranchIte__Branc__395884C4" Association="Self.FK__BranchIte__Branc__395884C4">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="BranchItemDetails" EntitySet="BranchItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BranchIte__ItemI__3A4CA8FD" Association="Self.FK__BranchIte__ItemI__3A4CA8FD">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="BranchItemDetails" EntitySet="BranchItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ConsumeIt__Branc__489AC854" Association="Self.FK__ConsumeIt__Branc__489AC854">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="ConsumeItems" EntitySet="ConsumeItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ConsumeIt__Consu__4B7734FF" Association="Self.FK__ConsumeIt__Consu__4B7734FF">
+      <End Role="ConsumeItems" EntitySet="ConsumeItems" />
+      <End Role="ConsumeItemDetails" EntitySet="ConsumeItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ConsumeIt__ItemI__4C6B5938" Association="Self.FK__ConsumeIt__ItemI__4C6B5938">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="ConsumeItemDetails" EntitySet="ConsumeItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__FIFOCosti__Issue__2645B050" Association="Self.FK__FIFOCosti__Issue__2645B050">
+      <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
+      <End Role="FIFOCosting" EntitySet="FIFOCosting" />
+    </AssociationSet>
+    <AssociationSet Name="FK__FIFOCosti__Purch__25518C17" Association="Self.FK__FIFOCosti__Purch__25518C17">
+      <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
+      <End Role="FIFOCosting" EntitySet="FIFOCosting" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Inventory__ItemI__2CF2ADDF" Association="Self.FK__Inventory__ItemI__2CF2ADDF">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="InventoryTransaction" EntitySet="InventoryTransaction" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Items__ItemCateg__7C4F7684" Association="Self.FK__Items__ItemCateg__7C4F7684">
+      <End Role="ItemCategory" EntitySet="ItemCategory" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Items__UnitOfMea__7D439ABD" Association="Self.FK__Items__UnitOfMea__7D439ABD">
+      <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
+      <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderDeta__Order__6EC0713C" Association="Self.FK__OrderDeta__Order__6EC0713C">
+      <End Role="Orders" EntitySet="Orders" />
+      <End Role="OrderDetails" EntitySet="OrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderDeta__Produ__6FB49575" Association="Self.FK__OrderDeta__Produ__6FB49575">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="OrderDetails" EntitySet="OrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Order__73852659" Association="Self.FK__OrderRetu__Order__73852659">
+      <End Role="Orders" EntitySet="Orders" />
+      <End Role="OrderReturns" EntitySet="OrderReturns" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Order__76619304" Association="Self.FK__OrderRetu__Order__76619304">
+      <End Role="OrderReturns" EntitySet="OrderReturns" />
+      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Produ__7755B73D" Association="Self.FK__OrderRetu__Produ__7755B73D">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__BranchId__6AEFE058" Association="Self.FK__Orders__BranchId__6AEFE058">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Orders__Customer__6BE40491" Association="Self.FK__Orders__Customer__6BE40491">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="Orders" EntitySet="Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PaymentAp__Payme__05A3D694" Association="Self.FK__PaymentAp__Payme__05A3D694">
+      <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
+      <End Role="PaymentApply" EntitySet="PaymentApply" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PaymentAp__Purch__0697FACD" Association="Self.FK__PaymentAp__Purch__0697FACD">
+      <End Role="Purchases" EntitySet="Purchases" />
+      <End Role="PaymentApply" EntitySet="PaymentApply" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PaymentVo__Accou__02C769E9" Association="Self.FK__PaymentVo__Accou__02C769E9">
+      <End Role="BankAndCash" EntitySet="BankAndCash" />
+      <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PaymentVo__Payme__09746778" Association="Self.FK__PaymentVo__Payme__09746778">
+      <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
+      <End Role="PaymentVoucherAttachments" EntitySet="PaymentVoucherAttachments" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PaymentVo__Vendo__01D345B0" Association="Self.FK__PaymentVo__Vendo__01D345B0">
+      <End Role="Vendors" EntitySet="Vendors" />
+      <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ProductIt__ItemI__625A9A57" Association="Self.FK__ProductIt__ItemI__625A9A57">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="ProductItemDetails" EntitySet="ProductItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ProductIt__Produ__6166761E" Association="Self.FK__ProductIt__Produ__6166761E">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="ProductItemDetails" EntitySet="ProductItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Products__Branch__5D95E53A" Association="Self.FK__Products__Branch__5D95E53A">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="Products" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Products__Catego__5E8A0973" Association="Self.FK__Products__Catego__5E8A0973">
+      <End Role="ProductCategories" EntitySet="ProductCategories" />
+      <End Role="Products" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PurchaseD__ItemI__0D7A0286" Association="Self.FK__PurchaseD__ItemI__0D7A0286">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__PurchaseD__Purch__0C85DE4D" Association="Self.FK__PurchaseD__Purch__0C85DE4D">
+      <End Role="Purchases" EntitySet="Purchases" />
+      <End Role="PurchaseDetails" EntitySet="PurchaseDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Purchases__ItemI__3587F3E0" Association="Self.FK__Purchases__ItemI__3587F3E0">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="PurchasesReturnDetails" EntitySet="PurchasesReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Purchases__Purch__3493CFA7" Association="Self.FK__Purchases__Purch__3493CFA7">
+      <End Role="PurchasesReturn" EntitySet="PurchasesReturn" />
+      <End Role="PurchasesReturnDetails" EntitySet="PurchasesReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Purchases__Vendo__09A971A2" Association="Self.FK__Purchases__Vendo__09A971A2">
+      <End Role="Vendors" EntitySet="Vendors" />
+      <End Role="Purchases" EntitySet="Purchases" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Purchases__Vendo__31B762FC" Association="Self.FK__Purchases__Vendo__31B762FC">
+      <End Role="Vendors" EntitySet="Vendors" />
+      <End Role="PurchasesReturn" EntitySet="PurchasesReturn" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReceiptAp__Purch__2610A626" Association="Self.FK__ReceiptAp__Purch__2610A626">
+      <End Role="PurchasesReturn" EntitySet="PurchasesReturn" />
+      <End Role="ReceiptApply" EntitySet="ReceiptApply" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReceiptAp__Recei__251C81ED" Association="Self.FK__ReceiptAp__Recei__251C81ED">
+      <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
+      <End Role="ReceiptApply" EntitySet="ReceiptApply" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReceiptVo__Accou__11158940" Association="Self.FK__ReceiptVo__Accou__11158940">
+      <End Role="BankAndCash" EntitySet="BankAndCash" />
+      <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReceiptVo__Recei__17C286CF" Association="Self.FK__ReceiptVo__Recei__17C286CF">
+      <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
+      <End Role="ReceiptVoucherAttachments" EntitySet="ReceiptVoucherAttachments" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReceiptVo__Vendo__10216507" Association="Self.FK__ReceiptVo__Vendo__10216507">
+      <End Role="Vendors" EntitySet="Vendors" />
+      <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Requisiti__Branc__1332DBDC" Association="Self.FK__Requisiti__Branc__1332DBDC">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="Requisitions" EntitySet="Requisitions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Requisiti__ItemI__17036CC0" Association="Self.FK__Requisiti__ItemI__17036CC0">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="RequisitionDetails" EntitySet="RequisitionDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Requisiti__Requi__160F4887" Association="Self.FK__Requisiti__Requi__160F4887">
+      <End Role="Requisitions" EntitySet="Requisitions" />
+      <End Role="RequisitionDetails" EntitySet="RequisitionDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReturnSto__Branc__40058253" Association="Self.FK__ReturnSto__Branc__40058253">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="ReturnStock" EntitySet="ReturnStock" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReturnSto__ItemI__43D61337" Association="Self.FK__ReturnSto__ItemI__43D61337">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="ReturnStockDetails" EntitySet="ReturnStockDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ReturnSto__Retur__42E1EEFE" Association="Self.FK__ReturnSto__Retur__42E1EEFE">
+      <End Role="ReturnStock" EntitySet="ReturnStock" />
+      <End Role="ReturnStockDetails" EntitySet="ReturnStockDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__RolePermi__Permi__6D0D32F4" Association="Self.FK__RolePermi__Permi__6D0D32F4">
+      <End Role="Permissions" EntitySet="Permissions" />
+      <End Role="RolePermissions" EntitySet="RolePermissions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__RolePermi__RoleI__6C190EBB" Association="Self.FK__RolePermi__RoleI__6C190EBB">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="RolePermissions" EntitySet="RolePermissions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__RoleI__70DDC3D8" Association="Self.FK__UserRoles__RoleI__70DDC3D8">
+      <End Role="Roles" EntitySet="Roles" />
+      <End Role="UserRoles" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__UserI__6FE99F9F" Association="Self.FK__UserRoles__UserI__6FE99F9F">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="UserRoles" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Warehouse__Branc__1CBC4616" Association="Self.FK__Warehouse__Branc__1CBC4616">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="WarehouseIssues" EntitySet="WarehouseIssues" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Warehouse__Issue__1F98B2C1" Association="Self.FK__Warehouse__Issue__1F98B2C1">
+      <End Role="WarehouseIssues" EntitySet="WarehouseIssues" />
+      <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Warehouse__ItemI__2180FB33" Association="Self.FK__Warehouse__ItemI__2180FB33">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Warehouse__Requi__208CD6FA" Association="Self.FK__Warehouse__Requi__208CD6FA">
+      <End Role="Requisitions" EntitySet="Requisitions" />
+      <End Role="WarehouseIssueDetails" EntitySet="WarehouseIssueDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WastageIt__Branc__51300E55" Association="Self.FK__WastageIt__Branc__51300E55">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="WastageItems" EntitySet="WastageItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WastageIt__ItemI__55009F39" Association="Self.FK__WastageIt__ItemI__55009F39">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__WastageIt__Wasta__540C7B00" Association="Self.FK__WastageIt__Wasta__540C7B00">
+      <End Role="WastageItems" EntitySet="WastageItems" />
+      <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

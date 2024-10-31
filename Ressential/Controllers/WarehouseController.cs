@@ -4,18 +4,74 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using Ressential.Models;
 
 namespace Ressential.Controllers
 {
     public class WarehouseController : Controller
     {
-        db_RessentialEntities1 _db = new db_RessentialEntities1();
+        DB_RessentialEntities _db = new DB_RessentialEntities();
         // GET: Warehouse
         public ActionResult Index()
         {
             return View();
         }
+        public ActionResult CreateItemCategory()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateItemCategory(ItemCategory itemCategory)
+        {
+            _db.ItemCategories.Add(itemCategory);
+            _db.SaveChanges();
+            return RedirectToAction("ItemCategoryList");
+        }
+        public ActionResult ItemCategoryList(string search)
+        {
+            var itemCategories = _db.ItemCategories.AsQueryable();
 
+            if (!string.IsNullOrEmpty(search))
+            {
+                itemCategories = itemCategories.Where(c => c.ItemCategoryName.Contains(search) || c.Description.Contains(search));
+            }
+            return View(itemCategories.ToList());
+        }
+        public ActionResult EditItemCategory(int itemCategoryId)
+        {
+            var ItemCategory = _db.ItemCategories.Find(itemCategoryId);
+            if (ItemCategory == null)
+            {
+                return HttpNotFound();
+            }
+            return View(ItemCategory);
+        }
+        [HttpPost]
+        public ActionResult EditItemCategory(ItemCategory itemCategory)
+        {
+            _db.Entry(itemCategory).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("ItemCategoryList");
+        }
+        [HttpPost]
+        public ActionResult DeleteItemCategory(int itemCategoryId)
+        {
+            var itemCategory = _db.ItemCategories.Find(itemCategoryId);
+            _db.ItemCategories.Remove(itemCategory);
+            _db.SaveChanges();
+            return RedirectToAction("ItemCategoryList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedItemCategories(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                var itemsToDelete = _db.ItemCategories.Where(c => selectedItems.Contains(c.ItemCategoryId)).ToList();
+                _db.ItemCategories.RemoveRange(itemsToDelete);
+                _db.SaveChanges();
+            }
+            return RedirectToAction("ItemCategoryList");
+        }
         public ActionResult CreateItem()
         {
             return View();
@@ -97,14 +153,18 @@ namespace Ressential.Controllers
         {
             return View();
         }
-        public ActionResult UserList()
+        public ActionResult UserList(String search)
         {
-            var users = _db.Users.Include(u => u.Role).ToList();
-            return View(users);
+            var users = _db.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                users = users.Where(c => c.UserName.Contains(search));
+            }
+            return View(users.ToList());
         }
         public ActionResult CreateUser()
         {
-            ViewBag.Roles = new SelectList(_db.Roles.ToList(), "RoleID", "RoleName");
             return View();
         }
 
@@ -114,21 +174,53 @@ namespace Ressential.Controllers
             if (user.Password != ConfirmPassword)
             {
                 ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                ViewBag.Roles = new SelectList(_db.Roles.ToList(), "RoleID", "RoleName");
                 return View(user);
             }
-
             _db.Users.Add(user);
             _db.SaveChanges();
-            return RedirectToAction("Index");
-
-            //if (ModelState.IsValid)
-            //{
-                
-            //}
-
-            //ViewBag.Roles = new SelectList(_db.Roles.ToList(), "RoleID", "RoleName");
-            //return View(user);
+            return RedirectToAction("UserList");
+        }
+        public ActionResult EditUser(int userId)
+        {
+            var User = _db.Users.Find(userId);
+            if (User == null)
+            {
+                return HttpNotFound();
+            }
+            return View(User);
+        }
+        [HttpPost]
+        public ActionResult EditUser(User user)
+        {
+            var existingUser = _db.Users.Find(user.UserId);
+            if (existingUser == null)
+            {
+                return HttpNotFound();
+            }
+            user.Email = existingUser.Email;
+            _db.Entry(existingUser).CurrentValues.SetValues(user);
+            _db.Entry(existingUser).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("UserList");
+        }
+        [HttpPost]
+        public ActionResult DeleteUser(int userId)
+        {
+            var user = _db.Users.Find(userId);
+            _db.Users.Remove(user);
+            _db.SaveChanges();
+            return RedirectToAction("UserList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedUsers(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                var usersToDelete = _db.Users.Where(c => selectedItems.Contains(c.UserId)).ToList();
+                _db.Users.RemoveRange(usersToDelete);
+                _db.SaveChanges();
+            }
+            return RedirectToAction("UserList");
         }
     }
 }

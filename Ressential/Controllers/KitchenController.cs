@@ -4,12 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
+using Ressential.Models;
 
 namespace Ressential.Controllers
 {
     public class KitchenController : Controller
     {
-        db_RessentialEntities1 _db = new db_RessentialEntities1();
+        DB_RessentialEntities _db = new DB_RessentialEntities();
         public ActionResult Index() { 
             return View();
         }
@@ -98,7 +99,7 @@ namespace Ressential.Controllers
 
         public ActionResult UserList()
         {
-            var users = _db.Users.Include(u => u.Role).ToList();
+            var users = _db.Users.Include(u => u.Roles).ToList();
             return View(users);
         }
         public ActionResult CreateUser()
