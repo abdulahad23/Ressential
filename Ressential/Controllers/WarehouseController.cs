@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using Ressential.Models;
+using Ressential.Utilities;
 
 namespace Ressential.Controllers
 {
@@ -14,6 +15,7 @@ namespace Ressential.Controllers
         // GET: Warehouse
         public ActionResult Index()
         {
+            string userName = Helper.GetUserInfo("userName");
             return View();
         }
         public ActionResult CreateItemCategory()

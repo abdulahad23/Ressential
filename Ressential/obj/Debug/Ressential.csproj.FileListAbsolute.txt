@@ -318,3 +318,16 @@ C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.CodeDom.P
 C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\obj\Debug\Ressential.csproj.Up2Date
 C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\obj\Debug\Ressential.dll
 C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\obj\Debug\Ressential.pdb
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.Identity.Core.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Host.SystemWeb.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.Cookies.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Owin.dll
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.Identity.Core.xml
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.xml
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Host.SystemWeb.xml
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.xml
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.Cookies.xml
+C:\Users\abdul\Desktop\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Security.OAuth.xml

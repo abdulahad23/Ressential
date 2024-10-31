@@ -56,14 +56,15 @@ namespace Ressential.Controllers
                 // Setting    
                 claims.Add(new Claim(ClaimTypes.Name, user.UserName));
                 claims.Add(new Claim(ClaimTypes.Sid, user.UserId.ToString()));
-                claims.Add(new Claim("IsActive",user.IsActive.ToString()));
+                claims.Add(new Claim("IsActive", user.IsActive.ToString()));
+                claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
 
                 var claimIdenties = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
                 var ctx = Request.GetOwinContext();
                 var authenticationManager = ctx.Authentication;
                 // Sign In.    
-                authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, claimIdenties);
+                authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true }, claimIdenties);
 
 
                 var identity = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
