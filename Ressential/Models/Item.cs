@@ -58,10 +58,10 @@ namespace Ressential.Models
         public virtual ICollection<RequisitionDetail> RequisitionDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReturnStockDetail> ReturnStockDetails { get; set; }
+        public virtual WarehouseItemStock WarehouseItemStock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WastageItemDetail> WastageItemDetails { get; set; }
-        public virtual WarehouseItemStock WarehouseItemStock { get; set; }
     }
 }

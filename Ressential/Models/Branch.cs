@@ -37,8 +37,13 @@ namespace Ressential.Models
         public string PostalCode { get; set; }
         public string OwnerName { get; set; }
         public bool IsActive { get; set; }
+        public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedAt { get; set; }
     
+        public virtual User User { get; set; }
+        public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

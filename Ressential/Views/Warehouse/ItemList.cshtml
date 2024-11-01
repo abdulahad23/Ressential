@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<Ressential.Models.Item>
 @{
     ViewBag.Title = "ItemList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
@@ -21,123 +21,105 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
-                    <select class="form-select" id="inputGroupSelectStart">
+                    <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="1">Delete</option>
+                        <option value="delete">Delete</option>
                     </select>
-                    <button class="btn btn-secondary" type="button">Apply</button>
+                    <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
             </div>
+
             <div class="col-md-3 ms-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
-                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
-                </div>
+                <form id="searchForm" action="@Url.Action("ItemList", "Warehouse")" method="get">
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
+                        <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" class="fit-content">
-                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
-                        </th>
-                        <th scope="col" class="no-wrap">Item Name</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Unit</th>
-                        <th scope="col">MSL</th>
-                        <th scope="col" class="no-wrap">Stock Level</th>
-                        <th scope="col" class="no-wrap">Status</th>
-                        <th scope="col" class="fit-content">Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Sugar</td>
-                        <td>9</td>
-                        <td>Kilogram</td>
-                        <td>10</td>
-                        <td class="no-wrap">
-                            <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Low Stock
-                            </span>
-                        </td>
-                        <td class="no-wrap">
-                            <span style="background-color: forestgreen; color: white; border-radius: 6px; padding: 5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Potato</td>
-                        <td>29</td>
-                        <td>Kilogram</td>
-                        <td>10</td>
-                        <td class="no-wrap">
-                            <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                In Stock
-                            </span>
-                        </td>
-                        <td class="no-wrap">
-                            <span style="background-color: lightslategrey; color: white; border-radius: 6px; padding: 5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Inactive
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>Cooking Oil</td>
-                        <td>0</td>
-                        <td>Liter</td>
-                        <td>10</td>
-                        <td class="no-wrap">
-                            <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Out of Stock
-                            </span>
-                        </td>
-                        <td class="no-wrap">
-                            <span style="background-color: forestgreen; color: white; border-radius: 6px; padding: 5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Active
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <form id="actionForm" action="@Url.Action("DeleteSelectedItems", "Warehouse")" method="post">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="fit-content">
+                                <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                            </th>
+                            <th scope="col" class="no-wrap">Item Name</th>
+                            <th scope="col">SKU</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">MSL</th>
+                            <th scope="col" class="no-wrap">Stock Level</th>
+                            <th scope="col" class="no-wrap">Status</th>
+                            <th scope="col" class="fit-content">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@item.ItemId" aria-label="Select Item"></td>
+                                <td>@item.ItemName</td>
+                                <td>@item.Sku</td>
+                                <td>@item.WarehouseItemStock.Quantity</td>
+                                <td>@item.UnitOfMeasure.Name</td>
+                                <td>@item.MinimumStockLevel</td>
+                                <td class="no-wrap">
+                                    @if (item.WarehouseItemStock.Quantity == 0)
+                                    {
+                                        <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Out of Stock
+                                        </span>
+                                    }
+                                    else if (item.WarehouseItemStock.Quantity < item.MinimumStockLevel)
+                                    {
+                                        <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Low Stock
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            In Stock
+                                        </span>
+                                    }
+                                </td>
+                                <td class="no-wrap">
+                                    @if (item.IsActive)
+                                    {
+                                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@item.ItemId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@item.ItemId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+            <!-- Hidden Form for Edit/Delete Actions -->
+            <form id="editDeleteForm" method="post" style="display: none;">
+                <input type="hidden" name="ItemId" id="formItemId" />
+            </form>
         </div>
     </div>
 </div>
@@ -149,5 +131,38 @@
         const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
     }
+
+    function applyAction() {
+        const action = document.getElementById("actionDropdown").value;
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+        if (action === "delete") {
+            if (checkboxes.length === 0) {
+                alert("No records selected to delete.");
+                return;
+            }
+            if (confirm("Are you sure you want to delete the selected records?")) {
+                document.getElementById("actionForm").submit();
+            }
+        }
+    }
+
+    function submitEditForm(ItemId) {
+        const form = document.getElementById("editDeleteForm");
+        form.action = "@Url.Action("EditItem", "Warehouse")";
+        document.getElementById("formItemId").value = ItemId;
+        form.method = "get";
+        form.submit();
+    }
+
+    function submitDeleteForm(ItemId) {
+        if (confirm('Are you sure you want to delete this record?')) {
+            const form = document.getElementById("editDeleteForm");
+            form.action = "@Url.Action("DeleteItem", "Warehouse")";
+            document.getElementById("formItemId").value = ItemId;
+            form.method = "post";
+            form.submit();
+        }
+    }
 </script>
 

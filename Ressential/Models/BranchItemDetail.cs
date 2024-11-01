@@ -17,8 +17,14 @@ namespace Ressential.Models
         public int BranchId { get; set; }
         public int ItemId { get; set; }
         public decimal MinimumStockLevel { get; set; }
+        public int CreatedBy { get; set; }
+        public System.DateTime CreatedAt { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedAt { get; set; }
     
         public virtual Branch Branch { get; set; }
+        public virtual User User { get; set; }
         public virtual Item Item { get; set; }
+        public virtual User User1 { get; set; }
     }
 }

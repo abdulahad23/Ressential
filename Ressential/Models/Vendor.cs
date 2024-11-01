@@ -34,6 +34,8 @@ namespace Ressential.Models
         public string PostalCode { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedAt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentVoucher> PaymentVouchers { get; set; }
@@ -44,5 +46,6 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReceiptVoucher> ReceiptVouchers { get; set; }
         public virtual User User { get; set; }
+        public virtual User User1 { get; set; }
     }
 }

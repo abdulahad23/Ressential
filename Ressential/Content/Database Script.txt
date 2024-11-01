@@ -5,14 +5,24 @@ CREATE TABLE Users (
     Email NVARCHAR(100) NOT NULL UNIQUE,
     Password NVARCHAR(255) NOT NULL,
     IsActive BIT NOT NULL DEFAULT 1,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE()
+    CreatedBy INT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NU2ELL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
 -- Table: Roles
 CREATE TABLE Roles (
     RoleId INT PRIMARY KEY IDENTITY(1,1),
     RoleName NVARCHAR(100) NOT NULL UNIQUE,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE()
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
 -- Table: Permissions
@@ -52,7 +62,7 @@ CREATE TABLE UnitOfMeasure (
 CREATE TABLE ItemCategory (
     ItemCategoryId INT PRIMARY KEY IDENTITY(1,1),
     ItemCategoryName NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(500) NULL
+    Description NVARCHAR(500) NULL,
 );
 
 -- Table: Items
@@ -89,13 +99,16 @@ CREATE TABLE Vendors (
     Name NVARCHAR(100) NOT NULL,
     CompanyName NVARCHAR(100) NULL,
     Email NVARCHAR(100) NULL,
-    Contact NVARCHAR(50) NOT NULL,
+    Contact NVARCHAR(50) NULL,
     Address NVARCHAR(255) NULL,
-    City NVARCHAR(100) NOT NULL,
-    Country NVARCHAR(100) NOT NULL,
+    City NVARCHAR(100) NULL,
+    Country NVARCHAR(100) NULL,
     PostalCode NVARCHAR(20) NULL,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
@@ -111,7 +124,13 @@ CREATE TABLE Branches (
     PostalCode NVARCHAR(20) NULL,
     OwnerName NVARCHAR(100) NOT NULL,
     IsActive BIT NOT NULL DEFAULT 1,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE()
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+
 );
 
 -- Table: Purchases
@@ -238,7 +257,13 @@ CREATE TABLE BranchItemDetails (
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
-    PRIMARY KEY (BranchId,ItemId)
+    PRIMARY KEY (BranchId,ItemId),
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
 -- Table: ReturnStock
@@ -331,7 +356,10 @@ CREATE TABLE ProductCategories (
     Description NVARCHAR(255) NULL,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId)
 );
 
 -- Table: Products
@@ -529,3 +557,13 @@ VALUES ('Kilogram', 'kg'),
        ('Liter', 'L'),
        ('Milliliter', 'ml'),
        ('Piece', 'pcs');
+
+INSERT INTO USERS (UserName, Email, Password, IsActive)
+VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '123', 1),
+       ('Syeda Saba', 'syedha.sabaali@gmail.com', '123', 1),
+       ('Waniya Rana', 'waniyarana@gmail.com', '123', 1),
+       ('Abdul Basit', 'abdulbasit@gmail.com', '123', 1);
+
+INSERT INTO ITEMCATEGORY (ItemCategoryName, Description)
+VALUES ('Meat', 'All type of meats'),
+       ('Spices', 'All type of spices');

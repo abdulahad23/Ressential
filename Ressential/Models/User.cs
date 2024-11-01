@@ -19,6 +19,10 @@ namespace Ressential.Models
         {
             this.Accounts = new HashSet<Account>();
             this.Accounts1 = new HashSet<Account>();
+            this.Branches = new HashSet<Branch>();
+            this.Branches1 = new HashSet<Branch>();
+            this.BranchItemDetails = new HashSet<BranchItemDetail>();
+            this.BranchItemDetails1 = new HashSet<BranchItemDetail>();
             this.ConsumeItems = new HashSet<ConsumeItem>();
             this.ConsumeItems1 = new HashSet<ConsumeItem>();
             this.Items = new HashSet<Item>();
@@ -28,6 +32,7 @@ namespace Ressential.Models
             this.PaymentVouchers = new HashSet<PaymentVoucher>();
             this.PaymentVouchers1 = new HashSet<PaymentVoucher>();
             this.ProductCategories = new HashSet<ProductCategory>();
+            this.ProductCategories1 = new HashSet<ProductCategory>();
             this.Products = new HashSet<Product>();
             this.Products1 = new HashSet<Product>();
             this.Purchases = new HashSet<Purchase>();
@@ -40,12 +45,17 @@ namespace Ressential.Models
             this.Requisitions1 = new HashSet<Requisition>();
             this.ReturnStocks = new HashSet<ReturnStock>();
             this.ReturnStocks1 = new HashSet<ReturnStock>();
+            this.Roles = new HashSet<Role>();
+            this.Roles1 = new HashSet<Role>();
+            this.Users1 = new HashSet<User>();
+            this.Users11 = new HashSet<User>();
             this.Vendors = new HashSet<Vendor>();
+            this.Vendors1 = new HashSet<Vendor>();
             this.WarehouseIssues = new HashSet<WarehouseIssue>();
             this.WarehouseIssues1 = new HashSet<WarehouseIssue>();
             this.WastageItems = new HashSet<WastageItem>();
             this.WastageItems1 = new HashSet<WastageItem>();
-            this.Roles = new HashSet<Role>();
+            this.Roles2 = new HashSet<Role>();
         }
     
         public int UserId { get; set; }
@@ -53,12 +63,23 @@ namespace Ressential.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsActive { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
+        public Nullable<int> ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedAt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Account> Accounts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Account> Accounts1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Branch> Branches { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Branch> Branches1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchItemDetail> BranchItemDetails1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ConsumeItem> ConsumeItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -77,6 +98,8 @@ namespace Ressential.Models
         public virtual ICollection<PaymentVoucher> PaymentVouchers1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ProductCategory> ProductCategories { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductCategory> ProductCategories1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -102,7 +125,19 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReturnStock> ReturnStocks1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Role> Roles { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Role> Roles1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users1 { get; set; }
+        public virtual User User1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<User> Users11 { get; set; }
+        public virtual User User2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Vendor> Vendors { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Vendor> Vendors1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WarehouseIssue> WarehouseIssues { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -112,6 +147,6 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WastageItem> WastageItems1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<Role> Roles2 { get; set; }
     }
 }
