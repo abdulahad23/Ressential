@@ -243,9 +243,9 @@
         </EntityType>
         <EntityType Name="PurchaseDetails">
           <Key>
-            <PropertyRef Name="PurchaseId" />
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="PurchaseDetailId" />
           </Key>
+          <Property Name="PurchaseDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PurchaseId" Type="int" Nullable="false" />
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -284,9 +284,9 @@
         </EntityType>
         <EntityType Name="PurchasesReturnDetails">
           <Key>
-            <PropertyRef Name="PurchasesReturnId" />
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="PurchasesReturnDetailId" />
           </Key>
+          <Property Name="PurchasesReturnDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PurchasesReturnId" Type="int" Nullable="false" />
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -2346,9 +2346,9 @@
         </EntityType>
         <EntityType Name="PurchaseDetail">
           <Key>
-            <PropertyRef Name="PurchaseId" />
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="PurchaseDetailId" />
           </Key>
+          <Property Name="PurchaseDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PurchaseId" Type="Int32" Nullable="false" />
           <Property Name="ItemId" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
@@ -2399,9 +2399,9 @@
         </EntityType>
         <EntityType Name="PurchasesReturnDetail">
           <Key>
-            <PropertyRef Name="PurchasesReturnId" />
-            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="PurchasesReturnDetailId" />
           </Key>
+          <Property Name="PurchasesReturnDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PurchasesReturnId" Type="Int32" Nullable="false" />
           <Property Name="ItemId" Type="Int32" Nullable="false" />
           <Property Name="Quantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
@@ -4418,6 +4418,7 @@
           <EntitySetMapping Name="PurchaseDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseDetail">
               <MappingFragment StoreEntitySet="PurchaseDetails">
+                <ScalarProperty Name="PurchaseDetailId" ColumnName="PurchaseDetailId" />
                 <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
@@ -4461,6 +4462,7 @@
           <EntitySetMapping Name="PurchasesReturnDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.PurchasesReturnDetail">
               <MappingFragment StoreEntitySet="PurchasesReturnDetails">
+                <ScalarProperty Name="PurchasesReturnDetailId" ColumnName="PurchasesReturnDetailId" />
                 <ScalarProperty Name="PurchasesReturnId" ColumnName="PurchasesReturnId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />

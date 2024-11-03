@@ -8,7 +8,7 @@ CREATE TABLE Users (
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
-    ModifiedAt DATETIME2 NU2ELL,
+    ModifiedAt DATETIME2 NULL,
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
@@ -141,6 +141,7 @@ CREATE TABLE Purchases (
     ReferenceNo NVARCHAR(50) NULL,
     VendorId INT NOT NULL,
     Memo NVARCHAR(255) NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Paid', 'Not Paid', 'Partially Paid')),
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
@@ -152,6 +153,7 @@ CREATE TABLE Purchases (
 
 -- Table: PurchaseDetails
 CREATE TABLE PurchaseDetails (
+    PurchaseDetailId INT PRIMARY KEY IDENTITY(1,1),
     PurchaseId INT NOT NULL,
     ItemId INT NOT NULL,
     Quantity DECIMAL(18,2) NOT NULL,
@@ -159,7 +161,6 @@ CREATE TABLE PurchaseDetails (
     Description NVARCHAR(255) NULL,
     FOREIGN KEY (PurchaseId) REFERENCES Purchases(PurchaseId) ON DELETE CASCADE,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
-    PRIMARY KEY (PurchaseId, ItemId)
 );
 
 -- Table: Requisitions
@@ -240,6 +241,7 @@ CREATE TABLE PurchasesReturn (
 
 -- Table: PurchasesReturnDetails
 CREATE TABLE PurchasesReturnDetails (
+    PurchasesReturnDetailId INT PRIMARY KEY IDENTITY(1,1),
     PurchasesReturnId INT NOT NULL,
     ItemId INT NOT NULL,
     Quantity DECIMAL(18,2) NOT NULL,
@@ -247,7 +249,6 @@ CREATE TABLE PurchasesReturnDetails (
     Description NVARCHAR(255) NULL,
     FOREIGN KEY (PurchasesReturnId) REFERENCES PurchasesReturn(PurchaseReturnId) ON DELETE CASCADE,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
-    PRIMARY KEY (PurchasesReturnId,ItemId)
 );
 
 -- Table: BranchItemDetails
@@ -476,7 +477,6 @@ CREATE TABLE PaymentVouchers (
     PaymentVoucherNo NVARCHAR(50) NOT NULL UNIQUE,
     PaymentVoucherDate DATETIME2 NOT NULL,
     VendorId INT NOT NULL,
-    PaymentMethod NVARCHAR(20) NOT NULL CHECK (PaymentMethod IN ('Bank', 'Cash')),
     AccountId INT NOT NULL,
     InstrumentNo NVARCHAR(50) NULL,
     InstrumentDate DATETIME2 NULL,
@@ -516,7 +516,6 @@ CREATE TABLE ReceiptVouchers (
     ReceiptVoucherNo NVARCHAR(50) NOT NULL UNIQUE,
     ReceiptVoucherDate DATETIME2 NOT NULL,
     VendorId INT NOT NULL,
-    PaymentMethod NVARCHAR(20) NOT NULL CHECK (PaymentMethod IN ('Bank', 'Cash')),
     AccountId INT NOT NULL,
     InstrumentNo NVARCHAR(50) NULL,
     InstrumentDate DATETIME2 NULL,
@@ -566,4 +565,24 @@ VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '123', 1),
 
 INSERT INTO ITEMCATEGORY (ItemCategoryName, Description)
 VALUES ('Meat', 'All type of meats'),
-       ('Spices', 'All type of spices');
+       ('Spices', 'All type of spices'),
+       ('Oils', 'All type of oils'),
+       ('Cold Drinks', 'All type of cold drinks');
+
+INSERT INTO VENDORS (Name,CompanyName,Email,Contact,Address,City,Country,PostalCode,CreatedBy)
+VALUES  ('Abdul Ahad','AD Store','abdulahad.ad23@gmail.com','03112824123','H-392, Sector 31/D, P&T CHS, Korangi','Karachi','Pakistan','74900',1),
+        ('Muhammad Rashid','Rashid & Brothers','rashidbhai@gmail.com','03334323142','R-123, Block-J, Saadi Garden','Karachi','Pakistan','72244',2);
+
+INSERT INTO ITEMS(ItemName,Sku,ItemCategoryId,UnitOfMeasureId, MinimumStockLevel, IsActive, CreatedBy)
+VALUES  ('Chicken Chest','CK-13452',1,1,10,1,1),
+        ('Beef','BF-11243',1,1,25,1,1),
+		('Pepsi 500ml','CD-00212',4,5,50,1,1),
+		('Olive Oil','OL-14222',3,3,15,1,1),
+		('Black Pepper','SP-11678',2,1,5,1,1);
+
+INSERT INTO WAREHOUSEITEMSTOCK (ItemId,Quantity,Cost)
+VALUES  (1,44,9700),
+        (2,19,12700),
+		(3,0,0),
+		(4,16,15890),
+		(5,2,300);

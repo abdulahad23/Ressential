@@ -312,9 +312,9 @@
   </EntityType>
   <EntityType Name="PurchaseDetail">
     <Key>
-      <PropertyRef Name="PurchaseId" />
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="PurchaseDetailId" />
     </Key>
+    <Property Name="PurchaseDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="PurchaseId" Type="Int32" Nullable="false" />
     <Property Name="ItemId" Type="Int32" Nullable="false" />
     <Property Name="Quantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
@@ -365,9 +365,9 @@
   </EntityType>
   <EntityType Name="PurchasesReturnDetail">
     <Key>
-      <PropertyRef Name="PurchasesReturnId" />
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="PurchasesReturnDetailId" />
     </Key>
+    <Property Name="PurchasesReturnDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="PurchasesReturnId" Type="Int32" Nullable="false" />
     <Property Name="ItemId" Type="Int32" Nullable="false" />
     <Property Name="Quantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />

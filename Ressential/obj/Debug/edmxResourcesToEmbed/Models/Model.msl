@@ -253,6 +253,7 @@
     <EntitySetMapping Name="PurchaseDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseDetail">
         <MappingFragment StoreEntitySet="PurchaseDetails">
+          <ScalarProperty Name="PurchaseDetailId" ColumnName="PurchaseDetailId" />
           <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
@@ -296,6 +297,7 @@
     <EntitySetMapping Name="PurchasesReturnDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.PurchasesReturnDetail">
         <MappingFragment StoreEntitySet="PurchasesReturnDetails">
+          <ScalarProperty Name="PurchasesReturnDetailId" ColumnName="PurchasesReturnDetailId" />
           <ScalarProperty Name="PurchasesReturnId" ColumnName="PurchasesReturnId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />

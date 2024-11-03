@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class PurchasesReturnDetail
     {
+        public int PurchasesReturnDetailId { get; set; }
         public int PurchasesReturnId { get; set; }
         public int ItemId { get; set; }
         public decimal Quantity { get; set; }

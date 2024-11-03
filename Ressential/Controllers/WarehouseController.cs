@@ -8,9 +8,12 @@ using Ressential.Models;
 using Ressential.Utilities;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using System.Reflection;
+using System.Web.WebPages;
 
 namespace Ressential.Controllers
 {
+    [Authorize]
     public class WarehouseController : Controller
     {
         DB_RessentialEntities _db = new DB_RessentialEntities();
@@ -411,15 +414,211 @@ namespace Ressential.Controllers
         {
             return View();
         }
+
+        
+
         public ActionResult CreatePurchase()
         {
-            return View();
+
+            var purchase = new Purchase
+            {
+                PurchaseDetails = new List<PurchaseDetail>
+                {
+                    new PurchaseDetail() // Add at least one default item for initial row.
+                }
+
+            };
+            ViewBag.Items = _db.Items.ToList();
+            ViewBag.Vendors = _db.Vendors.ToList();
+            //var items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
+            //    ViewBag.Items = purchase.PurchaseDetails
+            //.Select(detail => new SelectList(items, "ItemId", "ItemName", detail.ItemId))
+            //.ToList();
+
+            return View(purchase);
+        }
+        [HttpPost]
+        public ActionResult CreatePurchase(Purchase purchase)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    int nextPurchaseNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.Purchases.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextPurchaseNumber = _db.Purchases
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => Convert.ToInt32(p.PurchaseNo.Substring(11)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    purchase.PurchaseNo = $"PUR-{datePart}{nextPurchaseNumber:D4}";
+                    purchase.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    purchase.CreatedAt = DateTime.Now;
+                    _db.Purchases.Add(purchase);
+                    _db.SaveChanges();
+                    return Json("0",JsonRequestBehavior.AllowGet);
+                }
+                ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
+                ViewBag.Items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
+                return View(purchase);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                return RedirectToAction("Index", "Error");
+            }
+        }
+        public ActionResult PurchaseList(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                var purchaseList = _db.Purchases
+             .Select(p => new PurchaseListViewModel
+             {
+                 PurchaseId = p.PurchaseId,
+                 PurchaseNo = p.PurchaseNo,
+                 PurchaseDate = p.PurchaseDate,
+                 ReferenceNo = p.ReferenceNo,
+                 VendorName = p.Vendor.Name,
+                 TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+             }).Where(p => p.PurchaseNo.Contains(search) || p.ReferenceNo.Contains(search))
+                .ToList();
+                return View(purchaseList);
+            }
+            var purchaseList2 = _db.Purchases
+             .Select(p => new PurchaseListViewModel
+             {
+                PurchaseId = p.PurchaseId,
+                PurchaseNo = p.PurchaseNo,
+                PurchaseDate = p.PurchaseDate,
+                ReferenceNo = p.ReferenceNo,
+                VendorName = p.Vendor.Name,
+                TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+                    }).ToList();
+            return View(purchaseList2);
+        }
+        public ActionResult EditPurchase(int purchaseId)
+        {
+            Purchase purchase = _db.Purchases.Find(purchaseId);
+            ViewBag.Items = _db.Items.ToList();
+            ViewBag.Vendors = _db.Vendors.ToList();
+            return View(purchase);
+        }
+        [HttpPost]
+        public ActionResult EditPurchase(Purchase purchase)
+        {
+            if (purchase == null)
+            {
+                return Json("1", JsonRequestBehavior.AllowGet);
+            }
+
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var existingPurchase = _db.Purchases.Find(purchase.PurchaseId);
+                    if (existingPurchase == null)
+                    {
+                        return Json("1", JsonRequestBehavior.AllowGet);
+                    }
+
+                    // Update purchase metadata
+                    purchase.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    purchase.ModifiedAt = DateTime.Now;
+
+                    // Update existing purchase values
+                    _db.Entry(existingPurchase).CurrentValues.SetValues(purchase);
+                    _db.Entry(existingPurchase).Property(x => x.CreatedBy).IsModified = false;
+                    _db.Entry(existingPurchase).Property(x => x.CreatedAt).IsModified = false;
+
+                    // Remove existing purchase details
+                    var purchaseDetails = _db.PurchaseDetails.Where(x => x.PurchaseId == purchase.PurchaseId).ToList();
+                    _db.PurchaseDetails.RemoveRange(purchaseDetails);
+
+                    // Add new purchase details
+                    _db.PurchaseDetails.AddRange(purchase.PurchaseDetails);
+
+                    // Save changes
+                    _db.SaveChanges();
+                    transaction.Commit();
+
+                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    return Json("0", JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    // Log the exception (ex) for debugging purposes
+                    return Json("0", JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+        [HttpPost]
+        public ActionResult DeletePurchase(int purchaseId)
+        {
+            try
+            {
+                var purchase = _db.Purchases.Find(purchaseId);
+                if (purchase == null)
+                {
+                    TempData["ErrorMessage"] = "Item not found.";
+                    return RedirectToAction("ItemList");
+                }
+                var purchaseDetails = _db.PurchaseDetails.Select(p => p).Where(p => p.PurchaseId == purchaseId);
+                _db.PurchaseDetails.RemoveRange(purchaseDetails);
+                _db.Purchases.Remove(purchase);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                }
+            }
+            return RedirectToAction("PurchaseList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedPurchases(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var purchasesToDelete = _db.Purchases.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
+                    var purchaseDetails = _db.PurchaseDetails.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
+                    _db.PurchaseDetails.RemoveRange(purchaseDetails);
+                    _db.Purchases.RemoveRange(purchasesToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Items deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                    }
+                }
+            }
+            return RedirectToAction("PurchaseList");
         }
         public ActionResult CreatePurchaseReturn()
-        {
-            return View();
-        }
-        public ActionResult PurchaseList()
         {
             return View();
         }

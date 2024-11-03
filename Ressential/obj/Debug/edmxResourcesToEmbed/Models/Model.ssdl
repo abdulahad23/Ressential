@@ -238,9 +238,9 @@
   </EntityType>
   <EntityType Name="PurchaseDetails">
     <Key>
-      <PropertyRef Name="PurchaseId" />
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="PurchaseDetailId" />
     </Key>
+    <Property Name="PurchaseDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="PurchaseId" Type="int" Nullable="false" />
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -279,9 +279,9 @@
   </EntityType>
   <EntityType Name="PurchasesReturnDetails">
     <Key>
-      <PropertyRef Name="PurchasesReturnId" />
-      <PropertyRef Name="ItemId" />
+      <PropertyRef Name="PurchasesReturnDetailId" />
     </Key>
+    <Property Name="PurchasesReturnDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="PurchasesReturnId" Type="int" Nullable="false" />
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />

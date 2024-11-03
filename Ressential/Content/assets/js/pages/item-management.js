@@ -143,27 +143,45 @@
                 calculateGrandTotal();
             });
 
+            //Function to calculate total and grand total on load
+            $(document).ready(function () {
+                // Calculate totals for each row on page load
+                $('#itemsTable tbody tr').each(function () {
+                    var row = $(this);
+                    var quantity = parseFloat(row.find('.quantity').val()) || 0;
+                    var unitPrice = parseFloat(row.find('.unitPrice').val()) || 0;
+
+                    // Calculate and set the total for each row if quantity and unit price are available
+                    if (quantity > 0 && unitPrice > 0) {
+                        row.find('.total').val((quantity * unitPrice).toFixed(2));
+                    }
+                });
+
+                // Calculate the grand total after setting row totals
+                calculateGrandTotal();
+            });
+
             // Function to calculate unit price or total based on user input
-            $(document).on('input', '.quantity, .unit-price, .total', function () {
+            $(document).on('input', '.quantity, .unitPrice, .total', function () {
                 var row = $(this).closest('tr');
                 var quantity = parseFloat(row.find('.quantity').val()) || 0;
-                var unitPrice = parseFloat(row.find('.unit-price').val()) || 0;
+                var unitPrice = parseFloat(row.find('.unitPrice').val()) || 0;
                 var total = parseFloat(row.find('.total').val()) || 0;
 
-                if ($(this).hasClass('unit-price')) {
+                if ($(this).hasClass('unitPrice')) {
                     // Calculate total based on quantity and unit price
                     row.find('.total').val((quantity * unitPrice).toFixed(2));
                 } else if ($(this).hasClass('total')) {
                     // Calculate unit price based on quantity and total
                     if (quantity !== 0) {
-                        row.find('.unit-price').val((total / quantity).toFixed(2));
+                        row.find('.unitPrice').val((total / quantity).toFixed(2));
                     }
                 } else if ($(this).hasClass('quantity')) {
                     // If quantity changes, update the total if unit price is available
                     if (unitPrice !== 0) {
                         row.find('.total').val((quantity * unitPrice).toFixed(2));
                     } else if (total !== 0) {
-                        row.find('.unit-price').val((total / quantity).toFixed(2));
+                        row.find('.unitPrice').val((total / quantity).toFixed(2));
                     }
                 }
 
@@ -178,8 +196,9 @@
                     grandTotal += total;
                 });
 
-                document.getElementById('totalAmount').value = grandTotal.toFixed(2);
-                // Update a grand total field if needed, e.g., $('#grandTotal').val(grandTotal.toFixed(2));
+                // Update the grand total display
+                $('#totalAmount').val(grandTotal.toFixed(2));
             }
+
         });
 
