@@ -18,7 +18,10 @@ namespace Ressential.Controllers
         {
             return View();
         }
-
+        public ActionResult CreateItem()
+        {
+            return View();
+        }
         public ActionResult RequisitionList()
         {
             return View();

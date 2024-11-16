@@ -28,6 +28,7 @@ namespace Ressential.Models
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<BranchItemDetail> BranchItemDetails { get; set; }
+        public virtual DbSet<BranchItem> BranchItems { get; set; }
         public virtual DbSet<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual DbSet<ConsumeItem> ConsumeItems { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }

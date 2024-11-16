@@ -48,8 +48,9 @@
                             </th>
                             <th scope="col" class="no-wrap">Item Name</th>
                             <th scope="col">SKU</th>
-                            <th scope="col">Quantity</th>
                             <th scope="col">Unit</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Avg. Cost</th>
                             <th scope="col">MSL</th>
                             <th scope="col" class="no-wrap">Stock Level</th>
                             <th scope="col" class="no-wrap">Status</th>
@@ -63,8 +64,9 @@
                                 <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@item.ItemId" aria-label="Select Item"></td>
                                 <td>@item.ItemName</td>
                                 <td>@item.Sku</td>
-                                <td>@item.WarehouseItemStock.Quantity</td>
                                 <td>@item.UnitOfMeasure.Name</td>
+                                <td>@item.WarehouseItemStock.Quantity</td>
+                                <td>@item.WarehouseItemStock.CostPerUnit</td>
                                 <td>@item.MinimumStockLevel</td>
                                 <td class="no-wrap">
                                     @if (item.WarehouseItemStock.Quantity == 0)

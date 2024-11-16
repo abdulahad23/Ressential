@@ -164,6 +164,9 @@
     <Compile Include="Models\Branch.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BranchItem.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\BranchItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -723,6 +726,7 @@
     <Content Include="Views\Warehouse\EditReceiptVoucher.cshtml" />
     <Content Include="Views\Warehouse\PaymentVoucherList.cshtml" />
     <Content Include="Views\Warehouse\ReceiptVoucherList.cshtml" />
+    <Content Include="Views\Kitchen\CreateItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -23,6 +23,8 @@ namespace Ressential.Models
             this.Branches1 = new HashSet<Branch>();
             this.BranchItemDetails = new HashSet<BranchItemDetail>();
             this.BranchItemDetails1 = new HashSet<BranchItemDetail>();
+            this.BranchItems = new HashSet<BranchItem>();
+            this.BranchItems1 = new HashSet<BranchItem>();
             this.ConsumeItems = new HashSet<ConsumeItem>();
             this.ConsumeItems1 = new HashSet<ConsumeItem>();
             this.Items = new HashSet<Item>();
@@ -80,6 +82,10 @@ namespace Ressential.Models
         public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItemDetail> BranchItemDetails1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchItem> BranchItems { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchItem> BranchItems1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ConsumeItem> ConsumeItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

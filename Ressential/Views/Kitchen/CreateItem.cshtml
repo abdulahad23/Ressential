@@ -1,0 +1,110 @@
+﻿@model Ressential.Models.BranchItem
+
+@{
+    ViewBag.Title = "CreateItem";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+@using (Html.BeginForm("CreateItem", "Kitchen", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-secondary"><b>Create Item</b></h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.ItemName, "", new { @class = "form-control", @placeholder = "Item Name" })
+                                <label for="floatingInput">Item Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Sku, "", new { @class = "form-control", @placeholder = "SKU" })
+                                <label for="floatingInput">SKU</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.UnitOfMeasureId, new SelectList(ViewBag.Units, "UnitOfMeasureId", "Name"), "Select Item Unit", new { @class = "form-control" })
+                                @*<select class="form-control" id="unitID" name="">
+                    <option selected value="0">Select Item Unit</option>
+                    <option value="1">Kg  - Kilogram</option>
+                    <option value="2">Pcs - Pieces</option>
+                    <option value="3">G   - Gram</option>
+                    <option value="4">L   - Liter</option>
+                </select>*@
+                                <label for="floatingInput">Item Unit</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.ItemCategoryId, new SelectList(ViewBag.Categories, "ItemCategoryId", "ItemCategoryName"), "Select Category", new { @class = "form-control" })
+                                <label for="ItemCategoryId">Item Category</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="number" class="form-control" id="floatingInput" name="quantity" placeholder="Quantity In Hand">
+                                <label for="floatingInput">Quantity In Hand</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="number" class="form-control" id="floatingInput" name="cost" placeholder="Stock Value">
+                                <label for="floatingInput">Stock Value</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                <input type="date" class="form-control" id="floatingInput" name="openingDate" placeholder="Opening Stock Date" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                                <label for="floatingInput">Opening Stock Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
+                                <label for="floatingInput">Minimum Stock Level</label>
+                            </div>
+                        </div>
+                        @*<div class="col-md-6">
+            <div class="form-floating mb-3 mt-3">
+                <select class="form-control" id="costingID" name="">
+                    <option selected value="0">Select Costing Type</option>
+                    <option value="1">FIFO</option>
+                    <option value="2">Average</option>
+                </select>
+                <label for="floatingInput">Costing Type</label>
+            </div>
+        </div>*@
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
+                                    new { Value = true, Text = "Active" },
+                                    new { Value = false, Text = "Inactive" }
+                                }, "Value", "Text"), new { @class = "form-control" })
+                                <label for="floatingInput">Product Status</label>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                            <a href="@Url.Action("ItemList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}

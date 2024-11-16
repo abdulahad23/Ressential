@@ -18,14 +18,15 @@ namespace Ressential.Models
         public Item()
         {
             this.BranchItemDetails = new HashSet<BranchItemDetail>();
+            this.BranchItems = new HashSet<BranchItem>();
             this.ConsumeItemDetails = new HashSet<ConsumeItemDetail>();
             this.ProductItemDetails = new HashSet<ProductItemDetail>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
             this.PurchasesReturnDetails = new HashSet<PurchasesReturnDetail>();
             this.RequisitionDetails = new HashSet<RequisitionDetail>();
             this.ReturnStockDetails = new HashSet<ReturnStockDetail>();
-            this.WarehouseItemTransactions = new HashSet<WarehouseItemTransaction>();
             this.WarehouseIssueDetails = new HashSet<WarehouseIssueDetail>();
+            this.WarehouseItemTransactions = new HashSet<WarehouseItemTransaction>();
             this.WastageItemDetails = new HashSet<WastageItemDetail>();
         }
     
@@ -44,6 +45,8 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchItem> BranchItems { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual ItemCategory ItemCategory { get; set; }
         public virtual User User { get; set; }
@@ -59,11 +62,11 @@ namespace Ressential.Models
         public virtual ICollection<RequisitionDetail> RequisitionDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReturnStockDetail> ReturnStockDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         public virtual WarehouseItemStock WarehouseItemStock { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WarehouseItemTransaction> WarehouseItemTransactions { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WastageItemDetail> WastageItemDetails { get; set; }
     }

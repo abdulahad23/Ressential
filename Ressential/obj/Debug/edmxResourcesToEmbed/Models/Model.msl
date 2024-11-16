@@ -50,6 +50,20 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="BranchItems">
+      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
+        <MappingFragment StoreEntitySet="BranchItems">
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="ConsumeItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ConsumeItemDetail">
         <MappingFragment StoreEntitySet="ConsumeItemDetails">

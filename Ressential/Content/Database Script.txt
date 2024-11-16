@@ -144,6 +144,23 @@ CREATE TABLE Branches (
 
 );
 
+-- Table: BranchItems
+CREATE TABLE BranchItems(
+    ItemId INT NOT NULL,
+    BranchId INT NOT NULL,
+    MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    PRIMARY KEY (ItemId,BranchId),
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId)
+);
+
 -- Table: Purchases
 CREATE TABLE Purchases (
     PurchaseId INT PRIMARY KEY IDENTITY(1,1),
@@ -262,21 +279,7 @@ CREATE TABLE PurchasesReturnDetails (
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
 );
 
--- Table: BranchItemDetails
-CREATE TABLE BranchItemDetails (
-    BranchId INT NOT NULL,
-    ItemId INT NOT NULL,
-    MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
-    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE,
-    FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
-    PRIMARY KEY (BranchId,ItemId),
-    CreatedBy INT NOT NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-    ModifiedBy INT NULL,
-    ModifiedAt DATETIME2 NULL,
-    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
-);
+
 
 -- Table: ReturnStock
 CREATE TABLE ReturnStock (
