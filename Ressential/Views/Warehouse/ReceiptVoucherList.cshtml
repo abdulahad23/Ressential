@@ -1,6 +1,6 @@
-﻿@model IEnumerable<Ressential.Models.Account>
+﻿@model IEnumerable<Ressential.Models.ReceiptVoucher>
 
-@{ ViewBag.Title = "BankAndCashList";
+@{ ViewBag.Title = "ReceiptVoucherList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
 
 
@@ -16,7 +16,6 @@
 <div class="alert alert-success">
     @TempData["SuccessMessage"]
 </div>}
-
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
@@ -29,7 +28,7 @@
             </div>
 
             <div class="col-md-3 ms-auto">
-                <form id="searchForm" action="@Url.Action("BankAndCashList", "Warehouse")" method="get">
+                <form id="searchForm" action="@Url.Action("ReceiptVoucherList", "Warehouse")" method="get">
                     <div class="input-group input-group-sm mb-3">
                         <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
                         <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
@@ -38,39 +37,61 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form id="actionForm" action="@Url.Action("DeleteSelectedBankAndCashs", "Warehouse")" method="post">
+            <form id="actionForm" action="@Url.Action("DeleteSelectedReceiptVouchers", "Warehouse")" method="post">
                 <table class="table table-bordered table-hover">
-
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="fit-content">
                                 <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                             </th>
-                            <th scope="col">Account Type</th>
-                            <th scope="col">Account Name</th>
-                            <th scope="col">Bank Name</th>
-                            <th scope="col">Account Number</th>
+                            <th scope="col">Voucher No</th>
+                            <th scope="col">Voucher Date</th>
+                            <th scope="col">Vendor</th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Instrument No</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Status</th>
+
                             <th scope="col" class="fit-content">Option</th>
                         </tr>
                     </thead>
                     <tbody>
-                    <tbody>
-                        @foreach (var account in Model)
+                        @foreach (var ReceiptVoucher in Model)
                         {
             <tr>
-                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@account.AccountId" aria-label="Select Vendor"></td>
-                <td>@account.AccountType</td>
-                <td>@account.AccountTitle</td>
-                <td>@account.BankName</td>
-                <td>@account.AccountNumber</td>
+                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@ReceiptVoucher.ReceiptVoucherId" aria-label="Select Item"></td>
+                <td>@ReceiptVoucher.ReceiptVoucherNo</td>
+                <td>@ReceiptVoucher.ReceiptVoucherDate.ToString("dd-MMM-yyyy")</td>
+                <td>@ReceiptVoucher.Vendor.Name</td>
+                <td>@ReceiptVoucher.Account.AccountType</td>
+                <td>@ReceiptVoucher.InstrumentNo</td>
+                <td>Rs @ReceiptVoucher.Amount.ToString("N0")</td>
+
+                <td class="no-wrap">
+                    @if (ReceiptVoucher.Status == "Pending")
+                    {
+                <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                    Pending
+                </span> }
+                                else if (ReceiptVoucher.Status == "Approved")
+                                {
+                <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                    Approved
+                </span> }
+                                else
+                                {
+                <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                    Rejected
+                </span>}
+                </td>
                 <td>
                     <div class="dropdown">
                         <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@account.AccountId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@account.AccountId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@ReceiptVoucher.ReceiptVoucherId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@ReceiptVoucher.ReceiptVoucherId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
                         </ul>
                     </div>
                 </td>
@@ -80,7 +101,7 @@
             </form>
             <!-- Hidden Form for Edit/Delete Actions -->
             <form id="editDeleteForm" method="post" style="display: none;">
-                <input type="hidden" name="AccountId" id="formAccountId" />
+                <input type="hidden" name="ReceiptVoucherId" id="formReceiptVoucherId" />
             </form>
         </div>
     </div>
@@ -90,7 +111,7 @@
 <script>
     // Function to toggle all checkboxes
     function toggleAll(source) {
-        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
     }
 
@@ -109,21 +130,23 @@
         }
     }
 
-    function submitEditForm(AccountId) {
+    function submitEditForm(ReceiptVoucherId) {
         const form = document.getElementById("editDeleteForm");
-        form.action = "@Url.Action("EditBankAndCash", "Warehouse")";
-        document.getElementById("formAccountId").value = AccountId;
+        form.action = "@Url.Action("EditReceiptVoucher", "Warehouse")";
+        document.getElementById("formReceiptVoucherId").value = ReceiptVoucherId;
         form.method = "get";
         form.submit();
     }
 
-    function submitDeleteForm(AccountId) {
+    function submitDeleteForm(ReceiptVoucherId) {
         if (confirm('Are you sure you want to delete this record?')) {
             const form = document.getElementById("editDeleteForm");
-            form.action = "@Url.Action("DeleteBankAndCash", "Warehouse")";
-            document.getElementById("formAccountId").value = AccountId;
+            form.action = "@Url.Action("DeleteReceiptVoucher", "Warehouse")";
+            document.getElementById("formReceiptVoucherId").value = ReceiptVoucherId;
             form.method = "post";
             form.submit();
         }
     }
 </script>
+
+

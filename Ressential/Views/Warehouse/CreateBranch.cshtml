@@ -1,8 +1,10 @@
-﻿
-@{
-    ViewBag.Title = "CreateBranch";
-    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
-}
+﻿@model Ressential.Models.Branch
+
+@{ ViewBag.Title = "CreateBranch";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
+
+@using (Html.BeginForm("CreateBranch", "Warehouse", FormMethod.Post))
+{
 
 <div class="row">
     <div class="col-12 grid-margin">
@@ -12,61 +14,60 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Branch Name">
+                            @Html.TextBoxFor(model => model.BranchName, "", new { @class = "form-control", @placeholder = "Branch Name" })
                             <label for="floatingInput">Branch Name</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Branch Code">
+                            @Html.TextBoxFor(model => model.BranchCode, "", new { @class = "form-control", @placeholder = "Branch Code" })
                             <label for="floatingInput">Branch Code</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="tel" class="form-control" id="floatingInput" placeholder="Branch Contact">
+                            @Html.TextBoxFor(model => model.BranchContact, "", new { @class = "form-control", @placeholder = "Branch Contact" })
                             <label for="floatingInput">Branch Contact</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Owner Name">
+                            @Html.TextBoxFor(model => model.OwnerName, "", new { @class = "form-control", @placeholder = "Owner Name" })
                             <label for="floatingInput">Owner Name</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Branch Address">
+                            @Html.TextBoxFor(model => model.Address, "", new { @class = "form-control", @placeholder = "Branch Address" })
                             <label for="floatingInput">Branch Address</label>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="City">
+                            @Html.TextBoxFor(model => model.City, "", new { @class = "form-control", @placeholder = "City" })
                             <label for="floatingInput">City</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Country">
+                            @Html.TextBoxFor(model => model.Country, "", new { @class = "form-control", @placeholder = "country" })
                             <label for="floatingInput">Country</label>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Postal Code">
+                            @Html.TextBoxFor(model => model.PostalCode, "", new { @class = "form-control", @placeholder = "Postal Code" })
                             <label for="floatingInput">Postal Code</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <select class="form-control" id="costingID" name="">
-                                <option selected value="0">Select Status</option>
-                                <option value="1">Active</option>
-                                <option value="2">Inactive</option>
-                            </select>
+                             @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
+                            new { Value = true, Text = "Active" },
+                            new { Value = false, Text = "Inactive" }
+                        }, "Value", "Text"), new { @class = "form-control" })
                             <label for="floatingInput">Branch Status</label>
                         </div>
                     </div>
@@ -77,7 +78,7 @@
                                 <div class="form-group">
                                     <div class="col-sm-9">
                                         <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
-                                        <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                        <a href="@Url.Action("BranchList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
                                     </div>
                                 </div>
                             </div>
@@ -90,6 +91,4 @@
 
     </div>
 </div>
-
-
-
+}

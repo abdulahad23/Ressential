@@ -88,10 +88,21 @@ CREATE TABLE Items (
 CREATE TABLE WarehouseItemStock (
     ItemId INT PRIMARY KEY,
     Quantity DECIMAL(18,2) NOT NULL,
-    Cost DECIMAL(18,2) NOT NULL,
+    CostPerUnit DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
 );
 
+-- Table: WarehouseItemTransaction
+CREATE TABLE WarehouseItemTransaction (
+    TransactionId INT PRIMARY KEY IDENTITY(1,1),
+    TransactionDate DATETIME2 NOT NULL,
+    ItemId INT NOT NULL,
+    TransactionType NVARCHAR(20) NOT NULL CHECK (TransactionType IN ('Purchase', 'PurchaseReturn', 'Issue','StockReturn', 'Opening')),
+    TransactionTypeId INT NOT NULL,
+    Quantity DECIMAL(18,2) NOT NULL,
+    CostPerUnit DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
+);
 
 -- Table: Vendors
 CREATE TABLE Vendors (
@@ -586,3 +597,11 @@ VALUES  (1,44,9700),
 		(3,0,0),
 		(4,16,15890),
 		(5,2,300);
+
+
+INSERT INTO WAREHOUSEITEMTRANSACTION (TransactionDate,ItemId,TransactionType,TransactionTypeId,Quantity,CostPerUnit)
+VALUES  (SYSDATETIME(),1,'Opening',1,44,250),
+        (SYSDATETIME(),2,'Opening',2,19,180),
+		(SYSDATETIME(),3,'Opening',3,0,0),
+		(SYSDATETIME(),4,'Opening',4,16,700),
+		(SYSDATETIME(),5,'Opening',5,2,150);

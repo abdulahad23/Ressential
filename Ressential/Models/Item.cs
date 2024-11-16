@@ -24,6 +24,7 @@ namespace Ressential.Models
             this.PurchasesReturnDetails = new HashSet<PurchasesReturnDetail>();
             this.RequisitionDetails = new HashSet<RequisitionDetail>();
             this.ReturnStockDetails = new HashSet<ReturnStockDetail>();
+            this.WarehouseItemTransactions = new HashSet<WarehouseItemTransaction>();
             this.WarehouseIssueDetails = new HashSet<WarehouseIssueDetail>();
             this.WastageItemDetails = new HashSet<WastageItemDetail>();
         }
@@ -59,6 +60,8 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReturnStockDetail> ReturnStockDetails { get; set; }
         public virtual WarehouseItemStock WarehouseItemStock { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<WarehouseItemTransaction> WarehouseItemTransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

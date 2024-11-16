@@ -67,9 +67,24 @@
                                 <td>@item.VendorName</td>
                                 <td>Rs @item.TotalAmount.ToString("N0")</td>
                                 <td>
-                                    <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                        Paid
-                                    </span>
+                                    @if (item.Status == "Not Paid")
+                                    {
+                                        <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Not Paid
+                                        </span>
+                                    }
+                                    else if (item.Status == "Partially Paid")
+                                    {
+                                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Partially Paid
+                                        </span>
+                                    }
+                                    else if (item.Status == "Paid")
+                                    {
+                                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Paid
+                                        </span>
+                                    }
                                 </td>
                                 <td>
                                     <div class="dropdown">

@@ -10,6 +10,8 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Reflection;
 using System.Web.WebPages;
+using System.IO;
+using System.Data.Entity.Migrations;
 
 namespace Ressential.Controllers
 {
@@ -138,7 +140,7 @@ namespace Ressential.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult CreateItem(Item item, decimal quantity, decimal cost)
+        public ActionResult CreateItem(Item item, decimal quantity, decimal cost, DateTime openingDate)
         {
             try {
                 if (ModelState.IsValid)
@@ -152,9 +154,19 @@ namespace Ressential.Controllers
                     {
                         ItemId = item.ItemId,
                         Quantity = quantity,
-                        Cost = cost
+                        CostPerUnit = cost/quantity
+                    };
+                    var warehouseItemTransaction = new WarehouseItemTransaction
+                    {
+                        TransactionDate = openingDate,
+                        ItemId = item.ItemId,
+                        TransactionType = "Opening",
+                        TransactionTypeId = item.ItemId,
+                        Quantity = quantity,
+                        CostPerUnit = cost/quantity
                     };
                     _db.WarehouseItemStocks.Add(warehouseItemStock);
+                    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     _db.SaveChanges();
 
                     return RedirectToAction("ItemList");
@@ -185,21 +197,23 @@ namespace Ressential.Controllers
             {
                 return HttpNotFound();
             }
-            var warehouseItemStock = _db.WarehouseItemStocks.Find(itemId);
-            if (warehouseItemStock == null)
+            var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == itemId).Single();
+            if (warehouseItemTransaction == null)
             {
                 return HttpNotFound();
             }
             ViewBag.Units = _db.UnitOfMeasures.ToList();
             ViewBag.Categories = _db.ItemCategories.ToList();
-            ViewBag.Quantity = warehouseItemStock.Quantity;
-            ViewBag.Cost = warehouseItemStock.Cost;
+            ViewBag.Quantity = warehouseItemTransaction.Quantity;
+            ViewBag.Cost = warehouseItemTransaction.CostPerUnit * warehouseItemTransaction.Quantity;
+            ViewBag.Date = warehouseItemTransaction.TransactionDate;
 
             return View(item);
         }
         [HttpPost]
-        public ActionResult EditItem(Item item, decimal quantity, decimal cost)
+        public ActionResult EditItem(Item item, decimal quantity, decimal cost, DateTime openingDate)
         {
+            cost = cost / quantity;
             try
             {
                 var existingItem = _db.Items.Find(item.ItemId);
@@ -207,15 +221,33 @@ namespace Ressential.Controllers
                 {
                     return HttpNotFound();
                 }
+                var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == item.ItemId).Single();
+                
+                decimal oldTotalCost = warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit;
+                decimal oldTransactionCost = warehouseItemTransaction.Quantity * warehouseItemTransaction.CostPerUnit;
+
+                decimal newTotalCost = oldTotalCost - oldTransactionCost;
+                decimal newQuantity = warehouseItemStock.Quantity - warehouseItemTransaction.Quantity;
+
+                decimal previousAverageCost = newTotalCost / (newQuantity==0? 1: newQuantity);
+
+                decimal updatedQuantity = newQuantity + quantity;
+
+                warehouseItemStock.Quantity = updatedQuantity;
+                warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (quantity * cost))/updatedQuantity;
+
+                warehouseItemTransaction.Quantity = quantity;
+                warehouseItemTransaction.CostPerUnit = cost;
+                warehouseItemTransaction.TransactionDate = openingDate;
+
                 item.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 item.ModifiedAt = DateTime.Now;
                 _db.Entry(existingItem).CurrentValues.SetValues(item);
                 _db.Entry(existingItem).State = EntityState.Modified;
                 _db.Entry(existingItem).Property(x => x.CreatedBy).IsModified = false;
                 _db.Entry(existingItem).Property(x => x.CreatedAt).IsModified = false;
-                var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                warehouseItemStock.Quantity = quantity;
-                warehouseItemStock.Cost = cost;
+                
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Item updated successfully.";
             }
@@ -237,10 +269,21 @@ namespace Ressential.Controllers
                     return RedirectToAction("ItemList");
                 }
                 var warehouseItemStock = _db.WarehouseItemStocks.Find(itemId);
-                _db.WarehouseItemStocks.Remove(warehouseItemStock);
-                _db.Items.Remove(item);
-                _db.SaveChanges();
-                TempData["SuccessMessage"] = "Item deleted successfully.";
+                var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType != "Opening" && w.TransactionTypeId == itemId);
+
+                if (warehouseItemTransaction.Count()==0) {
+                    _db.WarehouseItemStocks.Remove(warehouseItemStock);
+                    var itemTransactionToDelete = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == itemId);
+                    _db.WarehouseItemTransactions.RemoveRange(itemTransactionToDelete);
+                    _db.Items.Remove(item);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Item deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
+                }
+                
             }
             catch (DbUpdateException ex)
             {
@@ -263,9 +306,25 @@ namespace Ressential.Controllers
                 try
                 {
                     var itemsToDelete = _db.Items.Where(c => selectedItems.Contains(c.ItemId)).ToList();
-                    var warehouseItemStock = _db.WarehouseItemStocks.Where(c => selectedItems.Contains(c.ItemId)).ToList();
-                    _db.WarehouseItemStocks.RemoveRange(warehouseItemStock);
-                    _db.Items.RemoveRange(itemsToDelete);
+
+                    foreach (var item in itemsToDelete)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.Where(w => w.ItemId == item.ItemId);
+                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType != "Opening" && w.TransactionTypeId == item.ItemId);
+
+                        if (warehouseItemTransaction.Count() == 0)
+                        {
+                            _db.WarehouseItemStocks.RemoveRange(warehouseItemStock);
+                            var itemTransactionToDelete = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == item.ItemId);
+                            _db.WarehouseItemTransactions.RemoveRange(itemTransactionToDelete);
+                            _db.Items.Remove(item);
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
+                            return RedirectToAction("ItemList");
+                        }
+                    }
                     _db.SaveChanges();
                     TempData["SuccessMessage"] = "Items deleted successfully.";
                 }
@@ -410,13 +469,776 @@ namespace Ressential.Controllers
         {
             return View();
         }
-        public ActionResult BranchList()
+
+        [HttpPost]
+        public ActionResult CreateBranch(Branch branch)
+        {
+            try
+            {
+                branch.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                branch.CreatedAt = DateTime.Now;
+
+                _db.Branches.Add(branch);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Branch created successfully.";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Branch.";
+                return RedirectToAction("Index", "Error");
+
+            }
+            return RedirectToAction("BranchList");
+        }
+        public ActionResult BranchList(string search)
+        {
+            var Branch = _db.Branches.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                Branch = Branch.Where(c => c.BranchName.Contains(search) || c.OwnerName.Contains(search));
+            }
+            return View(Branch.ToList());
+        }
+        public ActionResult EditBranch(int BranchId)
+        {
+            var Branch = _db.Branches.Find(BranchId);
+            if (Branch == null)
+            {
+                return HttpNotFound();
+            }
+            return View(Branch);
+        }
+        [HttpPost]
+        public ActionResult EditBranch(Branch branch)
+        {
+            try
+            {
+                var existingBranch = _db.Branches.Find(branch.BranchId);
+                if (existingBranch == null)
+                {
+                    return HttpNotFound();
+                }
+                branch.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                branch.ModifiedAt = DateTime.Now;
+                _db.Entry(existingBranch).CurrentValues.SetValues(branch);
+                _db.Entry(existingBranch).State = EntityState.Modified;
+                _db.Entry(existingBranch).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingBranch).Property(x => x.CreatedAt).IsModified = false;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Branch updated successfully.";
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the Branch.";
+            }
+            return RedirectToAction("BranchList");
+        }
+        [HttpPost]
+        public ActionResult DeleteBranch(int BranchId)
+        {
+            try
+            {
+                var Branch = _db.Branches.Find(BranchId);
+                if (Branch == null)
+                {
+                    TempData["ErrorMessage"] = "Branch not found.";
+                    return RedirectToAction("BranchList");
+                }
+                _db.Branches.Remove(Branch);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Branch deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Branch is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Branch.";
+                }
+            }
+            return RedirectToAction("BranchList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedBranches(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var itemsToDelete = _db.Branches.Where(c => selectedItems.Contains(c.BranchId)).ToList();
+                    _db.Branches.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Branch deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "This Branch is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Branch.";
+                    }
+                }
+            }
+            return RedirectToAction("BranchList");
+        }
+
+        public ActionResult CreateBankAndCash()
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult CreateBankAndCash(Account account)
+        {
+            try
+            {
+                account.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                account.CreatedAt = DateTime.Now;
 
-        
+                _db.Accounts.Add(account);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Account created successfully.";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Account.";
+                return RedirectToAction("Index", "Error");
 
+            }
+            return RedirectToAction("BankAndCashList");
+        }
+        public ActionResult BankAndCashList(string search)
+        {
+            var Account = _db.Accounts.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                Account = Account.Where(c => c.AccountTitle.Contains(search) || c.AccountType.Contains(search) || c.AccountNumber.Contains(search) || c.BankName.Contains(search));
+            }
+            return View(Account.ToList());
+        }
+        public ActionResult EditBankAndCash(int AccountId)
+        {
+            var Account = _db.Accounts.Find(AccountId);
+            if (Account == null)
+            {
+                return HttpNotFound();
+            }
+            return View(Account);
+        }
+        [HttpPost]
+        public ActionResult EditBankAndCash(Account account)
+        {
+            try
+            {
+                var existingAccount = _db.Accounts.Find(account.AccountId);
+                if (existingAccount == null)
+                {
+                    return HttpNotFound();
+                }
+                account.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                account.ModifiedAt = DateTime.Now;
+                _db.Entry(existingAccount).CurrentValues.SetValues(account);
+                _db.Entry(existingAccount).State = EntityState.Modified;
+                _db.Entry(existingAccount).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingAccount).Property(x => x.CreatedAt).IsModified = false;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Account updated successfully.";
+            }
+            catch
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the Account.";
+            }
+            return RedirectToAction("BankAndCashList");
+        }
+        [HttpPost]
+        public ActionResult DeleteBankAndCash(int AccountId)
+        {
+            try
+            {
+                var Account = _db.Accounts.Find(AccountId);
+                if (Account == null)
+                {
+                    TempData["ErrorMessage"] = "Account not found.";
+                    return RedirectToAction("BankAndCashList");
+                }
+                _db.Accounts.Remove(Account);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Account deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Account is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Account.";
+                }
+            }
+            return RedirectToAction("BankAndCashList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedBankAndCashs(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var itemsToDelete = _db.Accounts.Where(c => selectedItems.Contains(c.AccountId)).ToList();
+                    _db.Accounts.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Accounts deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "This Account is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Account.";
+                    }
+                }
+            }
+            return RedirectToAction("BankAndCashList");
+        }
+
+        public ActionResult CreatePaymentVoucher()
+        {
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreatePaymentVoucher(PaymentVoucher model, IEnumerable<HttpPostedFileBase> files)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.PaymentVoucherNo = GenerateVoucherNumber();
+                    model.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    model.CreatedAt = DateTime.Now;
+                    model.Status = "Pending";
+                    _db.PaymentVouchers.Add(model);
+                    _db.SaveChanges();
+                    string uploadFolder = Server.MapPath("~/Uploads");
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    if (files != null)
+                    {
+                        foreach (var file in files)
+                        {
+                            if (file != null && file.ContentLength > 0)
+                            {
+                                try
+                                {
+                                    string fileName = DateTime.Now.ToString("yyyymmddMMss") + "_" + Path.GetFileName(file.FileName);
+                                    string filePath = Path.Combine(uploadFolder, fileName);
+                                    file.SaveAs(filePath);
+                                    var attachment = new PaymentVoucherAttachment
+                                    {
+                                        PaymentVoucherId = model.PaymentVoucherId,
+                                        AttachmentPath = fileName // Store the file name instead of full path
+                                    };
+                                    _db.PaymentVoucherAttachments.Add(attachment);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Error saving file: {ex.Message}");
+                                    ModelState.AddModelError("", "An error occurred while saving file attachments. Please try again.");
+                                }
+                            }
+                        }
+                        _db.SaveChanges();
+                        TempData["SuccessMessage"] = "Payment Voucher created successfully.";
+                    }
+                }
+                catch (Exception)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the Payment Voucher.";
+                    throw;
+                }
+                return RedirectToAction("PaymentVoucherList");
+            }
+
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View(model);
+        }
+
+        private string GenerateVoucherNumber()
+        {
+            return "PV-" + DateTime.Now.Ticks;
+        }
+
+        public ActionResult PaymentVoucherList(string search)
+        {
+
+            var PaymentVoucher = _db.PaymentVouchers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                PaymentVoucher = PaymentVoucher.Where(c => c.PaymentVoucherNo.Contains(search) || c.InstrumentNo.Contains(search));
+            }
+            return View(PaymentVoucher.ToList());
+        }
+        public ActionResult EditPaymentVoucher(int PaymentVoucherId)
+        {
+            var PaymentVoucher = _db.PaymentVouchers.Find(PaymentVoucherId);
+            if (PaymentVoucher == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View(PaymentVoucher);
+        }
+        [HttpPost]
+        public ActionResult EditPaymentVoucher(PaymentVoucher paymentVoucher, IEnumerable<HttpPostedFileBase> files)
+        {
+            try
+            {
+                var existingPaymentVoucher = _db.PaymentVouchers.Find(paymentVoucher.PaymentVoucherId);
+
+                if (existingPaymentVoucher == null)
+                {
+                    return HttpNotFound(); // Return 404 if the voucher is not found
+                }
+
+                _db.Entry(existingPaymentVoucher).CurrentValues.SetValues(paymentVoucher);
+                _db.Entry(existingPaymentVoucher).State = EntityState.Modified;
+                existingPaymentVoucher.Status = "Pending";
+                existingPaymentVoucher.PaymentVoucherNo = "PV-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                existingPaymentVoucher.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                existingPaymentVoucher.ModifiedAt = DateTime.Now;
+                _db.Entry(existingPaymentVoucher).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingPaymentVoucher).Property(x => x.CreatedAt).IsModified = false;
+
+                if (!ModelState.IsValid)
+                {
+                    return View(paymentVoucher);
+                }
+                if (files != null && files.Any())
+                {
+                    string uploadFolder = Server.MapPath("~/Uploads");
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    foreach (var file in files)
+                    {
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            try
+                            {
+                                string fileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(file.FileName)}";
+                                string filePath = Path.Combine(uploadFolder, fileName);
+                                file.SaveAs(filePath);
+
+                                var deleteAttachments = existingPaymentVoucher.PaymentVoucherAttachments.ToList();
+                                foreach (var item in deleteAttachments)
+                                {
+                                    var path = Path.Combine(Server.MapPath("~/Uploads"), item.AttachmentPath);
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        System.IO.File.Delete(path);
+                                    }
+                                }
+                                _db.PaymentVoucherAttachments.RemoveRange(deleteAttachments);
+                                var attachment = new PaymentVoucherAttachment
+                                {
+                                    PaymentVoucherId = existingPaymentVoucher.PaymentVoucherId,
+                                    AttachmentPath = fileName
+                                };
+                                _db.PaymentVoucherAttachments.Add(attachment);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error saving file: {ex.Message}");
+                                ModelState.AddModelError("", "An error occurred while saving file attachments. Please try again.");
+                            }
+                        }
+                    }
+                }
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Payment Voucher updated successfully.";
+            }
+            catch (DbUpdateException dbEx)
+            {
+                Console.WriteLine($"DB Update Error: {dbEx.InnerException?.Message}");
+                ModelState.AddModelError("", "An error occurred while updating the Payment Voucher in the database.");
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Error: {ex.Message}");
+                TempData["ErrorMessage"] = "An error occurred while updating the Payment Voucher.";
+            }
+
+            return RedirectToAction("PaymentVoucherList");
+        }
+
+        [HttpPost]
+        public ActionResult DeletePaymentVoucher(int PaymentVoucherId)
+        {
+            try
+            {
+                var PaymentVoucher = _db.PaymentVouchers.Find(PaymentVoucherId);
+                if (PaymentVoucher == null)
+                {
+                    TempData["ErrorMessage"] = "Payment Voucher not found.";
+                    return RedirectToAction("PaymentVoucherList");
+                }
+
+                var attachmentList = PaymentVoucher.PaymentVoucherAttachments.ToList();
+
+                foreach (var attachment in attachmentList)
+                {
+                    var filePath = Path.Combine(Server.MapPath("~/Uploads"), attachment.AttachmentPath);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+
+                _db.PaymentVouchers.Remove(PaymentVoucher);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Payment Voucher deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This payment voucher is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Payment Voucher.";
+                }
+            }
+            return RedirectToAction("PaymentVoucherList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedPaymentVouchers(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var itemsToDelete = _db.PaymentVouchers.Where(c => selectedItems.Contains(c.PaymentVoucherId)).ToList();
+
+                    foreach (var item in itemsToDelete)
+                    {
+                        var attachmentList = item.PaymentVoucherAttachments.ToList();
+
+                        foreach (var attachment in attachmentList)
+                        {
+                            var filePath = Path.Combine(Server.MapPath("~/Uploads"), attachment.AttachmentPath);
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                System.IO.File.Delete(filePath);
+                            }
+                        }
+                    }
+
+                    _db.PaymentVouchers.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Payment Voucher deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "Payment Voucher is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Payment Voucher.";
+                    }
+                }
+            }
+            return RedirectToAction("PaymentVoucherList");
+        }
+
+
+        public ActionResult CreateReceiptVoucher()
+        {
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View();
+
+        }
+        [HttpPost]
+        public ActionResult CreateReceiptVoucher(ReceiptVoucher model, IEnumerable<HttpPostedFileBase> files)
+        {
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    model.ReceiptVoucherNo = GenerateReceiptVoucherNumber();
+                    model.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    model.CreatedAt = DateTime.Now;
+                    model.Status = "Pending";
+                    _db.ReceiptVouchers.Add(model);
+                    _db.SaveChanges();
+                    string uploadFolder = Server.MapPath("~/Uploads");
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    if (files != null)
+                    {
+                        foreach (var file in files)
+                        {
+                            if (file != null && file.ContentLength > 0)
+                            {
+                                try
+                                {
+                                    string fileName = DateTime.Now.ToString("yyyymmddMMss") + "_" + Path.GetFileName(file.FileName);
+                                    string filePath = Path.Combine(uploadFolder, fileName);
+                                    file.SaveAs(filePath);
+                                    var attachment = new ReceiptVoucherAttachment
+                                    {
+                                        ReceiptVoucherId = model.ReceiptVoucherId,
+                                        AttachmentPath = fileName
+                                    };
+                                    _db.ReceiptVoucherAttachments.Add(attachment);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine($"Error saving file: {ex.Message}");
+                                    ModelState.AddModelError("", "An error occurred while saving file attachments. Please try again.");
+                                }
+                            }
+                        }
+                        _db.SaveChanges();
+                        TempData["SuccessMessage"] = "Receipt Voucher created successfully.";
+                    }
+                }
+                catch (Exception)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Receipt Voucher.";
+                    throw;
+                }
+                return RedirectToAction("ReceiptVoucherList");
+            }
+
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View(model);
+        }
+
+        private string GenerateReceiptVoucherNumber()
+        {
+            return "RV-" + DateTime.Now.Ticks;
+        }
+        public ActionResult ReceiptVoucherList(string search)
+        {
+
+            var ReceiptVoucher = _db.ReceiptVouchers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                ReceiptVoucher = ReceiptVoucher.Where(c => c.ReceiptVoucherNo.Contains(search) || c.InstrumentNo.Contains(search));
+            }
+            return View(ReceiptVoucher.ToList());
+        }
+        [HttpPost]
+        public ActionResult DeleteReceiptVoucher(int ReceiptVoucherId)
+        {
+            try
+            {
+                var ReceiptVoucher = _db.ReceiptVouchers.Find(ReceiptVoucherId);
+                if (ReceiptVoucher == null)
+                {
+                    TempData["ErrorMessage"] = "Receipt Voucher not found.";
+                    return RedirectToAction("ReceiptVoucherList");
+                }
+
+                var attachmentList = ReceiptVoucher.ReceiptVoucherAttachments.ToList();
+
+                foreach (var attachment in attachmentList)
+                {
+                    var filePath = Path.Combine(Server.MapPath("~/Uploads"), attachment.AttachmentPath);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+
+                _db.ReceiptVouchers.Remove(ReceiptVoucher);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Receipt Voucher deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Receipt Voucher is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Receipt Voucher.";
+                }
+            }
+            return RedirectToAction("ReceiptVoucherList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedReceiptVouchers(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var itemsToDelete = _db.ReceiptVouchers.Where(c => selectedItems.Contains(c.ReceiptVoucherId)).ToList();
+
+                    foreach (var item in itemsToDelete)
+                    {
+                        var attachmentList = item.ReceiptVoucherAttachments.ToList();
+
+                        foreach (var attachment in attachmentList)
+                        {
+                            var filePath = Path.Combine(Server.MapPath("~/Uploads"), attachment.AttachmentPath);
+                            if (System.IO.File.Exists(filePath))
+                            {
+                                System.IO.File.Delete(filePath);
+                            }
+                        }
+                    }
+
+                    _db.ReceiptVouchers.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Receipt Voucher deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "Receipt Voucher is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Receipt Voucher.";
+                    }
+                }
+            }
+            return RedirectToAction("ReceiptVoucherList");
+        }
+
+        public ActionResult EditReceiptVoucher(int ReceiptVoucherId)
+        {
+            var ReceiptVoucher = _db.ReceiptVouchers.Find(ReceiptVoucherId);
+            if (ReceiptVoucher == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Accounts = _db.Accounts.ToList();
+            return View(ReceiptVoucher);
+        }
+        [HttpPost]
+        public ActionResult EditReceiptVoucher(ReceiptVoucher ReceiptVoucher, IEnumerable<HttpPostedFileBase> files)
+        {
+            try
+            {
+                var existingReceiptVoucher = _db.ReceiptVouchers.Find(ReceiptVoucher.ReceiptVoucherId);
+
+                if (existingReceiptVoucher == null)
+                {
+                    return HttpNotFound(); // Return 404 if the voucher is not found
+                }
+
+                _db.Entry(existingReceiptVoucher).CurrentValues.SetValues(ReceiptVoucher);
+                _db.Entry(existingReceiptVoucher).State = EntityState.Modified;
+                existingReceiptVoucher.Status = "Pending";
+                existingReceiptVoucher.ReceiptVoucherNo = "RV-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                existingReceiptVoucher.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                existingReceiptVoucher.ModifiedAt = DateTime.Now;
+                _db.Entry(existingReceiptVoucher).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingReceiptVoucher).Property(x => x.CreatedAt).IsModified = false;
+
+                if (!ModelState.IsValid)
+                {
+                    return View(ReceiptVoucher);
+                }
+                if (files != null && files.Any())
+                {
+                    string uploadFolder = Server.MapPath("~/Uploads");
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    foreach (var file in files)
+                    {
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            try
+                            {
+                                string fileName = $"{DateTime.Now:yyyyMMddHHmmss}_{Path.GetFileName(file.FileName)}";
+                                string filePath = Path.Combine(uploadFolder, fileName);
+                                file.SaveAs(filePath);
+
+                                var deleteAttachments = existingReceiptVoucher.ReceiptVoucherAttachments.ToList();
+                                foreach (var item in deleteAttachments)
+                                {
+                                    var path = Path.Combine(Server.MapPath("~/Uploads"), item.AttachmentPath);
+                                    if (System.IO.File.Exists(path))
+                                    {
+                                        System.IO.File.Delete(path);
+                                    }
+                                }
+                                _db.ReceiptVoucherAttachments.RemoveRange(deleteAttachments);
+                                var attachment = new ReceiptVoucherAttachment
+                                {
+                                    ReceiptVoucherId = existingReceiptVoucher.ReceiptVoucherId,
+                                    AttachmentPath = fileName
+                                };
+                                _db.ReceiptVoucherAttachments.Add(attachment);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error saving file: {ex.Message}");
+                                ModelState.AddModelError("", "An error occurred while saving file attachments. Please try again.");
+                            }
+                        }
+                    }
+                }
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Receipt Voucher updated successfully.";
+            }
+            catch (DbUpdateException dbEx)
+            {
+                Console.WriteLine($"DB Update Error: {dbEx.InnerException?.Message}");
+                ModelState.AddModelError("", "An error occurred while updating the Receipt Voucher in the database.");
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Error: {ex.Message}");
+                TempData["ErrorMessage"] = "An error occurred while updating the Receipt Voucher.";
+            }
+
+            return RedirectToAction("ReceiptVoucherList");
+        }
         public ActionResult CreatePurchase()
         {
 
@@ -424,16 +1246,12 @@ namespace Ressential.Controllers
             {
                 PurchaseDetails = new List<PurchaseDetail>
                 {
-                    new PurchaseDetail() // Add at least one default item for initial row.
+                    new PurchaseDetail()
                 }
 
             };
             ViewBag.Items = _db.Items.ToList();
             ViewBag.Vendors = _db.Vendors.ToList();
-            //var items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
-            //    ViewBag.Items = purchase.PurchaseDetails
-            //.Select(detail => new SelectList(items, "ItemId", "ItemName", detail.ItemId))
-            //.ToList();
 
             return View(purchase);
         }
@@ -459,8 +1277,31 @@ namespace Ressential.Controllers
                     purchase.PurchaseNo = $"PUR-{datePart}{nextPurchaseNumber:D4}";
                     purchase.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     purchase.CreatedAt = DateTime.Now;
+                    purchase.Status = "Not Paid";
                     _db.Purchases.Add(purchase);
                     _db.SaveChanges();
+
+                    foreach (var purchaseDetails in purchase.PurchaseDetails)
+                    {
+                        var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
+                        decimal currentQuantity = currentItemStock.Quantity;
+                        currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
+                        currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice))/(currentItemStock.Quantity);
+
+                        var warehouseItemTransaction = new WarehouseItemTransaction
+                        {
+                            TransactionDate = purchase.PurchaseDate,
+                            ItemId = purchaseDetails.ItemId,
+                            TransactionType = "Purchase",
+                            TransactionTypeId = purchase.PurchaseId,
+                            Quantity = purchaseDetails.Quantity,
+                            CostPerUnit = purchaseDetails.UnitPrice
+                        };
+                        _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
+                        _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                    }
+                    _db.SaveChanges();
+
                     return Json("0",JsonRequestBehavior.AllowGet);
                 }
                 ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
@@ -486,6 +1327,7 @@ namespace Ressential.Controllers
                  PurchaseDate = p.PurchaseDate,
                  ReferenceNo = p.ReferenceNo,
                  VendorName = p.Vendor.Name,
+                 Status = p.Status,
                  TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
              }).Where(p => p.PurchaseNo.Contains(search) || p.ReferenceNo.Contains(search))
                 .ToList();
@@ -499,7 +1341,8 @@ namespace Ressential.Controllers
                 PurchaseDate = p.PurchaseDate,
                 ReferenceNo = p.ReferenceNo,
                 VendorName = p.Vendor.Name,
-                TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+                Status = p.Status,
+                 TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
                     }).ToList();
             return View(purchaseList2);
         }
@@ -632,30 +1475,6 @@ namespace Ressential.Controllers
             return View();
         }
         public ActionResult IssueList()
-        {
-            return View();
-        }
-        public ActionResult CreateBankAndCash()
-        {
-            return View();
-        }
-        public ActionResult BankAndCashList()
-        {
-            return View();
-        }
-        public ActionResult CreatePaymentVouncher()
-        {
-            return View();
-        }
-        public ActionResult PaymentVouncherList()
-        {
-            return View();
-        }
-        public ActionResult CreateReceiptVouncher()
-        {
-            return View();
-        }
-        public ActionResult ReceiptVouncherList()
         {
             return View();
         }

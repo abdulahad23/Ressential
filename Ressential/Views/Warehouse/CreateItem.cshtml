@@ -59,6 +59,12 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
+                                <input type="date" class="form-control" id="floatingInput" name="openingDate" placeholder="Opening Stock Date" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                                <label for="floatingInput">Opening Stock Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
                                 <label for="floatingInput">Minimum Stock Level</label>
                             </div>

@@ -25,7 +25,6 @@ namespace Ressential.Models
         public string PaymentVoucherNo { get; set; }
         public System.DateTime PaymentVoucherDate { get; set; }
         public int VendorId { get; set; }
-        public string PaymentMethod { get; set; }
         public int AccountId { get; set; }
         public string InstrumentNo { get; set; }
         public Nullable<System.DateTime> InstrumentDate { get; set; }

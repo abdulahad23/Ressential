@@ -1,8 +1,7 @@
-﻿@model IEnumerable<Ressential.Models.Branch>
+﻿@model IEnumerable<Ressential.Models.PaymentVoucher>
 
-@{ ViewBag.Title = "BranchList";
+@{ ViewBag.Title = "PaymentVoucherList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
-
 
 <div class="card">
     <div class="card-body">
@@ -16,7 +15,6 @@
 <div class="alert alert-success">
     @TempData["SuccessMessage"]
 </div>}
-
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
@@ -29,7 +27,7 @@
             </div>
 
             <div class="col-md-3 ms-auto">
-                <form id="searchForm" action="@Url.Action("BranchList", "Warehouse")" method="get">
+                <form id="searchForm" action="@Url.Action("PaymentVoucherList", "Warehouse")" method="get">
                     <div class="input-group input-group-sm mb-3">
                         <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
                         <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
@@ -38,47 +36,55 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form id="actionForm" action="@Url.Action("DeleteSelectedBranches", "Warehouse")" method="post">
+            <form id="actionForm" action="@Url.Action("DeleteSelectedPaymentVouchers", "Warehouse")" method="post">
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="fit-content">
                                 <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                             </th>
-                            <th scope="col">Branch Name</th>
-                            <th scope="col">Branch Code</th>
-                            <th scope="col">Branch Contact</th>
-                            <th scope="col">Owner Name</th>
-                            <th scope="col">Branch Address</th>
+                            <th scope="col">Voucher No</th>
+                            <th scope="col">Voucher Date</th>
+                            <th scope="col">Vendor</th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Instrument No</th>
+                            <th scope="col">Amount</th>
                             <th scope="col">Status</th>
+
                             <th scope="col" class="fit-content">Option</th>
-
-
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var branch in Model)
+                        @foreach (var paymentVoucher in Model)
                         {
                         <tr>
-                            <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@branch.BranchId" aria-label="Select Branch"></td>
-                            <td>@branch.BranchName</td>
-                            <td>@branch.BranchCode</td>
-                            <td>@branch.BranchContact</td>
-                            <td>@branch.OwnerName</td>
+                            <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@paymentVoucher.PaymentVoucherId" aria-label="Select Item"></td>
+                            <td>@paymentVoucher.PaymentVoucherNo</td>
+                            <td>@paymentVoucher.PaymentVoucherDate.ToString("dd-MMM-yyyy")</td>
+                            <td>@paymentVoucher.Vendor.Name</td>
+                            <td>@paymentVoucher.Account.AccountType</td>
+                            <td>@paymentVoucher.InstrumentNo</td>
+                            <td>Rs @paymentVoucher.Amount.ToString("N0")</td>
 
-
-                            <td>@(branch.Address + ((branch.Address != null && branch.City != null)? ", " : "") + branch.City + ((branch.City != null && branch.Country != null)|| (branch.Address != null && branch.Country != null) ? ", " : "")+ branch.Country)</td>
                             <td class="no-wrap">
-                                @if (branch.IsActive)
+                                @if (paymentVoucher.Status == "Pending")
                                 {
-                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                            Active
-                        </span> }
-                    else
-                    {
-                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                            Inactive
-                        </span>}
+                                    <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                    Pending
+                                    </span>
+                                }
+                                else if (paymentVoucher.Status == "Approved")
+                                {
+                                    <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Approved
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Rejected
+                                    </span>
+                                }
                             </td>
                             <td>
                                 <div class="dropdown">
@@ -86,19 +92,18 @@
                                         <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><button class="dropdown-item" type="button" onclick="submitEditForm(@branch.BranchId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                                        <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@branch.BranchId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        <li><button class="dropdown-item" type="button" onclick="submitEditForm(@paymentVoucher.PaymentVoucherId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                        <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@paymentVoucher.PaymentVoucherId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
                                     </ul>
                                 </div>
                             </td>
                         </tr>}
-
                     </tbody>
                 </table>
             </form>
             <!-- Hidden Form for Edit/Delete Actions -->
             <form id="editDeleteForm" method="post" style="display: none;">
-                <input type="hidden" name="BranchId" id="formBranchId" />
+                <input type="hidden" name="PaymentVoucherId" id="formPaymentVoucherId" />
             </form>
         </div>
     </div>
@@ -108,7 +113,7 @@
 <script>
     // Function to toggle all checkboxes
     function toggleAll(source) {
-        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const checkboxes = document.querySelectorAll('.form-check-input');
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
     }
 
@@ -127,21 +132,22 @@
         }
     }
 
-    function submitEditForm(BranchId) {
+    function submitEditForm(PaymentVoucherId) {
         const form = document.getElementById("editDeleteForm");
-        form.action = "@Url.Action("EditBranch", "Warehouse")";
-        document.getElementById("formBranchId").value = BranchId;
+        form.action = "@Url.Action("EditPaymentVoucher", "Warehouse")";
+        document.getElementById("formPaymentVoucherId").value = PaymentVoucherId;
         form.method = "get";
         form.submit();
     }
 
-    function submitDeleteForm(BranchId) {
+    function submitDeleteForm(PaymentVoucherId) {
         if (confirm('Are you sure you want to delete this record?')) {
             const form = document.getElementById("editDeleteForm");
-            form.action = "@Url.Action("DeleteBranch", "Warehouse")";
-            document.getElementById("formBranchId").value = BranchId;
+            form.action = "@Url.Action("DeletePaymentVoucher", "Warehouse")";
+            document.getElementById("formPaymentVoucherId").value = PaymentVoucherId;
             form.method = "post";
             form.submit();
         }
     }
 </script>
+

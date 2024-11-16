@@ -285,6 +285,9 @@
     <Compile Include="Models\WarehouseItemStock.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WarehouseItemTransaction.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\WastageItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -713,6 +716,13 @@
     <Content Include="Views\Warehouse\EditVendor.cshtml" />
     <Content Include="Views\Warehouse\EditItem.cshtml" />
     <Content Include="Views\Warehouse\EditPurchase.cshtml" />
+    <Content Include="Views\Warehouse\CreatePaymentVoucher.cshtml" />
+    <Content Include="Views\Warehouse\EditBankAndCash.cshtml" />
+    <Content Include="Views\Warehouse\EditBranch.cshtml" />
+    <Content Include="Views\Warehouse\EditPaymentVoucher.cshtml" />
+    <Content Include="Views\Warehouse\EditReceiptVoucher.cshtml" />
+    <Content Include="Views\Warehouse\PaymentVoucherList.cshtml" />
+    <Content Include="Views\Warehouse\ReceiptVoucherList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

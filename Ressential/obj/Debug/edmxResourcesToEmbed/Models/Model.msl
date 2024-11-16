@@ -185,7 +185,6 @@
           <ScalarProperty Name="PaymentVoucherNo" ColumnName="PaymentVoucherNo" />
           <ScalarProperty Name="PaymentVoucherDate" ColumnName="PaymentVoucherDate" />
           <ScalarProperty Name="VendorId" ColumnName="VendorId" />
-          <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="InstrumentNo" ColumnName="InstrumentNo" />
           <ScalarProperty Name="InstrumentDate" ColumnName="InstrumentDate" />
@@ -271,6 +270,7 @@
           <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
           <ScalarProperty Name="VendorId" ColumnName="VendorId" />
           <ScalarProperty Name="Memo" ColumnName="Memo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
@@ -331,7 +331,6 @@
           <ScalarProperty Name="ReceiptVoucherNo" ColumnName="ReceiptVoucherNo" />
           <ScalarProperty Name="ReceiptVoucherDate" ColumnName="ReceiptVoucherDate" />
           <ScalarProperty Name="VendorId" ColumnName="VendorId" />
-          <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
           <ScalarProperty Name="AccountId" ColumnName="AccountId" />
           <ScalarProperty Name="InstrumentNo" ColumnName="InstrumentNo" />
           <ScalarProperty Name="InstrumentDate" ColumnName="InstrumentDate" />
@@ -485,7 +484,20 @@
         <MappingFragment StoreEntitySet="WarehouseItemStock">
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WarehouseItemTransactions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseItemTransaction">
+        <MappingFragment StoreEntitySet="WarehouseItemTransaction">
+          <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+          <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
+          <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

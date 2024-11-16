@@ -12,9 +12,13 @@ namespace Ressential.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class WarehouseItemStock
+    public partial class WarehouseItemTransaction
     {
+        public int TransactionId { get; set; }
+        public System.DateTime TransactionDate { get; set; }
         public int ItemId { get; set; }
+        public string TransactionType { get; set; }
+        public int TransactionTypeId { get; set; }
         public decimal Quantity { get; set; }
         public decimal CostPerUnit { get; set; }
     

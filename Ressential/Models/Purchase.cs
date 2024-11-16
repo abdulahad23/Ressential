@@ -27,6 +27,7 @@ namespace Ressential.Models
         public string ReferenceNo { get; set; }
         public int VendorId { get; set; }
         public string Memo { get; set; }
+        public string Status { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
