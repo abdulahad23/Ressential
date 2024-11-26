@@ -14,11 +14,12 @@ namespace Ressential.Models
     
     public partial class ReceiptApply
     {
+        public int ReceiptApplyId { get; set; }
         public int ReceiptVoucherId { get; set; }
         public int PurchaseReturnId { get; set; }
         public decimal AppliedAmount { get; set; }
     
-        public virtual PurchasesReturn PurchasesReturn { get; set; }
+        public virtual PurchaseReturn PurchaseReturn { get; set; }
         public virtual ReceiptVoucher ReceiptVoucher { get; set; }
     }
 }

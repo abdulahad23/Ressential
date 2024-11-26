@@ -12,19 +12,16 @@ namespace Ressential.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class BranchItemDetail
+    public partial class PurchaseReturnDetail
     {
-        public int BranchId { get; set; }
+        public int PurchaseReturnDetailId { get; set; }
+        public int PurchaseReturnId { get; set; }
         public int ItemId { get; set; }
-        public decimal MinimumStockLevel { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreatedAt { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedAt { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public string Description { get; set; }
     
-        public virtual Branch Branch { get; set; }
-        public virtual User User { get; set; }
         public virtual Item Item { get; set; }
-        public virtual User User1 { get; set; }
+        public virtual PurchaseReturn PurchaseReturn { get; set; }
     }
 }

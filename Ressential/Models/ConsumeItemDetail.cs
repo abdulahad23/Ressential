@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class ConsumeItemDetail
     {
+        public int ConsumeItemDetailId { get; set; }
         public int ConsumeItemId { get; set; }
         public int ItemId { get; set; }
         public string Description { get; set; }

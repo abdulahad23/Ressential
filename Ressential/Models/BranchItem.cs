@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class BranchItem
     {
+        public int BranchItemId { get; set; }
         public int ItemId { get; set; }
         public int BranchId { get; set; }
         public decimal MinimumStockLevel { get; set; }

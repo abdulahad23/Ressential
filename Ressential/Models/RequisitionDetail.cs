@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class RequisitionDetail
     {
+        public int RequisitionDetailId { get; set; }
         public int RequisitionId { get; set; }
         public int ItemId { get; set; }
         public string Description { get; set; }

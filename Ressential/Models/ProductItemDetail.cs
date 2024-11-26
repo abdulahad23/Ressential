@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class ProductItemDetail
     {
+        public int ProductItemDetailId { get; set; }
         public int ProductId { get; set; }
         public int ItemId { get; set; }
         public decimal ItemQuantity { get; set; }

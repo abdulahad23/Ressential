@@ -37,22 +37,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="BranchItemDetails">
-      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItemDetail">
-        <MappingFragment StoreEntitySet="BranchItemDetails">
-          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="BranchItems">
       <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
         <MappingFragment StoreEntitySet="BranchItems">
+          <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
@@ -67,6 +55,7 @@
     <EntitySetMapping Name="ConsumeItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ConsumeItemDetail">
         <MappingFragment StoreEntitySet="ConsumeItemDetails">
+          <ScalarProperty Name="ConsumeItemDetailId" ColumnName="ConsumeItemDetailId" />
           <ScalarProperty Name="ConsumeItemId" ColumnName="ConsumeItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
@@ -130,6 +119,7 @@
     <EntitySetMapping Name="OrderDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.OrderDetail">
         <MappingFragment StoreEntitySet="OrderDetails">
+          <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ProductQuantity" ColumnName="ProductQuantity" />
@@ -140,6 +130,7 @@
     <EntitySetMapping Name="OrderReturnDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.OrderReturnDetail">
         <MappingFragment StoreEntitySet="OrderReturnDetails">
+          <ScalarProperty Name="OrderReturnDetailId" ColumnName="OrderReturnDetailId" />
           <ScalarProperty Name="OrderReturnId" ColumnName="OrderReturnId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ProductQuantity" ColumnName="ProductQuantity" />
@@ -177,6 +168,7 @@
     <EntitySetMapping Name="PaymentApplies">
       <EntityTypeMapping TypeName="DB_RessentialModel.PaymentApply">
         <MappingFragment StoreEntitySet="PaymentApply">
+          <ScalarProperty Name="PaymentApplyId" ColumnName="PaymentApplyId" />
           <ScalarProperty Name="PaymentVoucherId" ColumnName="PaymentVoucherId" />
           <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
           <ScalarProperty Name="AppliedAmount" ColumnName="AppliedAmount" />
@@ -237,6 +229,7 @@
     <EntitySetMapping Name="ProductItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ProductItemDetail">
         <MappingFragment StoreEntitySet="ProductItemDetails">
+          <ScalarProperty Name="ProductItemDetailId" ColumnName="ProductItemDetailId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
@@ -275,6 +268,35 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="PurchaseReturns">
+      <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseReturn">
+        <MappingFragment StoreEntitySet="PurchaseReturn">
+          <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
+          <ScalarProperty Name="PurchaseReturnDate" ColumnName="PurchaseReturnDate" />
+          <ScalarProperty Name="PurchaseReturnNo" ColumnName="PurchaseReturnNo" />
+          <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
+          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+          <ScalarProperty Name="Memo" ColumnName="Memo" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PurchaseReturnDetails">
+      <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseReturnDetail">
+        <MappingFragment StoreEntitySet="PurchaseReturnDetails">
+          <ScalarProperty Name="PurchaseReturnDetailId" ColumnName="PurchaseReturnDetailId" />
+          <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Purchases">
       <EntityTypeMapping TypeName="DB_RessentialModel.Purchase">
         <MappingFragment StoreEntitySet="Purchases">
@@ -292,37 +314,10 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="PurchasesReturns">
-      <EntityTypeMapping TypeName="DB_RessentialModel.PurchasesReturn">
-        <MappingFragment StoreEntitySet="PurchasesReturn">
-          <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
-          <ScalarProperty Name="PurchaseReturnDate" ColumnName="PurchaseReturnDate" />
-          <ScalarProperty Name="PurchaseReturnNo" ColumnName="PurchaseReturnNo" />
-          <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
-          <ScalarProperty Name="VendorID" ColumnName="VendorID" />
-          <ScalarProperty Name="Memo" ColumnName="Memo" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="PurchasesReturnDetails">
-      <EntityTypeMapping TypeName="DB_RessentialModel.PurchasesReturnDetail">
-        <MappingFragment StoreEntitySet="PurchasesReturnDetails">
-          <ScalarProperty Name="PurchasesReturnDetailId" ColumnName="PurchasesReturnDetailId" />
-          <ScalarProperty Name="PurchasesReturnId" ColumnName="PurchasesReturnId" />
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
-          <ScalarProperty Name="Description" ColumnName="Description" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="ReceiptApplies">
       <EntityTypeMapping TypeName="DB_RessentialModel.ReceiptApply">
         <MappingFragment StoreEntitySet="ReceiptApply">
+          <ScalarProperty Name="ReceiptApplyId" ColumnName="ReceiptApplyId" />
           <ScalarProperty Name="ReceiptVoucherId" ColumnName="ReceiptVoucherId" />
           <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
           <ScalarProperty Name="AppliedAmount" ColumnName="AppliedAmount" />
@@ -360,6 +355,7 @@
     <EntitySetMapping Name="RequisitionDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.RequisitionDetail">
         <MappingFragment StoreEntitySet="RequisitionDetails">
+          <ScalarProperty Name="RequisitionDetailId" ColumnName="RequisitionDetailId" />
           <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
@@ -403,6 +399,7 @@
     <EntitySetMapping Name="ReturnStockDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ReturnStockDetail">
         <MappingFragment StoreEntitySet="ReturnStockDetails">
+          <ScalarProperty Name="ReturnStockDetailId" ColumnName="ReturnStockDetailId" />
           <ScalarProperty Name="ReturnStockId" ColumnName="ReturnStockId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
@@ -468,6 +465,7 @@
     <EntitySetMapping Name="WarehouseIssueDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseIssueDetail">
         <MappingFragment StoreEntitySet="WarehouseIssueDetails">
+          <ScalarProperty Name="IssueDetailId" ColumnName="IssueDetailId" />
           <ScalarProperty Name="IssueId" ColumnName="IssueId" />
           <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -518,6 +516,7 @@
     <EntitySetMapping Name="WastageItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WastageItemDetail">
         <MappingFragment StoreEntitySet="WastageItemDetails">
+          <ScalarProperty Name="WastageItemDetailId" ColumnName="WastageItemDetailId" />
           <ScalarProperty Name="WastageItemId" ColumnName="WastageItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />

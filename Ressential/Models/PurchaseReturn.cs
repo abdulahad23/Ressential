@@ -12,12 +12,12 @@ namespace Ressential.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PurchasesReturn
+    public partial class PurchaseReturn
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PurchasesReturn()
+        public PurchaseReturn()
         {
-            this.PurchasesReturnDetails = new HashSet<PurchasesReturnDetail>();
+            this.PurchaseReturnDetails = new HashSet<PurchaseReturnDetail>();
             this.ReceiptApplies = new HashSet<ReceiptApply>();
         }
     
@@ -27,6 +27,7 @@ namespace Ressential.Models
         public string ReferenceNo { get; set; }
         public int VendorID { get; set; }
         public string Memo { get; set; }
+        public string Status { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
@@ -35,7 +36,7 @@ namespace Ressential.Models
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasesReturnDetail> PurchasesReturnDetails { get; set; }
+        public virtual ICollection<PurchaseReturnDetail> PurchaseReturnDetails { get; set; }
         public virtual Vendor Vendor { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReceiptApply> ReceiptApplies { get; set; }

@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class PaymentApply
     {
+        public int PaymentApplyId { get; set; }
         public int PaymentVoucherId { get; set; }
         public int PurchaseId { get; set; }
         public decimal AppliedAmount { get; set; }

@@ -28,7 +28,7 @@ namespace Ressential.Controllers
         {
             // Look for a user with matching email and password
             var user = _db.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
-            if (user != null)
+            if (user != null && user.IsActive == true)
             {
                 UserDetails userDetails = new UserDetails{
                     Email = user.Email,
@@ -40,6 +40,10 @@ namespace Ressential.Controllers
                 // Set user session on successful login
                 Session["UserEmail"] = email;
                 return RedirectToAction("Index", "Warehouse");  // Redirect to the dashboard or another protected area
+            }
+            else if(user != null && user.IsActive == false)
+            {
+                ModelState.AddModelError("", "Your account is deactivated. Please contact your administrator.");
             }
             else
             {

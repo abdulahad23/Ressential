@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Ressential.Models.Branch>
+
+<select id="branchDropdown" name="branch" class="form-select p-r-35">
+    <option value="">Select a Branch</option>
+    @foreach (var branch in Model)
+    {
+        <option value="@branch.BranchId">@branch.BranchName</option>
+    }
+</select>

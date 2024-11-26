@@ -18,8 +18,8 @@ namespace Ressential.Models
         public Vendor()
         {
             this.PaymentVouchers = new HashSet<PaymentVoucher>();
+            this.PurchaseReturns = new HashSet<PurchaseReturn>();
             this.Purchases = new HashSet<Purchase>();
-            this.PurchasesReturns = new HashSet<PurchasesReturn>();
             this.ReceiptVouchers = new HashSet<ReceiptVoucher>();
         }
     
@@ -40,9 +40,9 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentVoucher> PaymentVouchers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<PurchaseReturn> PurchaseReturns { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasesReturn> PurchasesReturns { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReceiptVoucher> ReceiptVouchers { get; set; }
         public virtual User User { get; set; }

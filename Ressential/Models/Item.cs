@@ -17,12 +17,11 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Item()
         {
-            this.BranchItemDetails = new HashSet<BranchItemDetail>();
             this.BranchItems = new HashSet<BranchItem>();
             this.ConsumeItemDetails = new HashSet<ConsumeItemDetail>();
             this.ProductItemDetails = new HashSet<ProductItemDetail>();
             this.PurchaseDetails = new HashSet<PurchaseDetail>();
-            this.PurchasesReturnDetails = new HashSet<PurchasesReturnDetail>();
+            this.PurchaseReturnDetails = new HashSet<PurchaseReturnDetail>();
             this.RequisitionDetails = new HashSet<RequisitionDetail>();
             this.ReturnStockDetails = new HashSet<ReturnStockDetail>();
             this.WarehouseIssueDetails = new HashSet<WarehouseIssueDetail>();
@@ -43,8 +42,6 @@ namespace Ressential.Models
         public Nullable<System.DateTime> ModifiedAt { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItem> BranchItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ConsumeItemDetail> ConsumeItemDetails { get; set; }
@@ -57,7 +54,7 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasesReturnDetail> PurchasesReturnDetails { get; set; }
+        public virtual ICollection<PurchaseReturnDetail> PurchaseReturnDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RequisitionDetail> RequisitionDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class WarehouseIssueDetail
     {
+        public int IssueDetailId { get; set; }
         public int IssueId { get; set; }
         public Nullable<int> RequisitionId { get; set; }
         public int ItemId { get; set; }

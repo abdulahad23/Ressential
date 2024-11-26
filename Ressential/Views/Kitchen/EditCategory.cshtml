@@ -1,17 +1,19 @@
 ﻿@model Ressential.Models.ProductCategory
+@{ ViewBag.Title = "EditCategory";
+                Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
 
-@{ ViewBag.Title = "CreateCategory";
-    Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
 
 
-@using (Html.BeginForm("CreateCategory", "Kitchen", FormMethod.Post))
+@using (Html.BeginForm("EditCategory", "Kitchen", FormMethod.Post))
 {
 
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h2 class="text-secondary"><b>Create Category </b></h2>
+                <h2 class="text-secondary"><b>Update Category </b></h2>
+                @Html.HiddenFor(model => model.ProductCategoryId)
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
@@ -31,7 +33,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="col-sm-9">
-                                        <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                        <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Update</button>
                                         <a href="@Url.Action("CategoryList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
                                     </div>
                                 </div>
@@ -44,5 +46,4 @@
         </div>
 
     </div>
-</div>
-}
+</div>}

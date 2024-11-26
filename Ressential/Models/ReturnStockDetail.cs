@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class ReturnStockDetail
     {
+        public int ReturnStockDetailId { get; set; }
         public int ReturnStockId { get; set; }
         public int ItemId { get; set; }
         public string Description { get; set; }

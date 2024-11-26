@@ -21,8 +21,6 @@ namespace Ressential.Models
             this.Accounts1 = new HashSet<Account>();
             this.Branches = new HashSet<Branch>();
             this.Branches1 = new HashSet<Branch>();
-            this.BranchItemDetails = new HashSet<BranchItemDetail>();
-            this.BranchItemDetails1 = new HashSet<BranchItemDetail>();
             this.BranchItems = new HashSet<BranchItem>();
             this.BranchItems1 = new HashSet<BranchItem>();
             this.ConsumeItems = new HashSet<ConsumeItem>();
@@ -37,10 +35,10 @@ namespace Ressential.Models
             this.ProductCategories1 = new HashSet<ProductCategory>();
             this.Products = new HashSet<Product>();
             this.Products1 = new HashSet<Product>();
+            this.PurchaseReturns = new HashSet<PurchaseReturn>();
+            this.PurchaseReturns1 = new HashSet<PurchaseReturn>();
             this.Purchases = new HashSet<Purchase>();
             this.Purchases1 = new HashSet<Purchase>();
-            this.PurchasesReturns = new HashSet<PurchasesReturn>();
-            this.PurchasesReturns1 = new HashSet<PurchasesReturn>();
             this.ReceiptVouchers = new HashSet<ReceiptVoucher>();
             this.ReceiptVouchers1 = new HashSet<ReceiptVoucher>();
             this.Requisitions = new HashSet<Requisition>();
@@ -79,10 +77,6 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Branch> Branches1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BranchItemDetail> BranchItemDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BranchItemDetail> BranchItemDetails1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItem> BranchItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItem> BranchItems1 { get; set; }
@@ -111,13 +105,13 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchaseReturn> PurchaseReturns { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PurchaseReturn> PurchaseReturns1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Purchase> Purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Purchase> Purchases1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasesReturn> PurchasesReturns { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PurchasesReturn> PurchasesReturns1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ReceiptVoucher> ReceiptVouchers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

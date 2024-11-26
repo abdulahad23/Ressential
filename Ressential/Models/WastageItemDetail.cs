@@ -14,6 +14,7 @@ namespace Ressential.Models
     
     public partial class WastageItemDetail
     {
+        public int WastageItemDetailId { get; set; }
         public int WastageItemId { get; set; }
         public int ItemId { get; set; }
         public string Description { get; set; }

@@ -27,7 +27,6 @@ namespace Ressential.Models
     
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
-        public virtual DbSet<BranchItemDetail> BranchItemDetails { get; set; }
         public virtual DbSet<BranchItem> BranchItems { get; set; }
         public virtual DbSet<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual DbSet<ConsumeItem> ConsumeItems { get; set; }
@@ -46,9 +45,9 @@ namespace Ressential.Models
         public virtual DbSet<ProductItemDetail> ProductItemDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<PurchaseDetail> PurchaseDetails { get; set; }
+        public virtual DbSet<PurchaseReturn> PurchaseReturns { get; set; }
+        public virtual DbSet<PurchaseReturnDetail> PurchaseReturnDetails { get; set; }
         public virtual DbSet<Purchase> Purchases { get; set; }
-        public virtual DbSet<PurchasesReturn> PurchasesReturns { get; set; }
-        public virtual DbSet<PurchasesReturnDetail> PurchasesReturnDetails { get; set; }
         public virtual DbSet<ReceiptApply> ReceiptApplies { get; set; }
         public virtual DbSet<ReceiptVoucherAttachment> ReceiptVoucherAttachments { get; set; }
         public virtual DbSet<ReceiptVoucher> ReceiptVouchers { get; set; }

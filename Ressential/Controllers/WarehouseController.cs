@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Web.WebPages;
 using System.IO;
 using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 
 namespace Ressential.Controllers
 {
@@ -213,7 +214,14 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult EditItem(Item item, decimal quantity, decimal cost, DateTime openingDate)
         {
-            cost = cost / quantity;
+            if (quantity == 0)
+            {
+                cost = 0;
+            }
+            else
+            {
+                cost = cost / quantity;
+            }
             try
             {
                 var existingItem = _db.Items.Find(item.ItemId);
@@ -230,12 +238,27 @@ namespace Ressential.Controllers
                 decimal newTotalCost = oldTotalCost - oldTransactionCost;
                 decimal newQuantity = warehouseItemStock.Quantity - warehouseItemTransaction.Quantity;
 
-                decimal previousAverageCost = newTotalCost / (newQuantity==0? 1: newQuantity);
-
+                decimal previousAverageCost;
+                if (newQuantity == 0)
+                {
+                    previousAverageCost = 0;
+                }
+                else
+                {
+                    previousAverageCost = newTotalCost /  newQuantity;
+                }
                 decimal updatedQuantity = newQuantity + quantity;
 
                 warehouseItemStock.Quantity = updatedQuantity;
-                warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (quantity * cost))/updatedQuantity;
+                if (updatedQuantity == 0)
+                {
+                    warehouseItemStock.CostPerUnit = 0;
+                }
+                else
+                {
+                    warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (quantity * cost)) / updatedQuantity;
+                }
+                
 
                 warehouseItemTransaction.Quantity = quantity;
                 warehouseItemTransaction.CostPerUnit = cost;
@@ -1250,7 +1273,7 @@ namespace Ressential.Controllers
                 }
 
             };
-            ViewBag.Items = _db.Items.ToList();
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
             ViewBag.Vendors = _db.Vendors.ToList();
 
             return View(purchase);
@@ -1271,7 +1294,7 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextPurchaseNumber = _db.Purchases
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => Convert.ToInt32(p.PurchaseNo.Substring(11)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.PurchaseNo.Substring(13)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     purchase.PurchaseNo = $"PUR-{datePart}{nextPurchaseNumber:D4}";
@@ -1349,7 +1372,7 @@ namespace Ressential.Controllers
         public ActionResult EditPurchase(int purchaseId)
         {
             Purchase purchase = _db.Purchases.Find(purchaseId);
-            ViewBag.Items = _db.Items.ToList();
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
             ViewBag.Vendors = _db.Vendors.ToList();
             return View(purchase);
         }
@@ -1358,17 +1381,28 @@ namespace Ressential.Controllers
         {
             if (purchase == null)
             {
-                return Json("1", JsonRequestBehavior.AllowGet);
+                foreach (var state in ModelState)
+                {
+                    var key = state.Key; // Property name
+                    var errors = state.Value.Errors; // List of errors for this property
+
+                    foreach (var error in errors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
             }
 
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
                 {
-                    var existingPurchase = _db.Purchases.Find(purchase.PurchaseId);
+                    var existingPurchase = _db.Purchases.Include(p => p.PurchaseDetails).FirstOrDefault(p => p.PurchaseId == purchase.PurchaseId);
                     if (existingPurchase == null)
                     {
-                        return Json("1", JsonRequestBehavior.AllowGet);
+                        return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
                     }
 
                     // Update purchase metadata
@@ -1379,27 +1413,97 @@ namespace Ressential.Controllers
                     _db.Entry(existingPurchase).CurrentValues.SetValues(purchase);
                     _db.Entry(existingPurchase).Property(x => x.CreatedBy).IsModified = false;
                     _db.Entry(existingPurchase).Property(x => x.CreatedAt).IsModified = false;
+                    _db.Entry(existingPurchase).Property(x => x.Status).IsModified = false;
 
-                    // Remove existing purchase details
-                    var purchaseDetails = _db.PurchaseDetails.Where(x => x.PurchaseId == purchase.PurchaseId).ToList();
-                    _db.PurchaseDetails.RemoveRange(purchaseDetails);
+                    // Update PurchaseDetails
+                    var existingDetails = existingPurchase.PurchaseDetails.ToList();
+                    var newDetails = purchase.PurchaseDetails;
 
-                    // Add new purchase details
-                    _db.PurchaseDetails.AddRange(purchase.PurchaseDetails);
+                    // Update or Add new details
+                    foreach (var newDetail in newDetails)
+                    {
+                        var existingDetail = existingDetails.FirstOrDefault(d => d.PurchaseDetailId == newDetail.PurchaseDetailId);
+                        var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
+                        if (existingDetail != null)
+                        {
+                            //decimal RevertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice);
+                            decimal RevertedQuantity = warehouseItemStock.Quantity - existingDetail.Quantity;
+                            //decimal RevertedAverageCost = RevertedTotalCost / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
+                            //decimal RevertedAverageCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
+
+                            warehouseItemStock.Quantity = RevertedQuantity + newDetail.Quantity; //Updated Quantity
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            }
+                            
+                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
+                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                        }
+                        else
+                        {
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity + newDetail.Quantity; //Updated Quantity
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            }
+                            existingPurchase.PurchaseDetails.Add(newDetail); // Add new detail
+                        }
+                    }
+
+                    // Delete unmatched details
+                    if (existingDetails != null)
+                    {
+                        foreach (var item in existingDetails)
+                        {
+                            var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
+                            }
+                        }
+                        _db.PurchaseDetails.RemoveRange(existingDetails);
+                    }
+                    
 
                     // Save changes
                     _db.SaveChanges();
                     transaction.Commit();
 
                     TempData["SuccessMessage"] = "Item updated successfully.";
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception ex)
+                catch (DbEntityValidationException ex)
                 {
                     transaction.Rollback();
+
+                    // Log the validation errors for debugging
+                    foreach (var validationError in ex.EntityValidationErrors)
+                    {
+                        foreach (var error in validationError.ValidationErrors)
+                        {
+                            // Log property name and error message
+                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                        }
+                    }
+
                     TempData["ErrorMessage"] = "An error occurred while updating the Item.";
-                    // Log the exception (ex) for debugging purposes
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
                 }
             }
         }
@@ -1415,6 +1519,24 @@ namespace Ressential.Controllers
                     return RedirectToAction("ItemList");
                 }
                 var purchaseDetails = _db.PurchaseDetails.Select(p => p).Where(p => p.PurchaseId == purchaseId);
+
+                if (purchaseDetails != null)
+                {
+                    foreach (var item in purchaseDetails)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                        decimal oldQuantity = warehouseItemStock.Quantity;
+                        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                        if (warehouseItemStock.Quantity == 0)
+                        {
+                            warehouseItemStock.CostPerUnit = 0;
+                        }
+                        else
+                        {
+                            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                        }
+                    }
+                }
                 _db.PurchaseDetails.RemoveRange(purchaseDetails);
                 _db.Purchases.Remove(purchase);
                 _db.SaveChanges();
@@ -1442,6 +1564,31 @@ namespace Ressential.Controllers
                 {
                     var purchasesToDelete = _db.Purchases.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
                     var purchaseDetails = _db.PurchaseDetails.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
+
+                    foreach (var item in purchasesToDelete)
+                    {
+                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Purchase" && w.TransactionTypeId == item.PurchaseId);
+                        _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
+                    }
+
+                    if (purchaseDetails != null)
+                    {
+                        foreach (var item in purchaseDetails)
+                        {
+                            var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                            }
+                        }
+                    }
+
                     _db.PurchaseDetails.RemoveRange(purchaseDetails);
                     _db.Purchases.RemoveRange(purchasesToDelete);
                     _db.SaveChanges();
@@ -1463,12 +1610,356 @@ namespace Ressential.Controllers
         }
         public ActionResult CreatePurchaseReturn()
         {
-            return View();
+
+            var purchaseReturn = new PurchaseReturn
+            {
+                PurchaseReturnDetails = new List<PurchaseReturnDetail>
+                {
+                    new PurchaseReturnDetail()
+                }
+
+            };
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
+            ViewBag.Vendors = _db.Vendors.ToList();
+
+            return View(purchaseReturn);
         }
-      
-        public ActionResult PurchaseReturnList()
+        [HttpPost]
+        public ActionResult CreatePurchaseReturn(PurchaseReturn purchaseReturn)
         {
-            return View();
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    int nextPurchaseNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.PurchaseReturns.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextPurchaseNumber = _db.PurchaseReturns
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.PurchaseReturnNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    purchaseReturn.PurchaseReturnNo = $"PRE-{datePart}{nextPurchaseNumber:D4}";
+                    purchaseReturn.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    purchaseReturn.CreatedAt = DateTime.Now;
+                    purchaseReturn.Status = "Not Received";
+                    _db.PurchaseReturns.Add(purchaseReturn);
+                    _db.SaveChanges();
+
+                    foreach (var purchaseReturnDetails in purchaseReturn.PurchaseReturnDetails)
+                    {
+                        var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseReturnDetails.ItemId).FirstOrDefault();
+                        decimal currentQuantity = currentItemStock.Quantity;
+                        currentItemStock.Quantity = currentQuantity - purchaseReturnDetails.Quantity;
+                        if (currentItemStock.Quantity <= 0)
+                        {
+                            currentItemStock.CostPerUnit = 0;
+                        }
+                        else
+                        {
+                            currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) - (purchaseReturnDetails.Quantity * purchaseReturnDetails.UnitPrice)) / (currentItemStock.Quantity);
+                        }
+
+                        var warehouseItemTransaction = new WarehouseItemTransaction
+                        {
+                            TransactionDate = purchaseReturn.PurchaseReturnDate,
+                            ItemId = purchaseReturnDetails.ItemId,
+                            TransactionType = "PurchaseReturn",
+                            TransactionTypeId = purchaseReturn.PurchaseReturnId,
+                            Quantity = purchaseReturnDetails.Quantity,
+                            CostPerUnit = purchaseReturnDetails.UnitPrice
+                        };
+                        _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
+                        _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                    }
+                    _db.SaveChanges();
+
+                    return Json("0", JsonRequestBehavior.AllowGet);
+                }
+                ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
+                ViewBag.Items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
+                return View(purchaseReturn);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                return RedirectToAction("Index", "Error");
+            }
+        }
+        public ActionResult PurchaseReturnList(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                var purchaseReturnList = _db.PurchaseReturns
+             .Select(p => new PurchaseReturnListViewModel
+             {
+                 PurchaseReturnId = p.PurchaseReturnId,
+                 PurchaseReturnNo = p.PurchaseReturnNo,
+                 PurchaseReturnDate = p.PurchaseReturnDate,
+                 ReferenceNo = p.ReferenceNo,
+                 VendorName = p.Vendor.Name,
+                 Status = p.Status,
+                 TotalAmount = p.PurchaseReturnDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+             }).Where(p => p.PurchaseReturnNo.Contains(search) || p.ReferenceNo.Contains(search))
+                .ToList();
+                return View(purchaseReturnList);
+            }
+            var purchaseReturnList2 = _db.PurchaseReturns
+             .Select(p => new PurchaseReturnListViewModel
+             {
+                 PurchaseReturnId = p.PurchaseReturnId,
+                 PurchaseReturnNo = p.PurchaseReturnNo,
+                 PurchaseReturnDate = p.PurchaseReturnDate,
+                 ReferenceNo = p.ReferenceNo,
+                 VendorName = p.Vendor.Name,
+                 Status = p.Status,
+                 TotalAmount = p.PurchaseReturnDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+             }).ToList();
+            return View(purchaseReturnList2);
+        }
+        public ActionResult EditPurchaseReturn(int purchaseReturnId)
+        {
+            PurchaseReturn purchaseReturn = _db.PurchaseReturns.Find(purchaseReturnId);
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
+            ViewBag.Vendors = _db.Vendors.ToList();
+            return View(purchaseReturn);
+        }
+        [HttpPost]
+        public ActionResult EditPurchaseReturn(PurchaseReturn purchaseReturn)
+        {
+            if (purchaseReturn == null)
+            {
+                foreach (var state in ModelState)
+                {
+                    var key = state.Key; // Property name
+                    var errors = state.Value.Errors; // List of errors for this property
+
+                    foreach (var error in errors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
+            }
+
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var existingPurchaseReturn = _db.PurchaseReturns.Include(p => p.PurchaseReturnDetails).FirstOrDefault(p => p.PurchaseReturnId == purchaseReturn.PurchaseReturnId);
+                    if (existingPurchaseReturn == null)
+                    {
+                        return Json(new { status = "error", message = "Purchase return not found" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    // Update purchase metadata
+                    purchaseReturn.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    purchaseReturn.ModifiedAt = DateTime.Now;
+
+                    // Update existing purchase values
+                    _db.Entry(existingPurchaseReturn).CurrentValues.SetValues(purchaseReturn);
+                    _db.Entry(existingPurchaseReturn).Property(x => x.CreatedBy).IsModified = false;
+                    _db.Entry(existingPurchaseReturn).Property(x => x.CreatedAt).IsModified = false;
+                    _db.Entry(existingPurchaseReturn).Property(x => x.Status).IsModified = false;
+
+                    // Update PurchaseDetails
+                    var existingDetails = existingPurchaseReturn.PurchaseReturnDetails.ToList();
+                    var newDetails = purchaseReturn.PurchaseReturnDetails;
+
+                    // Update or Add new details
+                    foreach (var newDetail in newDetails)
+                    {
+                        var existingDetail = existingDetails.FirstOrDefault(d => d.PurchaseReturnDetailId == newDetail.PurchaseReturnDetailId);
+                        var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
+                        if (existingDetail != null)
+                        {
+                            //decimal RevertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice);
+                            decimal RevertedQuantity = warehouseItemStock.Quantity + existingDetail.Quantity;
+                            //decimal RevertedAverageCost = RevertedTotalCost / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
+                            //decimal RevertedAverageCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
+
+                            warehouseItemStock.Quantity = RevertedQuantity - newDetail.Quantity; //Updated Quantity
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (existingDetail.Quantity * existingDetail.UnitPrice) - (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            }
+
+                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
+                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                        }
+                        else
+                        {
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity - newDetail.Quantity; //Updated Quantity
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            }
+                            existingPurchaseReturn.PurchaseReturnDetails.Add(newDetail); // Add new detail
+                        }
+                    }
+
+                    // Delete unmatched details
+                    if (existingDetails != null)
+                    {
+                        foreach (var item in existingDetails)
+                        {
+                            var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity + item.Quantity;
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
+                            }
+                        }
+                        _db.PurchaseReturnDetails.RemoveRange(existingDetails);
+                    }
+
+
+                    // Save changes
+                    _db.SaveChanges();
+                    transaction.Commit();
+
+                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    transaction.Rollback();
+
+                    // Log the validation errors for debugging
+                    foreach (var validationError in ex.EntityValidationErrors)
+                    {
+                        foreach (var error in validationError.ValidationErrors)
+                        {
+                            // Log property name and error message
+                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                        }
+                    }
+
+                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+        [HttpPost]
+        public ActionResult DeletePurchaseReturn(int purchaseReturnId)
+        {
+            try
+            {
+                var purchaseReturn = _db.PurchaseReturns.Find(purchaseReturnId);
+                if (purchaseReturn == null)
+                {
+                    TempData["ErrorMessage"] = "Item not found.";
+                    return RedirectToAction("PurchaseReturnList");
+                }
+                var purchaseReturnDetails = _db.PurchaseReturnDetails.Select(p => p).Where(p => p.PurchaseReturnId == purchaseReturnId);
+
+                if (purchaseReturnDetails != null)
+                {
+                    foreach (var item in purchaseReturnDetails)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                        decimal oldQuantity = warehouseItemStock.Quantity;
+                        warehouseItemStock.Quantity = warehouseItemStock.Quantity + item.Quantity;
+                        if (warehouseItemStock.Quantity == 0)
+                        {
+                            warehouseItemStock.CostPerUnit = 0;
+                        }
+                        else
+                        {
+                            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                        }
+                    }
+                }
+                _db.PurchaseReturnDetails.RemoveRange(purchaseReturnDetails);
+                _db.PurchaseReturns.Remove(purchaseReturn);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                }
+            }
+            return RedirectToAction("PurchaseReturnList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedPurchaseReturn(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var purchaseReturnToDelete = _db.PurchaseReturns.Where(c => selectedItems.Contains(c.PurchaseReturnId)).ToList();
+                    var purchaseReturnDetails = _db.PurchaseReturnDetails.Where(c => selectedItems.Contains(c.PurchaseReturnId)).ToList();
+
+                    foreach (var item in purchaseReturnToDelete)
+                    {
+                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "PurchaseReturn" && w.TransactionTypeId == item.PurchaseReturnId);
+                        _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
+                    }
+
+                    if (purchaseReturnDetails != null)
+                    {
+                        foreach (var item in purchaseReturnDetails)
+                        {
+                            var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            warehouseItemStock.Quantity = warehouseItemStock.Quantity + item.Quantity;
+                            if (warehouseItemStock.Quantity == 0)
+                            {
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                            }
+                        }
+                    }
+
+                    _db.PurchaseReturnDetails.RemoveRange(purchaseReturnDetails);
+                    _db.PurchaseReturns.RemoveRange(purchaseReturnToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Items deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                    }
+                }
+            }
+            return RedirectToAction("PurchaseReturnList");
         }
         public ActionResult CreateIssue()
         {
@@ -1509,6 +2000,8 @@ namespace Ressential.Controllers
                 ModelState.AddModelError("", "Password and Confirm Password do not match.");
                 return View(user);
             }
+            user.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            user.CreatedAt = DateTime.Now;
             _db.Users.Add(user);
             _db.SaveChanges();
             return RedirectToAction("UserList");
@@ -1523,15 +2016,34 @@ namespace Ressential.Controllers
             return View(User);
         }
         [HttpPost]
-        public ActionResult EditUser(User user)
+        public ActionResult EditUser(User user, String ConfirmPassword)
         {
             var existingUser = _db.Users.Find(user.UserId);
             if (existingUser == null)
             {
                 return HttpNotFound();
             }
+
+            ConfirmPassword = ConfirmPassword == "" ? null : ConfirmPassword;
+
+            if (user.Password != ConfirmPassword)
+            {
+                ModelState.AddModelError("", "Password and Confirm Password do not match.");
+                return View(user);
+            }
+
             user.Email = existingUser.Email;
+            user.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            user.ModifiedAt = DateTime.Now;
+
             _db.Entry(existingUser).CurrentValues.SetValues(user);
+            _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
+            _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
+            if (user.Password == null)
+            {
+                _db.Entry(existingUser).Property(x => x.Password).IsModified = false;
+            }
+
             _db.Entry(existingUser).State = EntityState.Modified;
             _db.SaveChanges();
             return RedirectToAction("UserList");
