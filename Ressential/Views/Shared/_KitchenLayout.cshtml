@@ -2,7 +2,7 @@
 <html lang="en">
 <!-- [Head] start -->
 <head>
-    <title>Dashboard | Berry Dashboard Template</title>
+    <title>Ressential | Kitchen</title>
     <!-- [Meta] -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -231,10 +231,10 @@
                     <li class="dropdown pc-h-item me-1">
                         @{ Html.RenderAction("BranchesDropdown", "Kitchen"); }
                         @*<select class="form-select p-r-35" id="branchSelect">
-            <option selected value="">Shahrah-e-Faisal</option>
-            <option value="">Korangi Crossing</option>
-            <option value="">North Nazimabad</option>
-        </select>*@
+                                <option selected value="">Shahrah-e-Faisal</option>
+                                <option value="">Korangi Crossing</option>
+                                <option value="">North Nazimabad</option>
+                            </select>*@
                     </li>
                     <li class="dropdown pc-h-item">
                         <select class="form-select p-r-35" id="managementSelect">
@@ -310,7 +310,7 @@
                                         <i class="ti ti-settings"></i>
                                         <span>Account Settings</span>
                                     </a>
-                                    <a href="/Account/login" class="dropdown-item">
+                                    <a href="@Url.Action("Logout","Account")" class="dropdown-item">
                                         <i class="ti ti-logout"></i>
                                         <span>Logout</span>
                                     </a>
@@ -380,6 +380,25 @@
         });
     </script>
 
+    <script>
+    $(document).on('change', '#branchDropdown', function () {
+        var selectedBranchId = $(this).val();
+        if (selectedBranchId) {
+            $.ajax({
+                url: '/Kitchen/SetBranchClaim',
+                type: 'POST',
+                data: { branchId: selectedBranchId },
+                success: function (response) {
+                    //alert('Branch updated successfully!');
+                    window.location.href = '@Url.Action("Index","Kitchen")'
+                },
+                error: function () {
+                    alert('Failed to update branch.');
+                }
+            });
+        }
+    });
+    </script>
 
 
     <script>font_change("Roboto");</script>

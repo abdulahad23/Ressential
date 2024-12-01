@@ -225,6 +225,7 @@
             $(document).on('click', '.removeRowBtn', function () {
                 if ($('#itemsTableBody .item-row').length > 1) {
                     $(this).closest('.item-row').remove();
+                    $(this).tooltip('dispose');
                 } else {
                     alert("At least one item is required.");
                 }

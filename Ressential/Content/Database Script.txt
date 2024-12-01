@@ -564,6 +564,15 @@ CREATE TABLE ReceiptVoucherAttachments (
     FOREIGN KEY (ReceiptVoucherId) REFERENCES ReceiptVouchers(ReceiptVoucherId) ON DELETE CASCADE
 );
 
+-- Table: UserBranchDetial
+CREATE TABLE UserBranchDetial (
+    UserBranchDetialId INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    BranchId INT NOT NULL,
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE
+);
+
 
 INSERT INTO UnitOfMeasure (Name, Symbol)
 VALUES ('Kilogram', 'kg'),

@@ -137,11 +137,11 @@
             });
 
             // Function to remove a row
-            $(document).on('click', '.removeRowBtn', function () {
-                $(this).tooltip('dispose');
-                $(this).closest('tr').remove();
-                calculateGrandTotal();
-            });
+            //$(document).on('click', '.removeRowBtn', function () {
+            //    $(this).tooltip('dispose');
+            //    $(this).closest('tr').remove();
+            //    calculateGrandTotal();
+            //});
 
             //Function to calculate total and grand total on load
             $(document).ready(function () {

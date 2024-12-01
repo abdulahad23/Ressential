@@ -727,6 +727,7 @@
     <Content Include="Views\Kitchen\CreateItem.cshtml" />
     <Content Include="Views\Shared\_BranchesDropdown.cshtml" />
     <Content Include="Views\Warehouse\EditPurchaseReturn.cshtml" />
+    <Content Include="Views\Kitchen\EditRequisition.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

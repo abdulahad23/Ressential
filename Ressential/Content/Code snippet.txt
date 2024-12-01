@@ -1,0 +1,14 @@
+-- TO CHECK IF MODEL IS VALID --
+
+foreach (var state in ModelState)
+{
+    var key = state.Key; // Property name
+    var errors = state.Value.Errors; // List of errors for this property
+
+    foreach (var error in errors)
+    {
+        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+    }
+}
+
+return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);

@@ -11,5 +11,7 @@ namespace Ressential.Utilities
         public string UserName { get; set; }
         public string Email { get; set; }
         public bool IsActive { get; set; }
+
+        public int BranchId { get; set; }
     }
 }

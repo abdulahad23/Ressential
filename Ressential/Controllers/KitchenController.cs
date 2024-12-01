@@ -8,9 +8,14 @@ using Ressential.Models;
 using Ressential.Utilities;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
+using Microsoft.Owin.Security;
+using System.Security.Claims;
+using System.Data.Entity.Migrations;
+using System.Data.Entity.Validation;
 
 namespace Ressential.Controllers
 {
+    [Authorize]
     public class KitchenController : Controller
     {
         DB_RessentialEntities _db = new DB_RessentialEntities();
@@ -19,11 +24,12 @@ namespace Ressential.Controllers
         }
         public ActionResult ItemList(string search)
         {
-            var branchItems = _db.BranchItems.AsQueryable();
-
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var branchItems = _db.BranchItems.AsQueryable().Where(c => c.BranchId == selectedBranchId);
+            
             if (!string.IsNullOrEmpty(search))
             {
-                branchItems = branchItems.Where(c => c.Item.ItemName.Contains(search));
+                branchItems = branchItems.Where(c => c.Item.ItemName.Contains(search) && c.BranchId == selectedBranchId);
             }
             return View(branchItems.ToList());
         }
@@ -40,7 +46,7 @@ namespace Ressential.Controllers
             {
                 branchItems.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 branchItems.CreatedAt = DateTime.Now;
-                branchItems.BranchId = 1;
+                branchItems.BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId")); ;
                 _db.BranchItems.Add(branchItems);
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Item created successfully.";
@@ -150,13 +156,330 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("ItemList");
         }
-        public ActionResult RequisitionList()
+        public ActionResult RequisitionList(string search)
         {
-            return View();
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var requisition = _db.Requisitions.Where(c => c.BranchId == selectedBranchId);
+            if (!string.IsNullOrEmpty(search))
+            {
+                requisition = requisition.Where(c => (c.RequisitionDetails.Where(i => i.Item.ItemName.Contains(search)).Count()>0 || c.RequisitionNo.Contains(search) || c.Description.Contains(search)) && c.BranchId == selectedBranchId);
+            }
+            return View(requisition.ToList());
+
         }
         public ActionResult CreateRequisition()
         {
-            return View();
+            var requisition = new Requisition
+            {
+                RequisitionDetails = new List<RequisitionDetail>
+                {
+                    new RequisitionDetail()
+                }
+
+            };
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
+
+            return View(requisition);
+        }
+        [HttpPost]
+        public ActionResult CreateRequisition(Requisition requisition)
+        {
+            try
+            {
+                var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                if (ModelState.IsValid)
+                {
+                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    int nextRequisitionNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.Requisitions.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextRequisitionNumber = _db.Requisitions
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.RequisitionNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    requisition.RequisitionNo = $"REQ-{datePart}{nextRequisitionNumber:D4}";
+                    requisition.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    requisition.CreatedAt = DateTime.Now;
+                    requisition.BranchId = selectedBranchId;
+                    requisition.Status = "Pending";
+                    _db.Requisitions.Add(requisition);
+                    _db.SaveChanges();
+
+                    //foreach (var requisitionDetails in requisition.RequisitionDetails)
+                    //{
+                    //    var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
+                    //    decimal currentQuantity = currentItemStock.Quantity;
+                    //    currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
+                    //    currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice)) / (currentItemStock.Quantity);
+
+                    //    var warehouseItemTransaction = new WarehouseItemTransaction
+                    //    {
+                    //        TransactionDate = purchase.PurchaseDate,
+                    //        ItemId = purchaseDetails.ItemId,
+                    //        TransactionType = "Purchase",
+                    //        TransactionTypeId = purchase.PurchaseId,
+                    //        Quantity = purchaseDetails.Quantity,
+                    //        CostPerUnit = purchaseDetails.UnitPrice
+                    //    };
+                    //    _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
+                    //    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                    //}
+                    //_db.SaveChanges();
+
+                    return Json("0", JsonRequestBehavior.AllowGet);
+                }
+                
+                ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
+                return View(requisition);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                return RedirectToAction("Index", "Error");
+            }
+        }
+        public ActionResult EditRequisition(int requisitionId)
+        {
+            Requisition requisition = _db.Requisitions.Find(requisitionId);
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
+            return View(requisition);
+        }
+        [HttpPost]
+        public ActionResult EditRequisition(Requisition requisition)
+        {
+            if (requisition == null)
+            {
+                foreach (var state in ModelState)
+                {
+                    var key = state.Key; // Property name
+                    var errors = state.Value.Errors; // List of errors for this property
+
+                    foreach (var error in errors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
+            }
+
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    var existingRequisition = _db.Requisitions.Include(p => p.RequisitionDetails).FirstOrDefault(p => p.RequisitionId == requisition.RequisitionId);
+                    if (existingRequisition == null)
+                    {
+                        return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    // Update purchase metadata
+                    requisition.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    requisition.ModifiedAt = DateTime.Now;
+
+                    // Update existing purchase values
+                    _db.Entry(existingRequisition).CurrentValues.SetValues(requisition);
+                    _db.Entry(existingRequisition).Property(x => x.CreatedBy).IsModified = false;
+                    _db.Entry(existingRequisition).Property(x => x.CreatedAt).IsModified = false;
+                    _db.Entry(existingRequisition).Property(x => x.BranchId).IsModified = false;
+                    _db.Entry(existingRequisition).Property(x => x.Status).IsModified = false;
+
+                    // Update PurchaseDetails
+                    var existingDetails = existingRequisition.RequisitionDetails.ToList();
+                    var newDetails = requisition.RequisitionDetails;
+
+                    // Update or Add new details
+                    foreach (var newDetail in newDetails)
+                    {
+                        var existingDetail = existingDetails.FirstOrDefault(d => d.RequisitionDetailId == newDetail.RequisitionDetailId);
+                        //var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
+                        if (existingDetail != null)
+                        {
+                            //decimal RevertedQuantity = warehouseItemStock.Quantity - existingDetail.Quantity;
+                            
+                            //warehouseItemStock.Quantity = RevertedQuantity + newDetail.Quantity; //Updated Quantity
+                            //if (warehouseItemStock.Quantity == 0)
+                            //{
+                            //    warehouseItemStock.CostPerUnit = 0;
+                            //}
+                            //else
+                            //{
+                            //    warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            //}
+
+                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
+                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                        }
+                        else
+                        {
+                            //decimal oldQuantity = warehouseItemStock.Quantity;
+                            //warehouseItemStock.Quantity = warehouseItemStock.Quantity + newDetail.Quantity; //Updated Quantity
+                            //if (warehouseItemStock.Quantity == 0)
+                            //{
+                            //    warehouseItemStock.CostPerUnit = 0;
+                            //}
+                            //else
+                            //{
+                            //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                            //}
+                            existingRequisition.RequisitionDetails.Add(newDetail); // Add new detail
+                        }
+                    }
+
+                    // Delete unmatched details
+                    if (existingDetails != null)
+                    {
+                        //foreach (var item in existingDetails)
+                        //{
+                            //var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                            //decimal oldQuantity = warehouseItemStock.Quantity;
+                            //warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                            //if (warehouseItemStock.Quantity == 0)
+                            //{
+                            //    warehouseItemStock.CostPerUnit = 0;
+                            //}
+                            //else
+                            //{
+                            //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
+                            //}
+                        //}
+                        _db.RequisitionDetails.RemoveRange(existingDetails);
+                    }
+
+
+                    // Save changes
+                    _db.SaveChanges();
+                    transaction.Commit();
+
+                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    transaction.Rollback();
+
+                    // Log the validation errors for debugging
+                    foreach (var validationError in ex.EntityValidationErrors)
+                    {
+                        foreach (var error in validationError.ValidationErrors)
+                        {
+                            // Log property name and error message
+                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                        }
+                    }
+
+                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+        [HttpPost]
+        public ActionResult DeleteRequisition(int requisitionId)
+        {
+            try
+            {
+                var requisition = _db.Requisitions.Find(requisitionId);
+                if (requisition == null)
+                {
+                    TempData["ErrorMessage"] = "Requisition not found.";
+                    return RedirectToAction("RequisitionList");
+                }
+                var requisitionDetails = _db.RequisitionDetails.Select(p => p).Where(p => p.RequisitionId == requisitionId);
+
+                //if (requisitionDetails != null)
+                //{
+                //    foreach (var item in requisitionDetails)
+                //    {
+                //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                //        decimal oldQuantity = warehouseItemStock.Quantity;
+                //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                //        if (warehouseItemStock.Quantity == 0)
+                //        {
+                //            warehouseItemStock.CostPerUnit = 0;
+                //        }
+                //        else
+                //        {
+                //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                //        }
+                //    }
+                //}
+                _db.RequisitionDetails.RemoveRange(requisitionDetails);
+                _db.Requisitions.Remove(requisition);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Requisition deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This requisition is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the requisition.";
+                }
+            }
+            return RedirectToAction("RequisitionList");
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedRequisitions(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var requisitionsToDelete = _db.Requisitions.Where(c => selectedItems.Contains(c.RequisitionId)).ToList();
+                    var requisitionDetails = _db.RequisitionDetails.Where(c => selectedItems.Contains(c.RequisitionId)).ToList();
+
+                    //foreach (var item in requisitionsToDelete)
+                    //{
+                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Requisition" && w.TransactionTypeId == item.RequisitionId);
+                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
+                    //}
+
+                    //if (requisitionDetails != null)
+                    //{
+                    //    foreach (var item in requisitionDetails)
+                    //    {
+                    //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                    //        decimal oldQuantity = warehouseItemStock.Quantity;
+                    //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
+                    //        if (warehouseItemStock.Quantity == 0)
+                    //        {
+                    //            warehouseItemStock.CostPerUnit = 0;
+                    //        }
+                    //        else
+                    //        {
+                    //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                    //        }
+                    //    }
+                    //}
+
+                    _db.RequisitionDetails.RemoveRange(requisitionDetails);
+                    _db.Requisitions.RemoveRange(requisitionsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Requisitions deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "A requisition is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the requisition.";
+                    }
+                }
+            }
+            return RedirectToAction("RequisitionList");
         }
         public ActionResult ReceiveStockList()
         {
@@ -386,8 +709,38 @@ namespace Ressential.Controllers
         [ChildActionOnly]
         public ActionResult BranchesDropdown()
         {
-            var branches = _db.Branches.Where(b => b.IsActive == true).ToList();
+            var branches = _db.Branches.Where(b => b.IsActive).ToList();
+
+            // Get the selected branchId from claims
+            var branchIdClaim = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            ViewBag.SelectedBranchId = branchIdClaim;
             return PartialView("_BranchesDropdown", branches);
+        }
+
+        [HttpPost]
+        public ActionResult SetBranchClaim(int branchId)
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            // Remove existing branch claim if exists
+            var existingClaim = claimsIdentity?.FindFirst("BranchId");
+            if (existingClaim != null)
+            {
+                claimsIdentity.RemoveClaim(existingClaim);
+            }
+
+            // Add the new branch claim
+            claimsIdentity?.AddClaim(new Claim("BranchId", branchId.ToString()));
+
+            // Update the authentication cookie
+            var ctx = Request.GetOwinContext();
+            var authenticationManager = ctx.Authentication;
+            authenticationManager.AuthenticationResponseGrant = new AuthenticationResponseGrant(
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties() { IsPersistent = true }
+            );
+
+            return Json(new { success = true });
         }
     }
 }

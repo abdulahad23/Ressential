@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<Ressential.Models.Requisition>
+
 @{
     ViewBag.Title = "RequisitionList";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
@@ -7,24 +8,37 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="input-group input-group-sm mb-3">
-                    <select class="form-select" id="inputGroupSelectStart">
-                        <option selected>Choose Action</option>
-                        <option value="1">Delete</option>
-                    </select>
-                    <button class="btn btn-secondary" type="button">Apply</button>
-                </div>
-            </div>
-            <div class="col-md-3 ms-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
-                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
-                </div>
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group input-group-sm mb-3">
+                <select class="form-select" id="actionDropdown" aria-label="Select action">
+                    <option selected>Choose Action</option>
+                    <option value="delete">Delete</option>
+                </select>
+                <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
             </div>
         </div>
-        <div class="table-responsive">
+        <div class="col-md-3 ms-auto">
+            <form id="searchForm" action="@Url.Action("RequisitionList", "Kitchen")" method="get">
+                <div class="input-group input-group-sm mb-3">
+                    <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
+                    <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <form id="actionForm" action="@Url.Action("DeleteSelectedRequisitions", "Kitchen")" method="post">
             <table class="table table-bordered table-hover">
                 <thead class="table-light">
                     <tr>
@@ -33,82 +47,83 @@
                         </th>
                         <th scope="col">Requisition Date</th>
                         <th scope="col">Requisition No</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Items</th>
                         <th scope="col">Status</th>
                         <th scope="col" class="fit-content">Option</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-01</td>
-                        <td>REQ-001</td>
-                        <td>Sugar, Cooking Oil</td>
-                        <td>
-                            <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Settled
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-03</td>
-                        <td>REQ-003</td>
-                        <td>Sugar, Potato</td>
-                        <td>
-                            <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Rejected
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-02</td>
-                        <td>REQ-002</td>
-                        <td>Potato</td>
-                        <td>
-                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Pending
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                    <li><a class="dropdown-item" href="#">Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                    @foreach (var requisition in Model)
+                    {
+                        <tr>
+                            <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@requisition.RequisitionId" aria-label="Select Requisition"></td>
+                            <td>@requisition.RequisitionDate.ToString("dd-MMM-yyyy")</td>
+                            <td>@requisition.RequisitionNo</td>
+                            <td>@requisition.Description</td>
+                            @{
+                                string itemNames = "";
+                                foreach (var item in requisition.RequisitionDetails)
+                                {
+                                    if (itemNames == "")
+                                    {
+                                        itemNames = item.Item.ItemName;
+                                    }
+                                    else
+                                    {
+                                        itemNames = itemNames + ", " + item.Item.ItemName;
+                                    }
 
+                                }
+                                <td>@itemNames</td>
+                            }
+                            <td>
+                                @if (requisition.Status == "Pending")
+                                {
+                                    <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Pending
+                                    </span>
+                                }
+                                else if (requisition.Status == "Settled")
+                                {
+                                    <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Settled
+                                    </span>
+                                }
+                                else if (requisition.Status == "Partially Settled")
+                                {
+                                    <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Partially Settled
+                                    </span>
+                                }
+                                else if (requisition.Status == "Rejected")
+                                {
+                                    <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Rejected
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                        <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li><button class="dropdown-item" type="button" onclick="submitEditForm(@requisition.RequisitionId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                        <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@requisition.RequisitionId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
-        </div>
+        </form>
+        <!-- Hidden Form for Edit/Delete Actions -->
+        <form id="editDeleteForm" method="post" style="display: none;">
+            <input type="hidden" name="RequisitionId" id="formRequisitionId" />
+        </form>
+    </div>
     </div>
 </div>
 
@@ -116,7 +131,41 @@
 <script>
     // Function to toggle all checkboxes
     function toggleAll(source) {
-        const checkboxes = document.querySelectorAll('.form-check-input');
+        const checkboxes = document.querySelectorAll('.item-checkbox');
         checkboxes.forEach(checkbox => checkbox.checked = source.checked);
-    }</script>
+    }
+
+    function applyAction() {
+        const action = document.getElementById("actionDropdown").value;
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+        if (action === "delete") {
+            if (checkboxes.length === 0) {
+                alert("No records selected to delete.");
+                return;
+            }
+            if (confirm("Are you sure you want to delete the selected records?")) {
+                document.getElementById("actionForm").submit();
+            }
+        }
+    }
+
+    function submitEditForm(RequisitionId) {
+        const form = document.getElementById("editDeleteForm");
+        form.action = "@Url.Action("EditRequisition", "Kitchen")";
+        document.getElementById("formRequisitionId").value = RequisitionId;
+        form.method = "get";
+        form.submit();
+    }
+
+    function submitDeleteForm(RequisitionId) {
+        if (confirm('Are you sure you want to delete this record?')) {
+            const form = document.getElementById("editDeleteForm");
+            form.action = "@Url.Action("DeleteRequisition", "Kitchen")";
+            document.getElementById("formRequisitionId").value = RequisitionId;
+            form.method = "post";
+            form.submit();
+        }
+    }
+</script>
 

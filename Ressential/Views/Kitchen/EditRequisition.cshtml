@@ -1,7 +1,7 @@
 ﻿@model Ressential.Models.Requisition
 
 @{
-    ViewBag.Title = "CreateRequisition";
+    ViewBag.Title = "EditRequisition";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
 }
 
@@ -10,7 +10,10 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h2 class="text-secondary"><b>Create Requisition</b></h2>
+                <h2 class="text-secondary"><b>Update Requisition</b></h2>
+                @Html.HiddenFor(model => model.RequisitionId)
+                @Html.HiddenFor(model => model.RequisitionNo)
+                @Html.HiddenFor(model => model.RequisitionDetails)
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
@@ -97,7 +100,7 @@
                                         <div class="col-sm-9">
                                             <button id="CreateRequisition" type="button"
                                                     class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Save
+                                                Update
                                             </button>
                                             <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
                                         </div>
@@ -152,16 +155,20 @@
 
         // Initialize an object to hold all data
          let requisition = {
-            RequisitionDetails: [],
+             RequisitionDetails: [],
+             requisitionDetailId: $('#RequisitionDetailId').val(),
             requisitionDate: $('#RequisitionDate').val(),
-            description: $('#Description').val()
+             description: $('#Description').val(),
+            RequisitionId: $('#RequisitionId').val(),
+             RequisitionNo: $('#RequisitionNo').val()
         };
 
         // Find all rows in the tbody
         $('#itemsTableBody .item-row').each(function() {
             // Initialize an object to hold the values for each row
             let rowData = {};
-
+            rowData.RequisitionDetailId = $(this).find('input[name="item.RequisitionDetailId"]').val();
+            rowData.RequisitionId = $('#RequisitionId').val(),
             // Get the selected item from the dropdown
             rowData.ItemId = $(this).find('select').val();
 
@@ -180,19 +187,24 @@
 
         // Example: you might want to send this data to a server
          $.ajax({
-             url: '@Url.Action("CreateRequisition", "Kitchen")',
+             url: '@Url.Action("EditRequisition", "Kitchen")',
              method: 'POST',
              data: JSON.stringify(requisition),
              contentType: 'application/json',
              success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("RequisitionList", "Kitchen")'
+                if (response.status == "success") {
+                    window.location.href = '@Url.Action("RequisitionList","Kitchen")'
                 }
-                else if (response == "1")
+                else if (response.status == "error")
                 {
                     window.location.href = '@Url.Action("Index","Error")'
                 }
-             }
+                // Handle the response
+            },
+            error: function (xhr, status, error) {
+                // Handle unexpected errors
+                alert("An unexpected error occurred: " + error);
+            }
          });
      });
 </script>

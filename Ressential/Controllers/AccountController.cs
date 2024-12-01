@@ -54,17 +54,27 @@ namespace Ressential.Controllers
         }
 
 
-        public void SetClaimsIdentity(UserDetails user)
+        public void SetClaimsIdentity(UserDetails user, int? branchId = null)
         {
             var claims = new List<Claim>();
             try
             {
+                var defaultBranchId = _db.Branches
+            .Where(b => b.IsActive)
+            .OrderBy(b => b.BranchId)
+            .Select(b => b.BranchId)
+            .FirstOrDefault();
+
                 // Setting    
                 claims.Add(new Claim(ClaimTypes.Name, user.UserName));
                 claims.Add(new Claim(ClaimTypes.Sid, user.UserId.ToString()));
                 claims.Add(new Claim("IsActive", user.IsActive.ToString()));
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
 
+                if (defaultBranchId != 0)
+                {
+                    claims.Add(new Claim("BranchId", defaultBranchId.ToString()));
+                }
 
                 var claimIdenties = new ClaimsIdentity(claims, DefaultAuthenticationTypes.ApplicationCookie);
                 var ctx = Request.GetOwinContext();

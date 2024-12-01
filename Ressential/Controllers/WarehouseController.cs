@@ -1515,8 +1515,8 @@ namespace Ressential.Controllers
                 var purchase = _db.Purchases.Find(purchaseId);
                 if (purchase == null)
                 {
-                    TempData["ErrorMessage"] = "Item not found.";
-                    return RedirectToAction("ItemList");
+                    TempData["ErrorMessage"] = "Purchase not found.";
+                    return RedirectToAction("PurchaseList");
                 }
                 var purchaseDetails = _db.PurchaseDetails.Select(p => p).Where(p => p.PurchaseId == purchaseId);
 
@@ -1546,11 +1546,11 @@ namespace Ressential.Controllers
             {
                 if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                 {
-                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
+                    TempData["ErrorMessage"] = "This purchase is already in use and cannot be deleted.";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                    TempData["ErrorMessage"] = "An error occurred while deleting the purchase.";
                 }
             }
             return RedirectToAction("PurchaseList");
@@ -1592,17 +1592,17 @@ namespace Ressential.Controllers
                     _db.PurchaseDetails.RemoveRange(purchaseDetails);
                     _db.Purchases.RemoveRange(purchasesToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Items deleted successfully.";
+                    TempData["SuccessMessage"] = "Purchase deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
                     if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                     {
-                        TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
+                        TempData["ErrorMessage"] = "A purchase is already in use and cannot be deleted.";
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                        TempData["ErrorMessage"] = "An error occurred while deleting the purchase.";
                     }
                 }
             }

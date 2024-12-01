@@ -29,6 +29,9 @@ namespace Ressential.Utilities
                 case "isActive":
                     returnVal = identity.Claims.Where(c => c.Type.Equals("IsActive")).Select(c => c.Value).SingleOrDefault();
                     break;
+                case "branchId":
+                    returnVal = identity.Claims.Where(c => c.Type.Equals("BranchId")).Select(c => c.Value).SingleOrDefault();
+                    break;
             }
             return returnVal;
 
