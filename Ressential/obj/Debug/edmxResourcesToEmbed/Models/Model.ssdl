@@ -216,6 +216,7 @@
     <Property Name="ProductId" Type="int" Nullable="false" />
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="Products">
     <Key>
@@ -225,7 +226,6 @@
     <Property Name="ProductCode" Type="nvarchar" MaxLength="50" Nullable="false" />
     <Property Name="ProductName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="BranchId" Type="int" Nullable="false" />
-    <Property Name="ProductImage" Type="varbinary(max)" />
     <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="255" />
     <Property Name="ProductCategoryId" Type="int" Nullable="false" />
@@ -235,6 +235,7 @@
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+    <Property Name="ProductImage" Type="nvarchar(max)" />
   </EntityType>
   <EntityType Name="PurchaseDetails">
     <Key>
@@ -453,6 +454,7 @@
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="CostApplied" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="WarehouseIssues">
     <Key>

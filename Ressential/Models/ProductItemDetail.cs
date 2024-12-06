@@ -18,6 +18,7 @@ namespace Ressential.Models
         public int ProductId { get; set; }
         public int ItemId { get; set; }
         public decimal ItemQuantity { get; set; }
+        public string Description { get; set; }
     
         public virtual Item Item { get; set; }
         public virtual Product Product { get; set; }

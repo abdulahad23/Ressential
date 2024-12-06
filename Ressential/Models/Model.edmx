@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="AccountId" />
@@ -221,6 +221,7 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Products">
           <Key>
@@ -230,7 +231,6 @@
           <Property Name="ProductCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ProductName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="BranchId" Type="int" Nullable="false" />
-          <Property Name="ProductImage" Type="varbinary(max)" />
           <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ProductCategoryId" Type="int" Nullable="false" />
@@ -240,6 +240,7 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="ProductImage" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="PurchaseDetails">
           <Key>
@@ -458,6 +459,7 @@
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="CostApplied" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="WarehouseIssues">
           <Key>
@@ -2057,8 +2059,7 @@
             <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_RessentialModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2346,6 +2347,7 @@
           <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="Self.FK__ProductIt__ItemI__41EDCAC5" FromRole="ProductItemDetails" ToRole="Items" />
           <NavigationProperty Name="Product" Relationship="Self.FK__ProductIt__Produ__40F9A68C" FromRole="ProductItemDetails" ToRole="Products" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Product">
           <Key>
@@ -2355,7 +2357,7 @@
           <Property Name="ProductCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="BranchId" Type="Int32" Nullable="false" />
-          <Property Name="ProductImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ProductImage" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ProductCategoryId" Type="Int32" Nullable="false" />
@@ -2665,6 +2667,7 @@
           <NavigationProperty Name="Item" Relationship="Self.FK__Warehouse__ItemI__04E4BC85" FromRole="WarehouseIssueDetails" ToRole="Items" />
           <NavigationProperty Name="Requisition" Relationship="Self.FK__Warehouse__Requi__03F0984C" FromRole="WarehouseIssueDetails" ToRole="Requisitions" />
           <NavigationProperty Name="WarehouseIssue" Relationship="Self.FK__Warehouse__Issue__02FC7413" FromRole="WarehouseIssueDetails" ToRole="WarehouseIssues" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="WarehouseIssue">
           <Key>
@@ -4452,6 +4455,7 @@
           <EntitySetMapping Name="ProductItemDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.ProductItemDetail">
               <MappingFragment StoreEntitySet="ProductItemDetails">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ProductItemDetailId" ColumnName="ProductItemDetailId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -4688,6 +4692,7 @@
           <EntitySetMapping Name="WarehouseIssueDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseIssueDetail">
               <MappingFragment StoreEntitySet="WarehouseIssueDetails">
+                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="IssueDetailId" ColumnName="IssueDetailId" />
                 <ScalarProperty Name="IssueId" ColumnName="IssueId" />
                 <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />

@@ -1961,17 +1961,92 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("PurchaseReturnList");
         }
-        public ActionResult CreateIssue()
+        public ActionResult CreateIssue(int requisitionId)
         {
-            return View();
+
+            var requisition = _db.Requisitions.Find(requisitionId);
+            List<WarehouseIssueDetailsHelper> warehouseIssueDetailsHelper = new List<WarehouseIssueDetailsHelper>(); 
+            foreach (var item in requisition.RequisitionDetails)
+            {
+                var warehouseIssueDetails = new WarehouseIssueDetailsHelper
+                {
+                    ItemId = item.ItemId,
+                    Description = item.Description,
+                    Quantity = item.Quantity,
+                };
+                warehouseIssueDetailsHelper.Add(warehouseIssueDetails);
+            }
+
+            var warehouseIssue = new WarehouseIssueHelper
+            {
+                BranchID = requisition.BranchId,
+                BranchName = requisition.Branch.BranchName,
+                RequisitionNo = requisition.RequisitionNo,
+                WarehouseIssueDetails = new List<WarehouseIssueDetailsHelper>
+                {
+                    
+                }
+
+            };
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
+            ViewBag.Requisition = _db.Requisitions.Find(requisitionId);
+
+            return View(warehouseIssue);
         }
         public ActionResult IssueList()
         {
             return View();
         }
-        public ActionResult RequisitionList()
+        public ActionResult RequisitionList(string search)
         {
-            return View();
+            var requisition = _db.Requisitions.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                requisition = requisition.Where(c => c.RequisitionDetails.Where(i => i.Item.ItemName.Contains(search)).Count() > 0 || c.RequisitionNo.Contains(search) || c.Description.Contains(search));
+            }
+            return View(requisition.ToList());
+        }
+        [HttpPost]
+        public ActionResult RejectRequisition(int requisitionId)
+        {
+             try
+            {
+                var requisiton = _db.Requisitions.Find(requisitionId);
+                if (requisiton == null)
+                {
+                    TempData["ErrorMessage"] = "Requisition not found.";
+                    return RedirectToAction("RequisitionList");
+                }
+                requisiton.Status = "Rejected";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Requisition status has been updated successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the requisition status.";
+            }
+            return RedirectToAction("RequisitionList");
+        }
+        [HttpPost]
+        public ActionResult PendingRequisition(int requisitionId)
+        {
+            try
+            {
+                var requisiton = _db.Requisitions.Find(requisitionId);
+                if (requisiton == null)
+                {
+                    TempData["ErrorMessage"] = "Requisition not found.";
+                    return RedirectToAction("RequisitionList");
+                }
+                requisiton.Status = "Pending";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Requisition status has been updated successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the requisition status.";
+            }
+            return RedirectToAction("RequisitionList");
         }
         public ActionResult StockReturnList()
         {

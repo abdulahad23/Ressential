@@ -1,6 +1,6 @@
 ﻿@model Ressential.Models.ReturnStock
 
-@{ ViewBag.Title = "CreateStockReturn";
+@{ ViewBag.Title = "EditReturnStock";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
 
 
@@ -8,7 +8,10 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
-                <h2 class="text-secondary"><b>Create Stock Return</b></h2>
+                <h2 class="text-secondary"><b>Update Stock Return</b></h2>
+                @Html.HiddenFor(model => model.ReturnStockId)
+                @Html.HiddenFor(model => model.ReturnNo)
+                @Html.HiddenFor(model => model.ReturnStockDetails)
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
@@ -49,11 +52,13 @@
 
                                                 if (i.ItemId == item.ItemId)
                                                 {
-                            <option selected value="@i.ItemId">@i.Item.ItemName</option> }
-                                                else
-                                                {
-                            <option value="@i.ItemId">@i.Item.ItemName</option>}
-                                            }
+                            <option selected value="@i.ItemId">@i.Item.ItemName</option>
+ }
+                        else
+                        {
+    <option value="@i.ItemId">@i.Item.ItemName</option>
+}
+}
                                         </select>
                                         <label>Item</label>
                                     </div>
@@ -77,7 +82,8 @@
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </td>
-                            </tr>}
+                            </tr>
+}
                                     </tbody>
                                 </table>
                             </div>
@@ -95,9 +101,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="col-sm-9">
-                                            <button id="CreateStockReturn" type="button"
+                                            <button id="EditReturnStock" type="button"
                                                     class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Save
+                                                Update
                                             </button>
                                             <a class="btn btn-light ms-1 ps-4 pe-4" href="@Url.Action("StockReturnList","Kitchen")">Cancel</a>
                                         </div>
@@ -146,16 +152,20 @@
             });
         });
 
-    $('#CreateStockReturn').on('click', function () {
+    $('#EditReturnStock').on('click', function () {
 
         debugger;
 
         // Initialize an object to hold all data
         let returnStock = {
             ReturnStockDetails: [],
+            returnStockDetailId: $('#ReturnStockDetailId').val(),
              returnDate: $('#ReturnDate').val(),
             description: $('#Description').val(),
-            referenceNo: $('#ReferenceNo').val()
+            ReturnStockId: $('#ReturnStockId').val(),
+           
+            ReturnNo :$('#ReturnNo').val(),
+            ReferenceNo: $('#ReferenceNo').val()
 
         };
 
@@ -163,6 +173,8 @@
         $('#itemsTableBody .item-row').each(function() {
             // Initialize an object to hold the values for each row
             let rowData = {};
+            rowData.ReturnStockDetailId = $(this).find('input[name="item.ReturnStockDetailId"]').val();
+            rowData.ReturnStockId = $('#ReturnStockId').val(),
 
             // Get the selected item from the dropdown
             rowData.ItemId = $(this).find('select').val();
@@ -181,20 +193,25 @@
         console.log(returnStock);
 
         // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateStockReturn", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(returnStock),
+        $.ajax({
+             url: '@Url.Action("EditReturnStock", "Kitchen")',
+            method: 'POST',
+            data: JSON.stringify(returnStock),
              contentType: 'application/json',
              success: function (response) {
-                if (response == "0") {
+                if (response.status == "success") {
                     window.location.href = '@Url.Action("StockReturnList", "Kitchen")'
                 }
-                else if (response == "1")
+                else if (response.status == "error")
                 {
                     window.location.href = '@Url.Action("Index","Error")'
                 }
-             }
+                // Handle the response
+            },
+            error: function (xhr, status, error) {
+                // Handle unexpected errors
+                alert("An unexpected error occurred: " + error);
+            }
          });
      });
 </script>

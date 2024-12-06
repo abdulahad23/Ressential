@@ -284,6 +284,7 @@
     <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Item" Relationship="Self.FK__ProductIt__ItemI__41EDCAC5" FromRole="ProductItemDetails" ToRole="Items" />
     <NavigationProperty Name="Product" Relationship="Self.FK__ProductIt__Produ__40F9A68C" FromRole="ProductItemDetails" ToRole="Products" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="Product">
     <Key>
@@ -293,7 +294,7 @@
     <Property Name="ProductCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="BranchId" Type="Int32" Nullable="false" />
-    <Property Name="ProductImage" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="ProductImage" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
     <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="ProductCategoryId" Type="Int32" Nullable="false" />
@@ -603,6 +604,7 @@
     <NavigationProperty Name="Item" Relationship="Self.FK__Warehouse__ItemI__04E4BC85" FromRole="WarehouseIssueDetails" ToRole="Items" />
     <NavigationProperty Name="Requisition" Relationship="Self.FK__Warehouse__Requi__03F0984C" FromRole="WarehouseIssueDetails" ToRole="Requisitions" />
     <NavigationProperty Name="WarehouseIssue" Relationship="Self.FK__Warehouse__Issue__02FC7413" FromRole="WarehouseIssueDetails" ToRole="WarehouseIssues" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="WarehouseIssue">
     <Key>

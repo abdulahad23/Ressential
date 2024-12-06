@@ -283,6 +283,8 @@
     <Compile Include="Models\WarehouseIssueDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WarehouseIssueDetailsHelper.cs" />
+    <Compile Include="Models\WarehouseIssueHelper.cs" />
     <Compile Include="Models\WarehouseItemStock.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -681,10 +683,10 @@
     <Content Include="Views\Kitchen\ReceiveStockList.cshtml" />
     <Content Include="Views\Kitchen\StockReturnList.cshtml" />
     <Content Include="Views\Kitchen\CreateStockReturn.cshtml" />
-    <Content Include="Views\Kitchen\CreateConsume.cshtml" />
-    <Content Include="Views\Kitchen\ConsumeList.cshtml" />
-    <Content Include="Views\Kitchen\WastageList.cshtml" />
-    <Content Include="Views\Kitchen\CreateWastage.cshtml" />
+    <Content Include="Views\Kitchen\CreateConsumeItem.cshtml" />
+    <Content Include="Views\Kitchen\ConsumeItemList.cshtml" />
+    <Content Include="Views\Kitchen\WastageItemList.cshtml" />
+    <Content Include="Views\Kitchen\CreateWastageItem.cshtml" />
     <Content Include="Views\Kitchen\CategoryList.cshtml" />
     <Content Include="Views\Kitchen\CreateCategory.cshtml" />
     <Content Include="Views\Kitchen\ProductList.cshtml" />
@@ -728,6 +730,9 @@
     <Content Include="Views\Shared\_BranchesDropdown.cshtml" />
     <Content Include="Views\Warehouse\EditPurchaseReturn.cshtml" />
     <Content Include="Views\Kitchen\EditRequisition.cshtml" />
+    <Content Include="Views\Kitchen\EditConsumeItem.cshtml" />
+    <Content Include="Views\Kitchen\EditWastageItem.cshtml" />
+    <Content Include="Views\Kitchen\EditProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -780,11 +785,10 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>49944</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44366/</IISUrl>
+          <IISUrl>http://localhost:5000/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
+          <CustomServerUrl>https://172.15.0.118:44366</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>

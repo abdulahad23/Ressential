@@ -229,6 +229,7 @@
     <EntitySetMapping Name="ProductItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ProductItemDetail">
         <MappingFragment StoreEntitySet="ProductItemDetails">
+          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ProductItemDetailId" ColumnName="ProductItemDetailId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -465,6 +466,7 @@
     <EntitySetMapping Name="WarehouseIssueDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseIssueDetail">
         <MappingFragment StoreEntitySet="WarehouseIssueDetails">
+          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="IssueDetailId" ColumnName="IssueDetailId" />
           <ScalarProperty Name="IssueId" ColumnName="IssueId" />
           <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
