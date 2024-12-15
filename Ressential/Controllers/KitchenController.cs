@@ -1585,7 +1585,6 @@ namespace Ressential.Controllers
                     product.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     product.CreatedAt = DateTime.Now;
                     product.BranchId = selectedBranchId;
-                    product.Status = "Available";
 
                     _db.Products.Add(product);
                     _db.SaveChanges();
@@ -1726,7 +1725,6 @@ namespace Ressential.Controllers
                     _db.Entry(existingProduct).Property(x => x.CreatedAt).IsModified = false;
                     _db.Entry(existingProduct).Property(x => x.ProductImage).IsModified = false;
                     _db.Entry(existingProduct).Property(x => x.BranchId).IsModified = false;
-                    _db.Entry(existingProduct).Property(x => x.Status).IsModified = false;
 
                     // Update ProductItemDetails
                     var existingDetails = existingProduct.ProductItemDetails.ToList();

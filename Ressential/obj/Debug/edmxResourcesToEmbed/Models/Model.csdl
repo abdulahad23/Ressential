@@ -14,10 +14,10 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Accounts__Create__5D95E53A" FromRole="Accounts" ToRole="Users" />
-    <NavigationProperty Name="User1" Relationship="Self.FK__Accounts__Modifi__5E8A0973" FromRole="Accounts" ToRole="Users" />
-    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Accou__65370702" FromRole="Accounts" ToRole="PaymentVouchers" />
-    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Accou__74794A92" FromRole="Accounts" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Accounts__Create__6166761E" FromRole="Accounts" ToRole="Users" />
+    <NavigationProperty Name="User1" Relationship="Self.FK__Accounts__Modifi__625A9A57" FromRole="Accounts" ToRole="Users" />
+    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Accou__690797E6" FromRole="Accounts" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Accou__7849DB76" FromRole="Accounts" ToRole="ReceiptVouchers" />
   </EntityType>
   <EntityType Name="Branch">
     <Key>
@@ -41,10 +41,11 @@
     <NavigationProperty Name="User1" Relationship="Self.FK__Branches__Modifi__5812160E" FromRole="Branches" ToRole="Users" />
     <NavigationProperty Name="BranchItems" Relationship="Self.FK__BranchIte__Branc__5FB337D6" FromRole="Branches" ToRole="BranchItems" />
     <NavigationProperty Name="ConsumeItems" Relationship="Self.FK__ConsumeIt__Branc__208CD6FA" FromRole="Branches" ToRole="ConsumeItems" />
-    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__BranchId__4A8310C6" FromRole="Branches" ToRole="Orders" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__BranchId__4E53A1AA" FromRole="Branches" ToRole="Orders" />
     <NavigationProperty Name="Products" Relationship="Self.FK__Products__Branch__3B40CD36" FromRole="Branches" ToRole="Products" />
     <NavigationProperty Name="Requisitions" Relationship="Self.FK__Requisiti__Branc__72C60C4A" FromRole="Branches" ToRole="Requisitions" />
     <NavigationProperty Name="ReturnStocks" Relationship="Self.FK__ReturnSto__Branc__160F4887" FromRole="Branches" ToRole="ReturnStock" />
+    <NavigationProperty Name="UserBranchDetials" Relationship="Self.FK__UserBranc__Branc__03BB8E22" FromRole="Branches" ToRole="UserBranchDetial" />
     <NavigationProperty Name="WarehouseIssues" Relationship="Self.FK__Warehouse__Branc__7E37BEF6" FromRole="Branches" ToRole="WarehouseIssues" />
     <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Branc__2B0A656D" FromRole="Branches" ToRole="WastageItems" />
   </EntityType>
@@ -96,17 +97,27 @@
     <NavigationProperty Name="User" Relationship="Self.FK__ConsumeIt__Creat__2180FB33" FromRole="ConsumeItems" ToRole="Users" />
     <NavigationProperty Name="User1" Relationship="Self.FK__ConsumeIt__Modif__22751F6C" FromRole="ConsumeItems" ToRole="Users" />
   </EntityType>
+  <EntityType Name="CustomerAddress">
+    <Key>
+      <PropertyRef Name="CustomerAddressId" />
+    </Key>
+    <Property Name="CustomerAddressId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+  </EntityType>
   <EntityType Name="Customer">
     <Key>
       <PropertyRef Name="CustomerId" />
     </Key>
     <Property Name="CustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="ContactNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-    <Property Name="City" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="Country" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__Customer__4B7734FF" FromRole="Customers" ToRole="Orders" />
+    <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__Customer__4F47C5E3" FromRole="Customers" ToRole="Orders" />
   </EntityType>
   <EntityType Name="ItemCategory">
     <Key>
@@ -157,8 +168,8 @@
     <Property Name="ProductId" Type="Int32" Nullable="false" />
     <Property Name="ProductQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-    <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__4F47C5E3" FromRole="OrderDetails" ToRole="Orders" />
-    <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__503BEA1C" FromRole="OrderDetails" ToRole="Products" />
+    <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__531856C7" FromRole="OrderDetails" ToRole="Orders" />
+    <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__540C7B00" FromRole="OrderDetails" ToRole="Products" />
   </EntityType>
   <EntityType Name="OrderReturnDetail">
     <Key>
@@ -168,8 +179,8 @@
     <Property Name="OrderReturnId" Type="Int32" Nullable="false" />
     <Property Name="ProductId" Type="Int32" Nullable="false" />
     <Property Name="ProductQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-    <NavigationProperty Name="OrderReturn" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="OrderReturnDetails" ToRole="OrderReturns" />
-    <NavigationProperty Name="Product" Relationship="Self.FK__OrderRetu__Produ__58D1301D" FromRole="OrderReturnDetails" ToRole="Products" />
+    <NavigationProperty Name="OrderReturn" Relationship="Self.FK__OrderRetu__Order__5BAD9CC8" FromRole="OrderReturnDetails" ToRole="OrderReturns" />
+    <NavigationProperty Name="Product" Relationship="Self.FK__OrderRetu__Produ__5CA1C101" FromRole="OrderReturnDetails" ToRole="Products" />
   </EntityType>
   <EntityType Name="OrderReturn">
     <Key>
@@ -180,9 +191,9 @@
     <Property Name="OrderId" Type="Int32" Nullable="false" />
     <Property Name="CreatedBy" Type="Int32" Nullable="false" />
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
-    <NavigationProperty Name="OrderReturnDetails" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="OrderReturns" ToRole="OrderReturnDetails" />
-    <NavigationProperty Name="User" Relationship="Self.FK__OrderRetu__Creat__55009F39" FromRole="OrderReturns" ToRole="Users" />
-    <NavigationProperty Name="Order" Relationship="Self.FK__OrderRetu__Order__540C7B00" FromRole="OrderReturns" ToRole="Orders" />
+    <NavigationProperty Name="OrderReturnDetails" Relationship="Self.FK__OrderRetu__Order__5BAD9CC8" FromRole="OrderReturns" ToRole="OrderReturnDetails" />
+    <NavigationProperty Name="User" Relationship="Self.FK__OrderRetu__Creat__58D1301D" FromRole="OrderReturns" ToRole="Users" />
+    <NavigationProperty Name="Order" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="OrderReturns" ToRole="Orders" />
   </EntityType>
   <EntityType Name="Order">
     <Key>
@@ -197,13 +208,13 @@
     <Property Name="CustomerId" Type="Int32" />
     <Property Name="PaymentMethod" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+    <Property Name="CreatedBy" Type="Int32" />
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
-    <NavigationProperty Name="Branch" Relationship="Self.FK__Orders__BranchId__4A8310C6" FromRole="Orders" ToRole="Branches" />
-    <NavigationProperty Name="Customer" Relationship="Self.FK__Orders__Customer__4B7734FF" FromRole="Orders" ToRole="Customers" />
-    <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__4F47C5E3" FromRole="Orders" ToRole="OrderDetails" />
-    <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__540C7B00" FromRole="Orders" ToRole="OrderReturns" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__4C6B5938" FromRole="Orders" ToRole="Users" />
+    <NavigationProperty Name="Branch" Relationship="Self.FK__Orders__BranchId__4E53A1AA" FromRole="Orders" ToRole="Branches" />
+    <NavigationProperty Name="Customer" Relationship="Self.FK__Orders__Customer__4F47C5E3" FromRole="Orders" ToRole="Customers" />
+    <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__531856C7" FromRole="Orders" ToRole="OrderDetails" />
+    <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="Orders" ToRole="OrderReturns" />
+    <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__503BEA1C" FromRole="Orders" ToRole="Users" />
   </EntityType>
   <EntityType Name="PaymentApply">
     <Key>
@@ -213,8 +224,8 @@
     <Property Name="PaymentVoucherId" Type="Int32" Nullable="false" />
     <Property Name="PurchaseId" Type="Int32" Nullable="false" />
     <Property Name="AppliedAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-    <NavigationProperty Name="PaymentVoucher" Relationship="Self.FK__PaymentAp__Payme__69FBBC1F" FromRole="PaymentApply" ToRole="PaymentVouchers" />
-    <NavigationProperty Name="Purchase" Relationship="Self.FK__PaymentAp__Purch__6AEFE058" FromRole="PaymentApply" ToRole="Purchases" />
+    <NavigationProperty Name="PaymentVoucher" Relationship="Self.FK__PaymentAp__Payme__6DCC4D03" FromRole="PaymentApply" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="Purchase" Relationship="Self.FK__PaymentAp__Purch__6EC0713C" FromRole="PaymentApply" ToRole="Purchases" />
   </EntityType>
   <EntityType Name="PaymentVoucherAttachment">
     <Key>
@@ -223,7 +234,7 @@
     <Property Name="VoucherAttachmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="PaymentVoucherId" Type="Int32" Nullable="false" />
     <Property Name="AttachmentPath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-    <NavigationProperty Name="PaymentVoucher" Relationship="Self.FK__PaymentVo__Payme__6DCC4D03" FromRole="PaymentVoucherAttachments" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="PaymentVoucher" Relationship="Self.FK__PaymentVo__Payme__719CDDE7" FromRole="PaymentVoucherAttachments" ToRole="PaymentVouchers" />
   </EntityType>
   <EntityType Name="PaymentVoucher">
     <Key>
@@ -242,12 +253,12 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="Account" Relationship="Self.FK__PaymentVo__Accou__65370702" FromRole="PaymentVouchers" ToRole="Accounts" />
-    <NavigationProperty Name="PaymentApplies" Relationship="Self.FK__PaymentAp__Payme__69FBBC1F" FromRole="PaymentVouchers" ToRole="PaymentApply" />
-    <NavigationProperty Name="PaymentVoucherAttachments" Relationship="Self.FK__PaymentVo__Payme__6DCC4D03" FromRole="PaymentVouchers" ToRole="PaymentVoucherAttachments" />
-    <NavigationProperty Name="User" Relationship="Self.FK__PaymentVo__Creat__662B2B3B" FromRole="PaymentVouchers" ToRole="Users" />
-    <NavigationProperty Name="User1" Relationship="Self.FK__PaymentVo__Modif__671F4F74" FromRole="PaymentVouchers" ToRole="Users" />
-    <NavigationProperty Name="Vendor" Relationship="Self.FK__PaymentVo__Vendo__6442E2C9" FromRole="PaymentVouchers" ToRole="Vendors" />
+    <NavigationProperty Name="Account" Relationship="Self.FK__PaymentVo__Accou__690797E6" FromRole="PaymentVouchers" ToRole="Accounts" />
+    <NavigationProperty Name="PaymentApplies" Relationship="Self.FK__PaymentAp__Payme__6DCC4D03" FromRole="PaymentVouchers" ToRole="PaymentApply" />
+    <NavigationProperty Name="PaymentVoucherAttachments" Relationship="Self.FK__PaymentVo__Payme__719CDDE7" FromRole="PaymentVouchers" ToRole="PaymentVoucherAttachments" />
+    <NavigationProperty Name="User" Relationship="Self.FK__PaymentVo__Creat__69FBBC1F" FromRole="PaymentVouchers" ToRole="Users" />
+    <NavigationProperty Name="User1" Relationship="Self.FK__PaymentVo__Modif__6AEFE058" FromRole="PaymentVouchers" ToRole="Users" />
+    <NavigationProperty Name="Vendor" Relationship="Self.FK__PaymentVo__Vendo__681373AD" FromRole="PaymentVouchers" ToRole="Vendors" />
   </EntityType>
   <EntityType Name="Permission">
     <Key>
@@ -281,10 +292,10 @@
     <Property Name="ProductItemDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="ProductId" Type="Int32" Nullable="false" />
     <Property Name="ItemId" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Item" Relationship="Self.FK__ProductIt__ItemI__41EDCAC5" FromRole="ProductItemDetails" ToRole="Items" />
     <NavigationProperty Name="Product" Relationship="Self.FK__ProductIt__Produ__40F9A68C" FromRole="ProductItemDetails" ToRole="Products" />
-    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="Product">
     <Key>
@@ -294,19 +305,19 @@
     <Property Name="ProductCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="ProductName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="BranchId" Type="Int32" Nullable="false" />
-    <Property Name="ProductImage" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+    <Property Name="ProductImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="ProductCategoryId" Type="Int32" Nullable="false" />
     <Property Name="ChefID" Type="Int32" />
-    <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
     <Property Name="CreatedBy" Type="Int32" Nullable="false" />
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
     <NavigationProperty Name="Branch" Relationship="Self.FK__Products__Branch__3B40CD36" FromRole="Products" ToRole="Branches" />
-    <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Produ__503BEA1C" FromRole="Products" ToRole="OrderDetails" />
-    <NavigationProperty Name="OrderReturnDetails" Relationship="Self.FK__OrderRetu__Produ__58D1301D" FromRole="Products" ToRole="OrderReturnDetails" />
+    <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Produ__540C7B00" FromRole="Products" ToRole="OrderDetails" />
+    <NavigationProperty Name="OrderReturnDetails" Relationship="Self.FK__OrderRetu__Produ__5CA1C101" FromRole="Products" ToRole="OrderReturnDetails" />
     <NavigationProperty Name="ProductCategory" Relationship="Self.FK__Products__Produc__3C34F16F" FromRole="Products" ToRole="ProductCategories" />
     <NavigationProperty Name="ProductItemDetails" Relationship="Self.FK__ProductIt__Produ__40F9A68C" FromRole="Products" ToRole="ProductItemDetails" />
     <NavigationProperty Name="User" Relationship="Self.FK__Products__Create__3D2915A8" FromRole="Products" ToRole="Users" />
@@ -344,7 +355,7 @@
     <NavigationProperty Name="User1" Relationship="Self.FK__PurchaseR__Modif__0C85DE4D" FromRole="PurchaseReturn" ToRole="Users" />
     <NavigationProperty Name="PurchaseReturnDetails" Relationship="Self.FK__PurchaseR__Purch__0F624AF8" FromRole="PurchaseReturn" ToRole="PurchaseReturnDetails" />
     <NavigationProperty Name="Vendor" Relationship="Self.FK__PurchaseR__Vendo__0A9D95DB" FromRole="PurchaseReturn" ToRole="Vendors" />
-    <NavigationProperty Name="ReceiptApplies" Relationship="Self.FK__ReceiptAp__Purch__7A3223E8" FromRole="PurchaseReturn" ToRole="ReceiptApply" />
+    <NavigationProperty Name="ReceiptApplies" Relationship="Self.FK__ReceiptAp__Purch__7E02B4CC" FromRole="PurchaseReturn" ToRole="ReceiptApply" />
   </EntityType>
   <EntityType Name="PurchaseReturnDetail">
     <Key>
@@ -374,7 +385,7 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="PaymentApplies" Relationship="Self.FK__PaymentAp__Purch__6AEFE058" FromRole="Purchases" ToRole="PaymentApply" />
+    <NavigationProperty Name="PaymentApplies" Relationship="Self.FK__PaymentAp__Purch__6EC0713C" FromRole="Purchases" ToRole="PaymentApply" />
     <NavigationProperty Name="PurchaseDetails" Relationship="Self.FK__PurchaseD__Purch__6C190EBB" FromRole="Purchases" ToRole="PurchaseDetails" />
     <NavigationProperty Name="User" Relationship="Self.FK__Purchases__Creat__68487DD7" FromRole="Purchases" ToRole="Users" />
     <NavigationProperty Name="User1" Relationship="Self.FK__Purchases__Modif__693CA210" FromRole="Purchases" ToRole="Users" />
@@ -388,8 +399,8 @@
     <Property Name="ReceiptVoucherId" Type="Int32" Nullable="false" />
     <Property Name="PurchaseReturnId" Type="Int32" Nullable="false" />
     <Property Name="AppliedAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-    <NavigationProperty Name="PurchaseReturn" Relationship="Self.FK__ReceiptAp__Purch__7A3223E8" FromRole="ReceiptApply" ToRole="PurchaseReturn" />
-    <NavigationProperty Name="ReceiptVoucher" Relationship="Self.FK__ReceiptAp__Recei__793DFFAF" FromRole="ReceiptApply" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="PurchaseReturn" Relationship="Self.FK__ReceiptAp__Purch__7E02B4CC" FromRole="ReceiptApply" ToRole="PurchaseReturn" />
+    <NavigationProperty Name="ReceiptVoucher" Relationship="Self.FK__ReceiptAp__Recei__7D0E9093" FromRole="ReceiptApply" ToRole="ReceiptVouchers" />
   </EntityType>
   <EntityType Name="ReceiptVoucherAttachment">
     <Key>
@@ -398,7 +409,7 @@
     <Property Name="VoucherAttachmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="ReceiptVoucherId" Type="Int32" Nullable="false" />
     <Property Name="AttachmentPath" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-    <NavigationProperty Name="ReceiptVoucher" Relationship="Self.FK__ReceiptVo__Recei__7D0E9093" FromRole="ReceiptVoucherAttachments" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="ReceiptVoucher" Relationship="Self.FK__ReceiptVo__Recei__00DF2177" FromRole="ReceiptVoucherAttachments" ToRole="ReceiptVouchers" />
   </EntityType>
   <EntityType Name="ReceiptVoucher">
     <Key>
@@ -417,12 +428,12 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="Account" Relationship="Self.FK__ReceiptVo__Accou__74794A92" FromRole="ReceiptVouchers" ToRole="Accounts" />
-    <NavigationProperty Name="ReceiptApplies" Relationship="Self.FK__ReceiptAp__Recei__793DFFAF" FromRole="ReceiptVouchers" ToRole="ReceiptApply" />
-    <NavigationProperty Name="ReceiptVoucherAttachments" Relationship="Self.FK__ReceiptVo__Recei__7D0E9093" FromRole="ReceiptVouchers" ToRole="ReceiptVoucherAttachments" />
-    <NavigationProperty Name="User" Relationship="Self.FK__ReceiptVo__Creat__756D6ECB" FromRole="ReceiptVouchers" ToRole="Users" />
-    <NavigationProperty Name="User1" Relationship="Self.FK__ReceiptVo__Modif__76619304" FromRole="ReceiptVouchers" ToRole="Users" />
-    <NavigationProperty Name="Vendor" Relationship="Self.FK__ReceiptVo__Vendo__73852659" FromRole="ReceiptVouchers" ToRole="Vendors" />
+    <NavigationProperty Name="Account" Relationship="Self.FK__ReceiptVo__Accou__7849DB76" FromRole="ReceiptVouchers" ToRole="Accounts" />
+    <NavigationProperty Name="ReceiptApplies" Relationship="Self.FK__ReceiptAp__Recei__7D0E9093" FromRole="ReceiptVouchers" ToRole="ReceiptApply" />
+    <NavigationProperty Name="ReceiptVoucherAttachments" Relationship="Self.FK__ReceiptVo__Recei__00DF2177" FromRole="ReceiptVouchers" ToRole="ReceiptVoucherAttachments" />
+    <NavigationProperty Name="User" Relationship="Self.FK__ReceiptVo__Creat__793DFFAF" FromRole="ReceiptVouchers" ToRole="Users" />
+    <NavigationProperty Name="User1" Relationship="Self.FK__ReceiptVo__Modif__7A3223E8" FromRole="ReceiptVouchers" ToRole="Users" />
+    <NavigationProperty Name="Vendor" Relationship="Self.FK__ReceiptVo__Vendo__7755B73D" FromRole="ReceiptVouchers" ToRole="Vendors" />
   </EntityType>
   <EntityType Name="RequisitionDetail">
     <Key>
@@ -512,6 +523,15 @@
     <Property Name="Symbol" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
     <NavigationProperty Name="Items" Relationship="Self.FK__Items__UnitOfMea__44FF419A" FromRole="UnitOfMeasure" ToRole="Items" />
   </EntityType>
+  <EntityType Name="UserBranchDetial">
+    <Key>
+      <PropertyRef Name="UserBranchDetialId" />
+    </Key>
+    <Property Name="UserBranchDetialId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="BranchId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Branch" Relationship="Self.FK__UserBranc__Branc__03BB8E22" FromRole="UserBranchDetial" ToRole="Branches" />
+  </EntityType>
   <EntityType Name="User">
     <Key>
       <PropertyRef Name="UserId" />
@@ -525,8 +545,8 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="Accounts" Relationship="Self.FK__Accounts__Create__5D95E53A" FromRole="Users" ToRole="Accounts" />
-    <NavigationProperty Name="Accounts1" Relationship="Self.FK__Accounts__Modifi__5E8A0973" FromRole="Users" ToRole="Accounts" />
+    <NavigationProperty Name="Accounts" Relationship="Self.FK__Accounts__Create__6166761E" FromRole="Users" ToRole="Accounts" />
+    <NavigationProperty Name="Accounts1" Relationship="Self.FK__Accounts__Modifi__625A9A57" FromRole="Users" ToRole="Accounts" />
     <NavigationProperty Name="Branches" Relationship="Self.FK__Branches__Create__59063A47" FromRole="Users" ToRole="Branches" />
     <NavigationProperty Name="Branches1" Relationship="Self.FK__Branches__Modifi__5812160E" FromRole="Users" ToRole="Branches" />
     <NavigationProperty Name="BranchItems" Relationship="Self.FK__BranchIte__Creat__60A75C0F" FromRole="Users" ToRole="BranchItems" />
@@ -535,10 +555,10 @@
     <NavigationProperty Name="ConsumeItems1" Relationship="Self.FK__ConsumeIt__Modif__22751F6C" FromRole="Users" ToRole="ConsumeItems" />
     <NavigationProperty Name="Items" Relationship="Self.FK__Items__CreatedBy__45F365D3" FromRole="Users" ToRole="Items" />
     <NavigationProperty Name="Items1" Relationship="Self.FK__Items__ModifiedB__46E78A0C" FromRole="Users" ToRole="Items" />
-    <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Creat__55009F39" FromRole="Users" ToRole="OrderReturns" />
-    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__CreatedB__4C6B5938" FromRole="Users" ToRole="Orders" />
-    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Creat__662B2B3B" FromRole="Users" ToRole="PaymentVouchers" />
-    <NavigationProperty Name="PaymentVouchers1" Relationship="Self.FK__PaymentVo__Modif__671F4F74" FromRole="Users" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Creat__58D1301D" FromRole="Users" ToRole="OrderReturns" />
+    <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__CreatedB__503BEA1C" FromRole="Users" ToRole="Orders" />
+    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Creat__69FBBC1F" FromRole="Users" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="PaymentVouchers1" Relationship="Self.FK__PaymentVo__Modif__6AEFE058" FromRole="Users" ToRole="PaymentVouchers" />
     <NavigationProperty Name="ProductCategories" Relationship="Self.FK__ProductCa__Creat__3493CFA7" FromRole="Users" ToRole="ProductCategories" />
     <NavigationProperty Name="ProductCategories1" Relationship="Self.FK__ProductCa__Modif__3587F3E0" FromRole="Users" ToRole="ProductCategories" />
     <NavigationProperty Name="Products" Relationship="Self.FK__Products__Create__3D2915A8" FromRole="Users" ToRole="Products" />
@@ -547,8 +567,8 @@
     <NavigationProperty Name="PurchaseReturns1" Relationship="Self.FK__PurchaseR__Modif__0C85DE4D" FromRole="Users" ToRole="PurchaseReturn" />
     <NavigationProperty Name="Purchases" Relationship="Self.FK__Purchases__Creat__68487DD7" FromRole="Users" ToRole="Purchases" />
     <NavigationProperty Name="Purchases1" Relationship="Self.FK__Purchases__Modif__693CA210" FromRole="Users" ToRole="Purchases" />
-    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Creat__756D6ECB" FromRole="Users" ToRole="ReceiptVouchers" />
-    <NavigationProperty Name="ReceiptVouchers1" Relationship="Self.FK__ReceiptVo__Modif__76619304" FromRole="Users" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Creat__793DFFAF" FromRole="Users" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="ReceiptVouchers1" Relationship="Self.FK__ReceiptVo__Modif__7A3223E8" FromRole="Users" ToRole="ReceiptVouchers" />
     <NavigationProperty Name="Requisitions" Relationship="Self.FK__Requisiti__Creat__73BA3083" FromRole="Users" ToRole="Requisitions" />
     <NavigationProperty Name="Requisitions1" Relationship="Self.FK__Requisiti__Modif__74AE54BC" FromRole="Users" ToRole="Requisitions" />
     <NavigationProperty Name="ReturnStocks" Relationship="Self.FK__ReturnSto__Creat__17036CC0" FromRole="Users" ToRole="ReturnStock" />
@@ -584,10 +604,10 @@
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <Property Name="ModifiedBy" Type="Int32" />
     <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Vendo__6442E2C9" FromRole="Vendors" ToRole="PaymentVouchers" />
+    <NavigationProperty Name="PaymentVouchers" Relationship="Self.FK__PaymentVo__Vendo__681373AD" FromRole="Vendors" ToRole="PaymentVouchers" />
     <NavigationProperty Name="PurchaseReturns" Relationship="Self.FK__PurchaseR__Vendo__0A9D95DB" FromRole="Vendors" ToRole="PurchaseReturn" />
     <NavigationProperty Name="Purchases" Relationship="Self.FK__Purchases__Vendo__6754599E" FromRole="Vendors" ToRole="Purchases" />
-    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Vendo__73852659" FromRole="Vendors" ToRole="ReceiptVouchers" />
+    <NavigationProperty Name="ReceiptVouchers" Relationship="Self.FK__ReceiptVo__Vendo__7755B73D" FromRole="Vendors" ToRole="ReceiptVouchers" />
     <NavigationProperty Name="User" Relationship="Self.FK__Vendors__Created__52593CB8" FromRole="Vendors" ToRole="Users" />
     <NavigationProperty Name="User1" Relationship="Self.FK__Vendors__Modifie__5165187F" FromRole="Vendors" ToRole="Users" />
   </EntityType>
@@ -599,12 +619,12 @@
     <Property Name="IssueId" Type="Int32" Nullable="false" />
     <Property Name="RequisitionId" Type="Int32" />
     <Property Name="ItemId" Type="Int32" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="Quantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="CostApplied" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Item" Relationship="Self.FK__Warehouse__ItemI__04E4BC85" FromRole="WarehouseIssueDetails" ToRole="Items" />
     <NavigationProperty Name="Requisition" Relationship="Self.FK__Warehouse__Requi__03F0984C" FromRole="WarehouseIssueDetails" ToRole="Requisitions" />
     <NavigationProperty Name="WarehouseIssue" Relationship="Self.FK__Warehouse__Issue__02FC7413" FromRole="WarehouseIssueDetails" ToRole="WarehouseIssues" />
-    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="WarehouseIssue">
     <Key>
@@ -678,7 +698,7 @@
     <NavigationProperty Name="User1" Relationship="Self.FK__WastageIt__Modif__2CF2ADDF" FromRole="WastageItems" ToRole="Users" />
     <NavigationProperty Name="WastageItemDetails" Relationship="Self.FK__WastageIt__Wasta__2FCF1A8A" FromRole="WastageItems" ToRole="WastageItemDetails" />
   </EntityType>
-  <Association Name="FK__Accounts__Create__5D95E53A">
+  <Association Name="FK__Accounts__Create__6166761E">
     <End Role="Users" Type="Self.User" Multiplicity="1" />
     <End Role="Accounts" Type="Self.Account" Multiplicity="*" />
     <ReferentialConstraint>
@@ -690,7 +710,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Accounts__Modifi__5E8A0973">
+  <Association Name="FK__Accounts__Modifi__625A9A57">
     <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="Accounts" Type="Self.Account" Multiplicity="*" />
     <ReferentialConstraint>
@@ -702,7 +722,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentVo__Accou__65370702">
+  <Association Name="FK__PaymentVo__Accou__690797E6">
     <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -714,7 +734,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptVo__Accou__74794A92">
+  <Association Name="FK__ReceiptVo__Accou__7849DB76">
     <End Role="Accounts" Type="Self.Account" Multiplicity="1" />
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -774,7 +794,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Orders__BranchId__4A8310C6">
+  <Association Name="FK__Orders__BranchId__4E53A1AA">
     <End Role="Branches" Type="Self.Branch" Multiplicity="1" />
     <End Role="Orders" Type="Self.Order" Multiplicity="*" />
     <ReferentialConstraint>
@@ -818,6 +838,20 @@
         <PropertyRef Name="BranchId" />
       </Principal>
       <Dependent Role="ReturnStock">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserBranc__Branc__03BB8E22">
+    <End Role="Branches" Type="Self.Branch" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="UserBranchDetial" Type="Self.UserBranchDetial" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="UserBranchDetial">
         <PropertyRef Name="BranchId" />
       </Dependent>
     </ReferentialConstraint>
@@ -932,7 +966,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Orders__Customer__4B7734FF">
+  <Association Name="FK__Orders__Customer__4F47C5E3">
     <End Role="Customers" Type="Self.Customer" Multiplicity="0..1" />
     <End Role="Orders" Type="Self.Order" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1100,7 +1134,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderDeta__Order__4F47C5E3">
+  <Association Name="FK__OrderDeta__Order__531856C7">
     <End Role="Orders" Type="Self.Order" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1114,7 +1148,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderDeta__Produ__503BEA1C">
+  <Association Name="FK__OrderDeta__Produ__540C7B00">
     <End Role="Products" Type="Self.Product" Multiplicity="1" />
     <End Role="OrderDetails" Type="Self.OrderDetail" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1126,7 +1160,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderRetu__Order__57DD0BE4">
+  <Association Name="FK__OrderRetu__Order__5BAD9CC8">
     <End Role="OrderReturns" Type="Self.OrderReturn" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1140,7 +1174,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderRetu__Produ__58D1301D">
+  <Association Name="FK__OrderRetu__Produ__5CA1C101">
     <End Role="Products" Type="Self.Product" Multiplicity="1" />
     <End Role="OrderReturnDetails" Type="Self.OrderReturnDetail" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1152,7 +1186,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderRetu__Creat__55009F39">
+  <Association Name="FK__OrderRetu__Creat__58D1301D">
     <End Role="Users" Type="Self.User" Multiplicity="1" />
     <End Role="OrderReturns" Type="Self.OrderReturn" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1164,7 +1198,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__OrderRetu__Order__540C7B00">
+  <Association Name="FK__OrderRetu__Order__57DD0BE4">
     <End Role="Orders" Type="Self.Order" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1178,8 +1212,8 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Orders__CreatedB__4C6B5938">
-    <End Role="Users" Type="Self.User" Multiplicity="1" />
+  <Association Name="FK__Orders__CreatedB__503BEA1C">
+    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="Orders" Type="Self.Order" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Users">
@@ -1190,7 +1224,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentAp__Payme__69FBBC1F">
+  <Association Name="FK__PaymentAp__Payme__6DCC4D03">
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1204,7 +1238,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentAp__Purch__6AEFE058">
+  <Association Name="FK__PaymentAp__Purch__6EC0713C">
     <End Role="Purchases" Type="Self.Purchase" Multiplicity="1" />
     <End Role="PaymentApply" Type="Self.PaymentApply" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1216,7 +1250,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentVo__Payme__6DCC4D03">
+  <Association Name="FK__PaymentVo__Payme__719CDDE7">
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1230,7 +1264,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentVo__Creat__662B2B3B">
+  <Association Name="FK__PaymentVo__Creat__69FBBC1F">
     <End Role="Users" Type="Self.User" Multiplicity="1" />
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1242,7 +1276,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentVo__Modif__671F4F74">
+  <Association Name="FK__PaymentVo__Modif__6AEFE058">
     <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1254,7 +1288,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PaymentVo__Vendo__6442E2C9">
+  <Association Name="FK__PaymentVo__Vendo__681373AD">
     <End Role="Vendors" Type="Self.Vendor" Multiplicity="1" />
     <End Role="PaymentVouchers" Type="Self.PaymentVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1404,7 +1438,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptAp__Purch__7A3223E8">
+  <Association Name="FK__ReceiptAp__Purch__7E02B4CC">
     <End Role="PurchaseReturn" Type="Self.PurchaseReturn" Multiplicity="1" />
     <End Role="ReceiptApply" Type="Self.ReceiptApply" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1452,7 +1486,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptAp__Recei__793DFFAF">
+  <Association Name="FK__ReceiptAp__Recei__7D0E9093">
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1466,7 +1500,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptVo__Recei__7D0E9093">
+  <Association Name="FK__ReceiptVo__Recei__00DF2177">
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1480,7 +1514,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptVo__Creat__756D6ECB">
+  <Association Name="FK__ReceiptVo__Creat__793DFFAF">
     <End Role="Users" Type="Self.User" Multiplicity="1" />
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1492,7 +1526,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptVo__Modif__76619304">
+  <Association Name="FK__ReceiptVo__Modif__7A3223E8">
     <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1504,7 +1538,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__ReceiptVo__Vendo__73852659">
+  <Association Name="FK__ReceiptVo__Vendo__7755B73D">
     <End Role="Vendors" Type="Self.Vendor" Multiplicity="1" />
     <End Role="ReceiptVouchers" Type="Self.ReceiptVoucher" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1766,6 +1800,7 @@
     <EntitySet Name="BranchItems" EntityType="Self.BranchItem" />
     <EntitySet Name="ConsumeItemDetails" EntityType="Self.ConsumeItemDetail" />
     <EntitySet Name="ConsumeItems" EntityType="Self.ConsumeItem" />
+    <EntitySet Name="CustomerAddresses" EntityType="Self.CustomerAddress" />
     <EntitySet Name="Customers" EntityType="Self.Customer" />
     <EntitySet Name="ItemCategories" EntityType="Self.ItemCategory" />
     <EntitySet Name="Items" EntityType="Self.Item" />
@@ -1793,6 +1828,7 @@
     <EntitySet Name="ReturnStockDetails" EntityType="Self.ReturnStockDetail" />
     <EntitySet Name="Roles" EntityType="Self.Role" />
     <EntitySet Name="UnitOfMeasures" EntityType="Self.UnitOfMeasure" />
+    <EntitySet Name="UserBranchDetials" EntityType="Self.UserBranchDetial" />
     <EntitySet Name="Users" EntityType="Self.User" />
     <EntitySet Name="Vendors" EntityType="Self.Vendor" />
     <EntitySet Name="WarehouseIssueDetails" EntityType="Self.WarehouseIssueDetail" />
@@ -1801,19 +1837,19 @@
     <EntitySet Name="WarehouseItemTransactions" EntityType="Self.WarehouseItemTransaction" />
     <EntitySet Name="WastageItemDetails" EntityType="Self.WastageItemDetail" />
     <EntitySet Name="WastageItems" EntityType="Self.WastageItem" />
-    <AssociationSet Name="FK__Accounts__Create__5D95E53A" Association="Self.FK__Accounts__Create__5D95E53A">
+    <AssociationSet Name="FK__Accounts__Create__6166761E" Association="Self.FK__Accounts__Create__6166761E">
       <End Role="Users" EntitySet="Users" />
       <End Role="Accounts" EntitySet="Accounts" />
     </AssociationSet>
-    <AssociationSet Name="FK__Accounts__Modifi__5E8A0973" Association="Self.FK__Accounts__Modifi__5E8A0973">
+    <AssociationSet Name="FK__Accounts__Modifi__625A9A57" Association="Self.FK__Accounts__Modifi__625A9A57">
       <End Role="Users" EntitySet="Users" />
       <End Role="Accounts" EntitySet="Accounts" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentVo__Accou__65370702" Association="Self.FK__PaymentVo__Accou__65370702">
+    <AssociationSet Name="FK__PaymentVo__Accou__690797E6" Association="Self.FK__PaymentVo__Accou__690797E6">
       <End Role="Accounts" EntitySet="Accounts" />
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptVo__Accou__74794A92" Association="Self.FK__ReceiptVo__Accou__74794A92">
+    <AssociationSet Name="FK__ReceiptVo__Accou__7849DB76" Association="Self.FK__ReceiptVo__Accou__7849DB76">
       <End Role="Accounts" EntitySet="Accounts" />
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
     </AssociationSet>
@@ -1833,7 +1869,7 @@
       <End Role="Branches" EntitySet="Branches" />
       <End Role="ConsumeItems" EntitySet="ConsumeItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__Orders__BranchId__4A8310C6" Association="Self.FK__Orders__BranchId__4A8310C6">
+    <AssociationSet Name="FK__Orders__BranchId__4E53A1AA" Association="Self.FK__Orders__BranchId__4E53A1AA">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
@@ -1848,6 +1884,10 @@
     <AssociationSet Name="FK__ReturnSto__Branc__160F4887" Association="Self.FK__ReturnSto__Branc__160F4887">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="ReturnStock" EntitySet="ReturnStocks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserBranc__Branc__03BB8E22" Association="Self.FK__UserBranc__Branc__03BB8E22">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="UserBranchDetial" EntitySet="UserBranchDetials" />
     </AssociationSet>
     <AssociationSet Name="FK__Warehouse__Branc__7E37BEF6" Association="Self.FK__Warehouse__Branc__7E37BEF6">
       <End Role="Branches" EntitySet="Branches" />
@@ -1885,7 +1925,7 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="ConsumeItems" EntitySet="ConsumeItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__Orders__Customer__4B7734FF" Association="Self.FK__Orders__Customer__4B7734FF">
+    <AssociationSet Name="FK__Orders__Customer__4F47C5E3" Association="Self.FK__Orders__Customer__4F47C5E3">
       <End Role="Customers" EntitySet="Customers" />
       <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
@@ -1941,55 +1981,55 @@
       <End Role="Items" EntitySet="Items" />
       <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
     </AssociationSet>
-    <AssociationSet Name="FK__OrderDeta__Order__4F47C5E3" Association="Self.FK__OrderDeta__Order__4F47C5E3">
+    <AssociationSet Name="FK__OrderDeta__Order__531856C7" Association="Self.FK__OrderDeta__Order__531856C7">
       <End Role="Orders" EntitySet="Orders" />
       <End Role="OrderDetails" EntitySet="OrderDetails" />
     </AssociationSet>
-    <AssociationSet Name="FK__OrderDeta__Produ__503BEA1C" Association="Self.FK__OrderDeta__Produ__503BEA1C">
+    <AssociationSet Name="FK__OrderDeta__Produ__540C7B00" Association="Self.FK__OrderDeta__Produ__540C7B00">
       <End Role="Products" EntitySet="Products" />
       <End Role="OrderDetails" EntitySet="OrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Order__5BAD9CC8" Association="Self.FK__OrderRetu__Order__5BAD9CC8">
+      <End Role="OrderReturns" EntitySet="OrderReturns" />
+      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Produ__5CA1C101" Association="Self.FK__OrderRetu__Produ__5CA1C101">
+      <End Role="Products" EntitySet="Products" />
+      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OrderRetu__Creat__58D1301D" Association="Self.FK__OrderRetu__Creat__58D1301D">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="OrderReturns" EntitySet="OrderReturns" />
     </AssociationSet>
     <AssociationSet Name="FK__OrderRetu__Order__57DD0BE4" Association="Self.FK__OrderRetu__Order__57DD0BE4">
-      <End Role="OrderReturns" EntitySet="OrderReturns" />
-      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
-    </AssociationSet>
-    <AssociationSet Name="FK__OrderRetu__Produ__58D1301D" Association="Self.FK__OrderRetu__Produ__58D1301D">
-      <End Role="Products" EntitySet="Products" />
-      <End Role="OrderReturnDetails" EntitySet="OrderReturnDetails" />
-    </AssociationSet>
-    <AssociationSet Name="FK__OrderRetu__Creat__55009F39" Association="Self.FK__OrderRetu__Creat__55009F39">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="OrderReturns" EntitySet="OrderReturns" />
-    </AssociationSet>
-    <AssociationSet Name="FK__OrderRetu__Order__540C7B00" Association="Self.FK__OrderRetu__Order__540C7B00">
       <End Role="Orders" EntitySet="Orders" />
       <End Role="OrderReturns" EntitySet="OrderReturns" />
     </AssociationSet>
-    <AssociationSet Name="FK__Orders__CreatedB__4C6B5938" Association="Self.FK__Orders__CreatedB__4C6B5938">
+    <AssociationSet Name="FK__Orders__CreatedB__503BEA1C" Association="Self.FK__Orders__CreatedB__503BEA1C">
       <End Role="Users" EntitySet="Users" />
       <End Role="Orders" EntitySet="Orders" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentAp__Payme__69FBBC1F" Association="Self.FK__PaymentAp__Payme__69FBBC1F">
+    <AssociationSet Name="FK__PaymentAp__Payme__6DCC4D03" Association="Self.FK__PaymentAp__Payme__6DCC4D03">
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
       <End Role="PaymentApply" EntitySet="PaymentApplies" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentAp__Purch__6AEFE058" Association="Self.FK__PaymentAp__Purch__6AEFE058">
+    <AssociationSet Name="FK__PaymentAp__Purch__6EC0713C" Association="Self.FK__PaymentAp__Purch__6EC0713C">
       <End Role="Purchases" EntitySet="Purchases" />
       <End Role="PaymentApply" EntitySet="PaymentApplies" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentVo__Payme__6DCC4D03" Association="Self.FK__PaymentVo__Payme__6DCC4D03">
+    <AssociationSet Name="FK__PaymentVo__Payme__719CDDE7" Association="Self.FK__PaymentVo__Payme__719CDDE7">
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
       <End Role="PaymentVoucherAttachments" EntitySet="PaymentVoucherAttachments" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentVo__Creat__662B2B3B" Association="Self.FK__PaymentVo__Creat__662B2B3B">
+    <AssociationSet Name="FK__PaymentVo__Creat__69FBBC1F" Association="Self.FK__PaymentVo__Creat__69FBBC1F">
       <End Role="Users" EntitySet="Users" />
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentVo__Modif__671F4F74" Association="Self.FK__PaymentVo__Modif__671F4F74">
+    <AssociationSet Name="FK__PaymentVo__Modif__6AEFE058" Association="Self.FK__PaymentVo__Modif__6AEFE058">
       <End Role="Users" EntitySet="Users" />
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
     </AssociationSet>
-    <AssociationSet Name="FK__PaymentVo__Vendo__6442E2C9" Association="Self.FK__PaymentVo__Vendo__6442E2C9">
+    <AssociationSet Name="FK__PaymentVo__Vendo__681373AD" Association="Self.FK__PaymentVo__Vendo__681373AD">
       <End Role="Vendors" EntitySet="Vendors" />
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
     </AssociationSet>
@@ -2037,7 +2077,7 @@
       <End Role="Vendors" EntitySet="Vendors" />
       <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptAp__Purch__7A3223E8" Association="Self.FK__ReceiptAp__Purch__7A3223E8">
+    <AssociationSet Name="FK__ReceiptAp__Purch__7E02B4CC" Association="Self.FK__ReceiptAp__Purch__7E02B4CC">
       <End Role="PurchaseReturn" EntitySet="PurchaseReturns" />
       <End Role="ReceiptApply" EntitySet="ReceiptApplies" />
     </AssociationSet>
@@ -2053,23 +2093,23 @@
       <End Role="Vendors" EntitySet="Vendors" />
       <End Role="Purchases" EntitySet="Purchases" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptAp__Recei__793DFFAF" Association="Self.FK__ReceiptAp__Recei__793DFFAF">
+    <AssociationSet Name="FK__ReceiptAp__Recei__7D0E9093" Association="Self.FK__ReceiptAp__Recei__7D0E9093">
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
       <End Role="ReceiptApply" EntitySet="ReceiptApplies" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptVo__Recei__7D0E9093" Association="Self.FK__ReceiptVo__Recei__7D0E9093">
+    <AssociationSet Name="FK__ReceiptVo__Recei__00DF2177" Association="Self.FK__ReceiptVo__Recei__00DF2177">
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
       <End Role="ReceiptVoucherAttachments" EntitySet="ReceiptVoucherAttachments" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptVo__Creat__756D6ECB" Association="Self.FK__ReceiptVo__Creat__756D6ECB">
+    <AssociationSet Name="FK__ReceiptVo__Creat__793DFFAF" Association="Self.FK__ReceiptVo__Creat__793DFFAF">
       <End Role="Users" EntitySet="Users" />
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptVo__Modif__76619304" Association="Self.FK__ReceiptVo__Modif__76619304">
+    <AssociationSet Name="FK__ReceiptVo__Modif__7A3223E8" Association="Self.FK__ReceiptVo__Modif__7A3223E8">
       <End Role="Users" EntitySet="Users" />
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
     </AssociationSet>
-    <AssociationSet Name="FK__ReceiptVo__Vendo__73852659" Association="Self.FK__ReceiptVo__Vendo__73852659">
+    <AssociationSet Name="FK__ReceiptVo__Vendo__7755B73D" Association="Self.FK__ReceiptVo__Vendo__7755B73D">
       <End Role="Vendors" EntitySet="Vendors" />
       <End Role="ReceiptVouchers" EntitySet="ReceiptVouchers" />
     </AssociationSet>

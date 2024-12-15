@@ -12,15 +12,12 @@ namespace Ressential.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ProductItemDetail
+    public partial class UserBranchDetial
     {
-        public int ProductItemDetailId { get; set; }
-        public int ProductId { get; set; }
-        public int ItemId { get; set; }
-        public string Description { get; set; }
-        public decimal ItemQuantity { get; set; }
+        public int UserBranchDetialId { get; set; }
+        public int UserId { get; set; }
+        public int BranchId { get; set; }
     
-        public virtual Item Item { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual Branch Branch { get; set; }
     }
 }

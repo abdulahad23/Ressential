@@ -64,15 +64,15 @@
 
 
                             <td class="no-wrap">
-                                @if (product.Status == "Available")
+                                @if (product.IsActive)
                                 {
                                 <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                    Available
+                                    Active
                                 </span> }
                         else
                         {
                             <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Not Available
+                                Inactive
                             </span>}
                             </td>
                             <td>

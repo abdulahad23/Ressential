@@ -408,7 +408,6 @@ CREATE TABLE ProductItemDetails (
     ItemId INT NOT NULL,
     Description NVARCHAR(255) NULL,
     ItemQuantity DECIMAL(18,2) NOT NULL,
-    Description NVARCHAR(255) NULL,
     FOREIGN KEY (ProductId) REFERENCES Products(ProductId) ON DELETE CASCADE,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
 );
@@ -417,11 +416,21 @@ CREATE TABLE ProductItemDetails (
 CREATE TABLE Customers (
     CustomerId INT PRIMARY KEY IDENTITY(1,1),
     CustomerName NVARCHAR(100) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE, 
+    Password NVARCHAR(255) NOT NULL,
     ContactNo NVARCHAR(20) NOT NULL,
-    Address NVARCHAR(255) NULL,
-    City NVARCHAR(100) NULL,
-    Country NVARCHAR(100) NULL
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
 );
+
+-- Table: CustomerAddresses
+CREATE TABLE CustomerAddresses (
+    CustomerAddressId INT PRIMARY KEY IDENTITY(1,1),
+    CustomerId INT NOT NULL,
+    Address NVARCHAR(255) NULL,
+    City NVARCHAR(255) NULL,
+    Country NVARCHAR(255) NULL 
+);
+
 
 -- Table: Orders
 CREATE TABLE Orders (
@@ -433,8 +442,8 @@ CREATE TABLE Orders (
     BranchId INT NOT NULL,
     CustomerId INT NULL,
     PaymentMethod NVARCHAR(20) NOT NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Completed', 'Cancelled')),
-    CreatedBy INT NOT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('In-process', 'Completed', 'Cancelled')),
+    CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
     FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId),
@@ -451,6 +460,19 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
     FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
 );
+
+-- Table: OnlineOrderDetails
+CREATE TABLE OnlineOrderDetails (
+    OnlineOrderDetailId INT PRIMARY KEY IDENTITY(1,1),
+    OrderId INT NOT NULL,
+    CustomerId INT NOT NULL,
+    Address NVARCHAR(255) NULL,
+    City NVARCHAR(255) NULL,
+    Country NVARCHAR(255) NULL,
+    ContactNo NVARCHAR(20) NOT NULL,
+    FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
+);
+
 
 -- Table: OrderReturns
 CREATE TABLE OrderReturns (
@@ -572,7 +594,6 @@ CREATE TABLE UserBranchDetial (
     UserBranchDetialId INT PRIMARY KEY IDENTITY(1,1),
     UserId INT NOT NULL,
     BranchId INT NOT NULL,
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId) ON DELETE CASCADE,
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE
 );
 
@@ -621,3 +642,13 @@ VALUES  (SYSDATETIME(),1,'Opening',1,44,250),
 		(SYSDATETIME(),3,'Opening',3,0,0),
 		(SYSDATETIME(),4,'Opening',4,16,700),
 		(SYSDATETIME(),5,'Opening',5,2,150);
+
+INSERT INTO BRANCHES (BranchName, BranchCode, BranchContact, Address, City, Country, OwnerName, CreatedBy)
+VALUES ('Tipu Sultan', '137256', '+923112824123', 'A-21, Street-3, Tipu Sultan Road', 'Karachi', 'Pakistan', 'Zulfiqar', 1),
+       ('DHA Phase 6', '137257', '+923332765433', 'B-121, Street-8, DHA Phase 6', 'Karachi', 'Pakistan', 'Abdul Shakoor', 1),
+       ('Landhi', '137258', '+923163033321', 'R-221, Street-4, Landhi No. 5', 'Karachi', 'Pakistan', 'Najma Begum', 1),
+       ('Korangi', '137259', '+923452131241', 'B-76, Street-5, Korangi No. 6', 'Karachi', 'Pakistan', 'Syed Muhammad Ali', 1);
+
+INSERT INTO CUSTOMERS (CustomerName,Email,Password,ContactNo)
+VALUES  ('Abdul Ahad','abdulahad.ad23@gmail.com','123','+923112824123');
+

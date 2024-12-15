@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<Ressential.Models.Product>
+
 @{
     ViewBag.Title = "Shop";
     Layout = "~/Views/Shared/CustomerLayout.cshtml";
@@ -8,8 +9,15 @@
     <div class="container">
         <div class="row no-gutters slider-text align-items-center justify-content-center">
             <div class="col-md-9 ftco-animate text-center">
-                <p class="breadcrumbs"><span class="mr-2"> <a href="@Url.Action("Index", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a> </span> <span>  <a href="@Url.Action("Shop", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Products</a> </span></p>
-                <h1 style="font-size: 48px; font-weight: bold; color: #fff; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin: 20px 0; ">Products</h1>
+                <p class="breadcrumbs">
+                    <span class="mr-2">
+                        <a href="@Url.Action("Index", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Home</a>
+                    </span>
+                    <span>
+                        <a href="@Url.Action("Shop", "Customer")" style="color: #fff; text-decoration: none; font-weight: bold;">Products</a>
+                    </span>
+                </p>
+                <h1 style="font-size: 48px; font-weight: bold; color: #fff; text-align: center; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); margin: 20px 0;">Products</h1>
             </div>
         </div>
     </div>
@@ -20,303 +28,120 @@
         <div class="row justify-content-center">
             <div class="col-md-10 mb-5 text-center">
                 <ul class="product-category">
-                    <li><a href="#" class="active">All</a></li>
-                    <li><a href="#">Appetizers</a></li>
-                    <li><a href="#">Main Course</a></li>
-                    <li><a href="#">Side Dishes</a></li>
-                    <li><a href="#">Desserts</a></li>
-                    <li><a href="#">Beverages</a></li>
-
+                    <li>
+                        <a href="@Url.Action("Shop", "Customer", new { categoryId = (int?)null })"
+                           class="@(ViewBag.SelectedCategoryId == null ? "active" : "")">All</a>
+                    </li>
+                    @foreach (var category in ViewBag.Categories as IEnumerable<Ressential.Models.ProductCategory>)
+                    {
+                        <li>
+                            <a href="@Url.Action("Shop", "Customer", new { categoryId = category.ProductCategoryId })"
+                               class="@(ViewBag.SelectedCategoryId == category.ProductCategoryId ? "active" : "")">
+                                @category.ProductCategoryName
+                            </a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img src="~/Content/CustomerAssets/images/App1.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">                       
-                        <span class="status">30%</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3 style="margin-top: 10px;"><a href="#">FRENCH FRIES</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                                    <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                        <i class="ion-ios-cart"></i>
-                                        <span>Add to Cart</span>
-                                    </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img src="~/Content/CustomerAssets/images/App2.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">MOZZARELLA STICKS</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img src="~/Content/CustomerAssets/images/App3.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">GARLIC BREAD</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img src="~/Content/CustomerAssets/images/Prod1.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">BURGER</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img src="~/Content/CustomerAssets/images/Prod2.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <span class="status">30%</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">PIZZA</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
+        <div class="container">
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-md-6 col-lg-3 ftco-animate">
+                        <div class="product">
+                            <a href="#" class="img-prod">
+                                <img class="img-fluid" src="@Url.Content("~/"+ product.ProductImage)" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Product Image" />
+                            </a>
+                            <div class="text py-3 pb-4 px-3 text-center">
+                                <h3><a href="#">@product.ProductName</a></h3>
+                                <div class="d-flex">
+                                    <div class="pricing">
+                                        <p class="price">
+                                            <span>@product.ProductPrice.ToString("C")</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="bottom-area mt-5 text-center">
+                                    <form action="@Url.Action("AddToCart", "Customer")" method="post">
+                                        <input type="hidden" name="productId" value="@product.ProductId" />
+                                        <button type="submit" class="btn btn-primary cart-box" style="border-radius: 10px; padding: 5px 10px;">
+                                            <i class="ion-ios-cart"></i>
+                                            <span>Add to Cart</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod3.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Fried Chicken</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod4.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Chicken Nuggets</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod5.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Fruit Juice</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod6.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <span class="status">30%</span>
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Steak</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span class="mr-2 price-dc">RS 120.00</span><span class="price-sale">RS 80.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod7.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Chow Mein</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod10.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Shawarma</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 ftco-animate">
-                <div class="product">
-                    <a href="#" class="img-prod">
-                        <img class="img-fluid" src="~/Content/CustomerAssets/images/Prod9.png" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Colorlib Template">
-                        <div class="overlay"></div>
-                    </a>
-                    <div class="text py-3 pb-4 px-3 text-center">
-                        <h3><a href="#">Sandwich</a></h3>
-                        <div class="d-flex">
-                            <div class="pricing">
-                                <p class="price"><span>RS 120.00</span></p>
-                            </div>
-                        </div>
-                        <div class="bottom-area mt-5 text-center">
-                            <a href="#" class="cart-box" style="border-radius: 10px; padding: 5px 10px 5px 10px;">
-                                <i class="ion-ios-cart"></i>
-                                <span>Add to Cart</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
-        <div class="row mt-5">
-            <div class="col text-center">
-                <div class="block-27">
-                    <ul>
-                        <li><a href="#">&lt;</a></li>
-                        <li class="active"><span>1</span></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">&gt;</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+
+        @*<nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Shop", new { page = i })">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>*@
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                @if (ViewBag.TotalPages > 1)
+                {
+                    // Show the first page link
+                    <li class="page-item @(1 == ViewBag.Page ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Shop", new { page = 1 })">1</a>
+                    </li>
+
+                    // If current page is beyond 4, show "..."
+                    if (ViewBag.Page > 4)
+                    {
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                    }
+
+                    // Show pages around the current page
+                    for (int i = Math.Max(2, ViewBag.Page - 2); i <= Math.Min(ViewBag.TotalPages - 1, ViewBag.Page + 2); i++)
+                    {
+                        <li class="page-item @(i == ViewBag.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Shop", new { page = i })">@i</a>
+                        </li>
+                    }
+
+                    // If current page is far from the last page, show "..."
+                    if (ViewBag.Page < ViewBag.TotalPages - 3)
+                    {
+                        <li class="page-item disabled"><a class="page-link">...</a></li>
+                    }
+
+                    // Show the last page link
+                    if (ViewBag.TotalPages > 1)
+                    {
+                        <li class="page-item @(ViewBag.TotalPages == ViewBag.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Shop", new { page = ViewBag.TotalPages })">@ViewBag.TotalPages</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+
+    </div>
+
+    @if (ViewBag.CartItemCount > 0)
+    {
+        <a href="@Url.Action("Cart", "Customer")" class="btn btn-primary cart-go-to" id="cartButton">
+            Go to Cart (@ViewBag.CartItemCount items)
+        </a>
+    }
+    <div class="container mt-3">
+        <button class="btn btn-primary cart-go-to" style="display:none;" id="cartButtonFallback">
+            Go to Cart (0 items)
+        </button>
     </div>
 </section>
 
@@ -324,7 +149,7 @@
     <div class="container py-4">
         <div class="row d-flex justify-content-center py-5">
             <div class="col-md-6">
-                <h2 style="font-size: 22px;" class="mb-0">Subcribe to our Newsletter</h2>
+                <h2 style="font-size: 22px;" class="mb-0">Subscribe to our Newsletter</h2>
                 <span>Get e-mail updates about our latest shops and special offers</span>
             </div>
             <div class="col-md-6 d-flex align-items-center">
@@ -339,3 +164,42 @@
     </div>
 </section>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".cart-box").off("click").on("click", function (e) {
+            e.preventDefault();
+            var productId = $(this).closest("form").find("input[name='productId']").val();
+            var url = '@Url.Action("AddToCart", "Customer")';
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { productId: productId },
+                success: function (response) {
+                    if (!response.success) {
+                    // Redirect to login if the user is not authenticated
+                    window.location.href = '@Url.Action("Login", "Customer")';
+                    return;
+                    }
+                    $(".cart-count").text(response.cartCount);
+                    $(".cart-total").text(response.cartTotal.toFixed(2));
+
+                    if (response.cartCount > 0) {
+                        $(".cart-go-to").show().text("Go to Cart (" + response.cartCount + " items)");
+                    } else {
+                        $(".cart-go-to").hide();
+                    }
+                },
+                error: function () {
+                    alert("There was an error adding the product to the cart.");
+                }
+            });
+        });
+
+        $(".cart-go-to").off("click").on("click", function () {
+            window.location.href = '@Url.Action("Cart", "Customer")';
+        });
+    });
+</script>

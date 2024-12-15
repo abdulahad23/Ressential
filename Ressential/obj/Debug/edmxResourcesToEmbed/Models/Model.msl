@@ -78,15 +78,26 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="CustomerAddresses">
+      <EntityTypeMapping TypeName="DB_RessentialModel.CustomerAddress">
+        <MappingFragment StoreEntitySet="CustomerAddresses">
+          <ScalarProperty Name="CustomerAddressId" ColumnName="CustomerAddressId" />
+          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Customers">
       <EntityTypeMapping TypeName="DB_RessentialModel.Customer">
         <MappingFragment StoreEntitySet="Customers">
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
-          <ScalarProperty Name="Address" ColumnName="Address" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -229,10 +240,10 @@
     <EntitySetMapping Name="ProductItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ProductItemDetail">
         <MappingFragment StoreEntitySet="ProductItemDetails">
-          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ProductItemDetailId" ColumnName="ProductItemDetailId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -249,7 +260,7 @@
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ProductCategoryId" ColumnName="ProductCategoryId" />
           <ScalarProperty Name="ChefID" ColumnName="ChefID" />
-          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
@@ -429,6 +440,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="UserBranchDetials">
+      <EntityTypeMapping TypeName="DB_RessentialModel.UserBranchDetial">
+        <MappingFragment StoreEntitySet="UserBranchDetial">
+          <ScalarProperty Name="UserBranchDetialId" ColumnName="UserBranchDetialId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="DB_RessentialModel.User">
         <MappingFragment StoreEntitySet="Users">
@@ -466,11 +486,11 @@
     <EntitySetMapping Name="WarehouseIssueDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseIssueDetail">
         <MappingFragment StoreEntitySet="WarehouseIssueDetails">
-          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="IssueDetailId" ColumnName="IssueDetailId" />
           <ScalarProperty Name="IssueId" ColumnName="IssueId" />
           <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="CostApplied" ColumnName="CostApplied" />
         </MappingFragment>

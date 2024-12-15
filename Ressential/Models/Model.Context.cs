@@ -30,6 +30,7 @@ namespace Ressential.Models
         public virtual DbSet<BranchItem> BranchItems { get; set; }
         public virtual DbSet<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual DbSet<ConsumeItem> ConsumeItems { get; set; }
+        public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ItemCategory> ItemCategories { get; set; }
         public virtual DbSet<Item> Items { get; set; }
@@ -57,6 +58,7 @@ namespace Ressential.Models
         public virtual DbSet<ReturnStockDetail> ReturnStockDetails { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
+        public virtual DbSet<UserBranchDetial> UserBranchDetials { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Vendor> Vendors { get; set; }
         public virtual DbSet<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }

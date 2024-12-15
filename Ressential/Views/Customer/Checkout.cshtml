@@ -41,11 +41,12 @@
                                 <div class="select-wrap">
                                     <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                                     <select name="" id="" class="form-control">
-                                        <option value="">Korangi</option>
-                                        <option value="">Highway</option>
-                                        <option value="">Gulshan</option>
-                                        <option value="">Johar</option>
-                                        <option value="">DHA</option>
+                                        <option value="">France</option>
+                                        <option value="">Italy</option>
+                                        <option value="">Philippines</option>
+                                        <option value="">South Korea</option>
+                                        <option value="">Hongkong</option>
+                                        <option value="">Japan</option>
                                     </select>
                                 </div>
                             </div>
@@ -107,20 +108,20 @@
                             <h3 class="billing-heading mb-4">Cart Total</h3>
                             <p class="d-flex">
                                 <span>Subtotal</span>
-                                <span>RS 20.60</span>
+                                <span>$20.60</span>
                             </p>
                             <p class="d-flex">
                                 <span>Delivery</span>
-                                <span>RS 0.00</span>
+                                <span>$0.00</span>
                             </p>
                             <p class="d-flex">
                                 <span>Discount</span>
-                                <span>RS 3.00</span>
+                                <span>$3.00</span>
                             </p>
                             <hr>
                             <p class="d-flex total-price">
                                 <span>Total</span>
-                                <span>RS 17.60</span>
+                                <span>Rs @ViewBag.CartTotal.ToString("0.00")</span> <!-- Display the total -->
                             </p>
                         </div>
                     </div>
@@ -130,32 +131,18 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
-                                        <label><input type="radio" name="optradio" class="mr-2"> Direct Bank Tranfer</label>
+                                        <label><input type="radio" name="paymentMethod" value="Cash On delivery" class="mr-2"> Cash On Delivery</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
-                                        <label><input type="radio" name="optradio" class="mr-2"> Check Payment</label>
+                                        <label><input type="radio" name="paymentMethod" value="Online" class="mr-2"> Online</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <div class="radio">
-                                        <label><input type="radio" name="optradio" class="mr-2"> EasyPaisa</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <div class="checkbox">
-                                        <label><input type="checkbox" value="" class="mr-2"> I have read and accept the terms and conditions</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <p><a href="#" class="btn btn-primary py-3 px-4">Place an order</a></p>
+                            <p><a href="#" class="btn btn-primary py-3 px-4" id="placeOrderBtn">Place an order</a></p>
                         </div>
                     </div>
                 </div>
@@ -182,3 +169,35 @@
         </div>
     </div>
 </section>
+<script>
+    document.getElementById("placeOrderBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+
+        var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+        if (confirm("Are you sure you want to place the order?")) {
+            // Create the form data or gather any necessary data
+            var formData = new FormData();
+            formData.append("paymentMethod", paymentMethod);  // Send payment method with the request
+
+            // Send the request to the server to save the order and payment
+            fetch('@Url.Action("PlaceOrder", "Customer")', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);  // Show success message
+                    location.reload();  // Reload the page to update cart and order status
+                } else {
+                    alert("Something went wrong. Please try again.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred. Please try again.");
+            });
+        }
+    });
+</script>

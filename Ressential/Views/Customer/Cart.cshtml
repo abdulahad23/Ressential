@@ -1,4 +1,4 @@
-﻿
+﻿@using Ressential.Models
 @{
     ViewBag.Title = "Cart";
     Layout = "~/Views/Shared/CustomerLayout.cshtml";
@@ -17,6 +17,15 @@
 
 <section class="ftco-section ftco-cart">
     <div class="container">
+        <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+            <div class="cart-total mb-3">
+                <p>
+                    <a href="@Url.Action("EmptyCart", "Customer")" class="btn btn-danger py-3 px-4" id="empty-cart">
+                        Empty Cart
+                    </a>
+                </p>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12 ftco-animate">
                 <div class="cart-list">
@@ -32,109 +41,72 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="text-center">
-                                <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+                            @if (Session["Cart"] as List<Cart> != null)
+                            {
+                                foreach (var item in Session["Cart"] as List<Cart>)
+                                {
+                                    <tr class="text-center" id="cart-item-@item.ProductID" data-product-id="@item.ProductID">
+                                        <td class="product-remove">
+                                            <a href="javascript:void(0);" onclick="removeFromCart(@item.ProductID)">
+                                                <span class="ion-ios-close"></span>
+                                            </a>
+                                        </td>
+                                        <td class="image-prod">
+                                            <div class="img" style="background-image: url('@Url.Content("~/"+ item.ProductImage)');"></div>
+                                        </td>
 
-                                <td class="image-prod"><div class="img" style="background-image: url('/Content/CustomerAssets/images/App1.png'); "></div></td>
 
-                                <td class="product-name">
-                                    <h3>French Fries</h3>
-                                    <p>Deliciously crafted with fresh ingredients for a memorable taste experience!</p>
-                                </td>
+                                        <td class="product-name">
+                                            <h3>@item.ProductID</h3>
+                                            <p>@item.ProductName</p>
+                                        </td>
 
-                                <td class="price">RS 4.90</td>
+                                        <td class="price">Rs @item.Price</td>
+                                        <td class="quantity">
+                                            <div class="input-group mb-3">
+                                                <button class="btn btn-outline-secondary btn-decrement" type="button" style="width: 40px;">-</button>
+                                                <input type="text" name="quantity" class="quantity form-control input-number quantity-input" value="@item.Quantity" min="1" max="100" style="text-align: center;" disabled>
+                                                <button class="btn btn-outline-secondary btn-increment" type="button" style="width: 40px;">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="total" id="item-total-@item.ProductID">Rs @item.TotalPrice</td>
+                                    </tr>
+                                }
+                            }
 
-                                <td class="quantity">
-                                    <div class="input-group mb-3">
-                                        <input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-                                    </div>
-                                </td>
 
-                                <td class="total">RS 4.90</td>
-                            </tr><!-- END TR-->
-
-                            <tr class="text-center">
-                                <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-
-                                <td class="image-prod"><div class="img" style="background-image: url('/Content/CustomerAssets/images/Prod1.png');"></div></td>
-
-                                <td class="product-name">
-                                    <h3>Burger</h3>
-                                    <p>Deliciously crafted with fresh ingredients for a memorable taste experience!</p>
-                                </td>
-
-                                <td class="price">RS 15.70</td>
-
-                                <td class="quantity">
-                                    <div class="input-group mb-3">
-                                        <input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
-                                    </div>
-                                </td>
-
-                                <td class="total">RS 15.70</td>
-                            </tr><!-- END TR-->
                         </tbody>
+
                     </table>
+
                 </div>
             </div>
         </div>
         <div class="row justify-content-end">
-            <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
-                <div class="cart-total mb-3">
-                    <h3>Coupon Code</h3>
-                    <p>Enter your coupon code if you have one</p>
-                    <form action="#" class="info">
-                        <div class="form-group">
-                            <label for="">Coupon code</label>
-                            <input type="text" class="form-control text-left px-3" placeholder="">
-                        </div>
-                    </form>
-                </div>
-                <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Apply Coupon</a></p>
-            </div>
-            <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
-                <div class="cart-total mb-3">
-                    <h3>Estimate shipping and tax</h3>
-                    <p>Enter your destination to get a shipping estimate</p>
-                    <form action="#" class="info">
-                        <div class="form-group">
-                            <label for="">Country</label>
-                            <input type="text" class="form-control text-left px-3" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="country">State/Province</label>
-                            <input type="text" class="form-control text-left px-3" placeholder="">
-                        </div>
-                        <div class="form-group">
-                            <label for="country">Zip/Postal Code</label>
-                            <input type="text" class="form-control text-left px-3" placeholder="">
-                        </div>
-                    </form>
-                </div>
-                <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Estimate</a></p>
-            </div>
+
             <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
                 <div class="cart-total mb-3">
                     <h3>Cart Totals</h3>
                     <p class="d-flex">
                         <span>Subtotal</span>
-                        <span>RS 20.60</span>
+                        <span>$20.60</span>
                     </p>
                     <p class="d-flex">
                         <span>Delivery</span>
-                        <span>RS 0.00</span>
+                        <span>$0.00</span>
                     </p>
                     <p class="d-flex">
                         <span>Discount</span>
-                        <span>RS 3.00</span>
+                        <span>$3.00</span>
                     </p>
                     <hr>
                     <p class="d-flex total-price">
                         <span>Total</span>
-                        <span>RS 17.60</span>
+                        <span id="cartTotal">Rs @ViewBag.CartTotal.ToString("0.00")</span> <!-- Display the total -->
                     </p>
                 </div>
-                <p><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+                <p><a href="@Url.Action("Checkout", "Customer")" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+
             </div>
         </div>
     </div>
@@ -158,4 +130,90 @@
         </div>
     </div>
 </section>
+
+
+<script>
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted) { // Check if the page is loaded from cache
+            location.reload(); // Reload the page
+        }
+    });
+</script>
+
+<script>
+    function removeFromCart(productId) {
+    $.ajax({
+        url: '@Url.Action("RemoveFromCart", "Customer")',
+        type: 'POST',
+        data: { productId: productId },
+        success: function (response) {
+            // Update the cart count and total displayed on the page
+            $('#cart-count').text(response.cartCount); // Update the cart count
+
+            // Update the total amount
+            $('#cartTotal').text('Rs ' + response.cartTotal.toFixed(2)); // Update the total amount
+
+            // Optionally, you can remove the row from the table after item is removed
+            $('#cart-item-' + productId).remove();
+
+            // Optionally, you can check if the cart is empty and update the UI accordingly
+            if (response.cartCount === 0) {
+                // For example, show a message or hide the cart section
+                $('.cart-list').html('<p>Your cart is empty.</p>');
+            }
+        },
+        error: function () {
+            alert("Error removing item from cart.");
+        }
+    });
+}
+
+</script>
+
+<script>
+    // Increment button event listener
+document.querySelectorAll('.btn-increment').forEach(function (button) {
+    button.addEventListener('click', function () {
+        let quantityInput = button.closest('tr').querySelector('.quantity-input');
+        let quantity = parseInt(quantityInput.value);
+        if (quantity < 100) {
+            quantityInput.value = quantity + 1;
+            updateCart(button.closest('tr').dataset.productId, quantityInput.value);
+        }
+    });
+});
+
+// Decrement button event listener
+document.querySelectorAll('.btn-decrement').forEach(function (button) {
+    button.addEventListener('click', function () {
+        let quantityInput = button.closest('tr').querySelector('.quantity-input');
+        let quantity = parseInt(quantityInput.value);
+        if (quantity > 1) {
+            quantityInput.value = quantity - 1;
+            updateCart(button.closest('tr').dataset.productId, quantityInput.value);
+        }
+    });
+});
+
+// Function to update the cart and refresh the total prices
+function updateCart(productId, quantity) {
+    $.ajax({
+        url: '@Url.Action("UpdateCart", "Customer")',
+        type: 'POST',
+        data: { productId: productId, quantity: quantity },
+        success: function (response) {
+            // Update the total price for the updated item
+            $('#item-total-' + productId).text('Rs ' + response.updatedItemTotal.toFixed(2));
+
+            // Update the cart count and total displayed on the page
+            $('#cart-count').text(response.cartCount); // Update the cart count
+            $('#cartTotal').text('Rs ' + response.cartTotal.toFixed(2)); // Update the total amount
+        },
+        error: function () {
+            alert("Error updating cart.");
+        }
+    });
+}
+
+</script>
 

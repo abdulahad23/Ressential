@@ -31,7 +31,7 @@ namespace Ressential.Models
         public string Description { get; set; }
         public int ProductCategoryId { get; set; }
         public Nullable<int> ChefID { get; set; }
-        public string Status { get; set; }
+        public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }

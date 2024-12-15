@@ -69,10 +69,10 @@
 
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.DropDownListFor(m => m.Status, new SelectList(new[] {
-                            new { Value = true, Text = "Available" },
-                            new { Value = false, Text = "Inavailable" }
-                        }, "Value", "Text"), new { @class = "form-control" })
+                            @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
+                                new { Value = true, Text = "Active" },
+                                new { Value = false, Text = "Inactive" }
+                            }, "Value", "Text"), new { @class = "form-control" })
                             <label for="floatingInput">Product Status</label>
                         </div>
                     </div>

@@ -1,0 +1,125 @@
+/* Box style for the Go to Cart button */
+.cart-go-to {
+    position: fixed;
+    bottom: 20px;
+    /* Distance from the bottom */
+    right: 20px;
+    /* Align to the right side of the screen */
+    z-index: 9999;
+    /* Ensure the button stays on top */
+    padding: 12px 25px;
+    /* Adjust size of the button */
+    font-size: 16px;
+    /* Button text size */
+    background-color: #28a745;
+    /* Background color (green) */
+    color: #fff;
+    /* Text color */
+    border-radius: 8px;
+    /* Slightly rounded corners for the box */
+    text-align: center;
+    /* Center align the text */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    text-decoration: none;
+    /* Remove underline from link if it's a link */
+}
+
+/* Optional: Hover effect for interactivity */
+.cart-go-to:hover {
+    background-color: #218838;
+    /* Darker green on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+
+.pagination .page-item.active .page-link {
+    background-color: #82ae46;
+    /* Primary color for active button */
+    border-color: #82ae46;
+    color: #fff;
+    /* White text for better contrast */
+}
+.pagination .page-item.active .page-link:hover {
+    background-color: #82ae46;
+    /* Primary color for active button */
+    border-color: #82ae46;
+    color: #fff;
+    /* White text for better contrast */
+}
+
+.pagination .page-item .page-link {
+    color: #82ae46;
+    /* Primary color for inactive buttons */
+    border: 1px solid #82ae46;
+    /* Border color for inactive buttons */
+    transition: all 0.3s ease;
+}
+
+    .pagination .page-item .page-link:hover {
+        background-color: #adadac;
+        /* Darker shade on hover */
+        color: #fff;
+        /* White text on hover */
+        border-color: #adadac;
+    }
+
+.pagination {
+    margin-top: 20px;
+    /* Adjust spacing as needed */
+}
+
+
+
+body {
+    background: #ffffff;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-header h2 {
+    color: #82ae46;
+    font-weight: bold;
+}
+
+.btn-secondary {
+    background-color: #82ae46;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+    .btn-secondary:hover {
+        background-color: #218838;
+    }
+
+.text-secondary {
+    color: #82ae46 !important;
+}
+
+    .text-secondary:hover {
+        color: #218838;
+        text-decoration: underline;
+    }
+
+.form-check-input:checked {
+    background-color: #82ae46;
+    border-color: #82ae46;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(130, 174, 70, 0.5);
+}

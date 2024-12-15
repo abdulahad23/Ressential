@@ -151,6 +151,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\KitchenController.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Models\BranchItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\ConsumeItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -174,6 +176,9 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Customer.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CustomerAddress.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Item.cs">
@@ -209,6 +214,7 @@
     <Compile Include="Models\OrderReturnDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PaginationConstraints.cs" />
     <Compile Include="Models\PaymentApply.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -274,6 +280,9 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserBranchDetial.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Vendor.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -323,6 +332,8 @@
     <Content Include="Content\assets\images\logo-dark.svg" />
     <Content Include="Content\assets\images\logo-white.svg" />
     <Content Include="Content\assets\images\logo.svg" />
+    <Content Include="Content\assets\images\logo\ressential-logo-small.png" />
+    <Content Include="Content\assets\images\logo\ressential-logo.png" />
     <Content Include="Content\assets\images\user\avatar-1.jpg" />
     <Content Include="Content\assets\images\user\avatar-10.jpg" />
     <Content Include="Content\assets\images\user\avatar-2.jpg" />
@@ -343,6 +354,7 @@
     <Content Include="Content\assets\js\plugins\feather.min.js" />
     <Content Include="Content\assets\js\plugins\popper.min.js" />
     <Content Include="Content\assets\js\plugins\simplebar.min.js" />
+    <Content Include="Content\assets\no_image.png" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -733,9 +745,14 @@
     <Content Include="Views\Kitchen\EditConsumeItem.cshtml" />
     <Content Include="Views\Kitchen\EditWastageItem.cshtml" />
     <Content Include="Views\Kitchen\EditProduct.cshtml" />
+    <Content Include="Views\Customer\Login.cshtml" />
+    <Content Include="Views\Kitchen\EditCategory.cshtml" />
+    <Content Include="Views\Kitchen\EditItem.cshtml" />
+    <Content Include="Views\Kitchen\EditReturnStock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
