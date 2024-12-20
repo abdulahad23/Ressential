@@ -419,16 +419,10 @@ CREATE TABLE Customers (
     Email NVARCHAR(100) NOT NULL UNIQUE, 
     Password NVARCHAR(255) NOT NULL,
     ContactNo NVARCHAR(20) NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
+    City NVARCHAR(255) NOT NULL,
+    Country NVARCHAR(255) NOT NULL, 
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-);
-
--- Table: CustomerAddresses
-CREATE TABLE CustomerAddresses (
-    CustomerAddressId INT PRIMARY KEY IDENTITY(1,1),
-    CustomerId INT NOT NULL,
-    Address NVARCHAR(255) NULL,
-    City NVARCHAR(255) NULL,
-    Country NVARCHAR(255) NULL 
 );
 
 
@@ -442,6 +436,7 @@ CREATE TABLE Orders (
     BranchId INT NOT NULL,
     CustomerId INT NULL,
     PaymentMethod NVARCHAR(20) NOT NULL,
+    OrderTotal INT NOT NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('In-process', 'Completed', 'Cancelled')),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -470,6 +465,7 @@ CREATE TABLE OnlineOrderDetails (
     City NVARCHAR(255) NULL,
     Country NVARCHAR(255) NULL,
     ContactNo NVARCHAR(20) NOT NULL,
+    DeliveryCharges INT NOT NULL,
     FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
 );
 
@@ -649,6 +645,45 @@ VALUES ('Tipu Sultan', '137256', '+923112824123', 'A-21, Street-3, Tipu Sultan R
        ('Landhi', '137258', '+923163033321', 'R-221, Street-4, Landhi No. 5', 'Karachi', 'Pakistan', 'Najma Begum', 1),
        ('Korangi', '137259', '+923452131241', 'B-76, Street-5, Korangi No. 6', 'Karachi', 'Pakistan', 'Syed Muhammad Ali', 1);
 
-INSERT INTO CUSTOMERS (CustomerName,Email,Password,ContactNo)
-VALUES  ('Abdul Ahad','abdulahad.ad23@gmail.com','123','+923112824123');
+INSERT INTO CUSTOMERS (CustomerName,Email,Password,ContactNo,Address,City,Country)
+VALUES  ('Abdul Ahad','abdulahad.ad23@gmail.com','123','+923112824123','House # A-392, Sector 31/D, P&T Society, Korangi','Karachi','Pakistan');
+
+INSERT INTO ProductCategories (ProductCategoryName, Description)
+VALUES 
+('Pizza', 'A variety of pizzas with different toppings and crusts'),
+('Burger', 'Delicious burgers including beef, chicken, and veggie options'),
+('Sandwich', 'Fresh sandwiches with assorted fillings and bread choices'),
+('Pasta', 'Italian pasta dishes with sauces and add-ons'),
+('Salads', 'Healthy salads with fresh vegetables and toppings'),
+('Rolls', 'Chicken and Beef rolls'),
+('Desserts', 'Sweet dishes like cakes, ice creams, and pastries'),
+('Seafood', 'Dishes featuring fresh fish, shrimp, and other seafood'),
+('Grilled Items', 'Grilled chicken, steaks, and BBQ specialties'),
+('Desi', 'A variety of soups including vegetarian and non-vegetarian options');
+
+
+
+INSERT INTO Products (ProductCode, ProductName, BranchId, ProductImage, ProductPrice, Description, ProductCategoryId, IsActive, CreatedBy)
+VALUES
+('P001', 'Margherita Pizza', 1, 'pizza.jpg', 899, 'Classic Italian pizza with mozzarella and basil', 1, 1, 1),
+('P002', 'Pepperoni Pizza', 1, 'pepperoni.jpg', 899, 'Pizza topped with pepperoni and cheese', 1, 1, 1),
+('P003', 'Chicken Burger', 1, 'chicken_burger.jpg', 450, 'Grilled chicken burger with lettuce and mayo', 2, 1, 1),
+('P004', 'Beef Burger', 1, 'beef_burger.jpg', 850, 'Juicy beef burger with cheddar cheese', 2, 1, 1),
+('P005', 'Caesar Salad', 1, 'caesar_salad.jpg', 490, 'Fresh romaine lettuce with Caesar dressing', 5, 1, 1),
+('P006', 'Pasta Alfredo', 1, 'pasta_alfredo.jpg', 1199, 'Creamy Alfredo pasta with chicken', 4, 1, 1),
+('P007', 'Veggie Wrap', 1, 'veggie_wrap.jpg', 580, 'Healthy wrap filled with fresh vegetables', 6, 1, 1),
+('P008', 'Grilled Salmon', 1, 'grilled_salmon.jpg', 1299, 'Grilled salmon served with lemon butter', 8, 1, 1),
+('P009', 'Tacos', 1, 'tacos.jpg', 750, 'Soft tacos filled with seasoned beef and veggies', 6, 1, 1),
+('P010', 'Chocolate Cake', 1, 'chocolate_cake.jpeg', 1199, 'Rich chocolate cake with ganache topping', 7, 1, 1);
+('P011', 'Biryani', 1, 'biryani.jpeg', 499, 'Traditional Pakistani rice dish with spices and chicken', 10, 1, 1),
+('P012', 'Karahi Gosht', 1, 'karahi_gosht.jpeg', 1250, 'Spicy and flavorful mutton curry', 10, 1, 1),
+('P013', 'Haleem', 1, 'haleem.jpg', 220, 'Thick and hearty stew made with lentils and meat', 10, 1, 1),
+('P014', 'Chicken Tikka', 1, 'chicken_tikka.jpg', 450, 'Grilled chicken marinated in spices', 9, 1, 1),
+('P015', 'Seekh Kebabs', 1, 'seekh_kebabs.jpg', 390, 'Minced meat kebabs grilled to perfection', 9, 1, 1),
+('P016', 'Paya', 1, 'paya.jpeg', 390, 'Slow-cooked goat trotters curry', 10, 1, 1),
+('P017', 'Nihari', 1, 'nihari.jpg', 450, 'Spicy beef stew cooked with aromatic spices', 10, 1, 1),
+('P018', 'Chapli Kebab', 1, 'chapli_kebab.jpeg', 220, 'Fried minced meat patties with herbs and spices', 10, 1, 1),
+('P019', 'Gol Gappay', 1, 'gol_gappay.png', 300, 'Crispy shells filled with spicy tamarind water', 10, 1, 1),
+('P020', 'Kheer', 1, 'kheer.jpg', 180, 'Traditional Pakistani rice pudding dessert', 7, 1, 1);
+
 

@@ -92,6 +92,9 @@
     <Property Name="Password" Type="nvarchar" MaxLength="255" Nullable="false" />
     <Property Name="ContactNo" Type="nvarchar" MaxLength="20" Nullable="false" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" />
+    <Property Name="City" Type="nvarchar" MaxLength="255" />
+    <Property Name="Country" Type="nvarchar" MaxLength="255" />
   </EntityType>
   <EntityType Name="ItemCategory">
     <Key>
@@ -116,6 +119,19 @@
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="OnlineOrderDetails">
+    <Key>
+      <PropertyRef Name="OnlineOrderDetailId" />
+    </Key>
+    <Property Name="OnlineOrderDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="OrderId" Type="int" Nullable="false" />
+    <Property Name="CustomerId" Type="int" Nullable="false" />
+    <Property Name="Address" Type="nvarchar" MaxLength="255" />
+    <Property Name="City" Type="nvarchar" MaxLength="255" />
+    <Property Name="Country" Type="nvarchar" MaxLength="255" />
+    <Property Name="ContactNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="DeliveryCharges" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="OrderDetails">
     <Key>
@@ -161,6 +177,7 @@
     <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
     <Property Name="CreatedBy" Type="int" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="OrderTotal" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="PaymentApply">
     <Key>
@@ -737,6 +754,20 @@
       </Principal>
       <Dependent Role="Items">
         <PropertyRef Name="UnitOfMeasureId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__OnlineOrd__Order__0697FACD">
+    <End Role="Orders" Type="Self.Orders" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="OnlineOrderDetails" Type="Self.OnlineOrderDetails" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Orders">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OnlineOrderDetails">
+        <PropertyRef Name="OrderId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1688,6 +1719,7 @@
     <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OnlineOrderDetails" EntityType="Self.OnlineOrderDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderReturnDetails" EntityType="Self.OrderReturnDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderReturns" EntityType="Self.OrderReturns" Schema="dbo" store:Type="Tables" />
@@ -1790,6 +1822,10 @@
     <AssociationSet Name="FK__Items__UnitOfMea__44FF419A" Association="Self.FK__Items__UnitOfMea__44FF419A">
       <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
       <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK__OnlineOrd__Order__0697FACD" Association="Self.FK__OnlineOrd__Order__0697FACD">
+      <End Role="Orders" EntitySet="Orders" />
+      <End Role="OnlineOrderDetails" EntitySet="OnlineOrderDetails" />
     </AssociationSet>
     <AssociationSet Name="FK__OrderDeta__Order__531856C7" Association="Self.FK__OrderDeta__Order__531856C7">
       <End Role="Orders" EntitySet="Orders" />

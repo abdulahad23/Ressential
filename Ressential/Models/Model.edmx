@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="AccountId" />
@@ -97,6 +97,9 @@
           <Property Name="Password" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ContactNo" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="ItemCategory">
           <Key>
@@ -121,6 +124,19 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="OnlineOrderDetails">
+          <Key>
+            <PropertyRef Name="OnlineOrderDetailId" />
+          </Key>
+          <Property Name="OnlineOrderDetailId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="CustomerId" Type="int" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="City" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country" Type="nvarchar" MaxLength="255" />
+          <Property Name="ContactNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DeliveryCharges" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderDetails">
           <Key>
@@ -166,6 +182,7 @@
           <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CreatedBy" Type="int" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="OrderTotal" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="PaymentApply">
           <Key>
@@ -742,6 +759,20 @@
             </Principal>
             <Dependent Role="Items">
               <PropertyRef Name="UnitOfMeasureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OnlineOrd__Order__0697FACD">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OnlineOrderDetails" Type="Self.OnlineOrderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderId" />
+            </Principal>
+            <Dependent Role="OnlineOrderDetails">
+              <PropertyRef Name="OrderId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1693,6 +1724,7 @@
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OnlineOrderDetails" EntityType="Self.OnlineOrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderReturnDetails" EntityType="Self.OrderReturnDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderReturns" EntityType="Self.OrderReturns" Schema="dbo" store:Type="Tables" />
@@ -1795,6 +1827,10 @@
           <AssociationSet Name="FK__Items__UnitOfMea__44FF419A" Association="Self.FK__Items__UnitOfMea__44FF419A">
             <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
             <End Role="Items" EntitySet="Items" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OnlineOrd__Order__0697FACD" Association="Self.FK__OnlineOrd__Order__0697FACD">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OnlineOrderDetails" EntitySet="OnlineOrderDetails" />
           </AssociationSet>
           <AssociationSet Name="FK__OrderDeta__Order__531856C7" Association="Self.FK__OrderDeta__Order__531856C7">
             <End Role="Orders" EntitySet="Orders" />
@@ -2097,8 +2133,7 @@
             <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_RessentialModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2220,6 +2255,9 @@
           <Property Name="ContactNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__Customer__4F47C5E3" FromRole="Customers" ToRole="Orders" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ItemCategory">
           <Key>
@@ -2317,6 +2355,8 @@
           <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__531856C7" FromRole="Orders" ToRole="OrderDetails" />
           <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="Orders" ToRole="OrderReturns" />
           <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__503BEA1C" FromRole="Orders" ToRole="Users" />
+          <Property Name="OrderTotal" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OnlineOrderDetails" Relationship="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD" FromRole="Order" ToRole="OnlineOrderDetail" />
         </EntityType>
         <EntityType Name="PaymentApply">
           <Key>
@@ -4299,7 +4339,40 @@
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="OnlineOrderDetails" EntityType="DB_RessentialModel.OnlineOrderDetail" />
+          <AssociationSet Name="FK__OnlineOrd__Order__0697FACD" Association="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="OnlineOrderDetail" EntitySet="OnlineOrderDetails" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="OnlineOrderDetail">
+          <Key>
+            <PropertyRef Name="OnlineOrderDetailId" />
+          </Key>
+          <Property Name="OnlineOrderDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="CustomerId" Type="Int32" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ContactNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DeliveryCharges" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Order" Relationship="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD" FromRole="OnlineOrderDetail" ToRole="Order" />
+        </EntityType>
+        <Association Name="FK__OnlineOrd__Order__0697FACD">
+          <End Type="DB_RessentialModel.Order" Role="Order" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DB_RessentialModel.OnlineOrderDetail" Role="OnlineOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderId" />
+            </Principal>
+            <Dependent Role="OnlineOrderDetail">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4397,6 +4470,9 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="DB_RessentialModel.Customer">
               <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -4467,6 +4543,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="DB_RessentialModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
                 <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
@@ -4882,6 +4959,20 @@
               <ScalarProperty Name="UserId" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="OnlineOrderDetails">
+            <EntityTypeMapping TypeName="DB_RessentialModel.OnlineOrderDetail">
+              <MappingFragment StoreEntitySet="OnlineOrderDetails">
+                <ScalarProperty Name="DeliveryCharges" ColumnName="DeliveryCharges" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="OnlineOrderDetailId" ColumnName="OnlineOrderDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

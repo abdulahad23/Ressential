@@ -202,6 +202,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\OnlineOrder.cs" />
+    <Compile Include="Models\OnlineOrderDetail.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Order.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -306,6 +310,7 @@
     <Compile Include="Models\WastageItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Helper.cs" />
     <Compile Include="Utilities\UserDetails.cs" />
@@ -389,6 +394,7 @@
     <Content Include="Content\CustomerAssets\css\owl.carousel.min.css" />
     <Content Include="Content\CustomerAssets\css\owl.theme.default.min.css" />
     <Content Include="Content\CustomerAssets\css\style.css" />
+    <Content Include="Content\CustomerAssets\css\style2.css" />
     <Content Include="Content\CustomerAssets\fonts\flaticon\backup.txt" />
     <Content Include="Content\CustomerAssets\fonts\flaticon\font\flaticon.css" />
     <Content Include="Content\CustomerAssets\fonts\flaticon\font\flaticon.html" />
@@ -492,6 +498,18 @@
       <DependentUpon>Model.edmx</DependentUpon>
       <LastGenOutput>Model.cs</LastGenOutput>
     </Content>
+    <Content Include="obj\Debug\Ressential.csproj.FileListAbsolute.txt" />
+    <Content Include="obj\Debug\Ressential.dll" />
+    <Content Include="obj\Debug\Ressential.pdb" />
+    <Content Include="obj\Debug\TempPE\Model.Context.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Model.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Model.Designer.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Models.Model.Context.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Models.Model.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Models.Model.Designer.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Ressential.Context.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Ressential.cs.dll" />
+    <Content Include="obj\Debug\TempPE\Ressential.Designer.cs.dll" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -646,6 +664,21 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
+    <Content Include="obj\Debug\DesignTimeResolveAssemblyReferences.cache" />
+    <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Model.csdl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Model.msl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Model.ssdl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Models\Model.csdl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Models\Model.msl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Models\Model.ssdl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Ressential.csdl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Ressential.msl" />
+    <Content Include="obj\Debug\edmxResourcesToEmbed\Ressential.ssdl" />
+    <Content Include="obj\Debug\Ressential.csproj.AssemblyReference.cache" />
+    <Content Include="obj\Debug\Ressential.csproj.CopyComplete" />
+    <Content Include="obj\Debug\Ressential.csproj.CoreCompileInputs.cache" />
+    <Content Include="obj\Debug\Ressential.csproj.Up2Date" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -657,6 +690,37 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Uploads\202407041131_BCM-Updated.png" />
+    <Content Include="Uploads\202407041131_BCM.png" />
+    <Content Include="Uploads\202407041131_Frame 17.png" />
+    <Content Include="Uploads\202407041131_Home screen.png" />
+    <Content Include="Uploads\202407041131_Segmented Control.png" />
+    <Content Include="Uploads\ProductImages\20241202192428_120184157_3536233939761807_6742129748136120613_n.jpg" />
+    <Content Include="Uploads\ProductImages\20241202193053_120184157_3536233939761807_6742129748136120613_n.jpg" />
+    <Content Include="Uploads\ProductImages\20241202193123_BCM v2.png" />
+    <Content Include="Uploads\ProductImages\20241202202642_120184157_3536233939761807_6742129748136120613_n.jpg" />
+    <Content Include="Uploads\ProductImages\20241213144555_WhatsApp Image 2024-12-03 at 22.47.10_bb858d80.jpg" />
+    <Content Include="Uploads\ProductImages\20241216180316_images.jpeg" />
+    <Content Include="Uploads\ProductImages\beef_burger.jpg" />
+    <Content Include="Uploads\ProductImages\biryani.jpeg" />
+    <Content Include="Uploads\ProductImages\caesar_salad.jpg" />
+    <Content Include="Uploads\ProductImages\chapli_kebab.jpeg" />
+    <Content Include="Uploads\ProductImages\chicken_burger.jpg" />
+    <Content Include="Uploads\ProductImages\chicken_tikka.jpg" />
+    <Content Include="Uploads\ProductImages\chocolate_cake.jpeg" />
+    <Content Include="Uploads\ProductImages\gol_gappay.png" />
+    <Content Include="Uploads\ProductImages\grilled_salmon.jpg" />
+    <Content Include="Uploads\ProductImages\haleem.jpg" />
+    <Content Include="Uploads\ProductImages\karahi_gosht.jpeg" />
+    <Content Include="Uploads\ProductImages\kheer.jpg" />
+    <Content Include="Uploads\ProductImages\nihari.jpg" />
+    <Content Include="Uploads\ProductImages\pasta_alfredo.jpg" />
+    <Content Include="Uploads\ProductImages\paya.jpeg" />
+    <Content Include="Uploads\ProductImages\pepperoni.jpg" />
+    <Content Include="Uploads\ProductImages\pizza.jpg" />
+    <Content Include="Uploads\ProductImages\seekh_kebabs.jpg" />
+    <Content Include="Uploads\ProductImages\tacos.jpg" />
+    <Content Include="Uploads\ProductImages\veggie_wrap.jpg" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -749,6 +813,16 @@
     <Content Include="Views\Kitchen\EditCategory.cshtml" />
     <Content Include="Views\Kitchen\EditItem.cshtml" />
     <Content Include="Views\Kitchen\EditReturnStock.cshtml" />
+    <Content Include="Uploads\202407041131_ERD2-Print.pdf" />
+    <Content Include="Uploads\202407041131_GFS Kapra Market - Steel Ledger.pdf" />
+    <Content Include="Uploads\ProductImages\20241202190325_Chicken-Burgers-4.webp" />
+    <Content Include="Uploads\ProductImages\20241202191342_Chicken-Burgers-4.webp" />
+    <Content Include="Views\Customer\EditAccount.cshtml" />
+    <Content Include="Views\Customer\ForgotPassword.cshtml" />
+    <Content Include="Views\Customer\Register.cshtml" />
+    <Content Include="Views\Customer\ResetPassword.cshtml" />
+    <Content Include="Views\Customer\VerifyOtp.cshtml" />
+    <Content Include="Views\Customer\ThankYou.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

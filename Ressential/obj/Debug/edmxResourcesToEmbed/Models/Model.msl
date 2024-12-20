@@ -92,6 +92,9 @@
     <EntitySetMapping Name="Customers">
       <EntityTypeMapping TypeName="DB_RessentialModel.Customer">
         <MappingFragment StoreEntitySet="Customers">
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
           <ScalarProperty Name="Email" ColumnName="Email" />
@@ -162,6 +165,7 @@
     <EntitySetMapping Name="Orders">
       <EntityTypeMapping TypeName="DB_RessentialModel.Order">
         <MappingFragment StoreEntitySet="Orders">
+          <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
           <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
@@ -577,5 +581,19 @@
         <ScalarProperty Name="UserId" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="OnlineOrderDetails">
+      <EntityTypeMapping TypeName="DB_RessentialModel.OnlineOrderDetail">
+        <MappingFragment StoreEntitySet="OnlineOrderDetails">
+          <ScalarProperty Name="DeliveryCharges" ColumnName="DeliveryCharges" />
+          <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+          <ScalarProperty Name="OnlineOrderDetailId" ColumnName="OnlineOrderDetailId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -137,6 +137,8 @@
         <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Wasta__2FCF1A8A" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.RolePermissions" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.UserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OnlineOrderDetail" Width="1.5" PointX="12" PointY="29.5" />
+        <AssociationConnector Association="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

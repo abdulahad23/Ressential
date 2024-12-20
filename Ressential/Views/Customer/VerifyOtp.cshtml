@@ -1,0 +1,88 @@
+﻿@*@{
+        Layout = null;
+    }
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>Verify OTP | Restaurant Portal</title>
+    </head>
+    <body>
+        <div class="auth-wrapper">
+            <div class="auth-card p-4">
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-warning">@TempData["Message"]</div>
+                }
+                <form method="post" action="/Customer/VerifyOtp">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+                        <label for="otp">Enter OTP</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Verify OTP</button>
+                </form>
+            </div>
+        </div>
+    </body>
+    </html>*@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Verify OTP | Restaurant Portal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/Content/assets/css/plugins/bootstrap.min.css">
+    <!-- Feather Icons -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/feather.css">
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/tabler-icons.min.css">
+    <link rel="stylesheet" href="~/Content/CustomerAssets/css/style2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+    <div class="auth-wrapper">
+        <div class="auth-card p-4">
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-success">
+                    <i class="fa fa-check-circle pe-3" aria-hidden="true"></i>
+                    @TempData["Message"]
+                </div>
+            }
+            <div class="text-center mb-4">
+                <a href="#">
+                    <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Restaurant Logo" width="200">
+                </a>
+            </div>
+            <div class="text-center">
+                <p class="text-muted">Enter the OTP sent to your email.</p>
+            </div>
+            <form method="post" action="/Customer/VerifyOtp" class="mt-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+                    <label for="otp">Enter OTP</label>
+                </div>
+                <button type="submit" class="btn btn-secondary w-100">Verify OTP</button>
+            </form>
+            <hr class="my-4">
+            <p class="text-center">
+                Didn't receive the OTP?
+                <a href="/Customer/ForgotPassword" class="text-secondary">Resend OTP</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="~/Content/assets/js/plugins/bootstrap.min.js"></script>
+    <script src="~/Content/assets/js/plugins/popper.min.js"></script>
+</body>
+</html>

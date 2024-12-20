@@ -1569,7 +1569,7 @@ namespace Ressential.Controllers
                         try
                         {
                             imageFile.SaveAs(filePath);
-                            product.ProductImage = "/Uploads/ProductImages/" + fileName; // Save relative path
+                            product.ProductImage = fileName; // Save relative path
                         }
                         catch (Exception ex)
                         {
@@ -1767,7 +1767,7 @@ namespace Ressential.Controllers
                         {
                             // Save the new image
                             imageFile.SaveAs(filePath);
-                            existingProduct.ProductImage = "/Uploads/ProductImages/" + fileName; // Save relative path
+                            existingProduct.ProductImage = fileName; // Save relative path
                         }
                         catch (Exception ex)
                         {

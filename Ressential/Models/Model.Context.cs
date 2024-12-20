@@ -67,5 +67,6 @@ namespace Ressential.Models
         public virtual DbSet<WarehouseItemTransaction> WarehouseItemTransactions { get; set; }
         public virtual DbSet<WastageItemDetail> WastageItemDetails { get; set; }
         public virtual DbSet<WastageItem> WastageItems { get; set; }
+        public virtual DbSet<OnlineOrderDetail> OnlineOrderDetails { get; set; }
     }
 }

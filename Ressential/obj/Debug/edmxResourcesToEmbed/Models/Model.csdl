@@ -118,6 +118,9 @@
     <Property Name="ContactNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
     <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__Customer__4F47C5E3" FromRole="Customers" ToRole="Orders" />
+    <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="ItemCategory">
     <Key>
@@ -215,6 +218,8 @@
     <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__531856C7" FromRole="Orders" ToRole="OrderDetails" />
     <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__57DD0BE4" FromRole="Orders" ToRole="OrderReturns" />
     <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__503BEA1C" FromRole="Orders" ToRole="Users" />
+    <Property Name="OrderTotal" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="OnlineOrderDetails" Relationship="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD" FromRole="Order" ToRole="OnlineOrderDetail" />
   </EntityType>
   <EntityType Name="PaymentApply">
     <Key>
@@ -2197,5 +2202,38 @@
       <End Role="Roles" EntitySet="Roles" />
       <End Role="Users" EntitySet="Users" />
     </AssociationSet>
+    <EntitySet Name="OnlineOrderDetails" EntityType="DB_RessentialModel.OnlineOrderDetail" />
+    <AssociationSet Name="FK__OnlineOrd__Order__0697FACD" Association="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD">
+      <End Role="Order" EntitySet="Orders" />
+      <End Role="OnlineOrderDetail" EntitySet="OnlineOrderDetails" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="OnlineOrderDetail">
+    <Key>
+      <PropertyRef Name="OnlineOrderDetailId" />
+    </Key>
+    <Property Name="OnlineOrderDetailId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="OrderId" Type="Int32" Nullable="false" />
+    <Property Name="CustomerId" Type="Int32" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="City" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Country" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ContactNo" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryCharges" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Order" Relationship="DB_RessentialModel.FK__OnlineOrd__Order__0697FACD" FromRole="OnlineOrderDetail" ToRole="Order" />
+  </EntityType>
+  <Association Name="FK__OnlineOrd__Order__0697FACD">
+    <End Type="DB_RessentialModel.Order" Role="Order" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.OnlineOrderDetail" Role="OnlineOrderDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Order">
+        <PropertyRef Name="OrderId" />
+      </Principal>
+      <Dependent Role="OnlineOrderDetail">
+        <PropertyRef Name="OrderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

@@ -17,15 +17,6 @@
 
 <section class="ftco-section ftco-cart">
     <div class="container">
-        <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
-            <div class="cart-total mb-3">
-                <p>
-                    <a href="@Url.Action("EmptyCart", "Customer")" class="btn btn-danger py-3 px-4" id="empty-cart">
-                        Empty Cart
-                    </a>
-                </p>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-12 ftco-animate">
                 <div class="cart-list">
@@ -47,26 +38,26 @@
                                 {
                                     <tr class="text-center" id="cart-item-@item.ProductID" data-product-id="@item.ProductID">
                                         <td class="product-remove">
-                                            <a href="javascript:void(0);" onclick="removeFromCart(@item.ProductID)">
+                                            <a href="javascript:void(0);" onclick="removeFromCart(@item.ProductID)" class="bg-danger text-white">
                                                 <span class="ion-ios-close"></span>
                                             </a>
                                         </td>
                                         <td class="image-prod">
-                                            <div class="img" style="background-image: url('@Url.Content("~/"+ item.ProductImage)');"></div>
+                                            <div class="img" style="background-image: url('@Url.Content("~/Uploads/ProductImages/"+ item.ProductImage)');"></div>
                                         </td>
 
 
                                         <td class="product-name">
-                                            <h3>@item.ProductID</h3>
-                                            <p>@item.ProductName</p>
+                                            @*<h3>@item.ProductID</h3>*@
+                                            <h3>@item.ProductName</h3>
                                         </td>
 
                                         <td class="price">Rs @item.Price</td>
                                         <td class="quantity">
-                                            <div class="input-group mb-3">
-                                                <button class="btn btn-outline-secondary btn-decrement" type="button" style="width: 40px;">-</button>
-                                                <input type="text" name="quantity" class="quantity form-control input-number quantity-input" value="@item.Quantity" min="1" max="100" style="text-align: center;" disabled>
-                                                <button class="btn btn-outline-secondary btn-increment" type="button" style="width: 40px;">+</button>
+                                            <div class="input-group align-items-center">
+                                                <button class="btn btn-outline-light btn-decrement" type="button" style="width: 40px; height: 40px !important;">-</button>
+                                                <input type="text" name="quantity" class="quantity form-control input-number quantity-input m-2" value="@item.Quantity" min="1" max="100" style="text-align: center;" disabled>
+                                                <button class="btn btn-outline-light btn-increment" type="button" style="width: 40px; height: 40px !important;">+</button>
                                             </div>
                                         </td>
                                         <td class="total" id="item-total-@item.ProductID">Rs @item.TotalPrice</td>
@@ -89,15 +80,11 @@
                     <h3>Cart Totals</h3>
                     <p class="d-flex">
                         <span>Subtotal</span>
-                        <span>$20.60</span>
+                        <span id="cartSubtotal">Rs @ViewBag.Subtotal.ToString("0.00")</span>
                     </p>
                     <p class="d-flex">
                         <span>Delivery</span>
-                        <span>$0.00</span>
-                    </p>
-                    <p class="d-flex">
-                        <span>Discount</span>
-                        <span>$3.00</span>
+                        <span id="deliveryCharges">Rs @ViewBag.DeliveryCharges.ToString("0.00")</span>
                     </p>
                     <hr>
                     <p class="d-flex total-price">
@@ -105,7 +92,8 @@
                         <span id="cartTotal">Rs @ViewBag.CartTotal.ToString("0.00")</span> <!-- Display the total -->
                     </p>
                 </div>
-                <p><a href="@Url.Action("Checkout", "Customer")" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+                <p><a href="@Url.Action("Checkout", "Customer")" class="btn btn-secondary py-3 px-4">Proceed to Checkout</a></p>
+                <p><a href="@Url.Action("EmptyCart", "Customer")" class="btn btn-outline-dark py-3 px-4" id="empty-cart">Clear Cart</a></p>
 
             </div>
         </div>
@@ -149,6 +137,11 @@
         success: function (response) {
             // Update the cart count and total displayed on the page
             $('#cart-count').text(response.cartCount); // Update the cart count
+
+            //Update delivery charges
+            $('#deliveryCharges').text(response.deliveryCharges.toFixed(2));
+
+            $('#cartSubtotal').text(response.cartSubtotal.toFixed(2));
 
             // Update the total amount
             $('#cartTotal').text('Rs ' + response.cartTotal.toFixed(2)); // Update the total amount
@@ -207,7 +200,8 @@ function updateCart(productId, quantity) {
 
             // Update the cart count and total displayed on the page
             $('#cart-count').text(response.cartCount); // Update the cart count
-            $('#cartTotal').text('Rs ' + response.cartTotal.toFixed(2)); // Update the total amount
+            $('#cartSubtotal').text(response.cartSubtotal.toFixed(2));
+            $('#cartTotal').text('Rs ' + response.cartTotal.toFixed(2));
         },
         error: function () {
             alert("Error updating cart.");

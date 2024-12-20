@@ -24,14 +24,8 @@
                     <div class="row align-items-end">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="firstname">Firt Name</label>
-                                <input type="text" class="form-control" placeholder="">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="lastname">Last Name</label>
-                                <input type="text" class="form-control" placeholder="">
+                                <label for="firstname">Full Name</label>
+                                <input type="text" class="form-control" value="Abdul Ahad" placeholder="">
                             </div>
                         </div>
                         <div class="w-100"></div>
@@ -47,54 +41,42 @@
                                         <option value="">South Korea</option>
                                         <option value="">Hongkong</option>
                                         <option value="">Japan</option>
+                                        <option selected value="">Pakistan</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="w-100"></div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label for="streetaddress">Street Address</label>
-                                <input type="text" class="form-control" placeholder="House number and street name">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Appartment, suite, unit etc: (optional)">
+                                <input type="text" class="form-control" value="House # A-392, Sector 31/D, P&T CHS, Korangi" placeholder="Address">
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="towncity">Town / City</label>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="form-control" value="Karachi" placeholder="">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="postcodezip">Postcode / ZIP *</label>
-                                <input type="text" class="form-control" placeholder="">
-                            </div>
-                        </div>
-                        <div class="w-100"></div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="form-control" value="+923112824123" placeholder="">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="emailaddress">Email Address</label>
-                                <input type="text" class="form-control" placeholder="">
+                                <input type="text" class="form-control" value="abdulahad.ad23@gmail.com" placeholder="">
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-12">
                             <div class="form-group mt-4">
-                                <div class="radio">
-                                    <label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
-                                    <label><input type="radio" name="optradio"> Ship to different address</label>
+                                <div>
+                                    <label class="mr-3"><input type="checkbox" name="optradio"> Save this address? </label>
                                 </div>
                             </div>
                         </div>
@@ -108,15 +90,11 @@
                             <h3 class="billing-heading mb-4">Cart Total</h3>
                             <p class="d-flex">
                                 <span>Subtotal</span>
-                                <span>$20.60</span>
+                                <span>Rs @ViewBag.CartSubtotal</span>
                             </p>
                             <p class="d-flex">
                                 <span>Delivery</span>
-                                <span>$0.00</span>
-                            </p>
-                            <p class="d-flex">
-                                <span>Discount</span>
-                                <span>$3.00</span>
+                                <span>Rs @ViewBag.DeliveryCharges</span>
                             </p>
                             <hr>
                             <p class="d-flex total-price">
@@ -131,17 +109,17 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
-                                        <label><input type="radio" name="paymentMethod" value="Cash On delivery" class="mr-2"> Cash On Delivery</label>
+                                        <label><input type="radio" name="paymentMethod" value="Cash On delivery" class="mr-2" checked> Cash On Delivery</label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            @*<div class="form-group">
                                 <div class="col-md-12">
                                     <div class="radio">
                                         <label><input type="radio" name="paymentMethod" value="Online" class="mr-2"> Online</label>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*@
                             <p><a href="#" class="btn btn-primary py-3 px-4" id="placeOrderBtn">Place an order</a></p>
                         </div>
                     </div>
@@ -189,7 +167,7 @@
             .then(data => {
                 if (data.success) {
                     alert(data.message);  // Show success message
-                    location.reload();  // Reload the page to update cart and order status
+                    window.location.href = '@Url.Action("ThankYou", "Customer")'
                 } else {
                     alert("Something went wrong. Please try again.");
                 }

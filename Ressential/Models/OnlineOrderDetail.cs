@@ -12,25 +12,17 @@ namespace Ressential.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Customer
+    public partial class OnlineOrderDetail
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Customer()
-        {
-            this.Orders = new HashSet<Order>();
-        }
-    
+        public int OnlineOrderDetailId { get; set; }
+        public int OrderId { get; set; }
         public int CustomerId { get; set; }
-        public string CustomerName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string ContactNo { get; set; }
-        public System.DateTime CreatedAt { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        public string ContactNo { get; set; }
+        public int DeliveryCharges { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual Order Order { get; set; }
     }
 }

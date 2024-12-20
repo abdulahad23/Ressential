@@ -24,6 +24,8 @@ namespace Ressential.Controllers
             ("Customer", "Shop"),
             ("Customer", "GetBranches"),
             ("Customer", "SetBranch"),
+            ("Customer", "ResetPassword"),
+            ("Customer", "VerifyOtp")
         };
 
             // Check if the current action is public

@@ -223,6 +223,7 @@
             display: flex;
         }
 
+
         .modal-content {
             position: relative;
             background-color: #fff;
@@ -244,9 +245,9 @@
             color: #000;
         }
 
-            .close-button:hover {
-                color: #ff0000;
-            }
+        .close-button:hover {
+            color: #ff0000;
+        }
 
         body.modal-open {
             filter: blur(5px);
@@ -254,22 +255,14 @@
         }
     </style>
 
-<script>
+    <script>
     $(document).ready(function () {
         const modal = $('#branchModal');
         const dropdown = $('#branchDropdown');
+        const confirmButton = $('#confirmBranchButton');
+        const closeModalButton = $('#closeBranchModal');
 
-        // Function to fetch branches and populate the dropdown
-        function populateBranches() {
-            $.getJSON('@Url.Action("GetBranches", "Customer")', function (data) {
-                dropdown.empty();
-                data.forEach(branch => {
-                    dropdown.append(new Option(branch.BranchName, branch.BranchId));
-                });
-            });
-        }
-
-        // Check if modal should be shown on page load
+         // Check if modal should be shown on page load
         @if (Session["BranchId"] == null)
         {
             <text>
@@ -278,35 +271,63 @@
             </text>
         }
 
-        // Show modal on button click and populate dropdown
+        // Function to fetch branches and populate the dropdown
+        function populateBranches(selectedBranchId = null) {
+            $.getJSON('@Url.Action("GetBranches", "Customer")', function (data) {
+                dropdown.empty();
+                data.forEach(branch => {
+                    const option = new Option(branch.BranchName, branch.BranchId);
+                    if (branch.BranchId === selectedBranchId) {
+                        option.selected = true; // Pre-select branch if it matches the current session branch
+                    }
+                    dropdown.append(option);
+                });
+            });
+        }
+
+        // Show modal and populate dropdown when the "Select Branch" button is clicked
         $('#selectBranchButton').click(function (e) {
             e.preventDefault();
             modal.addClass('show');
-            populateBranches();
+            populateBranches(@Session["BranchId"]); // Pass the current branch ID from the session
         });
 
         // Confirm branch selection
-        $('#confirmBranchButton').click(function () {
+        confirmButton.click(function () {
             const selectedBranchId = dropdown.val();
-            const selectedBranchName = dropdown.find(':selected').text();
+            const selectedBranchName = dropdown.find('option:selected').text();
 
-            if (selectedBranchId) {
-                $.post('@Url.Action("SetBranch", "Customer")', { branchId: selectedBranchId, branchName: selectedBranchName }, function () {
-                    // Set session and update UI after successful branch selection
-                    modal.hide();
-                    $('#selectBranchButton').text(selectedBranchName);
-                });
-            } else {
-                alert('Please select a branch.');
+            // Send the selected branch to the backend to update the session
+            $.post('@Url.Action("SetBranch", "Customer")',
+                { BranchId: selectedBranchId, BranchName: selectedBranchName },
+                function (response) {
+                    if (response.success) {
+                        // Update the branch name in the navigation bar
+                        $('#selectBranchButton').text(selectedBranchName);
+                        modal.removeClass('show');
+                        location.reload();
+                    } else {
+                        alert('Failed to update branch. Please try again.');
+                    }
+                }
+            ).fail(function () {
+                alert('An error occurred while setting the branch.');
+            });
+        });
+
+        // Close modal when the close button is clicked
+        closeModalButton.click(function () {
+            modal.removeClass('show');
+        });
+
+        // Close modal when clicking outside the modal content
+        $(window).click(function (e) {
+            if ($(e.target).is(modal)) {
+                modal.removeClass('show');
             }
         });
-
-        // Close modal
-        $('#closeBranchModal').click(function () {
-            modal.hide();
-        });
     });
-</script>
+    </script>
 
 </body>
 </html>

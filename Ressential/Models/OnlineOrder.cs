@@ -5,8 +5,8 @@ using System.Web;
 
 namespace Ressential.Models
 {
-    public static class PaginationConstraints
+    public class OnlineOrder
     {
-        public static int CustomerShopPageSize { get; set; } = 8;
+        public static int deliveryCharges { get; set; } = 50;
     }
 }
