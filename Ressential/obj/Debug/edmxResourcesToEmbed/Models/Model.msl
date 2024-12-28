@@ -78,28 +78,17 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="CustomerAddresses">
-      <EntityTypeMapping TypeName="DB_RessentialModel.CustomerAddress">
-        <MappingFragment StoreEntitySet="CustomerAddresses">
-          <ScalarProperty Name="CustomerAddressId" ColumnName="CustomerAddressId" />
-          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-          <ScalarProperty Name="Address" ColumnName="Address" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Country" ColumnName="Country" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Customers">
       <EntityTypeMapping TypeName="DB_RessentialModel.Customer">
         <MappingFragment StoreEntitySet="Customers">
-          <ScalarProperty Name="Country" ColumnName="Country" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Password" ColumnName="Password" />
           <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -125,8 +114,25 @@
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="OpeningStockQuantity" ColumnName="OpeningStockQuantity" />
+          <ScalarProperty Name="OpeningStockValue" ColumnName="OpeningStockValue" />
+          <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OnlineOrderDetails">
+      <EntityTypeMapping TypeName="DB_RessentialModel.OnlineOrderDetail">
+        <MappingFragment StoreEntitySet="OnlineOrderDetails">
+          <ScalarProperty Name="OnlineOrderDetailId" ColumnName="OnlineOrderDetailId" />
+          <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+          <ScalarProperty Name="DeliveryCharges" ColumnName="DeliveryCharges" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -165,7 +171,6 @@
     <EntitySetMapping Name="Orders">
       <EntityTypeMapping TypeName="DB_RessentialModel.Order">
         <MappingFragment StoreEntitySet="Orders">
-          <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
           <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
@@ -174,6 +179,7 @@
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
+          <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
@@ -460,6 +466,7 @@
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="ProfileImage" ColumnName="ProfileImage" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
@@ -492,7 +499,6 @@
         <MappingFragment StoreEntitySet="WarehouseIssueDetails">
           <ScalarProperty Name="IssueDetailId" ColumnName="IssueDetailId" />
           <ScalarProperty Name="IssueId" ColumnName="IssueId" />
-          <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
@@ -508,6 +514,7 @@
           <ScalarProperty Name="IssueNo" ColumnName="IssueNo" />
           <ScalarProperty Name="ReferenceNo" ColumnName="ReferenceNo" />
           <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+          <ScalarProperty Name="RequisitionId" ColumnName="RequisitionId" />
           <ScalarProperty Name="Memo" ColumnName="Memo" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -521,19 +528,6 @@
       <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseItemStock">
         <MappingFragment StoreEntitySet="WarehouseItemStock">
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="WarehouseItemTransactions">
-      <EntityTypeMapping TypeName="DB_RessentialModel.WarehouseItemTransaction">
-        <MappingFragment StoreEntitySet="WarehouseItemTransaction">
-          <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
-          <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
-          <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
         </MappingFragment>
@@ -581,19 +575,5 @@
         <ScalarProperty Name="UserId" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
-    <EntitySetMapping Name="OnlineOrderDetails">
-      <EntityTypeMapping TypeName="DB_RessentialModel.OnlineOrderDetail">
-        <MappingFragment StoreEntitySet="OnlineOrderDetails">
-          <ScalarProperty Name="DeliveryCharges" ColumnName="DeliveryCharges" />
-          <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
-          <ScalarProperty Name="Country" ColumnName="Country" />
-          <ScalarProperty Name="City" ColumnName="City" />
-          <ScalarProperty Name="Address" ColumnName="Address" />
-          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
-          <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-          <ScalarProperty Name="OnlineOrderDetailId" ColumnName="OnlineOrderDetailId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

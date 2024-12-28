@@ -4,6 +4,7 @@ CREATE TABLE Users (
     UserName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL UNIQUE,
     Password NVARCHAR(255) NOT NULL,
+    ProfileImage NVARCHAR(max) NULL,
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -76,6 +77,9 @@ CREATE TABLE Items (
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    OpeningStockQuantity DECIMAL(18,2) NOT NULL,
+    OpeningStockValue DECIMAL(18,2) NOT NULL,
+    OpeningStockDate DATETIME2 NOT NULL,
     ModifiedBy INT NULL,
     ModifiedAt DATETIME2 NULL,
     FOREIGN KEY (ItemCategoryId) REFERENCES ItemCategory(ItemCategoryId),
@@ -87,18 +91,6 @@ CREATE TABLE Items (
 -- Table: WarehouseItemStock
 CREATE TABLE WarehouseItemStock (
     ItemId INT PRIMARY KEY,
-    Quantity DECIMAL(18,2) NOT NULL,
-    CostPerUnit DECIMAL(18,2) NOT NULL,
-    FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
-);
-
--- Table: WarehouseItemTransaction
-CREATE TABLE WarehouseItemTransaction (
-    TransactionId INT PRIMARY KEY IDENTITY(1,1),
-    TransactionDate DATETIME2 NOT NULL,
-    ItemId INT NOT NULL,
-    TransactionType NVARCHAR(20) NOT NULL CHECK (TransactionType IN ('Purchase', 'PurchaseReturn', 'Issue','StockReturn', 'Opening')),
-    TransactionTypeId INT NOT NULL,
     Quantity DECIMAL(18,2) NOT NULL,
     CostPerUnit DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
@@ -226,12 +218,14 @@ CREATE TABLE WarehouseIssues (
     IssueNo NVARCHAR(50) NOT NULL UNIQUE,
     ReferenceNo NVARCHAR(50) NULL,
     BranchID INT NOT NULL,
+    RequisitionId INT NOT NULL,
     Memo NVARCHAR(255) NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Issued')),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Issued', 'Settled')),
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
     ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (RequisitionId) REFERENCES Requisitions(RequisitionId),
     FOREIGN KEY (BranchID) REFERENCES Branches(BranchId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId)
@@ -241,13 +235,11 @@ CREATE TABLE WarehouseIssues (
 CREATE TABLE WarehouseIssueDetails (
     IssueDetailId INT PRIMARY KEY IDENTITY(1,1),
     IssueId INT NOT NULL,
-    RequisitionId INT NULL,
     ItemId INT NOT NULL,
     Description NVARCHAR(255) NULL,
     Quantity DECIMAL(18,2) NOT NULL,
     CostApplied DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (IssueId) REFERENCES WarehouseIssues(IssueId) ON DELETE CASCADE,
-    FOREIGN KEY (RequisitionId) REFERENCES Requisitions(RequisitionId) ON DELETE SET NULL,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
 );
 
@@ -593,6 +585,41 @@ CREATE TABLE UserBranchDetial (
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE
 );
 
+-- Create Country table
+CREATE TABLE Country (
+    CountryId INT PRIMARY KEY IDENTITY(1,1),
+    CountryName NVARCHAR(100) NOT NULL
+);
+
+-- Create City table
+CREATE TABLE City (
+    CityId INT PRIMARY KEY IDENTITY(1,1),
+    CityName NVARCHAR(100) NOT NULL,
+    CountryId INT NOT NULL,
+    FOREIGN KEY (CountryId) REFERENCES Country(CountryId)
+);
+
+-- Create Area table
+CREATE TABLE Area (
+    AreaId INT PRIMARY KEY IDENTITY(1,1),
+    AreaName NVARCHAR(100) NOT NULL,
+    CityId INT NOT NULL,
+    FOREIGN KEY (CityId) REFERENCES City(CityId)
+);
+
+-- Create BranchArea table
+CREATE TABLE BranchArea (
+    BranchAreaId INT PRIMARY KEY IDENTITY(1,1),
+    BranchId INT NOT NULL,
+    AreaId INT NOT NULL,
+    CreatedOn DATETIME NOT NULL DEFAULT GETDATE(),
+    CreatedBy INT NOT NULL,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
+    FOREIGN KEY (AreaId) REFERENCES Area(AreaId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+);
+
+
 
 INSERT INTO UnitOfMeasure (Name, Symbol)
 VALUES ('Kilogram', 'kg'),
@@ -617,27 +644,19 @@ INSERT INTO VENDORS (Name,CompanyName,Email,Contact,Address,City,Country,PostalC
 VALUES  ('Abdul Ahad','AD Store','abdulahad.ad23@gmail.com','03112824123','H-392, Sector 31/D, P&T CHS, Korangi','Karachi','Pakistan','74900',1),
         ('Muhammad Rashid','Rashid & Brothers','rashidbhai@gmail.com','03334323142','R-123, Block-J, Saadi Garden','Karachi','Pakistan','72244',2);
 
-INSERT INTO ITEMS(ItemName,Sku,ItemCategoryId,UnitOfMeasureId, MinimumStockLevel, IsActive, CreatedBy)
-VALUES  ('Chicken Chest','CK-13452',1,1,10,1,1),
-        ('Beef','BF-11243',1,1,25,1,1),
-		('Pepsi 500ml','CD-00212',4,5,50,1,1),
-		('Olive Oil','OL-14222',3,3,15,1,1),
-		('Black Pepper','SP-11678',2,1,5,1,1);
+INSERT INTO ITEMS(ItemName,Sku,ItemCategoryId,UnitOfMeasureId, MinimumStockLevel, IsActive, CreatedBy, OpeningStockQuantity,OpeningStockValue,OpeningStockDate)
+VALUES  ('Chicken Chest','CK-13452',1,1,10,1,1,44,9700,SYSDATETIME()),
+        ('Beef','BF-11243',1,1,25,1,1,19,12700,SYSDATETIME()),
+		('Pepsi 500ml','CD-00212',4,5,50,1,1,0,0,SYSDATETIME()),
+		('Olive Oil','OL-14222',3,3,15,1,1,16,15890,SYSDATETIME()),
+		('Black Pepper','SP-11678',2,1,5,1,1,2,300,SYSDATETIME());
 
 INSERT INTO WAREHOUSEITEMSTOCK (ItemId,Quantity,CostPerUnit)
-VALUES  (1,44,9700),
-        (2,19,12700),
-		(3,0,0),
-		(4,16,15890),
-		(5,2,300);
-
-
-INSERT INTO WAREHOUSEITEMTRANSACTION (TransactionDate,ItemId,TransactionType,TransactionTypeId,Quantity,CostPerUnit)
-VALUES  (SYSDATETIME(),1,'Opening',1,44,250),
-        (SYSDATETIME(),2,'Opening',2,19,180),
-		(SYSDATETIME(),3,'Opening',3,0,0),
-		(SYSDATETIME(),4,'Opening',4,16,700),
-		(SYSDATETIME(),5,'Opening',5,2,150);
+VALUES  (1,44,220.45),
+        (2,19,668.42),
+	(3,0,0),
+	(4,16,993.13),
+	(5,2,150);
 
 INSERT INTO BRANCHES (BranchName, BranchCode, BranchContact, Address, City, Country, OwnerName, CreatedBy)
 VALUES ('Tipu Sultan', '137256', '+923112824123', 'A-21, Street-3, Tipu Sultan Road', 'Karachi', 'Pakistan', 'Zulfiqar', 1),
@@ -645,21 +664,29 @@ VALUES ('Tipu Sultan', '137256', '+923112824123', 'A-21, Street-3, Tipu Sultan R
        ('Landhi', '137258', '+923163033321', 'R-221, Street-4, Landhi No. 5', 'Karachi', 'Pakistan', 'Najma Begum', 1),
        ('Korangi', '137259', '+923452131241', 'B-76, Street-5, Korangi No. 6', 'Karachi', 'Pakistan', 'Syed Muhammad Ali', 1);
 
+INSERT INTO BranchItems (ItemId, BranchId, MinimumStockLevel, IsActive, CreatedBy)
+VALUES 
+    (1, 1, 10, 1, 1),
+    (2, 1, 15, 1, 1),
+    (3, 1, 5, 1, 1),
+    (4, 1, 20, 1, 1),
+    (5, 1, 8, 1, 1);
+
 INSERT INTO CUSTOMERS (CustomerName,Email,Password,ContactNo,Address,City,Country)
 VALUES  ('Abdul Ahad','abdulahad.ad23@gmail.com','123','+923112824123','House # A-392, Sector 31/D, P&T Society, Korangi','Karachi','Pakistan');
 
-INSERT INTO ProductCategories (ProductCategoryName, Description)
+INSERT INTO ProductCategories (ProductCategoryName, Description, CreatedBy)
 VALUES 
-('Pizza', 'A variety of pizzas with different toppings and crusts'),
-('Burger', 'Delicious burgers including beef, chicken, and veggie options'),
-('Sandwich', 'Fresh sandwiches with assorted fillings and bread choices'),
-('Pasta', 'Italian pasta dishes with sauces and add-ons'),
-('Salads', 'Healthy salads with fresh vegetables and toppings'),
-('Rolls', 'Chicken and Beef rolls'),
-('Desserts', 'Sweet dishes like cakes, ice creams, and pastries'),
-('Seafood', 'Dishes featuring fresh fish, shrimp, and other seafood'),
-('Grilled Items', 'Grilled chicken, steaks, and BBQ specialties'),
-('Desi', 'A variety of soups including vegetarian and non-vegetarian options');
+('Pizza', 'A variety of pizzas with different toppings and crusts',1),
+('Burger', 'Delicious burgers including beef, chicken, and veggie options',1),
+('Sandwich', 'Fresh sandwiches with assorted fillings and bread choices',1),
+('Pasta', 'Italian pasta dishes with sauces and add-ons',1),
+('Salads', 'Healthy salads with fresh vegetables and toppings',1),
+('Rolls', 'Chicken and Beef rolls',1),
+('Desserts', 'Sweet dishes like cakes, ice creams, and pastries',1),
+('Seafood', 'Dishes featuring fresh fish, shrimp, and other seafood',1),
+('Grilled Items', 'Grilled chicken, steaks, and BBQ specialties',1),
+('Desi', 'A variety of soups including vegetarian and non-vegetarian options',1);
 
 
 
@@ -674,7 +701,7 @@ VALUES
 ('P007', 'Veggie Wrap', 1, 'veggie_wrap.jpg', 580, 'Healthy wrap filled with fresh vegetables', 6, 1, 1),
 ('P008', 'Grilled Salmon', 1, 'grilled_salmon.jpg', 1299, 'Grilled salmon served with lemon butter', 8, 1, 1),
 ('P009', 'Tacos', 1, 'tacos.jpg', 750, 'Soft tacos filled with seasoned beef and veggies', 6, 1, 1),
-('P010', 'Chocolate Cake', 1, 'chocolate_cake.jpeg', 1199, 'Rich chocolate cake with ganache topping', 7, 1, 1);
+('P010', 'Chocolate Cake', 1, 'chocolate_cake.jpeg', 1199, 'Rich chocolate cake with ganache topping', 7, 1, 1),
 ('P011', 'Biryani', 1, 'biryani.jpeg', 499, 'Traditional Pakistani rice dish with spices and chicken', 10, 1, 1),
 ('P012', 'Karahi Gosht', 1, 'karahi_gosht.jpeg', 1250, 'Spicy and flavorful mutton curry', 10, 1, 1),
 ('P013', 'Haleem', 1, 'haleem.jpg', 220, 'Thick and hearty stew made with lentils and meat', 10, 1, 1),
@@ -685,5 +712,8 @@ VALUES
 ('P018', 'Chapli Kebab', 1, 'chapli_kebab.jpeg', 220, 'Fried minced meat patties with herbs and spices', 10, 1, 1),
 ('P019', 'Gol Gappay', 1, 'gol_gappay.png', 300, 'Crispy shells filled with spicy tamarind water', 10, 1, 1),
 ('P020', 'Kheer', 1, 'kheer.jpg', 180, 'Traditional Pakistani rice pudding dessert', 7, 1, 1);
+
+
+
 
 

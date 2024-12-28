@@ -141,7 +141,7 @@ namespace Ressential.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult CreateItem(Item item, decimal quantity, decimal cost, DateTime openingDate)
+        public ActionResult CreateItem(Item item)
         {
             try {
                 if (ModelState.IsValid)
@@ -154,20 +154,20 @@ namespace Ressential.Controllers
                     var warehouseItemStock = new WarehouseItemStock
                     {
                         ItemId = item.ItemId,
-                        Quantity = quantity,
-                        CostPerUnit = cost/quantity
+                        Quantity = item.OpeningStockQuantity,
+                        CostPerUnit = item.OpeningStockValue/item.OpeningStockQuantity
                     };
-                    var warehouseItemTransaction = new WarehouseItemTransaction
-                    {
-                        TransactionDate = openingDate,
-                        ItemId = item.ItemId,
-                        TransactionType = "Opening",
-                        TransactionTypeId = item.ItemId,
-                        Quantity = quantity,
-                        CostPerUnit = cost/quantity
-                    };
+                    //var warehouseItemTransaction = new WarehouseItemTransaction
+                    //{
+                    //    TransactionDate = openingDate,
+                    //    ItemId = item.ItemId,
+                    //    TransactionType = "Opening",
+                    //    TransactionTypeId = item.ItemId,
+                    //    Quantity = quantity,
+                    //    CostPerUnit = cost/quantity
+                    //};
                     _db.WarehouseItemStocks.Add(warehouseItemStock);
-                    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                    //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     _db.SaveChanges();
 
                     return RedirectToAction("ItemList");
@@ -198,29 +198,30 @@ namespace Ressential.Controllers
             {
                 return HttpNotFound();
             }
-            var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == itemId).Single();
-            if (warehouseItemTransaction == null)
-            {
-                return HttpNotFound();
-            }
+            //var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == itemId).Single();
+            //if (warehouseItemTransaction == null)
+            //{
+            //    return HttpNotFound();
+            //}
             ViewBag.Units = _db.UnitOfMeasures.ToList();
             ViewBag.Categories = _db.ItemCategories.ToList();
-            ViewBag.Quantity = warehouseItemTransaction.Quantity;
-            ViewBag.Cost = warehouseItemTransaction.CostPerUnit * warehouseItemTransaction.Quantity;
-            ViewBag.Date = warehouseItemTransaction.TransactionDate;
+            //ViewBag.Quantity = warehouseItemTransaction.Quantity;
+            //ViewBag.Cost = warehouseItemTransaction.CostPerUnit * warehouseItemTransaction.Quantity;
+            //ViewBag.Date = warehouseItemTransaction.TransactionDate;
 
             return View(item);
         }
         [HttpPost]
-        public ActionResult EditItem(Item item, decimal quantity, decimal cost, DateTime openingDate)
+        public ActionResult EditItem(Item item)
         {
-            if (quantity == 0)
+            decimal perUnitCost = 0;
+            if (item.OpeningStockQuantity == 0)
             {
-                cost = 0;
+                item.OpeningStockValue = 0;
             }
             else
             {
-                cost = cost / quantity;
+                perUnitCost = item.OpeningStockValue / item.OpeningStockQuantity;
             }
             try
             {
@@ -230,13 +231,12 @@ namespace Ressential.Controllers
                     return HttpNotFound();
                 }
                 var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == item.ItemId).Single();
                 
                 decimal oldTotalCost = warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit;
-                decimal oldTransactionCost = warehouseItemTransaction.Quantity * warehouseItemTransaction.CostPerUnit;
+                decimal oldTransactionCost = item.OpeningStockQuantity * perUnitCost;
 
                 decimal newTotalCost = oldTotalCost - oldTransactionCost;
-                decimal newQuantity = warehouseItemStock.Quantity - warehouseItemTransaction.Quantity;
+                decimal newQuantity = warehouseItemStock.Quantity - item.OpeningStockQuantity;
 
                 decimal previousAverageCost;
                 if (newQuantity == 0)
@@ -247,7 +247,7 @@ namespace Ressential.Controllers
                 {
                     previousAverageCost = newTotalCost /  newQuantity;
                 }
-                decimal updatedQuantity = newQuantity + quantity;
+                decimal updatedQuantity = newQuantity + item.OpeningStockQuantity;
 
                 warehouseItemStock.Quantity = updatedQuantity;
                 if (updatedQuantity == 0)
@@ -256,13 +256,8 @@ namespace Ressential.Controllers
                 }
                 else
                 {
-                    warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (quantity * cost)) / updatedQuantity;
+                    warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (item.OpeningStockQuantity * item.OpeningStockValue)) / updatedQuantity;
                 }
-                
-
-                warehouseItemTransaction.Quantity = quantity;
-                warehouseItemTransaction.CostPerUnit = cost;
-                warehouseItemTransaction.TransactionDate = openingDate;
 
                 item.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 item.ModifiedAt = DateTime.Now;
@@ -292,21 +287,12 @@ namespace Ressential.Controllers
                     return RedirectToAction("ItemList");
                 }
                 var warehouseItemStock = _db.WarehouseItemStocks.Find(itemId);
-                var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType != "Opening" && w.TransactionTypeId == itemId);
 
-                if (warehouseItemTransaction.Count()==0) {
-                    _db.WarehouseItemStocks.Remove(warehouseItemStock);
-                    var itemTransactionToDelete = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == itemId);
-                    _db.WarehouseItemTransactions.RemoveRange(itemTransactionToDelete);
-                    _db.Items.Remove(item);
-                    _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Item deleted successfully.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
-                }
-                
+                _db.WarehouseItemStocks.Remove(warehouseItemStock);
+                _db.Items.Remove(item);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item deleted successfully.";
+
             }
             catch (DbUpdateException ex)
             {
@@ -333,20 +319,8 @@ namespace Ressential.Controllers
                     foreach (var item in itemsToDelete)
                     {
                         var warehouseItemStock = _db.WarehouseItemStocks.Where(w => w.ItemId == item.ItemId);
-                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType != "Opening" && w.TransactionTypeId == item.ItemId);
-
-                        if (warehouseItemTransaction.Count() == 0)
-                        {
-                            _db.WarehouseItemStocks.RemoveRange(warehouseItemStock);
-                            var itemTransactionToDelete = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Opening" && w.TransactionTypeId == item.ItemId);
-                            _db.WarehouseItemTransactions.RemoveRange(itemTransactionToDelete);
-                            _db.Items.Remove(item);
-                        }
-                        else
-                        {
-                            TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
-                            return RedirectToAction("ItemList");
-                        }
+                        _db.WarehouseItemStocks.RemoveRange(warehouseItemStock);
+                        _db.Items.Remove(item);
                     }
                     _db.SaveChanges();
                     TempData["SuccessMessage"] = "Items deleted successfully.";
@@ -1311,17 +1285,17 @@ namespace Ressential.Controllers
                         currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
                         currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice))/(currentItemStock.Quantity);
 
-                        var warehouseItemTransaction = new WarehouseItemTransaction
-                        {
-                            TransactionDate = purchase.PurchaseDate,
-                            ItemId = purchaseDetails.ItemId,
-                            TransactionType = "Purchase",
-                            TransactionTypeId = purchase.PurchaseId,
-                            Quantity = purchaseDetails.Quantity,
-                            CostPerUnit = purchaseDetails.UnitPrice
-                        };
+                        //var warehouseItemTransaction = new WarehouseItemTransaction
+                        //{
+                        //    TransactionDate = purchase.PurchaseDate,
+                        //    ItemId = purchaseDetails.ItemId,
+                        //    TransactionType = "Purchase",
+                        //    TransactionTypeId = purchase.PurchaseId,
+                        //    Quantity = purchaseDetails.Quantity,
+                        //    CostPerUnit = purchaseDetails.UnitPrice
+                        //};
                         _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                        _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                        //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     }
                     _db.SaveChanges();
 
@@ -1565,11 +1539,11 @@ namespace Ressential.Controllers
                     var purchasesToDelete = _db.Purchases.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
                     var purchaseDetails = _db.PurchaseDetails.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
 
-                    foreach (var item in purchasesToDelete)
-                    {
-                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Purchase" && w.TransactionTypeId == item.PurchaseId);
-                        _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
-                    }
+                    //foreach (var item in purchasesToDelete)
+                    //{
+                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Purchase" && w.TransactionTypeId == item.PurchaseId);
+                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
+                    //}
 
                     if (purchaseDetails != null)
                     {
@@ -1664,17 +1638,17 @@ namespace Ressential.Controllers
                             currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) - (purchaseReturnDetails.Quantity * purchaseReturnDetails.UnitPrice)) / (currentItemStock.Quantity);
                         }
 
-                        var warehouseItemTransaction = new WarehouseItemTransaction
-                        {
-                            TransactionDate = purchaseReturn.PurchaseReturnDate,
-                            ItemId = purchaseReturnDetails.ItemId,
-                            TransactionType = "PurchaseReturn",
-                            TransactionTypeId = purchaseReturn.PurchaseReturnId,
-                            Quantity = purchaseReturnDetails.Quantity,
-                            CostPerUnit = purchaseReturnDetails.UnitPrice
-                        };
+                        //var warehouseItemTransaction = new WarehouseItemTransaction
+                        //{
+                        //    TransactionDate = purchaseReturn.PurchaseReturnDate,
+                        //    ItemId = purchaseReturnDetails.ItemId,
+                        //    TransactionType = "PurchaseReturn",
+                        //    TransactionTypeId = purchaseReturn.PurchaseReturnId,
+                        //    Quantity = purchaseReturnDetails.Quantity,
+                        //    CostPerUnit = purchaseReturnDetails.UnitPrice
+                        //};
                         _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                        _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                        //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     }
                     _db.SaveChanges();
 
@@ -1918,11 +1892,11 @@ namespace Ressential.Controllers
                     var purchaseReturnToDelete = _db.PurchaseReturns.Where(c => selectedItems.Contains(c.PurchaseReturnId)).ToList();
                     var purchaseReturnDetails = _db.PurchaseReturnDetails.Where(c => selectedItems.Contains(c.PurchaseReturnId)).ToList();
 
-                    foreach (var item in purchaseReturnToDelete)
-                    {
-                        var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "PurchaseReturn" && w.TransactionTypeId == item.PurchaseReturnId);
-                        _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
-                    }
+                    //foreach (var item in purchaseReturnToDelete)
+                    //{
+                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "PurchaseReturn" && w.TransactionTypeId == item.PurchaseReturnId);
+                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
+                    //}
 
                     if (purchaseReturnDetails != null)
                     {
@@ -1965,14 +1939,28 @@ namespace Ressential.Controllers
         {
 
             var requisition = _db.Requisitions.Find(requisitionId);
+            if (requisition.Status == "Rejected" || requisition.Status == "Settled")
+            {
+                TempData["ErrorMessage"] = "Cannot create issue for 'Rejected' or 'Settled' requisition";
+                return RedirectToAction("RequisitionList");
+            }
             List<WarehouseIssueDetailsHelper> warehouseIssueDetailsHelper = new List<WarehouseIssueDetailsHelper>(); 
             foreach (var item in requisition.RequisitionDetails)
             {
+                var previousIssuedQuantity = _db.WarehouseIssues
+            .Where(wi => wi.RequisitionId == requisitionId)
+            .SelectMany(wi => wi.WarehouseIssueDetails)
+            .Where(wid => wid.ItemId == item.ItemId)
+            .Sum(wid => (decimal?)wid.Quantity) ?? 0;
+
                 var warehouseIssueDetails = new WarehouseIssueDetailsHelper
                 {
                     ItemId = item.ItemId,
+                    ItemName = item.Item.ItemName,
                     Description = item.Description,
-                    Quantity = item.Quantity,
+                    RequestedQuantity = item.Quantity,
+                    IssuedQuantity = 0,
+                    PreviousIssuedQuantity = previousIssuedQuantity
                 };
                 warehouseIssueDetailsHelper.Add(warehouseIssueDetails);
             }
@@ -1981,11 +1969,10 @@ namespace Ressential.Controllers
             {
                 BranchID = requisition.BranchId,
                 BranchName = requisition.Branch.BranchName,
+                RequisitionId = requisition.RequisitionId,
+                RequisitionStatus = requisition.Status,
                 RequisitionNo = requisition.RequisitionNo,
-                WarehouseIssueDetails = new List<WarehouseIssueDetailsHelper>
-                {
-                    
-                }
+                WarehouseIssueDetails = warehouseIssueDetailsHelper
 
             };
             ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
@@ -1993,9 +1980,108 @@ namespace Ressential.Controllers
 
             return View(warehouseIssue);
         }
-        public ActionResult IssueList()
+        [HttpPost]
+        public ActionResult CreateIssue(WarehouseIssueHelper warehouseIssueHelper)
         {
-            return View();
+            try
+            {
+                // Check if all issued quantities are 0 or null
+                if (warehouseIssueHelper.WarehouseIssueDetails.All(item => item.IssuedQuantity == 0 || item.IssuedQuantity == null))
+                {
+                    return Json(new { success = false, errorMessage = "Items issue quantity cannot be 0" });
+                }
+
+                if (warehouseIssueHelper.RequisitionStatus == "Rejected" || warehouseIssueHelper.RequisitionStatus == "Settled")
+                {
+                    TempData["ErrorMessage"] = "Cannot create issue for 'Rejected' or 'Settled' requisition";
+                    return Json(new { success = false, redirect = Url.Action("RequisitionList", "Warehouse") });
+                }
+                else
+                {
+                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    int nextIssueNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.WarehouseIssues.Any())
+                    {
+                        // Bring the IssueNo values into memory, then extract the numeric part and calculate the max
+                        nextIssueNumber = _db.WarehouseIssues
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.IssueNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    var requisition = _db.Requisitions.Find(warehouseIssueHelper.RequisitionId);
+                    requisition.Status = "Settled";
+                    WarehouseIssue warehouseIssue = new WarehouseIssue
+                    {
+                        IssueNo = $"ISU-{datePart}{nextIssueNumber:D4}",
+                        BranchID = warehouseIssueHelper.BranchID,
+                        IssueDate = warehouseIssueHelper.IssueDate,
+                        ReferenceNo = warehouseIssueHelper.ReferenceNo,
+                        RequisitionId = warehouseIssueHelper.RequisitionId,
+                        Memo = warehouseIssueHelper.Memo,
+                        Status = "Pending",
+                        CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId")),
+                        CreatedAt = DateTime.Now
+                    };
+
+                    List<WarehouseIssueDetail> warehouseIssueDetails = new List<WarehouseIssueDetail>();
+                    var isSettled = true;
+                    foreach (var item in warehouseIssueHelper.WarehouseIssueDetails)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.Where(m => m.ItemId == item.ItemId).FirstOrDefault();
+                        if (item.IssuedQuantity > warehouseItemStock.Quantity)
+                        {
+                            return Json(new { success = false, errorMessage = "'" + item.ItemName + "' issue quantity is exceeding the warehouse stock quantity (Only " + warehouseItemStock.Quantity + " quantity is available)"});
+                        }
+                        if ((item.PreviousIssuedQuantity + item.IssuedQuantity) > item.RequestedQuantity)
+                        {
+                            return Json(new { success = false, errorMessage = "'" + item.ItemName + "' issue quantity cannot be more than " + (item.RequestedQuantity-item.PreviousIssuedQuantity) });
+                        }
+                        else if ((item.PreviousIssuedQuantity + item.IssuedQuantity) < item.RequestedQuantity)
+                        {
+                            requisition.Status = "Partially Settled";
+                            isSettled = false;
+                        }
+                        var selectedItem = _db.WarehouseItemStocks.Where(i => i.ItemId == item.ItemId).FirstOrDefault();
+                        var warehouseIssueDetail = new WarehouseIssueDetail
+                        {
+                            IssueId = warehouseIssue.IssueId,
+                            ItemId = item.ItemId,
+                            Description = item.Description,
+                            Quantity = item.IssuedQuantity,
+                            CostApplied = selectedItem.CostPerUnit,
+                        };
+                        warehouseIssueDetails.Add(warehouseIssueDetail);
+                        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.IssuedQuantity;
+                    }
+                    if (isSettled)
+                    {
+                        requisition.Status = "Settled";
+                    }
+                    warehouseIssue.WarehouseIssueDetails = warehouseIssueDetails;
+
+                    _db.WarehouseIssues.Add(warehouseIssue);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Warehouse Issue Created Successfully!";
+                    return Json(new { success = true });
+                }
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Issue.";
+                return Json(new { success = false, redirect = Url.Action("RequisitionList", "Warehouse") });
+            }
+        }
+
+        public ActionResult IssueList(string search)
+        {
+            var warehouseIssue = _db.WarehouseIssues.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                warehouseIssue = warehouseIssue.Where(c => c.WarehouseIssueDetails.Where(i => i.Item.ItemName.Contains(search)).Count() > 0 || c.Requisition.RequisitionNo.Contains(search) || c.IssueNo.Contains(search) || c.ReferenceNo.Contains(search) || c.Branch.BranchName.Contains(search) || c.Status.Contains(search));
+            }
+            return View(warehouseIssue.ToList());
         }
         public ActionResult RequisitionList(string search)
         {
@@ -2017,6 +2103,16 @@ namespace Ressential.Controllers
                     TempData["ErrorMessage"] = "Requisition not found.";
                     return RedirectToAction("RequisitionList");
                 }
+                if (requisiton.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "Status cannot be updated for Settled requisition.";
+                    return RedirectToAction("RequisitionList");
+                }
+                if (requisiton.Status == "Partially Settled")
+                {
+                    TempData["ErrorMessage"] = "Status cannot be updated for Partially Settled requisition.";
+                    return RedirectToAction("RequisitionList");
+                }
                 requisiton.Status = "Rejected";
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Requisition status has been updated successfully.";
@@ -2036,6 +2132,16 @@ namespace Ressential.Controllers
                 if (requisiton == null)
                 {
                     TempData["ErrorMessage"] = "Requisition not found.";
+                    return RedirectToAction("RequisitionList");
+                }
+                if (requisiton.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "Status cannot be updated for Settled requisition.";
+                    return RedirectToAction("RequisitionList");
+                }
+                if (requisiton.Status == "Partially Settled")
+                {
+                    TempData["ErrorMessage"] = "Status cannot be updated for Partially Settled requisition.";
                     return RedirectToAction("RequisitionList");
                 }
                 requisiton.Status = "Pending";
@@ -2068,18 +2174,52 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateUser(User user, String ConfirmPassword)
+        public ActionResult CreateUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
-            if (user.Password != ConfirmPassword)
+            try
             {
-                ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                return View(user);
+                if (user.Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Password and Confirm Password do not match.");
+                    TempData["ErrorMessage"] = "Password and Confirm Password do not match.";
+                    return View(user);
+                }
+                string fileName = null;
+
+                if (ProfileImage != null && ProfileImage.ContentLength > 0)
+                {
+                    // Generate a unique file name to prevent overwriting
+                    fileName = Guid.NewGuid() + Path.GetExtension(ProfileImage.FileName);
+
+                    // Define the path to save the file
+                    string uploadsFolder = Server.MapPath("~/Uploads/ProfileImages");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Save the file to the server
+                    ProfileImage.SaveAs(filePath);
+                }
+                user.ProfileImage = fileName;
+                user.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                user.CreatedAt = DateTime.Now;
+                _db.Users.Add(user);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "User created successfully!";
+                return RedirectToAction("UserList");
             }
-            user.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-            user.CreatedAt = DateTime.Now;
-            _db.Users.Add(user);
-            _db.SaveChanges();
-            return RedirectToAction("UserList");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
+            }
+
+            TempData["ErrorMessage"] = "An error occurred while creating the user";
+            return View();
+
         }
         public ActionResult EditUser(int userId)
         {
@@ -2091,37 +2231,88 @@ namespace Ressential.Controllers
             return View(User);
         }
         [HttpPost]
-        public ActionResult EditUser(User user, String ConfirmPassword)
+        public ActionResult EditUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
-            var existingUser = _db.Users.Find(user.UserId);
-            if (existingUser == null)
+
+            try
             {
-                return HttpNotFound();
+                var existingUser = _db.Users.Find(user.UserId);
+                if (existingUser == null)
+                {
+                    return HttpNotFound();
+                }
+                var existingImageName = existingUser.ProfileImage;
+                ConfirmPassword = ConfirmPassword == "" ? null : ConfirmPassword;
+
+                if (user.Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Password and Confirm Password do not match.");
+                    TempData["ErrorMessage"] = "Password and Confirm Password do not match.";
+                    return View(user);
+                }
+
+                user.Email = existingUser.Email;
+                user.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                user.ModifiedAt = DateTime.Now;
+                _db.Entry(existingUser).CurrentValues.SetValues(user);
+                _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
+
+
+                if (ProfileImage != null && ProfileImage.ContentLength > 0)
+                {
+                    string uploadsFolder = Server.MapPath(TextConstraints.ProfileImagesPath);
+
+                    if (!string.IsNullOrEmpty(existingImageName))
+                    {
+                        string existingFilePath = Path.Combine(uploadsFolder, existingImageName);
+
+                        // Delete the existing file if it exists
+                        if (System.IO.File.Exists(existingFilePath))
+                        {
+                            System.IO.File.Delete(existingFilePath);
+                        }
+                    }
+                    string fileName = Guid.NewGuid() + Path.GetExtension(ProfileImage.FileName);
+
+                    // Define the path to save the file
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Save the file to the server
+                    ProfileImage.SaveAs(filePath);
+                    existingUser.ProfileImage = fileName;
+
+                    //Checking if the user is current user and updating the profile image in session
+                    if (user.UserId == Convert.ToInt32(Helper.GetUserInfo("userId")))
+                    {
+                        AccountController.UpdateProfileImageClaim(this.HttpContext, fileName);
+                    }
+                }
+                else
+                {
+                    _db.Entry(existingUser).Property(x => x.ProfileImage).IsModified = false;
+                }
+                
+                if (user.Password == null)
+                {
+                    _db.Entry(existingUser).Property(x => x.Password).IsModified = false;
+                }
+                _db.Entry(existingUser).State = EntityState.Modified;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "User updated successfully!";
+                return RedirectToAction("UserList");
             }
-
-            ConfirmPassword = ConfirmPassword == "" ? null : ConfirmPassword;
-
-            if (user.Password != ConfirmPassword)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                return View(user);
+                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
             }
-
-            user.Email = existingUser.Email;
-            user.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-            user.ModifiedAt = DateTime.Now;
-
-            _db.Entry(existingUser).CurrentValues.SetValues(user);
-            _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
-            _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
-            if (user.Password == null)
-            {
-                _db.Entry(existingUser).Property(x => x.Password).IsModified = false;
-            }
-
-            _db.Entry(existingUser).State = EntityState.Modified;
-            _db.SaveChanges();
-            return RedirectToAction("UserList");
+            TempData["ErrorMessage"] = "An error occurred while updating the user";
+            return View();
         }
         [HttpPost]
         public ActionResult DeleteUser(int userId)
@@ -2141,6 +2332,72 @@ namespace Ressential.Controllers
                 _db.SaveChanges();
             }
             return RedirectToAction("UserList");
+        }
+        public ActionResult AccountSetting()
+        {
+            // Retrieve the logged-in user ID from the session
+            int loggedInUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+
+            // Fetch the user details from the database
+            var user = _db.Users.SingleOrDefault(u => u.UserId == loggedInUserId);
+            if (user == null)
+            {
+                return HttpNotFound("User not found");
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult AccountSetting(User model, string NewPassword, string ConfirmPassword)
+        {
+            // Retrieve the logged-in user ID from the session
+            int loggedInUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data submitted.";
+                return View(model);
+            }
+
+            // Fetch the user from the database
+            var user = _db.Users.SingleOrDefault(u => u.UserId == loggedInUserId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("AccountSetting");
+            }
+
+            // Verify current password
+            if (user.Password != model.Password) // Ensure to hash passwords in production
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return View(model);
+            }
+
+            // Update password if new password and confirmation match
+            if (!string.IsNullOrWhiteSpace(NewPassword))
+            {
+                if (NewPassword == ConfirmPassword)
+                {
+                    user.Password = NewPassword; // Hash the password in production
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "New Password and Confirm New Password do not match.";
+                    return View(model);
+                }
+            }
+
+            // Update other fields
+            user.UserName = model.UserName;
+            user.ModifiedBy = loggedInUserId;
+            user.ModifiedAt = DateTime.UtcNow;
+
+            _db.SaveChanges();
+
+            TempData["SuccessMessage"] = "Account settings updated successfully.";
+            return RedirectToAction("Index");
         }
     }
 }

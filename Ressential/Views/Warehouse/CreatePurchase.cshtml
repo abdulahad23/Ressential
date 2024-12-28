@@ -11,6 +11,18 @@
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                            @TempData["ErrorMessage"]
+                        </div>}
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                            @TempData["SuccessMessage"]
+                        </div>}
                     <h2 class="text-secondary"><b>Create Purchase</b></h2>
                     <div class="row">
                         <div class="col-md-6">
@@ -110,48 +122,48 @@
                                         }
 
                                         @*@for (int i = 0; i < Model.PurchaseDetails.Count; i++)
-                                            {
-                                                <tr class="item-row">
-                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.DropDownListFor(m => m.PurchaseDetails.ElementAt(i).ItemId, (SelectList)ViewBag.Items[i], "Select Item", new { @class = "form-control" })
-                                                            <label>Item</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Description, new { @class = "form-control" })
-                                                            <label>Description</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                            <label>Quantity</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).UnitPrice, new { @class = "form-control unitPrice", @placeholder = "Unit Price", @name = "unitPrice[]" })
-                                                            <label>Unit Price</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-5 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            <input type="number" class="form-control total"
-                                                                   placeholder="Total" name="total[]">
-                                                            <label>Total</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-1">
-                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                                type="button" data-toggle="tooltip" data-placement="top"
-                                                                title="Remove">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            }*@
+                            {
+                                <tr class="item-row">
+                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                        <div class="form-floating">
+                                            @Html.DropDownListFor(m => m.PurchaseDetails.ElementAt(i).ItemId, (SelectList)ViewBag.Items[i], "Select Item", new { @class = "form-control" })
+                                            <label>Item</label>
+                                        </div>
+                                    </td>
+                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                        <div class="form-floating">
+                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Description, new { @class = "form-control" })
+                                            <label>Description</label>
+                                        </div>
+                                    </td>
+                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                        <div class="form-floating">
+                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
+                                            <label>Quantity</label>
+                                        </div>
+                                    </td>
+                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                        <div class="form-floating">
+                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).UnitPrice, new { @class = "form-control unitPrice", @placeholder = "Unit Price", @name = "unitPrice[]" })
+                                            <label>Unit Price</label>
+                                        </div>
+                                    </td>
+                                    <td class="tbl-min-width-5 col-2 mb-3 mt-3">
+                                        <div class="form-floating">
+                                            <input type="number" class="form-control total"
+                                                   placeholder="Total" name="total[]">
+                                            <label>Total</label>
+                                        </div>
+                                    </td>
+                                    <td class="tbl-min-width-1">
+                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                type="button" data-toggle="tooltip" data-placement="top"
+                                                title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }*@
 
                                     </tbody>
                                 </table>

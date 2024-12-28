@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Ressential.Utilities
+
+<!DOCTYPE html>
 <html lang="en">
 <!-- [Head] start -->
 <head>
@@ -298,18 +300,19 @@
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                            role="button" aria-haspopup="false" aria-expanded="false">
-                            <img src="~/Content/assets/images/user/avatar-12.jpeg" alt="user-image" class="user-avtar">
+                            <img src="@(!string.IsNullOrEmpty(Helper.GetUserInfo("profileImage"))? Url.Content(Ressential.Models.TextConstraints.ProfileImagesPath+Helper.GetUserInfo("profileImage")) : Url.Content(Ressential.Models.TextConstraints.EmptyProfilePath))"
+                                 alt="user-image" class="user-avtar">
                             <span>
                                 <i class="ti ti-settings"></i>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
-                                <h4>Abdul Ahad</h4>
+                                <h4>@Helper.GetUserInfo("userName")</h4>
                                 <p class="text-muted">Super Admin</p>
                                 <hr>
                                 <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 280px)">
-                                    <a href="../application/account-profile-v1.html" class="dropdown-item">
+                                    <a href="@Url.Action("AccountSetting","Kitchen")" class="dropdown-item">
                                         <i class="ti ti-settings"></i>
                                         <span>Account Settings</span>
                                     </a>

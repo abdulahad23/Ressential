@@ -17,9 +17,9 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Order()
         {
+            this.OnlineOrderDetails = new HashSet<OnlineOrderDetail>();
             this.OrderDetails = new HashSet<OrderDetail>();
             this.OrderReturns = new HashSet<OrderReturn>();
-            this.OnlineOrderDetails = new HashSet<OnlineOrderDetail>();
         }
     
         public int OrderId { get; set; }
@@ -30,19 +30,19 @@ namespace Ressential.Models
         public int BranchId { get; set; }
         public Nullable<int> CustomerId { get; set; }
         public string PaymentMethod { get; set; }
+        public int OrderTotal { get; set; }
         public string Status { get; set; }
         public Nullable<int> CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
-        public int OrderTotal { get; set; }
     
         public virtual Branch Branch { get; set; }
         public virtual Customer Customer { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<OnlineOrderDetail> OnlineOrderDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderReturn> OrderReturns { get; set; }
         public virtual User User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OnlineOrderDetail> OnlineOrderDetails { get; set; }
     }
 }

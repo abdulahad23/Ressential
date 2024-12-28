@@ -32,6 +32,9 @@ namespace Ressential.Utilities
                 case "branchId":
                     returnVal = identity.Claims.Where(c => c.Type.Equals("BranchId")).Select(c => c.Value).SingleOrDefault();
                     break;
+                case "profileImage":
+                    returnVal = identity.Claims.Where(c => c.Type.Equals("ProfileImage")).Select(c => c.Value).SingleOrDefault();
+                    break;
             }
             return returnVal;
 

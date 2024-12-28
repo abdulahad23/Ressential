@@ -1,14 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Ressenetial</title>
+    <title>Ressential</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
-
 
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/animate.css">
@@ -24,15 +23,13 @@
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/CustomerAssets/css/jquery.timepicker.css">
 
-
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/flaticon.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/icomoon.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/style.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/style2.css">
     <link rel="stylesheet" href="~/Content/assets/fonts/fontawesome.css">
-
-
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel/slick/slick-theme.css" />
 </head>
 <body class="goto-here">
     <div class="content-wrapper">
@@ -95,19 +92,6 @@
             </div>
         </nav>
         <!-- END nav -->
-        <div id="branchModal" class="modal">
-            <div class="modal-content">
-                <button id="closeBranchModal" class="close-button">&times;</button>
-                <h2>Select Branch for Delivery</h2>
-                <select id="branchDropdown" class="form-control">
-                    <!-- Branch options will be loaded dynamically -->
-                </select>
-                <span>Selected Branch Id: @Session["BranchId"]</span>
-                <span>@Session["BranchName"]</span>
-                <button id="confirmBranchButton" class="btn btn-primary mt-3">Confirm Branch</button>
-            </div>
-        </div>
-
         @RenderBody();
         <footer class="ftco-footer ftco-section">
             <div class="container">
@@ -180,11 +164,33 @@
         </footer>
     </div>
 
-
+    <!-- Modal outside the content-wrapper to avoid blur effect -->
+    <div id="branchModal" class="modal">
+        <div class="modal-content">
+            <button id="closeBranchModal" class="close-button">&times;</button>
+            <h2>Select Branch for Delivery</h2>
+            <select id="branchDropdown" class="form-control">
+                <!-- Branch options will be loaded dynamically -->
+            </select>
+            <span>Selected Branch Id: @Session["BranchId"]</span>
+            <span>@Session["BranchName"]</span>
+            <div class="text-center">
+                <button id="confirmBranchButton" class="btn btn-primary mt-3">Confirm Branch</button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for product details outside the content-wrapper to avoid blur effect -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <button id="closeProductModal" class="close-button">&times;</button>
+            <div id="productDetails" class="text-center">
+                <!-- Product details will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
 
     <!-- loader -->
     <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" /><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" /></svg></div>
-
 
     <script src="~/Content/CustomerAssets/js/jquery.min.js"></script>
     <script src="~/Content/CustomerAssets/js/jquery-migrate-3.0.1.min.js"></script>
@@ -202,58 +208,9 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
     <script src="~/Content/CustomerAssets/js/google-map.js"></script>
     <script src="~/Content/CustomerAssets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 
-
-    <style>
-        /* Modal styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-
-        .modal-content {
-            position: relative;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            width: 400px;
-            text-align: center;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #000;
-        }
-
-        .close-button:hover {
-            color: #ff0000;
-        }
-
-        body.modal-open {
-            filter: blur(5px);
-            overflow: hidden;
-        }
-    </style>
 
     <script>
     $(document).ready(function () {
@@ -267,6 +224,7 @@
         {
             <text>
             modal.addClass('show');
+            $('body').addClass('modal-open');
             populateBranches(); // Populate dropdown when modal is initially opened
             </text>
         }
@@ -289,6 +247,7 @@
         $('#selectBranchButton').click(function (e) {
             e.preventDefault();
             modal.addClass('show');
+            $('body').addClass('modal-open');
             populateBranches(@Session["BranchId"]); // Pass the current branch ID from the session
         });
 
@@ -305,6 +264,7 @@
                         // Update the branch name in the navigation bar
                         $('#selectBranchButton').text(selectedBranchName);
                         modal.removeClass('show');
+                        $('body').removeClass('modal-open');
                         location.reload();
                     } else {
                         alert('Failed to update branch. Please try again.');
@@ -318,12 +278,14 @@
         // Close modal when the close button is clicked
         closeModalButton.click(function () {
             modal.removeClass('show');
+            $('body').removeClass('modal-open');
         });
 
         // Close modal when clicking outside the modal content
         $(window).click(function (e) {
             if ($(e.target).is(modal)) {
                 modal.removeClass('show');
+                $('body').removeClass('modal-open');
             }
         });
     });

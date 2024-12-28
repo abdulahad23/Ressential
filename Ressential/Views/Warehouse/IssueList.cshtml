@@ -1,122 +1,167 @@
-﻿@{
+﻿@model IEnumerable<Ressential.Models.WarehouseIssue>
+
+@{
     ViewBag.Title = "IssueList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
 <div class="card">
     <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
-                    <select class="form-select" id="inputGroupSelectStart">
+                    <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="1">Delete</option>
+                        <option value="delete">Delete</option>
                     </select>
-                    <button class="btn btn-secondary" type="button">Apply</button>
+                    <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
             </div>
             <div class="col-md-3 ms-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
-                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
-                </div>
+                <form id="searchForm" action="@Url.Action("IssueList", "Warehouse")" method="get">
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
+                        <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" class="fit-content">
-                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
-                        </th>
-                        <th scope="col">Issue Date</th>
-                        <th scope="col">Reference No</th>
-                        <th scope="col">Requisition No</th>
-                        <th scope="col">Branch</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" class="fit-content">Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-01</td>
-                        <td>ISSUE12345</td>
-                        <td>REQ-001</td>
-                        <td>North Karachi</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Issued
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-05</td>
-                        <td>ISSUE67890</td>
-                        <td>REQ-003</td>
-                        <td>Korangi Crossing</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Issued
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>2024-10-10</td>
-                        <td>ISSUE54321</td>
-                        <td>REQ-002</td>
-                        <td>Shahrah-e-Faisal</td>
-                        <td>
-                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px; font-size: 0.8rem !important" class="label">
-                                Pending
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                                    <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</a></li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <form id="actionForm" action="@Url.Action("DeleteSelectedPurchases", "Warehouse")" method="post">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="fit-content">
+                                <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                            </th>
+                            <th scope="col">Issue No</th>
+                            <th scope="col">Issue Date</th>
+                            <th scope="col">Reference No</th>
+                            <th scope="col">Branch</th>
+                            <th scope="col">Requisition No</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="fit-content">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@item.IssueId" aria-label="Select Item"></td>
+                                <td>@item.IssueNo</td>
+                                <td>@item.IssueDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@item.ReferenceNo</td>
+                                <td>@item.Branch.BranchName</td>
+                                <td>@item.Requisition.RequisitionNo</td>
+                                @{
+                                    string itemNames = "";
+                                    foreach (var detail in item.WarehouseIssueDetails)
+                                    {
+                                        if (itemNames == "")
+                                        {
+                                            itemNames = detail.Item.ItemName;
+                                        }
+                                        else
+                                        {
+                                            itemNames = itemNames + ", " + detail.Item.ItemName;
+                                        }
 
-        <script>
-            // Function to toggle all checkboxes
-            function toggleAll(source) {
-                const checkboxes = document.querySelectorAll('.form-check-input');
-                checkboxes.forEach(checkbox => checkbox.checked = source.checked);
-            }
-        </script>
+                                    }
+                                    <td>@itemNames</td>
+                                }
+                                <td>
+                                    @if (item.Status == "Pending")
+                                    {
+                                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Pending
+                                        </span>
+                                    }
+                                    else if (item.Status == "Settled")
+                                    {
+                                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Settled
+                                        </span>
+                                    }
+                                    else if (item.Status == "Issued")
+                                    {
+                                        <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Issued
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@item.IssueId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@item.IssueId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+            <form id="editDeleteForm" method="post" style="display: none;">
+                <input type="hidden" name="IssueId" id="formIssueId" />
+            </form>
+        </div>
     </div>
 </div>
+
+<script>
+    // Function to toggle all checkboxes
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+    }
+
+    function applyAction() {
+        const action = document.getElementById("actionDropdown").value;
+        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+        if (action === "delete") {
+            if (checkboxes.length === 0) {
+                alert("No records selected to delete.");
+                return;
+            }
+            if (confirm("Are you sure you want to delete the selected records?")) {
+                document.getElementById("actionForm").submit();
+            }
+        }
+    }
+
+    function submitEditForm(IssueId) {
+        const form = document.getElementById("editDeleteForm");
+        form.action = "@Url.Action("EditIssue", "Warehouse")";
+        document.getElementById("formIssueId").value = IssueId;
+        form.method = "get";
+        form.submit();
+    }
+
+    function submitDeleteForm(IssueId) {
+        if (confirm('Are you sure you want to delete this record?')) {
+            const form = document.getElementById("editDeleteForm");
+            form.action = "@Url.Action("DeleteIssue", "Warehouse")";
+            document.getElementById("formIssueId").value = IssueId;
+            form.method = "post";
+            form.submit();
+        }
+    }
+</script>

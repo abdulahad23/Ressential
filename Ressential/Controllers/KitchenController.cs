@@ -1960,5 +1960,71 @@ namespace Ressential.Controllers
 
             return Json(new { success = true });
         }
+        public ActionResult AccountSetting()
+        {
+            // Retrieve the logged-in user ID from the session
+            int loggedInUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+
+            // Fetch the user details from the database
+            var user = _db.Users.SingleOrDefault(u => u.UserId == loggedInUserId);
+            if (user == null)
+            {
+                return HttpNotFound("User not found");
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult AccountSetting(User model, string NewPassword, string ConfirmPassword)
+        {
+            // Retrieve the logged-in user ID from the session
+            int loggedInUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data submitted.";
+                return View(model);
+            }
+
+            // Fetch the user from the database
+            var user = _db.Users.SingleOrDefault(u => u.UserId == loggedInUserId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("AccountSetting");
+            }
+
+            // Verify current password
+            if (user.Password != model.Password) // Ensure to hash passwords in production
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return View(model);
+            }
+
+            // Update password if new password and confirmation match
+            if (!string.IsNullOrWhiteSpace(NewPassword))
+            {
+                if (NewPassword == ConfirmPassword)
+                {
+                    user.Password = NewPassword; // Hash the password in production
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "New Password and Confirm New Password do not match.";
+                    return View(model);
+                }
+            }
+
+            // Update other fields
+            user.UserName = model.UserName;
+            user.ModifiedBy = loggedInUserId;
+            user.ModifiedAt = DateTime.UtcNow;
+
+            _db.SaveChanges();
+
+            TempData["SuccessMessage"] = "Account settings updated successfully.";
+            return RedirectToAction("Index");
+        }
     }
 }

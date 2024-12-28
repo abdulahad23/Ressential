@@ -18,7 +18,7 @@ namespace Ressential.Models
         public Requisition()
         {
             this.RequisitionDetails = new HashSet<RequisitionDetail>();
-            this.WarehouseIssueDetails = new HashSet<WarehouseIssueDetail>();
+            this.WarehouseIssues = new HashSet<WarehouseIssue>();
         }
     
         public int RequisitionId { get; set; }
@@ -38,6 +38,6 @@ namespace Ressential.Models
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
+        public virtual ICollection<WarehouseIssue> WarehouseIssues { get; set; }
     }
 }

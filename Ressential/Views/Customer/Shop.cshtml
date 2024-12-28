@@ -51,11 +51,11 @@
                 {
                     <div class="col-md-6 col-lg-3 ftco-animate">
                         <div class="product">
-                            <a href="#" class="img-prod">
+                            <a href="#" class="img-prod product-link" data-product-id="@product.ProductId" data-product-name="@product.ProductName" data-product-description="@product.Description" data-product-price="@product.ProductPrice" data-product-image="@Url.Content("~/Uploads/ProductImages/" + product.ProductImage)">
                                 <img class="img-fluid" src="@Url.Content("~/Uploads/ProductImages/"+ product.ProductImage)" style="width: 200px; height: 200px; margin: 0 auto; display: block;" alt="Product Image" />
                             </a>
                             <div class="text py-3 pb-4 px-3 text-center">
-                                <h3><a href="#">@product.ProductName</a></h3>
+                                <h3><a href="#" class="product-link" data-product-id="@product.ProductId" data-product-name="@product.ProductName" data-product-description="@product.Description" data-product-price="@product.ProductPrice" data-product-image="@Url.Content("~/Uploads/ProductImages/" + product.ProductImage)">@product.ProductName</a></h3>
                                 <div class="d-flex">
                                     <div class="pricing">
                                         <p class="price">
@@ -78,17 +78,6 @@
                 }
             </div>
         </div>
-
-        @*<nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center mt-4">
-                @for (int i = 1; i <= ViewBag.TotalPages; i++)
-                {
-                    <li class="page-item @(i == ViewBag.Page ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Shop", new { page = i })">@i</a>
-                    </li>
-                }
-            </ul>
-        </nav>*@
 
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center mt-4">
@@ -164,6 +153,7 @@
     </div>
 </section>
 
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
@@ -179,9 +169,9 @@
                 data: { productId: productId },
                 success: function (response) {
                     if (!response.success) {
-                    // Redirect to login if the user is not authenticated
-                    window.location.href = '@Url.Action("Login", "Customer")';
-                    return;
+                        // Redirect to login if the user is not authenticated
+                        window.location.href = '@Url.Action("Login", "Customer")';
+                        return;
                     }
                     $(".cart-count").text(response.cartCount);
                     $(".cart-total").text(response.cartTotal.toFixed(2));
@@ -200,6 +190,47 @@
 
         $(".cart-go-to").off("click").on("click", function () {
             window.location.href = '@Url.Action("Cart", "Customer")';
+        });
+
+        // Handle product link click to open modal
+        $(".product-link").off("click").on("click", function (e) {
+            e.preventDefault();
+            var productId = $(this).data("product-id");
+            var productName = $(this).data("product-name");
+            var productDescription = $(this).data("product-description");
+            var productPrice = parseFloat($(this).data("product-price"));
+            var productImage = $(this).data("product-image");
+
+            var productDetailsHtml = `
+                <img class="img-fluid" src="${productImage}" style="width: 300px; height: auto; margin: 0 auto; display: block;" alt="Product Image" />
+                <h3>${productName}</h3>
+                <p>${productDescription}</p>
+                <p class="price"><span>${productPrice.toFixed(2)}</span></p>
+                <form action="@Url.Action("AddToCart", "Customer")" method="post">
+                    <input type="hidden" name="productId" value="${productId}" />
+                    <button type="submit" class="btn btn-primary cart-box" style="border-radius: 10px; padding: 5px 10px;">
+                        <i class="ion-ios-cart"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </form>
+            `;
+            $("#productDetails").html(productDetailsHtml);
+            $("#productModal").addClass("show");
+            $("body").addClass("modal-open");
+        });
+
+        // Close modal when the close button is clicked
+        $("#closeProductModal").click(function () {
+            $("#productModal").removeClass("show");
+            $("body").removeClass("modal-open");
+        });
+
+        // Close modal when clicking outside the modal content
+        $(window).click(function (e) {
+            if ($(e.target).is("#productModal")) {
+                $("#productModal").removeClass("show");
+                $("body").removeClass("modal-open");
+            }
         });
     });
 </script>

@@ -25,58 +25,47 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="firstname">Full Name</label>
-                                <input type="text" class="form-control" value="Abdul Ahad" placeholder="">
+                                <input type="text" class="form-control" value="@ViewBag.Customer.CustomerName" placeholder="Full Name" readonly>
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="country">State / Country</label>
-                                <div class="select-wrap">
-                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                                    <select name="" id="" class="form-control">
-                                        <option value="">France</option>
-                                        <option value="">Italy</option>
-                                        <option value="">Philippines</option>
-                                        <option value="">South Korea</option>
-                                        <option value="">Hongkong</option>
-                                        <option value="">Japan</option>
-                                        <option selected value="">Pakistan</option>
-                                    </select>
-                                </div>
+                                <input type="text" name="country" class="form-control" value="@ViewBag.Customer.Country" placeholder="Address" readonly>
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="streetaddress">Street Address</label>
-                                <input type="text" class="form-control" value="House # A-392, Sector 31/D, P&T CHS, Korangi" placeholder="Address">
+                                <input type="text" name="streetAddress" class="form-control" value="@ViewBag.Customer.Address" placeholder="Address">
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="towncity">Town / City</label>
-                                <input type="text" class="form-control" value="Karachi" placeholder="">
+                                <input type="text" name="city" class="form-control" value="@ViewBag.Customer.City" placeholder="Town / City">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="phone">Phone</label>
-                                <input type="text" class="form-control" value="+923112824123" placeholder="">
+                                <input type="text" name="phone" class="form-control" value="@ViewBag.Customer.ContactNo" placeholder="Phone">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="emailaddress">Email Address</label>
-                                <input type="text" class="form-control" value="abdulahad.ad23@gmail.com" placeholder="">
+                                <input type="text" class="form-control" value="@ViewBag.Customer.Email" placeholder="Email" readonly>
                             </div>
                         </div>
                         <div class="w-100"></div>
                         <div class="col-md-12">
                             <div class="form-group mt-4">
                                 <div>
-                                    <label class="mr-3"><input type="checkbox" name="optradio"> Save this address? </label>
+                                    <label class="mr-3"><input type="checkbox" name="optradio"> Save this details? </label>
                                 </div>
                             </div>
                         </div>
@@ -148,34 +137,41 @@
     </div>
 </section>
 <script>
-    document.getElementById("placeOrderBtn").addEventListener("click", function (e) {
-        e.preventDefault();
+   document.getElementById("placeOrderBtn").addEventListener("click", function (e) {
+    e.preventDefault();
 
-        var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    var saveDetails = document.querySelector('input[name="optradio"]').checked;
 
-        if (confirm("Are you sure you want to place the order?")) {
-            // Create the form data or gather any necessary data
-            var formData = new FormData();
-            formData.append("paymentMethod", paymentMethod);  // Send payment method with the request
+    if (confirm("Are you sure you want to place the order?")) {
+        // Create the form data or gather any necessary data
+        var formData = new FormData();
+        formData.append("paymentMethod", paymentMethod);  // Send payment method with the request
+        formData.append("saveDetails", saveDetails);      // Send checkbox state with the request
 
-            // Send the request to the server to save the order and payment
-            fetch('@Url.Action("PlaceOrder", "Customer")', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);  // Show success message
-                    window.location.href = '@Url.Action("ThankYou", "Customer")'
-                } else {
-                    alert("Something went wrong. Please try again.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("An error occurred. Please try again.");
-            });
-        }
-    });
+        // Gather billing details
+        formData.append("streetAddress", document.querySelector('input[name="streetAddress"]').value);
+        formData.append("city", document.querySelector('input[name="city"]').value);
+        formData.append("phone", document.querySelector('input[name="phone"]').value);
+
+        // Send the request to the server to save the order and payment
+        fetch('@Url.Action("PlaceOrder", "Customer")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);  // Show success message
+                window.location.href = '@Url.Action("ThankYou", "Customer")'
+            } else {
+                alert("Something went wrong. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+        });
+    }
+});
 </script>

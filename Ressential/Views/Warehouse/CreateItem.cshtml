@@ -47,19 +47,19 @@
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                <input type="number" class="form-control" id="floatingInput" name="quantity" placeholder="Quantity In Hand">
+                                @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number" })
                                 <label for="floatingInput">Quantity In Hand</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                <input type="number" class="form-control" id="floatingInput" name="cost" placeholder="Stock Value">
+                                @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number" })
                                 <label for="floatingInput">Stock Value</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                <input type="date" class="form-control" id="floatingInput" name="openingDate" placeholder="Opening Stock Date" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                                @Html.TextBoxFor(m => m.OpeningStockDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date" })
                                 <label for="floatingInput">Opening Stock Date</label>
                             </div>
                         </div>

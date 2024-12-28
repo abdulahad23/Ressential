@@ -65,6 +65,8 @@ namespace Ressential.Controllers
             ViewBag.DeliveryCharges = deliveryCharges;
             ViewBag.CartTotal = totalAmount+deliveryCharges;
 
+            ViewBag.Customer = _db.Customers.Find(Session["CustomerId"]);
+
             // Pass the cart list to the Checkout view
             return View(cartList);
         }
@@ -237,66 +239,89 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
-        public ActionResult PlaceOrder(string paymentMethod)
+        public ActionResult PlaceOrder(string paymentMethod, bool saveDetails, string streetAddress, string city, string phone)
         {
-            // Get cart items from session
-            List<Cart> cartList = Session["Cart"] as List<Cart>;
 
-            if (cartList == null || cartList.Count == 0)
+            try
             {
-                // If cart is empty, redirect to Cart page
-                return RedirectToAction("Cart");
-            }
+                // Get cart items from session
+                List<Cart> cartList = Session["Cart"] as List<Cart>;
+
+                if (cartList == null || cartList.Count == 0)
+                {
+                    // If cart is empty, redirect to Cart page
+                    return RedirectToAction("Cart");
+                }
 
 
-            decimal TotalAmount = cartList.Sum(item => item.TotalPrice) ?? 0;
-            var lastOrder = _db.Orders
-            .OrderByDescending(o => o.OrderId)
-            .FirstOrDefault();
+                decimal TotalAmount = cartList.Sum(item => item.TotalPrice) ?? 0;
+                var lastOrder = _db.Orders
+                .OrderByDescending(o => o.OrderId)
+                .FirstOrDefault();
 
-            int nextOrderNumber = 1;
+                int nextOrderNumber = 1;
 
-            if (lastOrder != null)
-            {
-                // Increment the order ID based on the last one
-                nextOrderNumber = lastOrder.OrderId + 1;
-            }
+                if (lastOrder != null)
+                {
+                    // Increment the order ID based on the last one
+                    nextOrderNumber = lastOrder.OrderId + 1;
+                }
 
-            // Format the new OrderID with the prefix "RS" and zero-padded number
-            string newOrderNo = $"OD-{nextOrderNumber:D8}";
+                // Format the new OrderID with the prefix "RS" and zero-padded number
+                string newOrderNo = $"OD-{nextOrderNumber:D8}";
 
-            // Save order items (cart items) to the OrderItems table
+                // Save order items (cart items) to the OrderItems table
 
-            var orderItem = new Order
-            {
-                OrderNo = newOrderNo,
-                PaymentMethod = paymentMethod,
-                OrderDate = DateTime.Now,
-                OrderType = "Online",
-                BranchId = 1,
-                CustomerId = 1,
-                Status = "In-process",
-                OrderDetails = new List<OrderDetail>()
-            };
+                var orderItem = new Order
+                {
+                    OrderNo = newOrderNo,
+                    PaymentMethod = paymentMethod,
+                    OrderDate = DateTime.Now,
+                    OrderType = "Online",
+                    BranchId = 1,
+                    CustomerId = 1,
+                    Status = "In-process",
+                    OrderDetails = new List<OrderDetail>()
+                };
 
 
-            foreach (var cartItem in cartList)
-            {
-                orderItem.OrderDetails.Add(
-                    new OrderDetail {
-                        OrderId = orderItem.OrderId,
-                        ProductId = cartItem.ProductID,
-                        ProductPrice = (decimal)cartItem.Price,
-                        ProductQuantity = cartItem.Quantity,
+                foreach (var cartItem in cartList)
+                {
+                    orderItem.OrderDetails.Add(
+                        new OrderDetail
+                        {
+                            OrderId = orderItem.OrderId,
+                            ProductId = cartItem.ProductID,
+                            ProductPrice = (decimal)cartItem.Price,
+                            ProductQuantity = cartItem.Quantity,
+                        }
+                        );
+                }
+
+                if (saveDetails)
+                {
+                    // Update the customer's details in the database
+                    var customer = _db.Customers.Find(Session["CustomerId"]);
+                    if (customer != null)
+                    {
+                        customer.Address = streetAddress;
+                        customer.City = city;
+                        customer.ContactNo = phone;
                     }
-                    );
+                }
+
+                _db.Orders.Add(orderItem);
+                _db.SaveChanges();
+                //// Clear the session cart after order is placed
+                //Session["Cart"] = null;
+                // Redirect to the Order Confirmation page or any other confirmation view
+                return Json(new { success = true, message = "Your order has been placed successfully!" });
             }
-            _db.Orders.Add(orderItem);
-            _db.SaveChanges();
-            //// Clear the session cart after order is placed
-            //Session["Cart"] = null;
-            // Redirect to the Order Confirmation page or any other confirmation view
-            return Json(new { success = true, message = "Your order has been placed successfully!" });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "An error occurred while placing the order." });
+            }
+
         }
         public ActionResult BackToHome() {
             Session["Cart"] = null;

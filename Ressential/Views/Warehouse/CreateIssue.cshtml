@@ -1,10 +1,9 @@
-﻿@model Ressential.Models.WarehouseIssue
+﻿@model Ressential.Models.WarehouseIssueHelper
 
 @{
     ViewBag.Title = "CreateIssue";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
-
 
 @using (Html.BeginForm("CreateIssue", "Warehouse", FormMethod.Post))
 {
@@ -12,8 +11,13 @@
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
+                    <div class="alert alert-danger d-none" id="error-message">
+                    </div>
                     <h2 class="text-secondary"><b>Create Issue</b></h2>
                     <div class="row">
+                        @Html.HiddenFor(model => model.BranchID)
+                        @Html.HiddenFor(model => model.RequisitionId)
+                        @Html.HiddenFor(model => model.Status)
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.IssueDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Issue Date", @type = "date" })
@@ -22,39 +26,21 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Reference No">
                                 @Html.TextBoxFor(model => model.ReferenceNo, "", new { @class = "form-control", @placeholder = "Reference No" })
                                 <label for="floatingInput">Reference No</label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            @*<div class="form-floating mb-3 mt-3">
-                                <select class="form-control" id="BranchID" name="">
-                                    <option selected value="0">Select Branch</option>
-                                    <option value="1">Shahrah-e-Faisal</option>
-                                    <option value="1">Gulshan</option>
-                                    <option value="1">Korangi</option>
-                                    <option value="1">North Nazimabad</option>
-                                    <option value="1">DHA Phase 1</option>
-                                </select>
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.BranchName, "", new { @class = "form-control", @placeholder = "Branch", @readonly = "readonly" })
                                 <label for="floatingInput">Branch</label>
-                            </div>*@
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Branch" value="@ViewBag.Requisition.Branch.BranchName" readonly>
-                            <label for="floatingInput">Branch</label>
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            @*<div class="form-floating mb-3 mt-3">
-                                <select class="form-control" id="RequisitionID" name="">
-                                    <option selected value="0">Select Requisition</option>
-                                    <option value="1">RQ-1012</option>
-                                    <option value="2">RQ-1198</option>
-                                    <option value="3">RQ-1293</option>
-                                    <option value="4">RQ-1342</option>
-                                </select>
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.RequisitionNo, "", new { @class = "form-control", @placeholder = "Requisition", @readonly = "readonly" })
                                 <label for="floatingInput">Requisition</label>
-                            </div>*@
-                            <input type="text" class="form-control" id="floatingInput" placeholder="Requisition" value="@ViewBag.Requisition.RequisitionNo" readonly>
-                            <label for="floatingInput">Requisition</label>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
@@ -62,7 +48,6 @@
                                 <label for="floatingInput">Memo</label>
                             </div>
                         </div>
-
                     </div>
                     <h2 class="text-secondary pt-3"><b>Items</b></h2>
                     <div class="row">
@@ -70,72 +55,59 @@
                             <div class="table-responsive tab-content">
                                 <table id="itemsTable" class="table table-hover">
                                     <tbody id="itemsTableBody">
-                                        @foreach (var item in Model.WarehouseIssueDetails)
+                                        @{
+                                            var warehouseIssueDetailsList = Model.WarehouseIssueDetails.ToList();
+                                        }
+                                        @for (int i = 0; i < warehouseIssueDetailsList.Count; i++)
                                         {
                                             <tr class="item-row">
+                                                @Html.HiddenFor(m => warehouseIssueDetailsList[i].ItemId)
+                                                @Html.HiddenFor(m => warehouseIssueDetailsList[i].ItemName)
                                                 <td class="tbl-min-width-6 col-3 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        <select class="form-control">
-                                                            <option value="0">Select Item</option>
-                                                            @foreach (var i in ViewBag.Items)
-                                                            {
-
-                                                                if (i.ItemId == item.ItemId)
-                                                                {
-                                                                    <option selected value="@i.ItemId">@i.ItemName</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@i.ItemId">@i.ItemName</option>
-                                                                }
-                                                            }
-                                                        </select>
+                                                        @Html.TextBoxFor(m => warehouseIssueDetailsList[i].ItemName, new { @class = "form-control", @placeholder = "Item", @readonly = "readonly" })
                                                         <label>Item</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-6 col-3 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
+                                                        @Html.TextBoxFor(m => warehouseIssueDetailsList[i].Description, new { @class = "form-control", @placeholder = "Description" })
                                                         <label>Description</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                        <label>Quantity</label>
+                                                        @Html.TextBoxFor(m => warehouseIssueDetailsList[i].RequestedQuantity, new { @class = "form-control", @placeholder = "Requested Quantity", @readonly = "readonly" })
+                                                        <label>Requested Quantity</label>
                                                     </div>
                                                 </td>
-                                                <td class="tbl-min-width-1">
-                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                            type="button" data-toggle="tooltip" data-placement="top"
-                                                            title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => warehouseIssueDetailsList[i].PreviousIssuedQuantity, new { @class = "form-control", @placeholder = "Issued Quantity", @readonly = "readonly" })
+                                                        <label>Issued Quantity</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => warehouseIssueDetailsList[i].IssuedQuantity, new { @class = "form-control", @placeholder = "Current Issue Quantity" })
+                                                        <label>Current Issue Quantity</label>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         }
                                     </tbody>
                                 </table>
                             </div>
-
-                            <!-- Add Row Button -->
-                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
-                                    type="button">
-                                <i class="fa fa-plus-square d-flex p-1">
-                                    <span class="ps-2 m-0">Add More</span>
-                                </i>
-                            </button>
                         </div>
                         <div class="row mt-5">
-                            <div class=" row">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="col-sm-9">
-                                            <button id="CreateIssue" type="button"
-                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
+                                            <button id="CreateIssue" type="button" class="btn btn-secondary mr-2 ps-4 pe-4">
                                                 Save
                                             </button>
-                                            <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                            <a href="@Url.Action("RequisitionList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
                                         </div>
                                     </div>
                                 </div>
@@ -144,90 +116,79 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 }
 
-
 <script>
     $(document).ready(function () {
-            // Add row when clicking "Add More"
-            $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
 
-                // Increment row index for the new row to avoid conflicts
-                let index = $('#itemsTableBody .item-row').length;
+        $('#CreateIssue').on('click', function () {
+            // Initialize an object to hold all data
+            let warehouseIssue = {
+                WarehouseIssueDetails: [],
+                IssueDate: $('#IssueDate').val(),
+                ReferenceNo: $('#ReferenceNo').val(),
+                BranchID: $('#BranchID').val(),
+                RequisitionId: $('#RequisitionId').val(),
+                Memo: $('#Memo').val()
+            };
 
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="WarehouseIssueDetails"]').attr("name", `WarehouseIssueDetails[${index}].ItemId`);
-                newRow.find('input[name^="WarehouseIssueDetails"][name*=".Description"]').attr("name", `PurchaseDetails[${index}].Description`);
-                newRow.find('input[name^="WarehouseIssueDetails"][name*=".Quantity"]').attr("name", `PurchaseDetails[${index}].Quantity`);
+            // Find all rows in the tbody
+            $('#itemsTableBody .item-row').each(function () {
+                // Initialize an object to hold the values for each row
+                let rowData = {};
 
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
+                // Get the selected item from the dropdown
+                rowData.ItemId = $(this).find('input[name*=".ItemId"]').val();
+
+                // Get the selected item from the dropdown
+                rowData.ItemName = $(this).find('input[name*=".ItemName"]').val();
+
+                // Get the description
+                rowData.Description = $(this).find('input[name*=".Description"]').val();
+
+                // Get the requested quantity
+                rowData.RequestedQuantity = $(this).find('input[name*=".RequestedQuantity"]').val();
+
+                // Get the requested quantity
+                rowData.PreviousIssuedQuantity = $(this).find('input[name*=".PreviousIssuedQuantity"]').val();
+
+                // Get the issued quantity
+                rowData.IssuedQuantity = $(this).find('input[name*=".IssuedQuantity"]').val();
+
+                // Add the row data to the warehouseIssue.WarehouseIssueDetails array
+                warehouseIssue.WarehouseIssueDetails.push(rowData);
             });
 
-            // Remove row when clicking the remove button
-            $(document).on('click', '.removeRowBtn', function () {
-                if ($('#itemsTableBody .item-row').length > 1) {
-                    $(this).closest('.item-row').remove();
-                } else {
-                    alert("At least one item is required.");
+            // Now you can use warehouseIssue for your purposes
+            console.log(warehouseIssue);
+
+            // Example: you might want to send this data to a server
+            $.ajax({
+                url: '@Url.Action("CreateIssue", "Warehouse")',
+                method: 'POST',
+                data: JSON.stringify(warehouseIssue),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = '@Url.Action("IssueList", "Warehouse")';
+                    }
+                    else if (response.errorMessage) {
+                        $('#error-message').text(response.errorMessage).removeClass('d-none').show();
+                        $('html, body').animate({ scrollTop: 0 }, 'fast');
+                    }
+                    else {
+                        if (response.redirect) {
+                            window.location.href = response.redirect;
+                        }
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while creating the issue.");
                 }
             });
         });
-
-    $('#CreatePurchase').on('click', function () {
-
-        debugger;
-
-        // Initialize an object to hold all data
-         let warehouseIssue = {
-            WarehouseIssueDetails: [],
-            issueDate: $('#IssueDate').val(),
-            referenceNo: $('#ReferenceNo').val(),
-            memo: $('#Memo').val()
-        };
-
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
-
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
-
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
-
-            // Get the quantity
-            rowData.Quantity = $(this).find('input[name="item.Quantity"]').val();
-
-            // Add the row data to the purchaseData.items array
-            warehouseIssue.WarehouseIssueDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-         console.log(warehouseIssue);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateIssue", "Warehouse")',
-             method: 'POST',
-             data: JSON.stringify(warehouseIssue),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("IssueList","Warehouse")'
-                }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
-                }
-             }
-         });
-     });
+    });
 </script>
 

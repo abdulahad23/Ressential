@@ -4,13 +4,33 @@
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
 }
 
+
+
+
 <div class="row">
     <div class="col-12 grid-margin">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                @TempData["ErrorMessage"]
+            </div>}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                @TempData["SuccessMessage"]
+            </div>}
         <div class="card bg-secondary">
-            <div class="card-body d-flex justify-content-center align-items-center" style="height: 100vh;">
-                <h2 class="text-center text-5xl text-white">KITCHEN DASHBOARD</h2>
+            <div class="card-body">
+                <!-- Dashboard Title -->
+                <div class="d-flex justify-content-center align-items-center" style="height:100vh;">
+                    <h2 class="text-center text-5xl text-white">KITCHEN DASHBOARD</h2>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
 

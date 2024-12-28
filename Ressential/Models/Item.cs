@@ -25,7 +25,6 @@ namespace Ressential.Models
             this.RequisitionDetails = new HashSet<RequisitionDetail>();
             this.ReturnStockDetails = new HashSet<ReturnStockDetail>();
             this.WarehouseIssueDetails = new HashSet<WarehouseIssueDetail>();
-            this.WarehouseItemTransactions = new HashSet<WarehouseItemTransaction>();
             this.WastageItemDetails = new HashSet<WastageItemDetail>();
         }
     
@@ -38,6 +37,9 @@ namespace Ressential.Models
         public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
+        public decimal OpeningStockQuantity { get; set; }
+        public decimal OpeningStockValue { get; set; }
+        public System.DateTime OpeningStockDate { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
     
@@ -62,8 +64,6 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         public virtual WarehouseItemStock WarehouseItemStock { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WarehouseItemTransaction> WarehouseItemTransactions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WastageItemDetail> WastageItemDetails { get; set; }
     }

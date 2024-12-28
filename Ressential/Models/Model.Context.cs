@@ -30,10 +30,10 @@ namespace Ressential.Models
         public virtual DbSet<BranchItem> BranchItems { get; set; }
         public virtual DbSet<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual DbSet<ConsumeItem> ConsumeItems { get; set; }
-        public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ItemCategory> ItemCategories { get; set; }
         public virtual DbSet<Item> Items { get; set; }
+        public virtual DbSet<OnlineOrderDetail> OnlineOrderDetails { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderReturnDetail> OrderReturnDetails { get; set; }
         public virtual DbSet<OrderReturn> OrderReturns { get; set; }
@@ -64,9 +64,7 @@ namespace Ressential.Models
         public virtual DbSet<WarehouseIssueDetail> WarehouseIssueDetails { get; set; }
         public virtual DbSet<WarehouseIssue> WarehouseIssues { get; set; }
         public virtual DbSet<WarehouseItemStock> WarehouseItemStocks { get; set; }
-        public virtual DbSet<WarehouseItemTransaction> WarehouseItemTransactions { get; set; }
         public virtual DbSet<WastageItemDetail> WastageItemDetails { get; set; }
         public virtual DbSet<WastageItem> WastageItems { get; set; }
-        public virtual DbSet<OnlineOrderDetail> OnlineOrderDetails { get; set; }
     }
 }

@@ -44,6 +44,23 @@
             <div class="auth-form">
                 <div class="card mt-5">
                     <div class="card-body">
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"> </i>
+                        @TempData["ErrorMessage"]
+                    </div>}
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>}
+                        @if (TempData["Message"] != null)
+                        {
+                    <div class="alert alert-warning">
+                        <i class="fa fa-exclamation-circle pe-2" aria-hidden="true"></i>
+                        @TempData["Message"]
+                    </div>}
                         <a href="#" class="d-flex justify-content-center mt-3">
                             <img src="~/Content/assets/images/logo-dark.svg" alt="image" class="img-fluid brand-logo">
                         </a>

@@ -25,6 +25,7 @@ namespace Ressential.Models
         public string IssueNo { get; set; }
         public string ReferenceNo { get; set; }
         public int BranchID { get; set; }
+        public int RequisitionId { get; set; }
         public string Memo { get; set; }
         public string Status { get; set; }
         public int CreatedBy { get; set; }
@@ -33,6 +34,7 @@ namespace Ressential.Models
         public Nullable<System.DateTime> ModifiedAt { get; set; }
     
         public virtual Branch Branch { get; set; }
+        public virtual Requisition Requisition { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -16,14 +16,12 @@ namespace Ressential.Models
     {
         public int IssueDetailId { get; set; }
         public int IssueId { get; set; }
-        public Nullable<int> RequisitionId { get; set; }
         public int ItemId { get; set; }
         public string Description { get; set; }
         public decimal Quantity { get; set; }
         public decimal CostApplied { get; set; }
     
         public virtual Item Item { get; set; }
-        public virtual Requisition Requisition { get; set; }
         public virtual WarehouseIssue WarehouseIssue { get; set; }
     }
 }

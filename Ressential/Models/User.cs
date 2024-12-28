@@ -62,6 +62,7 @@ namespace Ressential.Models
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string ProfileImage { get; set; }
         public bool IsActive { get; set; }
         public Nullable<int> CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }

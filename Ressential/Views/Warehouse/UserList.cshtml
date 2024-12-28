@@ -6,6 +6,18 @@
 }
 <div class="card">
     <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                @TempData["ErrorMessage"]
+            </div>}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                @TempData["SuccessMessage"]
+            </div>}
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
