@@ -346,6 +346,11 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult CreateVendor(Vendor vendor)
         {
+            if (!ModelState.IsValid)
+            {
+                // If validation fails, return the same view with the current model to show errors
+                return View(vendor);
+            }
             try
             {
                 vendor.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
@@ -1566,7 +1571,7 @@ namespace Ressential.Controllers
                     _db.PurchaseDetails.RemoveRange(purchaseDetails);
                     _db.Purchases.RemoveRange(purchasesToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Purchase deleted successfully.";
+                    TempData["SuccessMessage"] = "Purchases deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
@@ -1753,19 +1758,23 @@ namespace Ressential.Controllers
                         var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
                         if (existingDetail != null)
                         {
-                            //decimal RevertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice);
-                            decimal RevertedQuantity = warehouseItemStock.Quantity + existingDetail.Quantity;
-                            //decimal RevertedAverageCost = RevertedTotalCost / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
-                            //decimal RevertedAverageCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
+                            // Revert stock to previous state before applying new changes
+                            var revertedQuantity = warehouseItemStock.Quantity + existingDetail.Quantity;
+                            var revertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (existingDetail.Quantity * existingDetail.UnitPrice);
+                            var revertedPerUnitCost = revertedTotalCost / revertedQuantity;
 
-                            warehouseItemStock.Quantity = RevertedQuantity - newDetail.Quantity; //Updated Quantity
-                            if (warehouseItemStock.Quantity == 0)
+                            warehouseItemStock.Quantity = revertedQuantity;
+                            warehouseItemStock.CostPerUnit = revertedPerUnitCost;
+
+                            warehouseItemStock.Quantity -= newDetail.Quantity;
+                            var newTotalCost = newDetail.Quantity * newDetail.UnitPrice;
+                            if (warehouseItemStock.Quantity <= 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (existingDetail.Quantity * existingDetail.UnitPrice) - (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                                warehouseItemStock.CostPerUnit = ((revertedTotalCost - newTotalCost) / warehouseItemStock.Quantity);
                             }
 
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
@@ -1773,16 +1782,21 @@ namespace Ressential.Controllers
                         }
                         else
                         {
-                            decimal oldQuantity = warehouseItemStock.Quantity;
-                            warehouseItemStock.Quantity = warehouseItemStock.Quantity - newDetail.Quantity; //Updated Quantity
-                            if (warehouseItemStock.Quantity == 0)
+                            // For new details, update stock directly
+                            var totalCostBeforeChange = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit);
+
+                            warehouseItemStock.Quantity -= newDetail.Quantity; // Subtract new quantity
+
+                            if (warehouseItemStock.Quantity > 0)
                             {
-                                warehouseItemStock.CostPerUnit = 0;
+                                var totalCostAfterChange = totalCostBeforeChange + (newDetail.Quantity * newDetail.UnitPrice);
+                                warehouseItemStock.CostPerUnit = totalCostAfterChange / warehouseItemStock.Quantity;
                             }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                                warehouseItemStock.CostPerUnit = 0; // No stock left
                             }
+
                             existingPurchaseReturn.PurchaseReturnDetails.Add(newDetail); // Add new detail
                         }
                     }
@@ -1935,6 +1949,45 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("PurchaseReturnList");
         }
+        public ActionResult CreateRequisitionIssue()
+        {
+            var branches = _db.Branches.Where(b => b.IsActive).Select(b => new { b.BranchId, b.BranchName }).ToList();
+            ViewBag.Branches = new SelectList(branches, "BranchId", "BranchName");
+            return View();
+        }
+
+        public JsonResult GetRequisitions(int BranchId)
+        {
+            var requisitions = _db.Requisitions
+                .Where(r => r.BranchId == BranchId && r.Status != "Settled" && r.Status != "Rejected")
+                .Select(r => new
+                {
+                    r.RequisitionId,
+                    r.RequisitionNo
+                }).ToList();
+
+            return Json(requisitions, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetRequisitionDetails(int RequisitionId)
+        {
+            var requisitionDetails = _db.RequisitionDetails
+                .Where(rd => rd.RequisitionId == RequisitionId)
+                .Select(rd => new
+                {
+                    rd.ItemId,
+                    rd.Item.ItemName,
+                    rd.Description,
+                    rd.Quantity,
+                    IssuedQuantity = rd.Quantity - _db.WarehouseIssues
+                    .Where(wi => wi.RequisitionId == RequisitionId)
+                    .SelectMany(wi => wi.WarehouseIssueDetails)
+                    .Where(wid => wid.ItemId == rd.ItemId)
+                    .Sum(wid => (decimal?)wid.Quantity) ?? 0,
+                }).ToList();
+
+            return Json(requisitionDetails, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult CreateIssue(int requisitionId)
         {
 
@@ -2011,7 +2064,7 @@ namespace Ressential.Controllers
                             .Max() + 1;
                     }
                     var requisition = _db.Requisitions.Find(warehouseIssueHelper.RequisitionId);
-                    requisition.Status = "Settled";
+
                     WarehouseIssue warehouseIssue = new WarehouseIssue
                     {
                         IssueNo = $"ISU-{datePart}{nextIssueNumber:D4}",
@@ -2032,7 +2085,7 @@ namespace Ressential.Controllers
                         var warehouseItemStock = _db.WarehouseItemStocks.Where(m => m.ItemId == item.ItemId).FirstOrDefault();
                         if (item.IssuedQuantity > warehouseItemStock.Quantity)
                         {
-                            return Json(new { success = false, errorMessage = "'" + item.ItemName + "' issue quantity is exceeding the warehouse stock quantity (Only " + warehouseItemStock.Quantity + " quantity is available)"});
+                            return Json(new { success = false, errorMessage = $"Insufficient stock for {item.ItemName}. The available quantity is {warehouseItemStock.Quantity}" });
                         }
                         if ((item.PreviousIssuedQuantity + item.IssuedQuantity) > item.RequestedQuantity)
                         {
@@ -2083,6 +2136,287 @@ namespace Ressential.Controllers
             }
             return View(warehouseIssue.ToList());
         }
+        public ActionResult EditIssue(int issueId)
+        {
+            var warehouseIssue = _db.WarehouseIssues
+                .Include(wi => wi.WarehouseIssueDetails)
+                .FirstOrDefault(wi => wi.IssueId == issueId);
+
+            if (warehouseIssue == null)
+            {
+                TempData["ErrorMessage"] = "Issue not found.";
+                return RedirectToAction("IssueList");
+            }
+
+            var warehouseIssueHelper = new WarehouseIssueHelper
+            {
+                IssueId = warehouseIssue.IssueId,
+                IssueNo = warehouseIssue.IssueNo,
+                IssueDate = warehouseIssue.IssueDate,
+                ReferenceNo = warehouseIssue.ReferenceNo,
+                RequisitionId = warehouseIssue.RequisitionId,
+                BranchID = warehouseIssue.BranchID,
+                BranchName = warehouseIssue.Branch.BranchName,
+                Memo = warehouseIssue.Memo,
+                WarehouseIssueDetails = warehouseIssue.WarehouseIssueDetails.Select(detail => new WarehouseIssueDetailsHelper
+                {
+                    ItemId = detail.ItemId,
+                    ItemName = detail.Item.ItemName,
+                    Description = detail.Description,
+                    RequestedQuantity = _db.RequisitionDetails
+                        .Where(rd => rd.RequisitionId == warehouseIssue.RequisitionId && rd.ItemId == detail.ItemId)
+                        .Select(rd => rd.Quantity).FirstOrDefault(),
+                    PreviousIssuedQuantity = _db.WarehouseIssues
+                        .Where(wi => wi.RequisitionId == warehouseIssue.RequisitionId)
+                        .SelectMany(wi => wi.WarehouseIssueDetails)
+                        .Where(wid => wid.ItemId == detail.ItemId)
+                        .Sum(wid => (decimal?)wid.Quantity) - detail.Quantity ?? 0,
+                    IssuedQuantity = detail.Quantity,
+                    CostApplied = detail.CostApplied
+                }).ToList()
+            };
+
+            return View(warehouseIssueHelper);
+        }
+
+        [HttpPost]
+        public ActionResult EditIssue(WarehouseIssueHelper warehouseIssueHelper)
+        {
+            try
+            {
+                var requisition = _db.Requisitions.Find(warehouseIssueHelper.RequisitionId);
+                var existingIssue = _db.WarehouseIssues
+                    .Include(wi => wi.WarehouseIssueDetails)
+                    .FirstOrDefault(wi => wi.IssueId == warehouseIssueHelper.IssueId);
+
+                if (existingIssue == null)
+                {
+                    TempData["ErrorMessage"] = "Issue not found.";
+                    return Json(new { success = false,redirect = Url.Action("IssueList", "Warehouse") });
+                }
+                var isSettled = true;
+                foreach (var detail in warehouseIssueHelper.WarehouseIssueDetails)
+                {
+                    var existingDetail = existingIssue.WarehouseIssueDetails
+                        .FirstOrDefault(d => d.ItemId == detail.ItemId);
+
+                    if (existingDetail != null)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.FirstOrDefault(ws => ws.ItemId == detail.ItemId);
+                        if ((detail.PreviousIssuedQuantity + detail.IssuedQuantity) > detail.RequestedQuantity)
+                        {
+                            return Json(new { success = false, errorMessage = "'" + detail.ItemName + "' issue quantity cannot be more than " + (detail.RequestedQuantity - detail.PreviousIssuedQuantity) });
+                        }
+                        if (warehouseItemStock == null || detail.IssuedQuantity > (warehouseItemStock.Quantity + existingDetail.Quantity))
+                        {
+                            return Json(new { success = false, errorMessage = $"Insufficient stock for {detail.ItemName}. The available quantity is {warehouseItemStock.Quantity}" });
+                        }
+                        else if ((detail.PreviousIssuedQuantity + detail.IssuedQuantity) < detail.RequestedQuantity)
+                        {
+                            requisition.Status = "Partially Settled";
+                            isSettled = false;
+                        }
+
+                        // Revert stock to previous state before applying new changes
+                        var revertedQuantity = warehouseItemStock.Quantity + existingDetail.Quantity;
+                        var revertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (existingDetail.Quantity * existingDetail.CostApplied);
+                        var revertedPerUnitCost = revertedTotalCost / revertedQuantity;
+
+                        warehouseItemStock.Quantity = revertedQuantity;
+                        warehouseItemStock.CostPerUnit = revertedPerUnitCost;
+
+                        warehouseItemStock.Quantity -= detail.IssuedQuantity;
+                        var newTotalCost = detail.IssuedQuantity * detail.CostApplied;
+                        if (warehouseItemStock.Quantity <= 0)
+                        {
+                            warehouseItemStock.CostPerUnit = 0;
+                        }
+                        else
+                        {
+                            warehouseItemStock.CostPerUnit = ((revertedTotalCost - newTotalCost) / warehouseItemStock.Quantity);
+                        }
+
+                        existingDetail.Description = detail.Description;
+                        existingDetail.Quantity = detail.IssuedQuantity;
+                        existingDetail.CostApplied = warehouseItemStock.CostPerUnit;
+                    }
+                }
+                if (isSettled)
+                {
+                    requisition.Status = "Settled";
+                }
+                existingIssue.IssueDate = warehouseIssueHelper.IssueDate;
+                existingIssue.ReferenceNo = warehouseIssueHelper.ReferenceNo;
+                existingIssue.Memo = warehouseIssueHelper.Memo;
+                existingIssue.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                existingIssue.ModifiedAt = DateTime.Now;
+
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Issue updated successfully.";
+                return Json(new { success = true });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the issue.";
+                return Json(new { success = false, redirect = Url.Action("IssueList", "Warehouse") });
+            }
+        }
+        public ActionResult DeleteIssue(int issueId)
+        {
+            try
+            {
+                var warehouseIssue = _db.WarehouseIssues
+                    .Include(wi => wi.WarehouseIssueDetails)
+                    .FirstOrDefault(wi => wi.IssueId == issueId);
+
+                if (warehouseIssue == null)
+                {
+                    TempData["ErrorMessage"] = "Issue not found.";
+                    return RedirectToAction("IssueList");
+                }
+
+                var requisition = _db.Requisitions.FirstOrDefault(r => r.RequisitionId == warehouseIssue.RequisitionId);
+                if (requisition == null)
+                {
+                    TempData["ErrorMessage"] = "Associated requisition not found.";
+                    return RedirectToAction("IssueList");
+                }
+
+                foreach (var detail in warehouseIssue.WarehouseIssueDetails)
+                {
+                    var warehouseItemStock = _db.WarehouseItemStocks.FirstOrDefault(ws => ws.ItemId == detail.ItemId);
+
+                    if (warehouseItemStock != null)
+                    {
+                        // Revert stock by adding the issued quantity back
+                        var revertedQuantity = warehouseItemStock.Quantity + detail.Quantity;
+                        var revertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (detail.Quantity * detail.CostApplied);
+
+                        warehouseItemStock.Quantity = revertedQuantity;
+                        warehouseItemStock.CostPerUnit = revertedQuantity > 0 ? (revertedTotalCost / revertedQuantity) : 0;
+                    }
+                }
+
+                // Remove the issue and its details
+                _db.WarehouseIssueDetails.RemoveRange(warehouseIssue.WarehouseIssueDetails);
+                _db.WarehouseIssues.Remove(warehouseIssue);
+
+                // Update requisition status based on remaining issued quantities
+                var totalIssuedQuantity = _db.WarehouseIssues
+                    .Where(wi => wi.RequisitionId == warehouseIssue.RequisitionId && !(issueId == wi.IssueId))
+                    .SelectMany(wi => wi.WarehouseIssueDetails)
+                    .Sum(wid => (decimal?)wid.Quantity) ?? 0;
+
+                var totalRequestedQuantity = _db.RequisitionDetails
+                    .Where(rd => rd.RequisitionId == warehouseIssue.RequisitionId)
+                    .Sum(rd => rd.Quantity);
+
+                if (totalIssuedQuantity == 0)
+                {
+                    requisition.Status = "Pending";
+                }
+                else if (totalIssuedQuantity < totalRequestedQuantity)
+                {
+                    requisition.Status = "Partially Settled";
+                }
+                else
+                {
+                    requisition.Status = "Settled";
+                }
+
+                _db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Issue deleted successfully.";
+                return RedirectToAction("IssueList");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while deleting the issue.";
+                return RedirectToAction("IssueList");
+            }
+        }
+        [HttpPost]
+        public ActionResult DeleteSelectedIssues(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var issuesToDelete = _db.WarehouseIssues
+                        .Include(wi => wi.WarehouseIssueDetails)
+                        .Where(wi => selectedItems.Contains(wi.IssueId))
+                        .ToList();
+
+                    foreach (var issue in issuesToDelete)
+                    {
+                        var requisition = _db.Requisitions.FirstOrDefault(r => r.RequisitionId == issue.RequisitionId);
+                        if (requisition == null)
+                        {
+                            TempData["ErrorMessage"] = "Associated requisition not found.";
+                            return RedirectToAction("IssueList");
+                        }
+
+                        foreach (var detail in issue.WarehouseIssueDetails)
+                        {
+                            var warehouseItemStock = _db.WarehouseItemStocks.FirstOrDefault(ws => ws.ItemId == detail.ItemId);
+
+                            if (warehouseItemStock != null)
+                            {
+                                // Revert stock by adding the issued quantity back
+                                var revertedQuantity = warehouseItemStock.Quantity + detail.Quantity;
+                                var revertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) + (detail.Quantity * detail.CostApplied);
+
+                                warehouseItemStock.Quantity = revertedQuantity;
+                                warehouseItemStock.CostPerUnit = revertedQuantity > 0 ? (revertedTotalCost / revertedQuantity) : 0;
+                            }
+                        }
+
+                        // Remove the issue and its details
+                        _db.WarehouseIssueDetails.RemoveRange(issue.WarehouseIssueDetails);
+                        _db.WarehouseIssues.Remove(issue);
+
+                        // Update requisition status based on remaining issued quantities
+                        var totalIssuedQuantity = _db.WarehouseIssues
+                            .Where(wi => wi.RequisitionId == issue.RequisitionId && !selectedItems.Contains(wi.IssueId))
+                            .SelectMany(wi => wi.WarehouseIssueDetails)
+                            .Sum(wid => (decimal?)wid.Quantity) ?? 0;
+
+                        var totalRequestedQuantity = _db.RequisitionDetails
+                            .Where(rd => rd.RequisitionId == issue.RequisitionId)
+                            .Sum(rd => rd.Quantity);
+
+                        if (totalIssuedQuantity == 0)
+                        {
+                            requisition.Status = "Pending";
+                        }
+                        else if (totalIssuedQuantity < totalRequestedQuantity)
+                        {
+                            requisition.Status = "Partially Settled";
+                        }
+                        else
+                        {
+                            requisition.Status = "Settled";
+                        }
+                    }
+
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Issues deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "An Issue is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Issues.";
+                    }
+                }
+            }
+            return RedirectToAction("IssueList");
+        }
+
         public ActionResult RequisitionList(string search)
         {
             var requisition = _db.Requisitions.AsQueryable();

@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Ressential.Models.Branch>
+@{
+    ViewBag.Title = "Branch, Requisition, and Item Selection";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+
+}
+
+<div class="card">
+    <div class="card-body">
+        <h2 class="text-secondary"><b>Select Details</b></h2>
+
+
+        <!-- Branch Dropdown -->
+        <div class="form-group">
+            @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select Branch", new { @class = "form-control", id = "BranchId" })
+        </div>
+
+        <!-- Requisition Dropdown (Initially Hidden) -->
+        <div class="form-group" id="requisitiondiv" style="display: none;"></div>
+
+        <!-- Requisition Details Table (Initially Hidden) -->
+        <div class="form-group" id="detailsdiv" style="display: none;"></div>
+
+        <!-- Action Buttons -->
+        <div class="form-group" id="actionButtons" style="display: none;">
+            <form method="get" action="@Url.Action("CreateIssue", "Warehouse")">
+                <input type="hidden" id="RequisitionIdHidden" name="requisitionId" />
+                <button type="submit" id="createIssueBtn" class="btn btn-secondary ml-4">Create Issue</button>
+                <a href="@Url.Action("IssueList", "Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+    <script src="~/Scripts/jquery-3.7.0.min.js"></script>
+        <script src="~/Scripts/jquery.validate.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $("#BranchId").change(function () {
+                    var BranchId = $(this).val();
+
+                    if (BranchId) {
+                        $("#requisitiondiv").show(); // Show the requisition dropdown container
+
+                        // Fetch requisitions
+                        $.ajax({
+                            type: "GET",
+                            url: "/Warehouse/GetRequisitions",
+                            data: { BranchId: BranchId },
+                            success: function (data) {
+                                var requisitionDropdown = "<select id='RequisitionId' class='form-control'>";
+                                requisitionDropdown += "<option value=''>Select Requisition</option>";
+
+                                $.each(data, function (index, requisition) {
+                                    requisitionDropdown += "<option value='" + requisition.RequisitionId + "'>" + requisition.RequisitionNo + "</option>";
+                                });
+
+                                requisitionDropdown += "</select>";
+                                $("#requisitiondiv").html(requisitionDropdown);
+
+                                // Bind change event for the dynamically created requisition dropdown
+                                $("#RequisitionId").change(function () {
+                                    var RequisitionId = $(this).val();
+
+                                    if (RequisitionId) {
+                                        $("#detailsdiv").show(); // Show the details container
+                                        $("#actionButtons").show(); // Show the action buttons
+
+                                        // Set the hidden field value for the requisition ID
+                                        $("#RequisitionIdHidden").val(RequisitionId);
+
+                                        // Fetch requisition details
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/Warehouse/GetRequisitionDetails",
+                                            data: { RequisitionId: RequisitionId },
+                                            success: function (data) {
+                                                var detailsTable = "<table class='table table-bordered'>";
+                                                detailsTable += "<thead><tr><th>Item Name</th><th>Description</th><th>Requested Quantity</th><th>Issued Quantity</th><th>Remaining Quantity</th></tr></thead><tbody>";
+
+                                                $.each(data, function (index, detail) {
+                                                    var remainingQuantity = detail.Quantity - detail.IssuedQuantity;
+                                                    var description = detail.Description ? detail.Description : "-";
+
+                                                    detailsTable += "<tr>";
+                                                    detailsTable += "<td>" + detail.ItemName + "</td>";
+                                                    detailsTable += "<td>" + description + "</td>";
+                                                    detailsTable += "<td>" + detail.Quantity + "</td>";
+                                                    detailsTable += "<td>" + detail.IssuedQuantity + "</td>";
+                                                    detailsTable += "<td>" + remainingQuantity + "</td>";
+                                                    detailsTable += "</tr>";
+                                                });
+
+                                                detailsTable += "</tbody></table>";
+                                                $("#detailsdiv").html(detailsTable); // Populate the details table
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.log("Error: " + error);
+                                            }
+                                        });
+                                    } else {
+                                        $("#detailsdiv").empty().hide(); // Hide the details table
+                                        $("#actionButtons").hide(); // Hide action buttons
+                                    }
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error: " + error);
+                            }
+                        });
+                    } else {
+                        // If no branch is selected, hide the requisition and details sections
+                        $("#requisitiondiv").empty().hide();
+                        $("#detailsdiv").empty().hide();
+                        $("#actionButtons").hide(); // Hide action buttons
+                    }
+                });
+            });
+        </script>

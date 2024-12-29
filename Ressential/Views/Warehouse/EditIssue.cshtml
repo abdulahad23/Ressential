@@ -1,11 +1,11 @@
 ﻿@model Ressential.Models.WarehouseIssueHelper
 
 @{
-    ViewBag.Title = "CreateIssue";
+    ViewBag.Title = "EditIssue";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
-@using (Html.BeginForm("CreateIssue", "Warehouse", FormMethod.Post))
+@using (Html.BeginForm("EditIssue", "Warehouse", FormMethod.Post))
 {
     <div class="row">
         <div class="col-12 grid-margin">
@@ -13,8 +13,9 @@
                 <div class="card-body">
                     <div class="alert alert-danger d-none" id="error-message">
                     </div>
-                    <h2 class="text-secondary"><b>Create Issue</b></h2>
+                    <h2 class="text-secondary"><b>Update Issue</b></h2>
                     <div class="row">
+                        @Html.HiddenFor(model => model.IssueId)
                         @Html.HiddenFor(model => model.BranchID)
                         @Html.HiddenFor(model => model.RequisitionId)
                         @Html.HiddenFor(model => model.Status)
@@ -90,8 +91,8 @@
                                                 <td class="tbl-min-width-4 col-1 mb-3 mt-3">
                                                     <div class="form-floating">
                                                         @Html.TextBox("RemainingQuantity_" + i,
-                                                                           warehouseIssueDetailsList[i].RequestedQuantity - warehouseIssueDetailsList[i].PreviousIssuedQuantity,
-                                                                           new { @class = "form-control remaining-quantity", @placeholder = "Remaining Qty", @readonly = "readonly" })
+                                                                                warehouseIssueDetailsList[i].RequestedQuantity - warehouseIssueDetailsList[i].PreviousIssuedQuantity,
+                                                                                new { @class = "form-control remaining-quantity", @placeholder = "Remaining Qty", @readonly = "readonly" })
                                                         <label>Remaining Qty</label>
                                                     </div>
                                                 </td>
@@ -112,10 +113,10 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="col-sm-9">
-                                            <button id="CreateIssue" type="button" class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Save
+                                            <button id="EditIssue" type="button" class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                Update
                                             </button>
-                                            <a href="@Url.Action("RequisitionList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            <a href="@Url.Action("IssueList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
                                         </div>
                                     </div>
                                 </div>
@@ -130,6 +131,7 @@
 
 <script>
     $(document).ready(function () {
+
         $(document).on('input', '.form-control[name*=".IssuedQuantity"]', function () {
             let $row = $(this).closest('tr'); // Get the row of the changed input
             let requestedQuantity = parseFloat($row.find('input[name*=".RequestedQuantity"]').val()) || 0;
@@ -143,10 +145,11 @@
             $row.find('.remaining-quantity').val(remainingQuantity.toFixed(2));
         });
 
-        $('#CreateIssue').on('click', function () {
+        $('#EditIssue').on('click', function () {
             // Initialize an object to hold all data
             let warehouseIssue = {
                 WarehouseIssueDetails: [],
+                IssueId: $('#IssueId').val(),
                 IssueDate: $('#IssueDate').val(),
                 ReferenceNo: $('#ReferenceNo').val(),
                 BranchID: $('#BranchID').val(),
@@ -164,6 +167,8 @@
 
                 // Get the selected item from the dropdown
                 rowData.ItemName = $(this).find('input[name*=".ItemName"]').val();
+
+                rowData.CostApplied = $(this).find('input[name*=".CostApplied"]').val();
 
                 // Get the description
                 rowData.Description = $(this).find('input[name*=".Description"]').val();
@@ -186,7 +191,7 @@
 
             // Example: you might want to send this data to a server
             $.ajax({
-                url: '@Url.Action("CreateIssue", "Warehouse")',
+                url: '@Url.Action("EditIssue", "Warehouse")',
                 method: 'POST',
                 data: JSON.stringify(warehouseIssue),
                 contentType: 'application/json',
@@ -205,7 +210,7 @@
                     }
                 },
                 error: function () {
-                    alert("An error occurred while creating the issue.");
+                    alert("An error occurred while updating the issue.");
                 }
             });
         });

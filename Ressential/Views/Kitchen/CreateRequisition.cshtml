@@ -146,54 +146,55 @@
             });
         });
 
-    $('#CreateRequisition').on('click', function () {
+$('#CreateRequisition').on('click', function () {
+    let selectedItems = [];
+    let hasDuplicate = false;
 
-        debugger;
+    // Validate for duplicate items
+    $('#itemsTableBody .item-row').each(function () {
+        let selectedItem = $(this).find('select').val();
+        if (selectedItem !== "0") { // Skip the "Select Item" placeholder
+            if (selectedItems.includes(selectedItem)) {
+                hasDuplicate = true;
+                alert("Duplicate items are not allowed in the requisition.");
+                return false; // Exit the loop
+            }
+            selectedItems.push(selectedItem);
+        }
+    });
 
-        // Initialize an object to hold all data
-         let requisition = {
-            RequisitionDetails: [],
-            requisitionDate: $('#RequisitionDate').val(),
-            description: $('#Description').val()
-        };
+    if (hasDuplicate) {
+        return; // Prevent form submission if duplicates are found
+    }
 
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
+    // Proceed with creating the requisition if no duplicates
+    let requisition = {
+        RequisitionDetails: [],
+        requisitionDate: $('#RequisitionDate').val(),
+        description: $('#Description').val()
+    };
 
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
+    $('#itemsTableBody .item-row').each(function () {
+        let rowData = {};
+        rowData.ItemId = $(this).find('select').val();
+        rowData.Description = $(this).find('input[name="item.Description"]').val();
+        rowData.Quantity = $(this).find('input[name="item.Quantity"]').val();
+        requisition.RequisitionDetails.push(rowData);
+    });
 
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
-
-            // Get the quantity
-            rowData.Quantity = $(this).find('input[name="item.Quantity"]').val();
-
-            // Add the row data to the purchaseData.items array
-            requisition.RequisitionDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-        console.log(requisition);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateRequisition", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(requisition),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("RequisitionList", "Kitchen")'
-                }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
-                }
-             }
-         });
-     });
+    $.ajax({
+        url: '@Url.Action("CreateRequisition", "Kitchen")',
+        method: 'POST',
+        data: JSON.stringify(requisition),
+        contentType: 'application/json',
+        success: function (response) {
+            if (response == "0") {
+                window.location.href = '@Url.Action("RequisitionList", "Kitchen")';
+            } else if (response == "1") {
+                window.location.href = '@Url.Action("Index", "Error")';
+            }
+        }
+    });
+});
 </script>
 

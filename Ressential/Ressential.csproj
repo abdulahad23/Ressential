@@ -285,6 +285,7 @@
     <Compile Include="Models\Vendor.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\VendorPartial.cs" />
     <Compile Include="Models\WarehouseIssue.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -823,6 +824,8 @@
     <Content Include="Views\Account\VerifyOtp.cshtml" />
     <Content Include="Views\Kitchen\AccountSetting.cshtml" />
     <Content Include="Views\Warehouse\AccountSetting.cshtml" />
+    <Content Include="Views\Warehouse\EditIssue.cshtml" />
+    <Content Include="Views\Warehouse\CreateRequisitionIssue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

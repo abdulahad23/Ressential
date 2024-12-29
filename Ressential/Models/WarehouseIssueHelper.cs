@@ -9,6 +9,7 @@ namespace Ressential.Models
     public class WarehouseIssueHelper
     {
         public System.DateTime IssueDate { get; set; }
+        public int IssueId { get; set; }
         public string IssueNo { get; set; }
         public string ReferenceNo { get; set; }
         public int RequisitionId { get; set; }
