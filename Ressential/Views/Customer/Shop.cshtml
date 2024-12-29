@@ -157,7 +157,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
-    $(document).ready(function () {
+   $(document).ready(function () {
+    function attachAddToCartHandler() {
         $(".cart-box").off("click").on("click", function (e) {
             e.preventDefault();
             var productId = $(this).closest("form").find("input[name='productId']").val();
@@ -181,56 +182,68 @@
                     } else {
                         $(".cart-go-to").hide();
                     }
+                    // Close the modal if open
+                    if ($("#productModal").hasClass("show")) {
+                        $("#productModal").removeClass("show");
+                        $("body").removeClass("modal-open");
+                    }
                 },
                 error: function () {
                     alert("There was an error adding the product to the cart.");
                 }
             });
         });
+    }
 
-        $(".cart-go-to").off("click").on("click", function () {
-            window.location.href = '@Url.Action("Cart", "Customer")';
-        });
+    attachAddToCartHandler();
 
-        // Handle product link click to open modal
-        $(".product-link").off("click").on("click", function (e) {
-            e.preventDefault();
-            var productId = $(this).data("product-id");
-            var productName = $(this).data("product-name");
-            var productDescription = $(this).data("product-description");
-            var productPrice = parseFloat($(this).data("product-price"));
-            var productImage = $(this).data("product-image");
+    $(".cart-go-to").off("click").on("click", function () {
+        window.location.href = '@Url.Action("Cart", "Customer")';
+    });
 
-            var productDetailsHtml = `
-                <img class="img-fluid" src="${productImage}" style="width: 300px; height: auto; margin: 0 auto; display: block;" alt="Product Image" />
-                <h3>${productName}</h3>
-                <p>${productDescription}</p>
-                <p class="price"><span>${productPrice.toFixed(2)}</span></p>
-                <form action="@Url.Action("AddToCart", "Customer")" method="post">
-                    <input type="hidden" name="productId" value="${productId}" />
-                    <button type="submit" class="btn btn-primary cart-box" style="border-radius: 10px; padding: 5px 10px;">
-                        <i class="ion-ios-cart"></i>
-                        <span>Add to Cart</span>
-                    </button>
-                </form>
-            `;
-            $("#productDetails").html(productDetailsHtml);
-            $("#productModal").addClass("show");
-            $("body").addClass("modal-open");
-        });
+    // Handle product link click to open modal
+    $(".product-link").off("click").on("click", function (e) {
+        e.preventDefault();
+        var productId = $(this).data("product-id");
+        var productName = $(this).data("product-name");
+        var productDescription = $(this).data("product-description");
+        var productPrice = parseFloat($(this).data("product-price"));
+        var productImage = $(this).data("product-image");
 
-        // Close modal when the close button is clicked
-        $("#closeProductModal").click(function () {
+        var productDetailsHtml = `
+            <img class="img-fluid" src="${productImage}" style="width: 300px; height: auto; margin: 0 auto; display: block;" alt="Product Image" />
+            <h3>${productName}</h3>
+            <p>${productDescription}</p>
+            <p class="price"><span>${productPrice.toFixed(2)}</span></p>
+            <form action="@Url.Action("AddToCart", "Customer")" method="post">
+                <input type="hidden" name="productId" value="${productId}" />
+                <button type="submit" class="btn btn-primary cart-box" style="border-radius: 10px; padding: 5px 10px;">
+                    <i class="ion-ios-cart"></i>
+                    <span>Add to Cart</span>
+                </button>
+            </form>
+        `;
+        $("#productDetails").html(productDetailsHtml);
+        $("#productModal").addClass("show");
+        $("body").addClass("modal-open");
+
+        // Attach event handler to the dynamically added button
+        attachAddToCartHandler();
+    });
+
+    // Close modal when the close button is clicked
+    $("#closeProductModal").click(function () {
+        $("#productModal").removeClass("show");
+        $("body").removeClass("modal-open");
+    });
+
+    // Close modal when clicking outside the modal content
+    $(window).click(function (e) {
+        if ($(e.target).is("#productModal")) {
             $("#productModal").removeClass("show");
             $("body").removeClass("modal-open");
-        });
-
-        // Close modal when clicking outside the modal content
-        $(window).click(function (e) {
-            if ($(e.target).is("#productModal")) {
-                $("#productModal").removeClass("show");
-                $("body").removeClass("modal-open");
-            }
-        });
+        }
     });
+});
+
 </script>

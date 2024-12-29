@@ -1,8 +1,9 @@
 ﻿@model Ressential.Models.Vendor
 
-@{ ViewBag.Title = "CreateVendor";
-    Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
-
+@{
+    ViewBag.Title = "CreateVendor";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
 
 @using (Html.BeginForm("CreateVendor", "Warehouse", FormMethod.Post))
 {
@@ -11,8 +12,6 @@
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-secondary"><b>Create Vendor</b></h2>
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
@@ -21,7 +20,6 @@
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", @placeholder = "Company Name" })
@@ -29,15 +27,13 @@
                                 @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @placeholder = "Email" })
+                                @Html.TextBoxFor(model => model.Email, new { @class = "form-control", @placeholder = "Email", @type = "email" })
                                 <label for="floatingInput">Email</label>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Contact, new { @class = "form-control", @placeholder = "Contact" })
@@ -45,7 +41,6 @@
                                 @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Address, new { @class = "form-control", @placeholder = "Address" })
@@ -53,7 +48,6 @@
                                 @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.City, new { @class = "form-control", @placeholder = "City" })
@@ -61,7 +55,6 @@
                                 @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Country, new { @class = "form-control", @placeholder = "Country" })
@@ -69,7 +62,6 @@
                                 @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.PostalCode, new { @class = "form-control", @placeholder = "Postal Code" })
@@ -77,18 +69,22 @@
                                 @Html.ValidationMessageFor(model => model.PostalCode, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                         <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
-                                    <a href="@Url.Action("VendorList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                            <a href="@Url.Action("VendorList", "Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-             </div>
+            </div>
         </div>
     </div>
 }
+

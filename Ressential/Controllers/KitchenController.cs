@@ -1814,7 +1814,68 @@ namespace Ressential.Controllers
         }
         public ActionResult CreateOrder()
         {
-            return View();
+
+            var purchase = new Purchase
+            {
+                PurchaseDetails = new List<PurchaseDetail>
+                {
+                    new PurchaseDetail()
+                }
+
+            };
+            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
+            ViewBag.Vendors = _db.Vendors.ToList();
+
+            return View(purchase);
+        }
+        [HttpPost]
+        public ActionResult CreateOrder(Order order)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    int nextOrderNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.Orders.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextOrderNumber = _db.Orders
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.OrderNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    order.OrderNo = $"ORD-{datePart}{nextOrderNumber:D4}";
+                    order.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    order.CreatedAt = DateTime.Now;
+                    order.Status = "Preparing";
+                    _db.Orders.Add(order);
+                    _db.SaveChanges();
+
+                    //foreach (var orderDetails in order.OrderDetails)
+                    //{
+                    //    var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
+                    //    decimal currentQuantity = currentItemStock.Quantity;
+                    //    currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
+                    //    currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice)) / (currentItemStock.Quantity)
+                    //    _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
+                    //}
+                    _db.SaveChanges();
+
+                    return Json(0, JsonRequestBehavior.AllowGet);
+                }
+                ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
+                ViewBag.Items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
+                return View(order);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if needed
+                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                return RedirectToAction("Index", "Error");
+            }
         }
         public ActionResult OrderReturnList()
         {

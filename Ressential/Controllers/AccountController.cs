@@ -12,8 +12,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Ressential.Models;
 using Ressential.Utilities;
-using System.Net;
-using System.Net.Mail;
 
 namespace Ressential.Controllers
 {
@@ -76,7 +74,7 @@ namespace Ressential.Controllers
                 claims.Add(new Claim(ClaimTypes.Sid, user.UserId.ToString()));
                 claims.Add(new Claim("IsActive", user.IsActive.ToString()));
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
-                claims.Add(new Claim("ProfileImage", user.ProfileImage));
+                claims.Add(new Claim("ProfileImage", user.ProfileImage ?? string.Empty));
 
                 if (defaultBranchId != 0)
                 {

@@ -429,7 +429,7 @@ CREATE TABLE Orders (
     CustomerId INT NULL,
     PaymentMethod NVARCHAR(20) NOT NULL,
     OrderTotal INT NOT NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('In-process', 'Completed', 'Cancelled')),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Confirmed', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled')),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),

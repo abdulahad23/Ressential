@@ -16,7 +16,7 @@ namespace Ressential.Models
     {
         [Required]
         [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
-        [RegularExpression(@"^(?![.,'""\s]+$)[a-zA-Z0-9.,'""\s]+$", ErrorMessage = "Name cannot consist only of special characters and must include at least one alphanumeric character.")]
+        [RegularExpression(@"^(?![.,'""\s]+$)[a-zA-Z0-9.,'""\s]+$", ErrorMessage = "Name cannot consist only of special characters.")]
         public string Name { get; set; }
 
         [StringLength(100, ErrorMessage = "Company Name cannot exceed 100 characters")]

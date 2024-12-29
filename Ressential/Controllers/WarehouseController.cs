@@ -2039,7 +2039,7 @@ namespace Ressential.Controllers
             try
             {
                 // Check if all issued quantities are 0 or null
-                if (warehouseIssueHelper.WarehouseIssueDetails.All(item => item.IssuedQuantity == 0 || item.IssuedQuantity == null))
+                if (warehouseIssueHelper.WarehouseIssueDetails.All(item => item.IssuedQuantity == 0))
                 {
                     return Json(new { success = false, errorMessage = "Items issue quantity cannot be 0" });
                 }
