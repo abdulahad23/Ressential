@@ -15,6 +15,24 @@
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
   </EntityType>
+  <EntityType Name="Area">
+    <Key>
+      <PropertyRef Name="AreaId" />
+    </Key>
+    <Property Name="AreaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AreaName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="CityId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BranchArea">
+    <Key>
+      <PropertyRef Name="BranchAreaId" />
+    </Key>
+    <Property Name="BranchAreaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="BranchId" Type="int" Nullable="false" />
+    <Property Name="AreaId" Type="int" Nullable="false" />
+    <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="Branches">
     <Key>
       <PropertyRef Name="BranchId" />
@@ -48,6 +66,14 @@
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
   </EntityType>
+  <EntityType Name="City">
+    <Key>
+      <PropertyRef Name="CityId" />
+    </Key>
+    <Property Name="CityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CityName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="CountryId" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="ConsumeItemDetails">
     <Key>
       <PropertyRef Name="ConsumeItemDetailId" />
@@ -71,6 +97,13 @@
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="Country">
+    <Key>
+      <PropertyRef Name="CountryId" />
+    </Key>
+    <Property Name="CountryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="CountryName" Type="nvarchar" MaxLength="100" Nullable="false" />
   </EntityType>
   <EntityType Name="Customers">
     <Key>
@@ -167,7 +200,7 @@
     <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="CustomerId" Type="int" />
     <Property Name="PaymentMethod" Type="nvarchar" MaxLength="20" Nullable="false" />
-    <Property Name="OrderTotal" Type="int" Nullable="false" />
+    <Property Name="OrderTotal" Type="decimal" Precision="18" Scale="0" Nullable="false" />
     <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
     <Property Name="CreatedBy" Type="int" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -557,6 +590,54 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Area__CityId__0880433F">
+    <End Role="City" Type="Self.City" Multiplicity="1" />
+    <End Role="Area" Type="Self.Area" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="City">
+        <PropertyRef Name="CityId" />
+      </Principal>
+      <Dependent Role="Area">
+        <PropertyRef Name="CityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BranchAre__AreaI__0D44F85C">
+    <End Role="Area" Type="Self.Area" Multiplicity="1" />
+    <End Role="BranchArea" Type="Self.BranchArea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Area">
+        <PropertyRef Name="AreaId" />
+      </Principal>
+      <Dependent Role="BranchArea">
+        <PropertyRef Name="AreaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BranchAre__Branc__0C50D423">
+    <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
+    <End Role="BranchArea" Type="Self.BranchArea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Branches">
+        <PropertyRef Name="BranchId" />
+      </Principal>
+      <Dependent Role="BranchArea">
+        <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__BranchAre__Creat__0E391C95">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="BranchArea" Type="Self.BranchArea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="BranchArea">
+        <PropertyRef Name="CreatedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__Branches__Create__5535A963">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="Branches" Type="Self.Branches" Multiplicity="*" />
@@ -626,6 +707,18 @@
       </Principal>
       <Dependent Role="BranchItems">
         <PropertyRef Name="ModifiedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__City__CountryId__05A3D694">
+    <End Role="Country" Type="Self.Country" Multiplicity="1" />
+    <End Role="City" Type="Self.City" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Country">
+        <PropertyRef Name="CountryId" />
+      </Principal>
+      <Dependent Role="City">
+        <PropertyRef Name="CountryId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1681,10 +1774,14 @@
   </Association>
   <EntityContainer Name="DB_RessentialModelStoreContainer">
     <EntitySet Name="Accounts" EntityType="Self.Accounts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Area" EntityType="Self.Area" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BranchArea" EntityType="Self.BranchArea" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Branches" EntityType="Self.Branches" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="BranchItems" EntityType="Self.BranchItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="City" EntityType="Self.City" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ConsumeItemDetails" EntityType="Self.ConsumeItemDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ConsumeItems" EntityType="Self.ConsumeItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Country" EntityType="Self.Country" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
@@ -1731,6 +1828,22 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="Accounts" EntitySet="Accounts" />
     </AssociationSet>
+    <AssociationSet Name="FK__Area__CityId__0880433F" Association="Self.FK__Area__CityId__0880433F">
+      <End Role="City" EntitySet="City" />
+      <End Role="Area" EntitySet="Area" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BranchAre__AreaI__0D44F85C" Association="Self.FK__BranchAre__AreaI__0D44F85C">
+      <End Role="Area" EntitySet="Area" />
+      <End Role="BranchArea" EntitySet="BranchArea" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BranchAre__Branc__0C50D423" Association="Self.FK__BranchAre__Branc__0C50D423">
+      <End Role="Branches" EntitySet="Branches" />
+      <End Role="BranchArea" EntitySet="BranchArea" />
+    </AssociationSet>
+    <AssociationSet Name="FK__BranchAre__Creat__0E391C95" Association="Self.FK__BranchAre__Creat__0E391C95">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="BranchArea" EntitySet="BranchArea" />
+    </AssociationSet>
     <AssociationSet Name="FK__Branches__Create__5535A963" Association="Self.FK__Branches__Create__5535A963">
       <End Role="Users" EntitySet="Users" />
       <End Role="Branches" EntitySet="Branches" />
@@ -1754,6 +1867,10 @@
     <AssociationSet Name="FK__BranchIte__Modif__5DCAEF64" Association="Self.FK__BranchIte__Modif__5DCAEF64">
       <End Role="Users" EntitySet="Users" />
       <End Role="BranchItems" EntitySet="BranchItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__City__CountryId__05A3D694" Association="Self.FK__City__CountryId__05A3D694">
+      <End Role="Country" EntitySet="Country" />
+      <End Role="City" EntitySet="City" />
     </AssociationSet>
     <AssociationSet Name="FK__ConsumeIt__Branc__1CBC4616" Association="Self.FK__ConsumeIt__Branc__1CBC4616">
       <End Role="Branches" EntitySet="Branches" />

@@ -162,17 +162,29 @@
     <Compile Include="Models\Account.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Area.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Branch.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BranchArea.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BranchItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Cart.cs" />
+    <Compile Include="Models\City.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ConsumeItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ConsumeItemDetail.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Country.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Customer.cs">
@@ -200,6 +212,7 @@
       <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\OnlineOrder.cs" />
+    <Compile Include="Models\IssueListViewModel.cs" />
     <Compile Include="Models\OnlineOrderDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -242,7 +255,6 @@
     <Compile Include="Models\PurchaseDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\IssueListViewModel.cs" />
     <Compile Include="Models\PurchaseReturn.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -826,6 +838,8 @@
     <Content Include="Views\Warehouse\AccountSetting.cshtml" />
     <Content Include="Views\Warehouse\EditIssue.cshtml" />
     <Content Include="Views\Warehouse\CreateRequisitionIssue.cshtml" />
+    <Content Include="Views\Kitchen\OrderDetail.cshtml" />
+    <Content Include="Views\Kitchen\EditUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -19,6 +19,7 @@ namespace Ressential.Models
         {
             this.Accounts = new HashSet<Account>();
             this.Accounts1 = new HashSet<Account>();
+            this.BranchAreas = new HashSet<BranchArea>();
             this.Branches = new HashSet<Branch>();
             this.Branches1 = new HashSet<Branch>();
             this.BranchItems = new HashSet<BranchItem>();
@@ -73,6 +74,8 @@ namespace Ressential.Models
         public virtual ICollection<Account> Accounts { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Account> Accounts1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchArea> BranchAreas { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Branch> Branches { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

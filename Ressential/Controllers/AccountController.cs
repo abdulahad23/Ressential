@@ -48,10 +48,12 @@ namespace Ressential.Controllers
             else if(user != null && user.IsActive == false)
             {
                 ModelState.AddModelError("", "Your account is deactivated. Please contact your administrator.");
+                TempData["ErrorMessage"] = "Your account is deactivated. Please contact your administrator.";
             }
             else
             {
                 ModelState.AddModelError("", "Invalid email or password.");
+                TempData["ErrorMessage"] = "Invalid email or password.";
             }
 
             return View();
@@ -160,6 +162,14 @@ namespace Ressential.Controllers
                 return View();
             }
 
+            // Check if the email exists in the database
+            var user = _db.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Email not found.";
+                return View();
+            }
+
             // Generate OTP
             Random random = new Random();
             otpCode = random.Next(100000, 999999).ToString();
@@ -179,6 +189,7 @@ namespace Ressential.Controllers
 
             return RedirectToAction("VerifyOtp");
         }
+
 
         public ActionResult VerifyOtp()
         {

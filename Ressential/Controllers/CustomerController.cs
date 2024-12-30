@@ -241,7 +241,6 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult PlaceOrder(string paymentMethod, bool saveDetails, string streetAddress, string city, string phone)
         {
-
             try
             {
                 // Get cart items from session
@@ -253,37 +252,45 @@ namespace Ressential.Controllers
                     return RedirectToAction("Cart");
                 }
 
+                decimal totalAmount = cartList.Sum(item => item.TotalPrice) ?? 0;
+                decimal deliveryCharges = OnlineOrder.deliveryCharges;
+                totalAmount += deliveryCharges;
 
-                decimal TotalAmount = cartList.Sum(item => item.TotalPrice) ?? 0;
-                var lastOrder = _db.Orders
-                .OrderByDescending(o => o.OrderId)
-                .FirstOrDefault();
+                var branchId = Convert.ToInt32(Session["BranchId"]);
+                var customerId = Convert.ToInt32(Session["CustomerId"]);
 
                 int nextOrderNumber = 1;
 
-                if (lastOrder != null)
+                // Check if there are any existing orders for the current branch
+                if (_db.Orders.Any(o => o.BranchId == branchId))
                 {
-                    // Increment the order ID based on the last one
-                    nextOrderNumber = lastOrder.OrderId + 1;
+                    nextOrderNumber = _db.Orders
+                        .Where(o => o.BranchId == branchId)
+                        .AsEnumerable() // Force in-memory execution
+                        .Select(o =>
+                        {
+                            int orderNo;
+                            return int.TryParse(o.OrderNo, out orderNo) ? orderNo : 0;
+                        })
+                        .Max() + 1;
                 }
 
-                // Format the new OrderID with the prefix "RS" and zero-padded number
-                string newOrderNo = $"OD-{nextOrderNumber:D8}";
+                // Format OrderNo with a 5-digit sequence
+                string newOrderNo = nextOrderNumber.ToString("D5");
 
                 // Save order items (cart items) to the OrderItems table
-
                 var orderItem = new Order
                 {
                     OrderNo = newOrderNo,
                     PaymentMethod = paymentMethod,
                     OrderDate = DateTime.Now,
                     OrderType = "Online",
-                    BranchId = 1,
-                    CustomerId = 1,
-                    Status = "In-process",
+                    BranchId = branchId,
+                    CustomerId = customerId,
+                    Status = "Pending",
+                    OrderTotal = totalAmount,
                     OrderDetails = new List<OrderDetail>()
                 };
-
 
                 foreach (var cartItem in cartList)
                 {
@@ -295,13 +302,13 @@ namespace Ressential.Controllers
                             ProductPrice = (decimal)cartItem.Price,
                             ProductQuantity = cartItem.Quantity,
                         }
-                        );
+                    );
                 }
 
                 if (saveDetails)
                 {
                     // Update the customer's details in the database
-                    var customer = _db.Customers.Find(Session["CustomerId"]);
+                    var customer = _db.Customers.Find(customerId);
                     if (customer != null)
                     {
                         customer.Address = streetAddress;
@@ -312,8 +319,10 @@ namespace Ressential.Controllers
 
                 _db.Orders.Add(orderItem);
                 _db.SaveChanges();
-                //// Clear the session cart after order is placed
+
+                // Clear the session cart after order is placed
                 //Session["Cart"] = null;
+
                 // Redirect to the Order Confirmation page or any other confirmation view
                 return Json(new { success = true, message = "Your order has been placed successfully!" });
             }
@@ -321,8 +330,9 @@ namespace Ressential.Controllers
             {
                 return Json(new { success = false, message = "An error occurred while placing the order." });
             }
-
         }
+
+
         public ActionResult BackToHome() {
             Session["Cart"] = null;
             return View("Index");

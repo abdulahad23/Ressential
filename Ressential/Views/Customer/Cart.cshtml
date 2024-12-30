@@ -92,7 +92,7 @@
                         <span id="cartTotal">Rs @ViewBag.CartTotal.ToString("0.00")</span> <!-- Display the total -->
                     </p>
                 </div>
-                <p><a href="@Url.Action("Checkout", "Customer")" class="btn btn-secondary py-3 px-4">Proceed to Checkout</a></p>
+                <p><a href="javascript:void(0);" onclick="proceedToCheckout()" class="btn btn-secondary py-3 px-4">Proceed to Checkout</a></p>
                 <p><a href="@Url.Action("EmptyCart", "Customer")" class="btn btn-outline-dark py-3 px-4" id="empty-cart">Clear Cart</a></p>
 
             </div>
@@ -118,7 +118,6 @@
         </div>
     </div>
 </section>
-
 
 <script>
     window.addEventListener('pageshow', function (event) {
@@ -207,6 +206,15 @@ function updateCart(productId, quantity) {
             alert("Error updating cart.");
         }
     });
+}
+
+function proceedToCheckout() {
+    var cartCount = @((Session["Cart"] as List<Cart>)?.Count ?? 0);
+    if (cartCount === 0) {
+        alert("Your cart is empty. Please add items to your cart before proceeding to checkout.");
+    } else {
+        window.location.href = '@Url.Action("Checkout", "Customer")';
+    }
 }
 
 </script>

@@ -17,6 +17,7 @@ namespace Ressential.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Branch()
         {
+            this.BranchAreas = new HashSet<BranchArea>();
             this.BranchItems = new HashSet<BranchItem>();
             this.ConsumeItems = new HashSet<ConsumeItem>();
             this.Orders = new HashSet<Order>();
@@ -43,6 +44,8 @@ namespace Ressential.Models
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BranchArea> BranchAreas { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

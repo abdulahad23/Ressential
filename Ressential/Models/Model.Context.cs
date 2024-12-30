@@ -26,10 +26,14 @@ namespace Ressential.Models
         }
     
         public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<Area> Areas { get; set; }
+        public virtual DbSet<BranchArea> BranchAreas { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
         public virtual DbSet<BranchItem> BranchItems { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
         public virtual DbSet<ConsumeItemDetail> ConsumeItemDetails { get; set; }
         public virtual DbSet<ConsumeItem> ConsumeItems { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<ItemCategory> ItemCategories { get; set; }
         public virtual DbSet<Item> Items { get; set; }

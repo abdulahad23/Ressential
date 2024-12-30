@@ -30,7 +30,7 @@ namespace Ressential.Models
         public int BranchId { get; set; }
         public Nullable<int> CustomerId { get; set; }
         public string PaymentMethod { get; set; }
-        public int OrderTotal { get; set; }
+        public decimal OrderTotal { get; set; }
         public string Status { get; set; }
         public Nullable<int> CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }

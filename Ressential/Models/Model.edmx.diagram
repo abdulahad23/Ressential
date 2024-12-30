@@ -4,52 +4,60 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="053c540d0ce94695b9a2eb82e8c3826a" Name="Diagram1">
-        <EntityTypeShape EntityType="DB_RessentialModel.Account" Width="1.5" PointX="7.5" PointY="36.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Branch" Width="1.5" PointX="7.5" PointY="40.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.BranchItem" Width="1.5" PointX="9.75" PointY="44.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItemDetail" Width="1.5" PointX="21.75" PointY="52" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItem" Width="1.5" PointX="12.75" PointY="43.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Customer" Width="1.5" PointX="7.5" PointY="32.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ItemCategory" Width="1.5" PointX="13.25" PointY="63.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Item" Width="1.5" PointX="15.5" PointY="52.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.OnlineOrderDetail" Width="1.5" PointX="12" PointY="33.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.OrderDetail" Width="1.5" PointX="21" PointY="43.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturnDetail" Width="1.5" PointX="20.25" PointY="40" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturn" Width="1.5" PointX="18" PointY="36.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Order" Width="1.5" PointX="9.75" PointY="38.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PaymentApply" Width="1.5" PointX="18" PointY="57.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucherAttachment" Width="1.5" PointX="12" PointY="60.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucher" Width="1.5" PointX="9.75" PointY="52" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Permission" Width="1.5" PointX="0.75" PointY="45" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ProductCategory" Width="1.5" PointX="7.5" PointY="54.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ProductItemDetail" Width="1.5" PointX="21" PointY="55.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Product" Width="1.5" PointX="15.75" PointY="46.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseDetail" Width="1.5" PointX="20.75" PointY="58.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseReturn" Width="1.5" PointX="9.75" PointY="57.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseReturnDetail" Width="1.5" PointX="23.75" PointY="55.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Purchase" Width="1.5" PointX="12.75" PointY="55.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptApply" Width="1.5" PointX="18" PointY="54.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucherAttachment" Width="1.5" PointX="15" PointY="60.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucher" Width="1.5" PointX="12.75" PointY="50" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.RequisitionDetail" Width="1.5" PointX="18.75" PointY="50.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Requisition" Width="1.5" PointX="12.75" PointY="38" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStock" Width="1.5" PointX="15.75" PointY="41" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStockDetail" Width="1.5" PointX="21" PointY="48.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Role" Width="1.5" PointX="3" PointY="44.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.UnitOfMeasure" Width="1.5" PointX="13.25" PointY="66.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.UserBranchDetial" Width="1.5" PointX="9.75" PointY="71.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.User" Width="1.5" PointX="5.25" PointY="40.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Vendor" Width="1.5" PointX="7.5" PointY="67.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssueDetail" Width="1.5" PointX="23.25" PointY="48.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssue" Width="1.5" PointX="18" PointY="40.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseItemStock" Width="1.5" PointX="17.75" PointY="61.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.WastageItemDetail" Width="1.5" PointX="18" PointY="46.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.WastageItem" Width="1.5" PointX="15.75" PointY="36.125" IsExpanded="true" />
+      <Diagram DiagramId="15ef3b59ed5c48d7b04da910c093d83f" Name="Diagram1">
+        <EntityTypeShape EntityType="DB_RessentialModel.Account" Width="1.5" PointX="7.5" PointY="38" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Area" Width="1.5" PointX="7.5" PointY="54.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.BranchArea" Width="1.5" PointX="9.75" PointY="46.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Branch" Width="1.5" PointX="7.5" PointY="45.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.BranchItem" Width="1.5" PointX="12.75" PointY="46" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.City" Width="1.5" PointX="5.25" PointY="54.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItemDetail" Width="1.5" PointX="25.75" PointY="46.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItem" Width="1.5" PointX="9.75" PointY="50" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Country" Width="1.5" PointX="3" PointY="55" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Customer" Width="1.5" PointX="7.5" PointY="33.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ItemCategory" Width="1.5" PointX="16.25" PointY="36.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Item" Width="1.5" PointX="18.5" PointY="44.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OnlineOrderDetail" Width="1.5" PointX="12" PointY="36.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderDetail" Width="1.5" PointX="23" PointY="46.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturnDetail" Width="1.5" PointX="26.25" PointY="43.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.OrderReturn" Width="1.5" PointX="18" PointY="40.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Order" Width="1.5" PointX="9.75" PointY="40.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentApply" Width="1.5" PointX="18" PointY="58.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucherAttachment" Width="1.5" PointX="12" PointY="63.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucher" Width="1.5" PointX="9.75" PointY="55.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Permission" Width="1.5" PointX="0.75" PointY="46.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ProductCategory" Width="1.5" PointX="7.5" PointY="59.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ProductItemDetail" Width="1.5" PointX="23.75" PointY="54.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Product" Width="1.5" PointX="15.75" PointY="49.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseDetail" Width="1.5" PointX="20.75" PointY="49.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseReturn" Width="1.5" PointX="9.75" PointY="60.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PurchaseReturnDetail" Width="1.5" PointX="20.75" PointY="56.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Purchase" Width="1.5" PointX="12.75" PointY="58.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptApply" Width="1.5" PointX="15" PointY="59.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucherAttachment" Width="1.5" PointX="15" PointY="56.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReceiptVoucher" Width="1.5" PointX="12.75" PointY="52.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.RequisitionDetail" Width="1.5" PointX="23.75" PointY="42.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Requisition" Width="1.5" PointX="12.75" PointY="40.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStock" Width="1.5" PointX="15.75" PointY="44.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.ReturnStockDetail" Width="1.5" PointX="23.75" PointY="50.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Role" Width="1.5" PointX="3" PointY="46.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.UnitOfMeasure" Width="1.5" PointX="16.25" PointY="33.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.UserBranchDetial" Width="1.5" PointX="9.75" PointY="76.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.User" Width="1.5" PointX="5.25" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Vendor" Width="1.5" PointX="7.5" PointY="73" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssueDetail" Width="1.5" PointX="26.25" PointY="39.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseIssue" Width="1.5" PointX="21" PointY="38.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WarehouseItemStock" Width="1.5" PointX="20.75" PointY="53.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WastageItemDetail" Width="1.5" PointX="20.75" PointY="44.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DB_RessentialModel.WastageItem" Width="1.5" PointX="15.75" PointY="40" IsExpanded="true" />
         <AssociationConnector Association="DB_RessentialModel.FK__Accounts__Create__5E8A0973" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Accounts__Modifi__5F7E2DAC" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__PaymentVo__Accou__662B2B3B" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ReceiptVo__Accou__756D6ECB" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Area__CityId__0880433F" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchAre__AreaI__0D44F85C" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchAre__Branc__0C50D423" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchAre__Creat__0E391C95" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Branches__Create__5535A963" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Branches__Modifi__5441852A" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Branc__5BE2A6F2" ManuallyRouted="false" />
@@ -64,6 +72,7 @@
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Creat__5CD6CB2B" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__ItemI__5AEE82B9" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Modif__5DCAEF64" ManuallyRouted="false" />
+        <AssociationConnector Association="DB_RessentialModel.FK__City__CountryId__05A3D694" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Consu__2180FB33" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__ItemI__22751F6C" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Creat__1DB06A4F" ManuallyRouted="false" />

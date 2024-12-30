@@ -63,57 +63,46 @@
                                 <div class="table-responsive tab-content">
                                     <table id="itemsTable" class="table table-hover">
                                         <tbody id="itemsTableBody">
-                                            @foreach (var item in Model.OrderDetails)
-                                            {
-                                                <tr class="item-row">
-                                                    <td class="tbl-min-width-7 col-5 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            <select class="form-control">
-                                                                <option value="0">Select Item</option>
-                                                                @foreach (var i in ViewBag.Products)
-                                                                {
-
-                                                                    if (i.ProductId == item.ProductId)
-                                                                    {
-                                                                        <option selected value="@i.ProductId">@i.ProductName</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="@i.ProductId">@i.ProductName</option>
-                                                                    }
-                                                                }
-                                                            </select>
-                                                            <label>Item</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => item.ProductQuantity, new { @class = "form-control productQuantity", @placeholder = "Quantity", @name = "productQuantity[]" })
-                                                            <label>Quantity</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => item.ProductPrice, new { @class = "form-control productPrice", @placeholder = "Price", @name = "productPrice[]", @readonly = "readonly" })
-                                                            <label>Price</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-5 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            <input type="number" class="form-control total"
-                                                                   placeholder="Total" name="total[]" readonly>
-                                                            <label>Total</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-1">
-                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                                type="button" data-toggle="tooltip" data-placement="top"
-                                                                title="Remove">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            }
+                                            <tr class="item-row">
+                                                <td class="tbl-min-width-7 col-5 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <select class="form-control product-select" name="OrderDetails[0].ProductId">
+                                                            <option value="" disabled selected>Select Product</option>
+                                                            @foreach (var product in ViewBag.Products)
+                                                            {
+                                                                <option value="@product.ProductId" data-price="@product.ProductPrice">@product.ProductName</option>
+                                                            }
+                                                        </select>
+                                                        <label>Item</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control quantity" name="OrderDetails[0].ProductQuantity" value="1" />
+                                                        <label>Quantity</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control price" name="OrderDetails[0].ProductPrice" readonly />
+                                                        <label>Price</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-5 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <input type="number" class="form-control total"
+                                                               placeholder="Total" name="total[]" readonly>
+                                                        <label>Total</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-1">
+                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                            type="button" data-toggle="tooltip" data-placement="top"
+                                                            title="Remove">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -131,7 +120,7 @@
                                     <label for="totalAmount" class="form-label"><b>Total Amount:</b></label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
-                                        <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount" readonly>
+                                        <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount" name="grandTotal" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -162,89 +151,111 @@
 }
 
 <script>
+    let rowIndex = 1;
+
+    document.getElementById('addRowBtn').addEventListener('click', function () {
+        const tableBody = document.getElementById('itemsTableBody');
+        const newRow = document.createElement('tr');
+        newRow.classList.add('item-row');
+        newRow.innerHTML = `
+            <td class="tbl-min-width-7 col-5 mb-3 mt-3">
+                <div class="form-floating">
+                    <select class="form-control product-select" name="OrderDetails[${rowIndex}].ProductId">
+                        <option value="" disabled selected>Select Product</option>
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.ProductId" data-price="@product.ProductPrice">
+                                @product.ProductName
+                            </option>
+                        }
+                    </select>
+                    <label>Item</label>
+                </div>
+            </td>
+            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                <div class="form-floating">
+                    <input type="number" class="form-control quantity" name="OrderDetails[${rowIndex}].ProductQuantity" value="1" />
+                    <label>Quantity</label>
+                </div>
+            </td>
+            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                <div class="form-floating">
+                    <input type="number" class="form-control price" name="OrderDetails[${rowIndex}].ProductPrice" readonly />
+                    <label>Price</label>
+                </div>
+            </td>
+            <td class="tbl-min-width-5 col-2 mb-3 mt-3">
+                <div class="form-floating">
+                    <input type="number" class="form-control total" placeholder="Total" name="total[]" readonly>
+                    <label>Total</label>
+                </div>
+            </td>
+            <td class="tbl-min-width-1">
+                <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn" type="button" title="Remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+        rowIndex++;
+    });
+
     $(document).ready(function () {
-            // Add row when clicking "Add More"
-            $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
+        
 
-                // Increment row index for the new row to avoid conflicts
-                let index = $('#itemsTableBody .item-row').length;
-
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="OrderDetails"]').attr("name", `OrderDetails[${index}].ProductId`);
-                newRow.find('input[name^="OrderDetails"][name*=".ProductQuantity"]').attr("name", `OrderDetails[${index}].ProductQuantity`);
-                newRow.find('input[name^="OrderDetails"][name*=".ProductPrice"]').attr("name", `OrderDetails[${index}].ProductPrice`);
-
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
-            });
-
-            // Remove row when clicking the remove button
-            $(document).on('click', '.removeRowBtn', function () {
-                if ($('#itemsTableBody .item-row').length > 1) {
-                    $(this).tooltip('dispose');
-                    $(this).closest('.item-row').remove();
-                } else {
-                    alert("At least one item is required.");
-                }
-            });
+        // Update price when product changes
+        $(document).on('change', '.product-select', function () {
+            const selectedOption = $(this).find(':selected');
+            const price = selectedOption.data('price');
+            const row = $(this).closest('.item-row');
+            row.find('.price').val(price);
+            row.find('.quantity').val(1); // Default to 1 if product is selected
+            updateLineTotal(row);
         });
 
-    $('#CreateOrder').on('click', function () {
-
-        debugger;
-
-        // Initialize an object to hold all data
-         let order = {
-            OrderDetails: [],
-            orderDate: $('#OrderDate').val(),
-            paymentMethod: $('#PaymentMethod').val(),
-            orderType: $('#OrderType').val(),
-            tableNo: $('#TableNo').val(),
-            memo: $('#Memo').val()
-        };
-
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
-
-            // Get the selected item from the dropdown
-            rowData.ProductId = $(this).find('select').val();
-
-            // Get the quantity
-            rowData.ProductQuantity = $(this).find('input[name="item.ProductQuantity"]').val();
-
-            // Get the unit price
-            rowData.ProductPrice = $(this).find('input[name="item.ProductPrice"]').val();
-
-            // Get the total
-            rowData.total = $(this).find('input[name="total[]"]').val();
-
-            // Add the row data to the purchaseData.items array
-            order.OrderDetails.push(rowData);
+        // Update line total when quantity changes
+        $(document).on('input', '.quantity', function () {
+            const row = $(this).closest('.item-row');
+            updateLineTotal(row);
         });
 
-        // Now you can use purchaseData for your purposes
-         console.log(order);
+        // Function to update line total
+        function updateLineTotal(row) {
+            const quantity = parseFloat(row.find('.quantity').val()) || 0;
+            const price = parseFloat(row.find('.price').val()) || 0;
+            const total = quantity * price;
+            row.find('.total').val(total.toFixed(2));
+            updateGrandTotal();
+        }
 
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateOrder", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(order),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("OrderList","Kitchen")'
-                }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
-                }
-             }
-         });
-     });
+        // Remove row and update grand total
+        $(document).on('click', '.removeRowBtn', function () {
+            if ($('#itemsTableBody .item-row').length > 1) {
+                $(this).closest('.item-row').remove();
+                renumberRows();
+                updateGrandTotal();
+            } else {
+                alert("At least one item is required.");
+            }
+        });
+
+        // Function to calculate and update grand total
+        function updateGrandTotal() {
+            let grandTotal = 0;
+            $('.total').each(function () {
+                grandTotal += parseFloat($(this).val()) || 0;
+            });
+            $('#totalAmount').val(grandTotal.toFixed(2));
+        }
+    });
+    function renumberRows() {
+        $('#itemsTableBody .item-row').each(function (index) {
+            $(this).find('.product-select').attr('name', `OrderDetails[${index}].ProductId`);
+            $(this).find('.quantity').attr('name', `OrderDetails[${index}].ProductQuantity`);
+            $(this).find('.price').attr('name', `OrderDetails[${index}].ProductPrice`);
+            $(this).find('.total').attr('name', `OrderDetails[${index}].ProductTotal`);
+        });
+    }
 </script>
+
 

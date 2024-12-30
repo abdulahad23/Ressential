@@ -2488,6 +2488,41 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("RequisitionList");
         }
+        [HttpPost]
+        public ActionResult RejectSelectedRequisitions(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var requisitionsToReject = _db.Requisitions.Where(r => selectedItems.Contains(r.RequisitionId)).ToList();
+
+                    foreach (var requisition in requisitionsToReject)
+                    {
+                        if (requisition.Status == "Settled" || requisition.Status == "Partially Settled")
+                        {
+                            TempData["ErrorMessage"] = "Status cannot be updated for Settled or Partially Settled requisitions.";
+                            return RedirectToAction("RequisitionList");
+                        }
+                        requisition.Status = "Rejected";
+                    }
+
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Selected requisitions have been rejected successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while updating the requisition status.";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No requisitions selected for rejection.";
+            }
+
+            return RedirectToAction("RequisitionList");
+        }
+
         public ActionResult StockReturnList()
         {
             return View();

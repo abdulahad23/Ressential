@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using System.IO;
+using Microsoft.AspNet.Identity;
 
 namespace Ressential.Controllers
 {
@@ -1808,10 +1809,18 @@ namespace Ressential.Controllers
                 }
             }
         }
-        public ActionResult OrderList()
+        public ActionResult OrderList(string search)
         {
-            return View();
+            var orders = _db.Orders.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                orders = orders.Where(c => c.OrderNo.Contains(search) ||
+                                           c.OrderTotal.ToString().Equals(search) ||
+                                           c.Status.Contains(search));
+            }
+            return View(orders.ToList());
         }
+
         public ActionResult CreateOrder()
         {
             var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -1828,57 +1837,178 @@ namespace Ressential.Controllers
             return View(order);
         }
         [HttpPost]
-        public ActionResult CreateOrder(Order order)
+        public ActionResult CreateOrder(Order order, decimal grandTotal)
         {
+            var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
                     int nextOrderNumber = 1;
 
-                    // Check if there are any existing purchases first
-                    if (_db.Orders.Any())
+                    // Check if there are any existing orders for the current branch
+                    if (_db.Orders.Any(o => o.BranchId == branchId))
                     {
-                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextOrderNumber = _db.Orders
-                            .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.OrderNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Where(o => o.BranchId == branchId)
+                            .AsEnumerable() // Force in-memory execution
+                            .Select(o =>
+                            {
+                                int orderNo;
+                                return int.TryParse(o.OrderNo, out orderNo) ? orderNo : 0;
+                            })
                             .Max() + 1;
                     }
-                    order.OrderNo = $"ORD-{datePart}{nextOrderNumber:D4}";
+
+                    // Format OrderNo with a 5-digit sequence
+                    order.OrderNo = nextOrderNumber.ToString("D5");
                     order.BranchId = branchId;
+                    order.OrderTotal = grandTotal;
                     order.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     order.OrderDate = DateTime.Now;
                     order.CreatedAt = DateTime.Now;
                     order.Status = "Preparing";
+
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-                    //foreach (var orderDetails in order.OrderDetails)
-                    //{
-                    //    var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
-                    //    decimal currentQuantity = currentItemStock.Quantity;
-                    //    currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
-                    //    currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice)) / (currentItemStock.Quantity)
-                    //    _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                    //}
-                    _db.SaveChanges();
-
-                    return Json(0, JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Order placed successfully.";
+                    return RedirectToAction("CreateOrder", "Kitchen");
                 }
-                ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
-                ViewBag.Items = _db.Items.Select(i => new { i.ItemId, i.ItemName }).ToList();
+
+                ViewBag.Products = _db.Products.Where(i => i.IsActive && i.BranchId == branchId).ToList();
                 return View(order);
             }
             catch (Exception ex)
             {
                 // Log the exception if needed
-                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                Console.WriteLine($"Error creating order: {ex.Message}");
                 return RedirectToAction("Index", "Error");
             }
         }
+        [HttpPost]
+        public ActionResult CancelOrder(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("OrderList");
+                }
+
+                order.Status = "Cancelled";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Order cancelled successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while cancelling the order.";
+                Console.WriteLine($"Error cancelling order: {ex.Message}");
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmOrder(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("OrderList");
+                }
+
+                order.Status = "Confirmed";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Order confirmed successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while confirming the order.";
+                Console.WriteLine($"Error confirming order: {ex.Message}");
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        [HttpPost]
+        public ActionResult CancelSelectedOrders(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var ordersToCancel = _db.Orders.Where(o => selectedItems.Contains(o.OrderId)).ToList();
+
+                    foreach (var order in ordersToCancel)
+                    {
+                        order.Status = "Cancelled";
+                    }
+
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Selected orders have been cancelled successfully.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while cancelling the selected orders.";
+                    Console.WriteLine($"Error cancelling selected orders: {ex.Message}");
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No orders selected for cancellation.";
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmSelectedOrders(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var ordersToConfirm = _db.Orders.Where(o => selectedItems.Contains(o.OrderId)).ToList();
+
+                    foreach (var order in ordersToConfirm)
+                    {
+                        order.Status = "Confirmed";
+                    }
+
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Selected orders have been confirmed successfully.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while confirming the selected orders.";
+                    Console.WriteLine($"Error confirming selected orders: {ex.Message}");
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No orders selected for confirmation.";
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        public ActionResult OrderDetail(int orderId)
+        {
+            var order = _db.Orders.Include(o => o.OrderDetails.Select(od => od.Product)).FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "Order not found.";
+                return RedirectToAction("OrderList");
+            }
+            return View(order);
+        }
+
         public ActionResult OrderReturnList()
         {
             return View();
@@ -1898,6 +2028,7 @@ namespace Ressential.Controllers
 
         public ActionResult UserList(String search)
         {
+            //Convert.ToInt32(Helper.GetUserInfo("branchId"));
             var users = _db.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
@@ -1912,18 +2043,52 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateUser(User user, String ConfirmPassword)
+        public ActionResult CreateUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
-            if (user.Password != ConfirmPassword)
+            try
             {
-                ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                return View(user);
+                if (user.Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Password and Confirm Password do not match.");
+                    TempData["ErrorMessage"] = "Password and Confirm Password do not match.";
+                    return View(user);
+                }
+                string fileName = null;
+
+                if (ProfileImage != null && ProfileImage.ContentLength > 0)
+                {
+                    // Generate a unique file name to prevent overwriting
+                    fileName = Guid.NewGuid() + Path.GetExtension(ProfileImage.FileName);
+
+                    // Define the path to save the file
+                    string uploadsFolder = Server.MapPath("~/Uploads/ProfileImages");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Save the file to the server
+                    ProfileImage.SaveAs(filePath);
+                }
+                user.ProfileImage = fileName;
+                user.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                user.CreatedAt = DateTime.Now;
+                _db.Users.Add(user);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "User created successfully!";
+                return RedirectToAction("UserList");
             }
-            user.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-            user.CreatedAt = DateTime.Now;
-            _db.Users.Add(user);
-            _db.SaveChanges();
-            return RedirectToAction("UserList");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
+            }
+
+            TempData["ErrorMessage"] = "An error occurred while creating the user";
+            return View();
+
         }
         public ActionResult EditUser(int userId)
         {
@@ -1935,37 +2100,88 @@ namespace Ressential.Controllers
             return View(User);
         }
         [HttpPost]
-        public ActionResult EditUser(User user, String ConfirmPassword)
+        public ActionResult EditUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
-            var existingUser = _db.Users.Find(user.UserId);
-            if (existingUser == null)
+
+            try
             {
-                return HttpNotFound();
+                var existingUser = _db.Users.Find(user.UserId);
+                if (existingUser == null)
+                {
+                    return HttpNotFound();
+                }
+                var existingImageName = existingUser.ProfileImage;
+                ConfirmPassword = ConfirmPassword == "" ? null : ConfirmPassword;
+
+                if (user.Password != ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Password and Confirm Password do not match.");
+                    TempData["ErrorMessage"] = "Password and Confirm Password do not match.";
+                    return View(user);
+                }
+
+                user.Email = existingUser.Email;
+                user.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                user.ModifiedAt = DateTime.Now;
+                _db.Entry(existingUser).CurrentValues.SetValues(user);
+                _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
+
+
+                if (ProfileImage != null && ProfileImage.ContentLength > 0)
+                {
+                    string uploadsFolder = Server.MapPath(TextConstraints.ProfileImagesPath);
+
+                    if (!string.IsNullOrEmpty(existingImageName))
+                    {
+                        string existingFilePath = Path.Combine(uploadsFolder, existingImageName);
+
+                        // Delete the existing file if it exists
+                        if (System.IO.File.Exists(existingFilePath))
+                        {
+                            System.IO.File.Delete(existingFilePath);
+                        }
+                    }
+                    string fileName = Guid.NewGuid() + Path.GetExtension(ProfileImage.FileName);
+
+                    // Define the path to save the file
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string filePath = Path.Combine(uploadsFolder, fileName);
+
+                    // Save the file to the server
+                    ProfileImage.SaveAs(filePath);
+                    existingUser.ProfileImage = fileName;
+
+                    //Checking if the user is current user and updating the profile image in session
+                    if (user.UserId == Convert.ToInt32(Helper.GetUserInfo("userId")))
+                    {
+                        AccountController.UpdateProfileImageClaim(this.HttpContext, fileName);
+                    }
+                }
+                else
+                {
+                    _db.Entry(existingUser).Property(x => x.ProfileImage).IsModified = false;
+                }
+
+                if (user.Password == null)
+                {
+                    _db.Entry(existingUser).Property(x => x.Password).IsModified = false;
+                }
+                _db.Entry(existingUser).State = EntityState.Modified;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "User updated successfully!";
+                return RedirectToAction("UserList");
             }
-
-            ConfirmPassword = ConfirmPassword == "" ? null : ConfirmPassword;
-
-            if (user.Password != ConfirmPassword)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Password and Confirm Password do not match.");
-                return View(user);
+                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
             }
-
-            user.Email = existingUser.Email;
-            user.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-            user.ModifiedAt = DateTime.Now;
-
-            _db.Entry(existingUser).CurrentValues.SetValues(user);
-            _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
-            _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
-            if (user.Password == null)
-            {
-                _db.Entry(existingUser).Property(x => x.Password).IsModified = false;
-            }
-
-            _db.Entry(existingUser).State = EntityState.Modified;
-            _db.SaveChanges();
-            return RedirectToAction("UserList");
+            TempData["ErrorMessage"] = "An error occurred while updating the user";
+            return View();
         }
         [HttpPost]
         public ActionResult DeleteUser(int userId)

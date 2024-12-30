@@ -1,0 +1,112 @@
+﻿@model Ressential.Models.Order
+
+@{
+    ViewBag.Title = "Order Details";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <h2 class="text-secondary"><b>Order Details</b></h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.OrderDate, Model.OrderDate.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Order Date", @type = "date", @readonly = "readonly" })
+                            <label for="floatingInput">Order Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.PaymentMethod, new { @class = "form-control", @placeholder = "Payment Method", @readonly = "readonly" })
+                            <label for="floatingInput">Payment Method</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.OrderType, new { @class = "form-control", @placeholder = "Order Type", @readonly = "readonly" })
+                            <label for="floatingInput">Order Type</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.TableNo, new { @class = "form-control", @placeholder = "Table No", @readonly = "readonly" })
+                            <label for="floatingInput">Table No</label>
+                        </div>
+                    </div>
+                    <h2 class="text-secondary pt-3"><b>Products</b></h2>
+                    <div class="row">
+                        <div class="container">
+                            <div class="table-responsive tab-content">
+                                <table id="itemsTable" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detail in Model.OrderDetails)
+                                        {
+                                            <tr>
+                                                <td>@detail.Product.ProductName</td>
+                                                <td>@detail.ProductQuantity</td>
+                                                <td>@detail.ProductPrice.ToString("N0")</td>
+                                                @{
+                                                    string productTotal = (detail.ProductQuantity * detail.ProductPrice).ToString("N0");
+                                                    <td>@productTotal</td>
+                                                }
+
+                                            </tr>
+                                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-3 ms-auto">
+                                    <label for="totalAmount" class="form-label"><b>Total Amount:</b></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rs</span>
+                                        @{
+                                            string orderTotal = Model.OrderTotal.ToString("N0");
+                                            <input type="text" class="form-control" value="@orderTotal" readonly>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-sm-9">
+                                                <a href="@Url.Action("OrderList", "Kitchen")" class="btn btn-secondary mr-2 ps-4 pe-4">Back to List</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

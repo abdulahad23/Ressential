@@ -428,7 +428,7 @@ CREATE TABLE Orders (
     BranchId INT NOT NULL,
     CustomerId INT NULL,
     PaymentMethod NVARCHAR(20) NOT NULL,
-    OrderTotal INT NOT NULL,
+    OrderTotal Decimal NOT NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Confirmed', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled')),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
