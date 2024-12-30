@@ -1330,7 +1330,7 @@ namespace Ressential.Controllers
                  ReferenceNo = p.ReferenceNo,
                  VendorName = p.Vendor.Name,
                  Status = p.Status,
-                 TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+                 TotalAmount = p.PurchaseDetails.Sum(pd => (decimal?)(pd.Quantity * pd.UnitPrice)) ?? 0
              }).Where(p => p.PurchaseNo.Contains(search) || p.ReferenceNo.Contains(search))
                 .ToList();
                 return View(purchaseList);
@@ -1344,7 +1344,7 @@ namespace Ressential.Controllers
                 ReferenceNo = p.ReferenceNo,
                 VendorName = p.Vendor.Name,
                 Status = p.Status,
-                 TotalAmount = p.PurchaseDetails.Sum(pd => pd.Quantity * pd.UnitPrice)
+                 TotalAmount = p.PurchaseDetails.Sum(pd => (decimal?)(pd.Quantity * pd.UnitPrice)) ?? 0
                     }).ToList();
             return View(purchaseList2);
         }

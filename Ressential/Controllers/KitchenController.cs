@@ -1814,19 +1814,18 @@ namespace Ressential.Controllers
         }
         public ActionResult CreateOrder()
         {
-
-            var purchase = new Purchase
+            var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var order = new Order
             {
-                PurchaseDetails = new List<PurchaseDetail>
+                OrderDetails = new List<OrderDetail>
                 {
-                    new PurchaseDetail()
+                    new OrderDetail()
                 }
 
             };
-            ViewBag.Items = _db.Items.Where(i => i.IsActive == true).ToList();
-            ViewBag.Vendors = _db.Vendors.ToList();
+            ViewBag.Products = _db.Products.Where(i => i.IsActive == true && i.BranchId == branchId).ToList();
 
-            return View(purchase);
+            return View(order);
         }
         [HttpPost]
         public ActionResult CreateOrder(Order order)
@@ -1835,6 +1834,7 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                     string datePart = DateTime.Now.ToString("yyyyMMdd");
                     int nextOrderNumber = 1;
 
@@ -1848,7 +1848,9 @@ namespace Ressential.Controllers
                             .Max() + 1;
                     }
                     order.OrderNo = $"ORD-{datePart}{nextOrderNumber:D4}";
+                    order.BranchId = branchId;
                     order.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    order.OrderDate = DateTime.Now;
                     order.CreatedAt = DateTime.Now;
                     order.Status = "Preparing";
                     _db.Orders.Add(order);

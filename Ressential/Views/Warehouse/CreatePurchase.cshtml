@@ -232,6 +232,7 @@
             // Remove row when clicking the remove button
             $(document).on('click', '.removeRowBtn', function () {
                 if ($('#itemsTableBody .item-row').length > 1) {
+                    $(this).tooltip('dispose');
                     $(this).closest('.item-row').remove();
                 } else {
                     alert("At least one item is required.");

@@ -423,7 +423,7 @@ CREATE TABLE Orders (
     OrderId INT PRIMARY KEY IDENTITY(1,1),
     OrderDate DATETIME2 NOT NULL,
     OrderNo NVARCHAR(50) NOT NULL UNIQUE,
-    OrderType NVARCHAR(20) NOT NULL CHECK (OrderType IN ('Dine-in', 'Take-away', 'Online')),
+    OrderType NVARCHAR(20) NOT NULL CHECK (OrderType IN ('Dine-In', 'Take-Away', 'Online')),
     TableNo NVARCHAR(10) NULL,
     BranchId INT NOT NULL,
     CustomerId INT NULL,
