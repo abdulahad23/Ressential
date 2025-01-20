@@ -6,13 +6,22 @@
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
 }
 
-
-
-
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
                 <h2 class="text-secondary"><b>Update User</b></h2>
 
                 @using (Html.BeginForm("EditUser", "Kitchen", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -51,9 +60,9 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
-                                    new { Value = true, Text = "Active" },
-                                    new { Value = false, Text = "Inactive" }
-                                }, "Value", "Text"), new { @class = "form-control" })
+                                new { Value = true, Text = "Active" },
+                                new { Value = false, Text = "Inactive" }
+                            }, "Value", "Text"), new { @class = "form-control" })
                                 <label for="Status">Status</label>
                             </div>
                         </div>
@@ -65,12 +74,17 @@
                         </div>
                         <p></p>
                         <div class="col-md-6">
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-3 position-relative" style="display: inline-block;">
                                 <img id="imagePreview"
                                      src="@(!string.IsNullOrEmpty(Model?.ProfileImage) ? Url.Content(Ressential.Models.TextConstraints.ProfileImagesPath + Model.ProfileImage) : Url.Content(Ressential.Models.TextConstraints.NoImagesPath))"
-                                     alt="Preview" class="img-thumbnail" style="max-height: 200px; width:auto" />
+                                     alt="Preview" class="img-thumbnail" style="max-height: 200px; width:auto; display: block; position: relative;" />
+                                <button type="button" id="removeImage" class="btn btn-danger btn-sm"
+                                        style="position: absolute; top: 5px; right: 5px; padding: 2px 6px; border-radius: 50%; line-height: 1; display: none;">
+                                    &times;
+                                </button>
                             </div>
                         </div>
+
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -89,7 +103,19 @@
 </div>
 
 <script>
-document.getElementById('ProfileImage').addEventListener('change', function (event) {
+    // Function to check image status on page load
+    window.addEventListener('load', function () {
+        const preview = document.getElementById('imagePreview');
+        const removeButton = document.getElementById('removeImage');
+
+        // Display the remove button if the image preview has a valid source
+        if (preview.src && !preview.src.includes('NoImagesPath')) {
+            removeButton.style.display = 'block';
+        }
+    });
+
+    // Handle file selection
+    document.getElementById('ProfileImage').addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
@@ -97,7 +123,19 @@ document.getElementById('ProfileImage').addEventListener('change', function (eve
                 const preview = document.getElementById('imagePreview');
                 preview.src = e.target.result;
                 preview.style.display = 'block';
+                document.getElementById('removeImage').style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
-    });</script>
+    });
+
+    // Handle remove button click
+    document.getElementById('removeImage').addEventListener('click', function () {
+        const preview = document.getElementById('imagePreview');
+        preview.src = '';
+        preview.style.display = 'none';
+        document.getElementById('ProfileImage').value = '';
+        this.style.display = 'none';
+    });
+
+</script>

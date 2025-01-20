@@ -65,7 +65,7 @@ namespace Ressential.Controllers
             return View(ItemCategory);
         }
         [HttpPost]
-        public ActionResult EditItemCategory(ItemCategory itemCategory)
+        public ActionResult EditItemEditItemCategory(ItemCategory itemCategory)
         {
             try
             {
@@ -138,7 +138,12 @@ namespace Ressential.Controllers
         {
             ViewBag.Units = _db.UnitOfMeasures.ToList();
             ViewBag.Categories = _db.ItemCategories.ToList();
-            return View();
+            Item item = new Item
+            {
+                OpeningStockDate = DateTime.Today,
+                IsActive = true,
+            };
+            return View(item);
         }
         [HttpPost]
         public ActionResult CreateItem(Item item)
@@ -1246,6 +1251,7 @@ namespace Ressential.Controllers
 
             var purchase = new Purchase
             {
+                PurchaseDate = DateTime.Today,
                 PurchaseDetails = new List<PurchaseDetail>
                 {
                     new PurchaseDetail()
@@ -2038,6 +2044,11 @@ namespace Ressential.Controllers
         {
             try
             {
+                // Remove items with zero or null IssuedQuantity
+                warehouseIssueHelper.WarehouseIssueDetails = warehouseIssueHelper.WarehouseIssueDetails
+                    .Where(item => item.IssuedQuantity > 0)
+                    .ToList();
+
                 // Check if all issued quantities are 0 or null
                 if (warehouseIssueHelper.WarehouseIssueDetails.All(item => item.IssuedQuantity == 0))
                 {
@@ -2184,6 +2195,11 @@ namespace Ressential.Controllers
         {
             try
             {
+                if (warehouseIssueHelper.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "Cannot edit settled issue.";
+                    return Json(new { success = false, redirect = Url.Action("IssueList", "Warehouse") });
+                }
                 var requisition = _db.Requisitions.Find(warehouseIssueHelper.RequisitionId);
                 var existingIssue = _db.WarehouseIssues
                     .Include(wi => wi.WarehouseIssueDetails)
@@ -2274,6 +2290,11 @@ namespace Ressential.Controllers
                     TempData["ErrorMessage"] = "Issue not found.";
                     return RedirectToAction("IssueList");
                 }
+                if (warehouseIssue.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "Cannot delete settled issue.";
+                    return Json(new { success = false, redirect = Url.Action("IssueList", "Warehouse") });
+                }
 
                 var requisition = _db.Requisitions.FirstOrDefault(r => r.RequisitionId == warehouseIssue.RequisitionId);
                 if (requisition == null)
@@ -2349,6 +2370,11 @@ namespace Ressential.Controllers
 
                     foreach (var issue in issuesToDelete)
                     {
+                        if (issue.Status == "Settled")
+                        {
+                            TempData["ErrorMessage"] = "An Issue status is settled and cannot be deleted.";
+                            return Json(new { success = false, redirect = Url.Action("IssueList", "Warehouse") });
+                        }
                         var requisition = _db.Requisitions.FirstOrDefault(r => r.RequisitionId == issue.RequisitionId);
                         if (requisition == null)
                         {
@@ -2523,10 +2549,67 @@ namespace Ressential.Controllers
             return RedirectToAction("RequisitionList");
         }
 
-        public ActionResult StockReturnList()
+        public ActionResult ReturnStockList(string search)
         {
-            return View();
+            var returnStocks = _db.ReturnStocks.AsQueryable();
+            if (!string.IsNullOrEmpty(search))
+            {
+                returnStocks = returnStocks.Where(w => w.ReturnNo.Contains(search) || w.ReferenceNo.Contains(search) || w.Description.Contains(search) || w.Status.Contains(search));
+            }
+            return View(returnStocks);
         }
+        public ActionResult ViewReturnStock(int returnStockId)
+        {
+            var returnStock = _db.ReturnStocks.Find(returnStockId);
+
+            if (returnStock == null)
+            {
+                TempData["ErrorMessage"] = "Return stock not found.";
+                return RedirectToAction("ReceiveStockList");
+            }
+
+            return View(returnStock);
+        }
+
+        [HttpPost]
+        public ActionResult ReceiveReturnStock(int returnStockId)
+        {
+            try
+            {
+                var returnStocks = _db.ReturnStocks.Find(returnStockId);
+                returnStocks.Status = "Settled";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Returned stock received successfully.";
+                return RedirectToAction("ReturnStockList");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occured while receiving the returned stock.";
+                return RedirectToAction("ReturnStockList");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReceiveSelectedStock(int[] selectedItems)
+        {
+            try
+            {
+                var returnStockToReceive = _db.ReturnStocks.Where(c => selectedItems.Contains(c.ReturnStockId)).ToList();
+                foreach (var item in returnStockToReceive)
+                {
+                    item.Status = "Settled";
+                }
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Returned stocks received successfully.";
+                return RedirectToAction("ReturnStockList");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occured while receiving the returned stock.";
+                return RedirectToAction("ReturnStockList");
+            }
+        }
+
         public ActionResult UserList(String search)
         {
             var users = _db.Users.AsQueryable();
@@ -2676,10 +2759,17 @@ namespace Ressential.Controllers
                 TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction("UserList");
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
-            }
+            catch (DbEntityValidationException ex)
+{
+    foreach (var validationErrors in ex.EntityValidationErrors)
+    {
+        foreach (var validationError in validationErrors.ValidationErrors)
+        {
+            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+        }
+    }
+    ModelState.AddModelError("", "An error occurred while updating the user: " + ex.Message);
+}
             TempData["ErrorMessage"] = "An error occurred while updating the user";
             return View();
         }

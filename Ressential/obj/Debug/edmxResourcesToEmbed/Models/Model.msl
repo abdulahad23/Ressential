@@ -57,21 +57,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="BranchItems">
-      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
-        <MappingFragment StoreEntitySet="BranchItems">
-          <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Cities">
       <EntityTypeMapping TypeName="DB_RessentialModel.City">
         <MappingFragment StoreEntitySet="City">
@@ -84,6 +69,7 @@
     <EntitySetMapping Name="ConsumeItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ConsumeItemDetail">
         <MappingFragment StoreEntitySet="ConsumeItemDetails">
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
           <ScalarProperty Name="ConsumeItemDetailId" ColumnName="ConsumeItemDetailId" />
           <ScalarProperty Name="ConsumeItemId" ColumnName="ConsumeItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -573,6 +559,7 @@
     <EntitySetMapping Name="WastageItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WastageItemDetail">
         <MappingFragment StoreEntitySet="WastageItemDetails">
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
           <ScalarProperty Name="WastageItemDetailId" ColumnName="WastageItemDetailId" />
           <ScalarProperty Name="WastageItemId" ColumnName="WastageItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -612,5 +599,25 @@
         <ScalarProperty Name="UserId" ColumnName="UserId" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="BranchItems">
+      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
+        <MappingFragment StoreEntitySet="BranchItems">
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
+          <ScalarProperty Name="OpeningStockValue" ColumnName="OpeningStockValue" />
+          <ScalarProperty Name="OpeningStockQuantity" ColumnName="OpeningStockQuantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

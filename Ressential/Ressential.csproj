@@ -228,6 +228,16 @@
     <Compile Include="Models\OrderReturnDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PartialBankAndCash.cs" />
+    <Compile Include="Models\PartialBranch.cs" />
+    <Compile Include="Models\PartialBranchItem.cs" />
+    <Compile Include="Models\PartialItem.cs" />
+    <Compile Include="Models\PartialItemCategory.cs" />
+    <Compile Include="Models\PartialOrder.cs" />
+    <Compile Include="Models\PartialOrderDetail.cs" />
+    <Compile Include="Models\PartialProductCategory.cs" />
+    <Compile Include="Models\PartialUser.cs" />
+    <Compile Include="Models\PartialVendor.cs" />
     <Compile Include="Models\PaymentApply.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -297,7 +307,6 @@
     <Compile Include="Models\Vendor.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\VendorPartial.cs" />
     <Compile Include="Models\WarehouseIssue.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -780,7 +789,7 @@
     <Content Include="Views\Kitchen\CreateOrderReturn.cshtml" />
     <Content Include="Views\Warehouse\CreatePurchase.cshtml" />
     <Content Include="Views\Warehouse\RequisitionList.cshtml" />
-    <Content Include="Views\Warehouse\StockReturnList.cshtml" />
+    <Content Include="Views\Warehouse\ReturnStockList.cshtml" />
     <Content Include="Views\Warehouse\UserList.cshtml" />
     <Content Include="Views\Warehouse\CreateUser.cshtml" />
     <Content Include="Views\Kitchen\CreateUser.cshtml" />
@@ -840,6 +849,8 @@
     <Content Include="Views\Warehouse\CreateRequisitionIssue.cshtml" />
     <Content Include="Views\Kitchen\OrderDetail.cshtml" />
     <Content Include="Views\Kitchen\EditUser.cshtml" />
+    <Content Include="Views\Kitchen\ViewIssue.cshtml" />
+    <Content Include="Views\Warehouse\ViewReturnStock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

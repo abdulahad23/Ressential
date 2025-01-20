@@ -1,0 +1,86 @@
+﻿@model Ressential.Models.WarehouseIssue
+
+@{
+    ViewBag.Title = "View Issue";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+@using (Html.BeginForm("ReceiveIssue", "Kitchen", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-secondary"><b>Issue Details</b></h2>
+                    @Html.HiddenFor(model => model.IssueId)
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3 position-relative">
+                            <input type="text" class="form-control pe-5" value="@Model.IssueNo" readonly />
+                            <label for="floatingInput">Issue No</label>
+                            <span class="badge position-absolute top-50 end-0 translate-middle-y me-3
+                     @(Model.Status == "Pending" ? "bg-warning" : "bg-success")">
+                                @(Model.Status == "Pending" ? "Pending" : "Received")
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" value="@Model.IssueDate.ToString("yyyy-MM-dd")" readonly />
+                            <label for="floatingInput">Issue Date</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" value="@Model.Requisition.RequisitionNo" readonly />
+                            <label for="floatingInput">Requisition No</label>
+                        </div>
+                    </div>
+
+                </div>
+                    <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                    <div class="table-responsive tab-content">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.WarehouseIssueDetails)
+                                {
+                                    <tr>
+                                        <td>@detail.Item.ItemName</td>
+                                        <td>@detail.Description</td>
+                                        <td>@detail.Quantity @detail.Item.UnitOfMeasure.Symbol</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                @if (Model.Status == "Settled")
+                                {
+                                    <div class="col-sm-9">
+                                        <a href="@Url.Action("ReceiveStockList", "Kitchen")" class="btn btn-secondary ms-1 ps-4 pe-4">Back</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-9">
+                                        <button class="btn btn-secondary ps-4 pe-4" type="submit">Receive Stock</button>
+                                        <a href="@Url.Action("ReceiveStockList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Back</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

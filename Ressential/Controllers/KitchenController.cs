@@ -14,6 +14,7 @@ using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using System.IO;
 using Microsoft.AspNet.Identity;
+using System.Net.Security;
 
 namespace Ressential.Controllers
 {
@@ -37,9 +38,13 @@ namespace Ressential.Controllers
         }
         public ActionResult CreateItem()
         {
+            BranchItem branchItem = new BranchItem {
+                OpeningStockDate = DateTime.Today,
+                IsActive = true,
+            };
             ViewBag.items = _db.Items.ToList();
 
-            return View();
+            return View(branchItem);
         }
         [HttpPost]
         public ActionResult CreateItem(BranchItem branchItems)
@@ -48,7 +53,16 @@ namespace Ressential.Controllers
             {
                 branchItems.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 branchItems.CreatedAt = DateTime.Now;
-                branchItems.BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId")); ;
+                branchItems.BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                branchItems.Quantity = branchItems.OpeningStockQuantity;
+                if (branchItems.Quantity == 0)
+                {
+                    branchItems.CostPerUnit = 0;
+                }
+                else
+                {
+                    branchItems.CostPerUnit = branchItems.OpeningStockValue / branchItems.OpeningStockQuantity;
+                }
                 _db.BranchItems.Add(branchItems);
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Item created successfully.";
@@ -142,6 +156,7 @@ namespace Ressential.Controllers
                 {
                     return HttpNotFound();
                 }
+
                 branchItem.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 branchItem.ModifiedAt = DateTime.Now;
                 _db.Entry(existingItem).CurrentValues.SetValues(branchItem);
@@ -149,6 +164,9 @@ namespace Ressential.Controllers
                 _db.Entry(existingItem).Property(x => x.CreatedBy).IsModified = false;
                 _db.Entry(existingItem).Property(x => x.CreatedAt).IsModified = false;
                 _db.Entry(existingItem).Property(x => x.BranchId).IsModified = false;
+                _db.Entry(existingItem).Property(x => x.OpeningStockQuantity).IsModified = false;
+                _db.Entry(existingItem).Property(x => x.OpeningStockValue).IsModified = false;
+                _db.Entry(existingItem).Property(x => x.OpeningStockDate).IsModified = false;
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Item updated successfully.";
             }
@@ -519,9 +537,126 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("RequisitionList");
         }
-        public ActionResult ReceiveStockList()
+        public ActionResult ReceiveStockList(string search)
         {
-            return View();
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var warehouseIssues = _db.WarehouseIssues.Where(w => w.BranchID == selectedBranchId);
+            if (!string.IsNullOrEmpty(search))
+            {
+                warehouseIssues = warehouseIssues.Where(w => w.IssueNo.Contains(search) || w.Requisition.RequisitionNo.Contains(search) || w.Memo.Contains(search) || w.Status.Contains(search));
+            }
+            return View(warehouseIssues);
+        }
+        public ActionResult ViewIssue(int issueId)
+        {
+            var issue = _db.WarehouseIssues.Find(issueId);
+
+            if (issue == null)
+            {
+                TempData["ErrorMessage"] = "Issue not found.";
+                return RedirectToAction("ReceiveStockList");
+            }
+
+            return View(issue);
+        }
+
+        [HttpPost]
+        public ActionResult ReceiveIssue(int IssueId)
+        {
+            try
+            {
+                var warehouseIssues = _db.WarehouseIssues.Find(IssueId);
+                if (warehouseIssues.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "The issue is already received";
+                    return RedirectToAction("ReceiveStockList");
+                }
+
+
+                foreach (var item in warehouseIssues.WarehouseIssueDetails)
+                {
+                    var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId).FirstOrDefault();
+
+                    if (branchItem != null)
+                    {
+                        var currentTotalCost = branchItem.Quantity * branchItem.CostPerUnit;
+                        var newTotalCost = item.Quantity * item.CostApplied;
+
+                        branchItem.Quantity += item.Quantity;
+                        branchItem.CostPerUnit = (currentTotalCost + newTotalCost) / branchItem.Quantity;
+
+                        // Mark the branchItem as modified
+                        _db.Entry(branchItem).State = EntityState.Modified;
+                    }
+                }
+
+                warehouseIssues.Status = "Settled";
+
+                // Mark warehouseIssues as modified if needed
+                _db.Entry(warehouseIssues).State = EntityState.Modified;
+
+                _db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Stock received successfully.";
+                return RedirectToAction("ReceiveStockList");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while receiving the stock.";
+                return RedirectToAction("ReceiveStockList");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReceiveSelectedIssues(int[] selectedItems)
+        {
+            try
+            {
+                var issuesToReceive = _db.WarehouseIssues
+                                         .Where(c => selectedItems.Contains(c.IssueId))
+                                         .ToList();
+
+                var receivedIssues = issuesToReceive.Where(i => i.Status == "Settled");
+                if (receivedIssues.Count() > 0)
+                {
+                    TempData["ErrorMessage"] = "An issue exist which is already received";
+                    return RedirectToAction("ReceiveStockList");
+                }
+                foreach (var warehouseIssue in issuesToReceive)
+                {
+                    foreach (var item in warehouseIssue.WarehouseIssueDetails)
+                    {
+                        var branchItem = _db.BranchItems.FirstOrDefault(b => b.ItemId == item.ItemId);
+
+                        if (branchItem != null)
+                        {
+                            var currentTotalCost = branchItem.Quantity * branchItem.CostPerUnit;
+                            var newTotalCost = item.Quantity * item.CostApplied;
+
+                            branchItem.Quantity += item.Quantity;
+                            branchItem.CostPerUnit = (currentTotalCost + newTotalCost) / branchItem.Quantity;
+
+                            // Mark the branchItem as modified
+                            _db.Entry(branchItem).State = EntityState.Modified;
+                        }
+                    }
+
+                    warehouseIssue.Status = "Settled";
+
+                    // Mark warehouseIssue as modified
+                    _db.Entry(warehouseIssue).State = EntityState.Modified;
+                }
+
+                _db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Stock received successfully.";
+                return RedirectToAction("ReceiveStockList");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while receiving the stock.";
+                return RedirectToAction("ReceiveStockList");
+            }
         }
 
         public ActionResult CreateStockReturn()
@@ -1127,30 +1262,32 @@ namespace Ressential.Controllers
                     wastageItem.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     wastageItem.CreatedAt = DateTime.Now;
                     wastageItem.BranchId = selectedBranchId;
+
+                    foreach (var item in wastageItem.WastageItemDetails)
+                    {
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId).FirstOrDefault();
+
+                        if (branchItem != null)
+                        {
+                            if (branchItem.Quantity >= item.ItemQuantity)
+                            {
+                                branchItem.Quantity -= item.ItemQuantity;
+                                item.CostPerUnit = branchItem.CostPerUnit;
+
+                                // Mark the branchItem as modified
+                                _db.Entry(branchItem).State = EntityState.Modified;
+                            }
+                            else
+                            {
+
+                            }
+                            
+                        }
+                    }
+
                     _db.WastageItems.Add(wastageItem);
                     _db.SaveChanges();
-
-                    //foreach (var wastageItemDetails in wastageItem.WastageItemDetails)
-                    //{
-                    //    var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
-                    //    decimal currentQuantity = currentItemStock.Quantity;
-                    //    currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
-                    //    currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice)) / (currentItemStock.Quantity);
-
-                    //    var warehouseItemTransaction = new WarehouseItemTransaction
-                    //    {
-                    //        TransactionDate = purchase.PurchaseDate,
-                    //        ItemId = purchaseDetails.ItemId,
-                    //        TransactionType = "Purchase",
-                    //        TransactionTypeId = purchase.PurchaseId,
-                    //        Quantity = purchaseDetails.Quantity,
-                    //        CostPerUnit = purchaseDetails.UnitPrice
-                    //    };
-                    //    _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                    //    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
-                    //}
-                    //_db.SaveChanges();
-
+                    TempData["SuccessMessage"] = "Wastage item created successfully.";
                     return Json("0", JsonRequestBehavior.AllowGet);
                 }
 
@@ -1875,7 +2012,22 @@ namespace Ressential.Controllers
                     TempData["SuccessMessage"] = "Order placed successfully.";
                     return RedirectToAction("CreateOrder", "Kitchen");
                 }
+                //else
+                //{
+                //    // Log ModelState errors
+                //    foreach (var state in ModelState)
+                //    {
+                //        var key = state.Key; // Property name
+                //        var errors = state.Value.Errors; // List of errors for this property
 
+                //        foreach (var error in errors)
+                //        {
+                //            System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                //        }
+                //    }
+
+                //    TempData["ErrorMessage"] = "There were validation errors. Please check the input values.";
+                //}
                 ViewBag.Products = _db.Products.Where(i => i.IsActive && i.BranchId == branchId).ToList();
                 return View(order);
             }

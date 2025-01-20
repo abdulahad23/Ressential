@@ -46,8 +46,13 @@
                             <th scope="col" class="fit-content">
                                 <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                             </th>
-                            <th scope="col">Item Name</th>
-                            <th scope="col">MSL</th>
+                            <th scope="col" class="no-wrap">Item Name</th>
+                            <th scope="col">SKU</th>
+                            <th scope="col">Unit</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Avg. Cost</th>
+                            <th scope="col" class="fit-content">Reorder Level</th>
+                            <th scope="col" class="no-wrap">Stock Level</th>
                             <th scope="col" class="no-wrap">Status</th>
                             <th scope="col" class="fit-content">Option</th>
                         </tr>
@@ -60,19 +65,42 @@
 
                             @*<td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@branchItems.ItemId-@branchItems.BranchId " aria-label="Select Item"></td>*@
                             <td>@branchItems.Item.ItemName</td>
+                            <td>@branchItems.Item.Sku</td>
+                            <td>@branchItems.Item.UnitOfMeasure.Name</td>
+                            <td>@branchItems.Quantity</td>
+                            <td>@branchItems.CostPerUnit</td>
                             <td>@branchItems.MinimumStockLevel</td>
-
+                            <td class="no-wrap">
+                                @if (branchItems.Quantity == 0)
+                                {
+                                    <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Out of Stock
+                                    </span>
+                                }
+                                else if (branchItems.Quantity < branchItems.MinimumStockLevel)
+                                {
+                                    <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Low Stock
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        In Stock
+                                    </span>
+                                }
+                            </td>
                             <td class="no-wrap">
                                 @if (branchItems.IsActive)
                                 {
-                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                            Active
-                        </span> }
-                    else
-                    {
-                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                            Inactive
-                        </span>}
+                                    <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Active
+                                    </span> }
+                                else
+                                {
+                                    <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        Inactive
+                                    </span>}
                             </td>
                             <td>
                                 <div class="dropdown">

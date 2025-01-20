@@ -9,7 +9,6 @@
         <EntityTypeShape EntityType="DB_RessentialModel.Area" Width="1.5" PointX="7.5" PointY="54.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.BranchArea" Width="1.5" PointX="9.75" PointY="46.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.Branch" Width="1.5" PointX="7.5" PointY="45.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.BranchItem" Width="1.5" PointX="12.75" PointY="46" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.City" Width="1.5" PointX="5.25" PointY="54.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItemDetail" Width="1.5" PointX="25.75" PointY="46.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ConsumeItem" Width="1.5" PointX="9.75" PointY="50" IsExpanded="true" />
@@ -60,7 +59,6 @@
         <AssociationConnector Association="DB_RessentialModel.FK__BranchAre__Creat__0E391C95" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Branches__Create__5535A963" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Branches__Modifi__5441852A" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Branc__5BE2A6F2" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Branc__1CBC4616" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Orders__BranchId__489AC854" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Products__Branch__37703C52" ManuallyRouted="false" />
@@ -69,9 +67,6 @@
         <AssociationConnector Association="DB_RessentialModel.FK__UserBranc__Branc__00DF2177" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Branc__7B5B524B" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Branc__2739D489" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Creat__5CD6CB2B" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__ItemI__5AEE82B9" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Modif__5DCAEF64" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__City__CountryId__05A3D694" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__Consu__2180FB33" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ConsumeIt__ItemI__22751F6C" ManuallyRouted="false" />
@@ -145,6 +140,11 @@
         <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Wasta__2BFE89A6" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.RolePermissions" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.UserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DB_RessentialModel.BranchItem" Width="1.5" PointX="26.75" PointY="50.5" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Branc__16CE6296" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Creat__17C286CF" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__ItemI__15DA3E5D" />
+        <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

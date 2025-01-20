@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Ressential.Models.WarehouseIssue>
+﻿@model IEnumerable<Ressential.Models.ReturnStock>
 
 @{
-    ViewBag.Title = "IssueList";
+    ViewBag.Title = "ReturnStockList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
@@ -11,8 +11,7 @@
         {
             <div class="alert alert-danger">
                 @TempData["ErrorMessage"]
-            </div>
-        }
+            </div>}
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success">
@@ -24,13 +23,13 @@
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="delete">Delete</option>
+                        <option value="receive">Receive Stock</option>
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
             </div>
             <div class="col-md-3 ms-auto">
-                <form id="searchForm" action="@Url.Action("IssueList", "Warehouse")" method="get">
+                <form id="searchForm" action="@Url.Action("ReturnStockList", "Warehouse")" method="get">
                     <div class="input-group input-group-sm mb-3">
                         <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
                         <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
@@ -39,60 +38,60 @@
             </div>
         </div>
         <div class="table-responsive">
-            <form id="actionForm" action="@Url.Action("DeleteSelectedIssues", "Warehouse")" method="post">
+            <form id="actionForm" action="@Url.Action("ReceiveSelectedStock", "Kitchen")" method="post">
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
                             <th scope="col" class="fit-content">
                                 <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
                             </th>
-                            <th scope="col">Issue No</th>
-                            <th scope="col">Issue Date</th>
+                            <th scope="col">Return Date</th>
+                            <th scope="col">Return No</th>
                             <th scope="col">Reference No</th>
                             <th scope="col">Branch</th>
-                            <th scope="col">Requisition No</th>
+                            <th scope="col">Description</th>.
                             <th scope="col">Items</th>
                             <th scope="col">Status</th>
                             <th scope="col" class="fit-content">Option</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var items in Model)
                         {
                             <tr>
-                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@item.IssueId" aria-label="Select Item"></td>
-                                <td>@item.IssueNo</td>
-                                <td>@item.IssueDate.ToString("dd-MMM-yyyy")</td>
-                                <td>@item.ReferenceNo</td>
-                                <td>@item.Branch.BranchName</td>
-                                <td>@item.Requisition.RequisitionNo</td>
+                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@items.ReturnStockId" aria-label="Select Stock Return"></td>
+                                <td>@items.ReturnDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@items.ReturnNo</td>
+                                <td>@items.ReferenceNo</td>
+                                <td>@items.Branch.BranchName</td>
+                                <td>@items.Description</td>
                                 @{
                                     string itemNames = "";
-                                    foreach (var detail in item.WarehouseIssueDetails)
+                                    foreach (var item in items.ReturnStockDetails)
                                     {
                                         if (itemNames == "")
                                         {
-                                            itemNames = detail.Item.ItemName;
+                                            itemNames = item.Item.ItemName;
                                         }
                                         else
                                         {
-                                            itemNames = itemNames + ", " + detail.Item.ItemName;
+                                            itemNames = itemNames + ", " + item.Item.ItemName;
                                         }
 
                                     }
                                     <td>@itemNames</td>
                                 }
                                 <td>
-                                    @if (item.Status == "Pending")
+                                    @if (items.Status == "Pending")
                                     {
                                         <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                             Pending
                                         </span>
                                     }
-                                    else if (item.Status == "Settled")
+                                    else if (items.Status == "Settled")
                                     {
                                         <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                            Issued
+                                            Received
                                         </span>
                                     }
                                 </td>
@@ -102,8 +101,8 @@
                                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@item.IssueId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@item.IssueId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitViewStockReturn(@items.ReturnStockId)"><i class="bi bi-eye" style="font-size: 1.25rem;"></i> View</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitReceiveStockReturn(@items.ReturnStockId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Receive Stock</button></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -112,50 +111,55 @@
                     </tbody>
                 </table>
             </form>
-            <form id="editDeleteForm" method="post" style="display: none;">
-                <input type="hidden" name="IssueId" id="formIssueId" />
+            <!-- Hidden Form for Edit/Delete Actions -->
+            <form id="optionForm" method="post" style="display: none;">
+                <input type="hidden" name="ReturnStockId" id="formReturnStockId" />
             </form>
         </div>
     </div>
 </div>
 
+
 <script>
-    // Function to toggle all checkboxes
-    function toggleAll(source) {
-        const checkboxes = document.querySelectorAll('.form-check-input');
-        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
-    }
-
-    function applyAction() {
-        const action = document.getElementById("actionDropdown").value;
-        const checkboxes = document.querySelectorAll('.item-checkbox:checked');
-
-        if (action === "delete") {
-            if (checkboxes.length === 0) {
-                alert("No records selected to delete.");
-                return;
+            // Function to toggle all checkboxes
+            function toggleAll(source) {
+                const checkboxes = document.querySelectorAll('.item-checkbox');
+                checkboxes.forEach(checkbox => checkbox.checked = source.checked);
             }
-            if (confirm("Are you sure you want to delete the selected records?")) {
-                document.getElementById("actionForm").submit();
+
+            function applyAction() {
+                const action = document.getElementById("actionDropdown").value;
+                const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+                if (action === "receive") {
+                    if (checkboxes.length === 0) {
+                        alert("No records selected to receive stock.");
+                        return;
+                    }
+                    if (confirm("Are you sure you want to receive the selected records?")) {
+                        document.getElementById("actionForm").submit();
+                    }
+                }
             }
-        }
-    }
 
-    function submitEditForm(IssueId) {
-        const form = document.getElementById("editDeleteForm");
-        form.action = "@Url.Action("EditIssue", "Warehouse")";
-        document.getElementById("formIssueId").value = IssueId;
-        form.method = "get";
-        form.submit();
-    }
-
-    function submitDeleteForm(IssueId) {
-        if (confirm('Are you sure you want to delete this record?')) {
-            const form = document.getElementById("editDeleteForm");
-            form.action = "@Url.Action("DeleteIssue", "Warehouse")";
-            document.getElementById("formIssueId").value = IssueId;
-            form.method = "post";
-            form.submit();
-        }
-    }
+            function submitReceiveStockReturn(ReturnStockId) {
+                const form = document.getElementById("optionForm");
+                form.action = "@Url.Action("ReceiveReturnStock", "Warehouse")";
+                document.getElementById("formReturnStockId").value = ReturnStockId;
+                form.method = "post";
+                form.submit();
+            }
+            function submitViewStockReturn(ReturnStockId) {
+                const form = document.getElementById("optionForm");
+                form.action = "@Url.Action("ViewReturnStock", "Warehouse")";
+                document.getElementById("formReturnStockId").value = ReturnStockId;
+                form.method = "post";
+                form.submit();
+            }
 </script>
+
+
+
+
+
+

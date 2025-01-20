@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<Ressential.Models.WarehouseIssue>
+
 @{
     ViewBag.Title = "ReceiveStockList";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
@@ -8,174 +9,118 @@
 
 <div class="card">
     <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>}
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
-                    <select class="form-select" id="inputGroupSelectStart">
+                    <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="1">Delete</option>
+                        <option value="receive">Receive Stock</option>
                     </select>
-                    <button class="btn btn-secondary" type="button">Apply</button>
+                    <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
             </div>
             <div class="col-md-3 ms-auto">
-                <div class="input-group input-group-sm mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Search">
-                    <button class="btn btn-secondary" type="button"><i class="fas fa-search"></i></button>
-                </div>
+                <form id="searchForm" action="@Url.Action("ReceiveStockList", "Kitchen")" method="get">
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
+                        <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" class="fit-content">
-                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
-                        </th>
-                        <th scope="col">Issue Date</th>
-                        <th scope="col">Issue No</th>
-                        <th scope="col">Requisition No</th>
-                        <th scope="col">Description</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" class="fit-content">Option</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" value="">
-                        </td>
-                        <td>2024-10-01</td>
-                        <td>001</td>
-                        <td>RQ12345</td>
-                        <td>Request for chicken pieces</td>
-                        <td>
-                            <span style="background-color: #2b982b; color: white; border-radius: 6px; padding: 5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Received
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="mainDropdown">
-                                    <li><a class="dropdown-item" href="#">View</a></li>
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Change Status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Received</a></li>
-                                            <li><a class="dropdown-item" href="#">Pending</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
+            <form id="actionForm" action="@Url.Action("ReceiveSelectedIssues", "Kitchen")" method="post">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="fit-content">
+                                <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                            </th>
+                            <th scope="col">Issue Date</th>
+                            <th scope="col">Issue No</th>
+                            <th scope="col">Requisition No</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="fit-content">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var issue in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@issue.IssueId" aria-label="Select Issue"></td>
+                                <td>@issue.IssueDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@issue.IssueNo</td>
+                                <td>@issue.Requisition.RequisitionNo</td>
+                                <td>@issue.Memo</td>
+                                @{
+                                    string itemNames = "";
+                                    foreach (var item in issue.WarehouseIssueDetails)
+                                    {
+                                        if (itemNames == "")
+                                        {
+                                            itemNames = item.Item.ItemName;
+                                        }
+                                        else
+                                        {
+                                            itemNames = itemNames + ", " + item.Item.ItemName;
+                                        }
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" value="">
-                        </td>
-                        <td>2024-10-02</td>
-                        <td>002</td>
-                        <td>RQ12346</td>
-                        <td>Request for 20kg potato</td>
-                        <td>
-                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Pending
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="mainDropdown">
-                                    <li><a class="dropdown-item" href="#">View</a></li>
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Change Status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Received</a></li>
-                                            <li><a class="dropdown-item" href="#">Pending</a></li>
+                                    }
+                                    <td>@itemNames</td>
+                                }
+                                <td>
+                                    @if (issue.Status == "Pending")
+                                    {
+                                        <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Pending
+                                        </span>
+                                    }
+                                    else if (issue.Status == "Settled")
+                                    {
+                                        <span style="background-color: forestgreen;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            Received
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <li><button class="dropdown-item" type="button" onclick="submitViewIssue(@issue.IssueId)"><i class="bi bi-eye" style="font-size: 1.25rem;"></i> View</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitReceiveIssue(@issue.IssueId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Receive Stock</button></li>
                                         </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" value="">
-                        </td>
-                        <td>2024-10-03</td>
-                        <td>003</td>
-                        <td>RQ12347</td>
-                        <td>Request for cooking oil</td>
-                        <td>
-                            <span style="background-color: #2b982b;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Received
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="mainDropdown">
-                                    <li><a class="dropdown-item" href="#">View</a></li>
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Change Status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Received</a></li>
-                                            <li><a class="dropdown-item" href="#">Pending</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="form-check-input" type="checkbox" value="">
-                        </td>
-                        <td>2024-10-04</td>
-                        <td>004</td>
-                        <td>RQ12348</td>
-                        <td>Request 10kg onion</td>
-                        <td>
-                            <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                Pending
-                            </span>
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Menu
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="mainDropdown">
-                                    <li><a class="dropdown-item" href="#">View</a></li>
-                                    <li class="dropdown-submenu">
-                                        <a class="dropdown-item dropdown-toggle" href="#">Change Status</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Received</a></li>
-                                            <li><a class="dropdown-item" href="#">Pending</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+            <!-- Hidden Form for Edit/Delete Actions -->
+            <form id="optionForm" method="post" style="display: none;">
+                <input type="hidden" name="IssueId" id="formIssueId" />
+            </form>
         </div>
     </div>
 </div>
 
 
 
-<script>
+@*<script>
     document.addEventListener("DOMContentLoaded", function () {
         var dropdownSubmenus = document.querySelectorAll('.dropdown-submenu');
         dropdownSubmenus.forEach(function (submenu) {
@@ -186,14 +131,45 @@
             });
         });
     });
-</script>
+</script>*@
 
 <script>
-    // Function to toggle all checkboxes
-    function toggleAll(source) {
-        const checkboxes = document.querySelectorAll('.form-check-input');
-        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
-    }</script>
+        // Function to toggle all checkboxes
+        function toggleAll(source) {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+        }
+
+        function applyAction() {
+            const action = document.getElementById("actionDropdown").value;
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+
+            if (action === "receive") {
+                if (checkboxes.length === 0) {
+                    alert("No records selected to receive stock.");
+                    return;
+                }
+                if (confirm("Are you sure you want to receive the selected records?")) {
+                    document.getElementById("actionForm").submit();
+                }
+            }
+        }
+
+        function submitReceiveIssue(IssueId) {
+            const form = document.getElementById("optionForm");
+            form.action = "@Url.Action("ReceiveIssue", "Kitchen")";
+            document.getElementById("formIssueId").value = IssueId;
+            form.method = "post";
+            form.submit();
+        }
+        function submitViewIssue(IssueId) {
+            const form = document.getElementById("optionForm");
+            form.action = "@Url.Action("ViewIssue", "Kitchen")";
+            document.getElementById("formIssueId").value = IssueId;
+            form.method = "post";
+            form.submit();
+        }
+</script>
 
 
 

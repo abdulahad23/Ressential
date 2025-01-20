@@ -60,6 +60,11 @@
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="BranchId" Type="int" Nullable="false" />
     <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="OpeningStockQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="OpeningStockValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="OpeningStockDate" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="CreatedBy" Type="int" Nullable="false" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -83,6 +88,7 @@
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="255" />
     <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
   </EntityType>
   <EntityType Name="ConsumeItems">
     <Key>
@@ -551,6 +557,7 @@
     <Property Name="ItemId" Type="int" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="255" />
     <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
   </EntityType>
   <EntityType Name="WastageItems">
     <Key>
@@ -662,7 +669,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BranchIte__Branc__5BE2A6F2">
+  <Association Name="FK__BranchIte__Branc__16CE6296">
     <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
     <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
     <ReferentialConstraint>
@@ -674,7 +681,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BranchIte__Creat__5CD6CB2B">
+  <Association Name="FK__BranchIte__Creat__17C286CF">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
     <ReferentialConstraint>
@@ -686,7 +693,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BranchIte__ItemI__5AEE82B9">
+  <Association Name="FK__BranchIte__ItemI__15DA3E5D">
     <End Role="Items" Type="Self.Items" Multiplicity="1" />
     <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
     <ReferentialConstraint>
@@ -698,7 +705,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__BranchIte__Modif__5DCAEF64">
+  <Association Name="FK__BranchIte__Modif__18B6AB08">
     <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
     <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1852,19 +1859,19 @@
       <End Role="Users" EntitySet="Users" />
       <End Role="Branches" EntitySet="Branches" />
     </AssociationSet>
-    <AssociationSet Name="FK__BranchIte__Branc__5BE2A6F2" Association="Self.FK__BranchIte__Branc__5BE2A6F2">
+    <AssociationSet Name="FK__BranchIte__Branc__16CE6296" Association="Self.FK__BranchIte__Branc__16CE6296">
       <End Role="Branches" EntitySet="Branches" />
       <End Role="BranchItems" EntitySet="BranchItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__BranchIte__Creat__5CD6CB2B" Association="Self.FK__BranchIte__Creat__5CD6CB2B">
+    <AssociationSet Name="FK__BranchIte__Creat__17C286CF" Association="Self.FK__BranchIte__Creat__17C286CF">
       <End Role="Users" EntitySet="Users" />
       <End Role="BranchItems" EntitySet="BranchItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__BranchIte__ItemI__5AEE82B9" Association="Self.FK__BranchIte__ItemI__5AEE82B9">
+    <AssociationSet Name="FK__BranchIte__ItemI__15DA3E5D" Association="Self.FK__BranchIte__ItemI__15DA3E5D">
       <End Role="Items" EntitySet="Items" />
       <End Role="BranchItems" EntitySet="BranchItems" />
     </AssociationSet>
-    <AssociationSet Name="FK__BranchIte__Modif__5DCAEF64" Association="Self.FK__BranchIte__Modif__5DCAEF64">
+    <AssociationSet Name="FK__BranchIte__Modif__18B6AB08" Association="Self.FK__BranchIte__Modif__18B6AB08">
       <End Role="Users" EntitySet="Users" />
       <End Role="BranchItems" EntitySet="BranchItems" />
     </AssociationSet>

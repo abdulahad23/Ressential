@@ -26,14 +26,31 @@
                             <label for="floatingInput">Minimum Stock Level</label>
                         </div>
                     </div>
-
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number" })
+                            <label for="floatingInput">Quantity In Hand</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number" })
+                            <label for="floatingInput">Stock Value</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(m => m.OpeningStockDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date" })
+                            <label for="floatingInput">Opening Stock Date</label>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
                             @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
                                     new { Value = true, Text = "Active" },
                                     new { Value = false, Text = "Inactive" }
                                 }, "Value", "Text"), new { @class = "form-control" })
-                            <label for="floatingInput">Product Status</label>
+                            <label for="floatingInput">Item Status</label>
                         </div>
                     </div>
                     <div class="row mt-3">

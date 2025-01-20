@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_RessentialModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Accounts">
           <Key>
             <PropertyRef Name="AccountId" />
@@ -65,6 +65,11 @@
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="BranchId" Type="int" Nullable="false" />
           <Property Name="MinimumStockLevel" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Quantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OpeningStockQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OpeningStockValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OpeningStockDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -88,6 +93,7 @@
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="ConsumeItems">
           <Key>
@@ -556,6 +562,7 @@
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="WastageItems">
           <Key>
@@ -667,7 +674,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BranchIte__Branc__5BE2A6F2">
+        <Association Name="FK__BranchIte__Branc__16CE6296">
           <End Role="Branches" Type="Self.Branches" Multiplicity="1" />
           <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
           <ReferentialConstraint>
@@ -679,7 +686,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BranchIte__Creat__5CD6CB2B">
+        <Association Name="FK__BranchIte__Creat__17C286CF">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
           <ReferentialConstraint>
@@ -691,7 +698,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BranchIte__ItemI__5AEE82B9">
+        <Association Name="FK__BranchIte__ItemI__15DA3E5D">
           <End Role="Items" Type="Self.Items" Multiplicity="1" />
           <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
           <ReferentialConstraint>
@@ -703,7 +710,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BranchIte__Modif__5DCAEF64">
+        <Association Name="FK__BranchIte__Modif__18B6AB08">
           <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
           <End Role="BranchItems" Type="Self.BranchItems" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1857,19 +1864,19 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Branches" EntitySet="Branches" />
           </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Branc__5BE2A6F2" Association="Self.FK__BranchIte__Branc__5BE2A6F2">
+          <AssociationSet Name="FK__BranchIte__Branc__16CE6296" Association="Self.FK__BranchIte__Branc__16CE6296">
             <End Role="Branches" EntitySet="Branches" />
             <End Role="BranchItems" EntitySet="BranchItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Creat__5CD6CB2B" Association="Self.FK__BranchIte__Creat__5CD6CB2B">
+          <AssociationSet Name="FK__BranchIte__Creat__17C286CF" Association="Self.FK__BranchIte__Creat__17C286CF">
             <End Role="Users" EntitySet="Users" />
             <End Role="BranchItems" EntitySet="BranchItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__ItemI__5AEE82B9" Association="Self.FK__BranchIte__ItemI__5AEE82B9">
+          <AssociationSet Name="FK__BranchIte__ItemI__15DA3E5D" Association="Self.FK__BranchIte__ItemI__15DA3E5D">
             <End Role="Items" EntitySet="Items" />
             <End Role="BranchItems" EntitySet="BranchItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Modif__5DCAEF64" Association="Self.FK__BranchIte__Modif__5DCAEF64">
+          <AssociationSet Name="FK__BranchIte__Modif__18B6AB08" Association="Self.FK__BranchIte__Modif__18B6AB08">
             <End Role="Users" EntitySet="Users" />
             <End Role="BranchItems" EntitySet="BranchItems" />
           </AssociationSet>
@@ -2214,8 +2221,7 @@
             <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_RessentialModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2282,7 +2288,6 @@
           <NavigationProperty Name="BranchAreas" Relationship="Self.FK__BranchAre__Branc__0C50D423" FromRole="Branches" ToRole="BranchArea" />
           <NavigationProperty Name="User" Relationship="Self.FK__Branches__Create__5535A963" FromRole="Branches" ToRole="Users" />
           <NavigationProperty Name="User1" Relationship="Self.FK__Branches__Modifi__5441852A" FromRole="Branches" ToRole="Users" />
-          <NavigationProperty Name="BranchItems" Relationship="Self.FK__BranchIte__Branc__5BE2A6F2" FromRole="Branches" ToRole="BranchItems" />
           <NavigationProperty Name="ConsumeItems" Relationship="Self.FK__ConsumeIt__Branc__1CBC4616" FromRole="Branches" ToRole="ConsumeItems" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__BranchId__489AC854" FromRole="Branches" ToRole="Orders" />
           <NavigationProperty Name="Products" Relationship="Self.FK__Products__Branch__37703C52" FromRole="Branches" ToRole="Products" />
@@ -2291,24 +2296,7 @@
           <NavigationProperty Name="UserBranchDetials" Relationship="Self.FK__UserBranc__Branc__00DF2177" FromRole="Branches" ToRole="UserBranchDetial" />
           <NavigationProperty Name="WarehouseIssues" Relationship="Self.FK__Warehouse__Branc__7B5B524B" FromRole="Branches" ToRole="WarehouseIssues" />
           <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Branc__2739D489" FromRole="Branches" ToRole="WastageItems" />
-        </EntityType>
-        <EntityType Name="BranchItem">
-          <Key>
-            <PropertyRef Name="BranchItemId" />
-          </Key>
-          <Property Name="BranchItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ItemId" Type="Int32" Nullable="false" />
-          <Property Name="BranchId" Type="Int32" Nullable="false" />
-          <Property Name="MinimumStockLevel" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="ModifiedBy" Type="Int32" />
-          <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="Branch" Relationship="Self.FK__BranchIte__Branc__5BE2A6F2" FromRole="BranchItems" ToRole="Branches" />
-          <NavigationProperty Name="User" Relationship="Self.FK__BranchIte__Creat__5CD6CB2B" FromRole="BranchItems" ToRole="Users" />
-          <NavigationProperty Name="Item" Relationship="Self.FK__BranchIte__ItemI__5AEE82B9" FromRole="BranchItems" ToRole="Items" />
-          <NavigationProperty Name="User1" Relationship="Self.FK__BranchIte__Modif__5DCAEF64" FromRole="BranchItems" ToRole="Users" />
+          <NavigationProperty Name="BranchItems" Relationship="DB_RessentialModel.FK__BranchIte__Branc__16CE6296" FromRole="Branch" ToRole="BranchItem" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -2331,6 +2319,7 @@
           <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="ConsumeItem" Relationship="Self.FK__ConsumeIt__Consu__2180FB33" FromRole="ConsumeItemDetails" ToRole="ConsumeItems" />
           <NavigationProperty Name="Item" Relationship="Self.FK__ConsumeIt__ItemI__22751F6C" FromRole="ConsumeItemDetails" ToRole="Items" />
+          <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="ConsumeItem">
           <Key>
@@ -2400,7 +2389,6 @@
           <Property Name="OpeningStockDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="ModifiedBy" Type="Int32" />
           <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="BranchItems" Relationship="Self.FK__BranchIte__ItemI__5AEE82B9" FromRole="Items" ToRole="BranchItems" />
           <NavigationProperty Name="ConsumeItemDetails" Relationship="Self.FK__ConsumeIt__ItemI__22751F6C" FromRole="Items" ToRole="ConsumeItemDetails" />
           <NavigationProperty Name="ItemCategory" Relationship="Self.FK__Items__ItemCateg__440B1D61" FromRole="Items" ToRole="ItemCategory" />
           <NavigationProperty Name="User" Relationship="Self.FK__Items__CreatedBy__45F365D3" FromRole="Items" ToRole="Users" />
@@ -2414,6 +2402,7 @@
           <NavigationProperty Name="WarehouseIssueDetails" Relationship="Self.FK__Warehouse__ItemI__01142BA1" FromRole="Items" ToRole="WarehouseIssueDetails" />
           <NavigationProperty Name="WarehouseItemStock" Relationship="Self.FK__Warehouse__ItemI__49C3F6B7" FromRole="Items" ToRole="WarehouseItemStock" />
           <NavigationProperty Name="WastageItemDetails" Relationship="Self.FK__WastageIt__ItemI__2CF2ADDF" FromRole="Items" ToRole="WastageItemDetails" />
+          <NavigationProperty Name="BranchItems" Relationship="DB_RessentialModel.FK__BranchIte__ItemI__15DA3E5D" FromRole="Item" ToRole="BranchItem" />
         </EntityType>
         <EntityType Name="OnlineOrderDetail">
           <Key>
@@ -2823,8 +2812,6 @@
           <NavigationProperty Name="BranchAreas" Relationship="Self.FK__BranchAre__Creat__0E391C95" FromRole="Users" ToRole="BranchArea" />
           <NavigationProperty Name="Branches" Relationship="Self.FK__Branches__Create__5535A963" FromRole="Users" ToRole="Branches" />
           <NavigationProperty Name="Branches1" Relationship="Self.FK__Branches__Modifi__5441852A" FromRole="Users" ToRole="Branches" />
-          <NavigationProperty Name="BranchItems" Relationship="Self.FK__BranchIte__Creat__5CD6CB2B" FromRole="Users" ToRole="BranchItems" />
-          <NavigationProperty Name="BranchItems1" Relationship="Self.FK__BranchIte__Modif__5DCAEF64" FromRole="Users" ToRole="BranchItems" />
           <NavigationProperty Name="ConsumeItems" Relationship="Self.FK__ConsumeIt__Creat__1DB06A4F" FromRole="Users" ToRole="ConsumeItems" />
           <NavigationProperty Name="ConsumeItems1" Relationship="Self.FK__ConsumeIt__Modif__1EA48E88" FromRole="Users" ToRole="ConsumeItems" />
           <NavigationProperty Name="Items" Relationship="Self.FK__Items__CreatedBy__45F365D3" FromRole="Users" ToRole="Items" />
@@ -2860,6 +2847,8 @@
           <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Creat__282DF8C2" FromRole="Users" ToRole="WastageItems" />
           <NavigationProperty Name="WastageItems1" Relationship="Self.FK__WastageIt__Modif__29221CFB" FromRole="Users" ToRole="WastageItems" />
           <NavigationProperty Name="Roles2" Relationship="Self.UserRoles" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="BranchItems" Relationship="DB_RessentialModel.FK__BranchIte__Creat__17C286CF" FromRole="User" ToRole="BranchItem" />
+          <NavigationProperty Name="BranchItems1" Relationship="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08" FromRole="User" ToRole="BranchItem" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -2940,6 +2929,7 @@
           <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="Self.FK__WastageIt__ItemI__2CF2ADDF" FromRole="WastageItemDetails" ToRole="Items" />
           <NavigationProperty Name="WastageItem" Relationship="Self.FK__WastageIt__Wasta__2BFE89A6" FromRole="WastageItemDetails" ToRole="WastageItems" />
+          <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="WastageItem">
           <Key>
@@ -3079,18 +3069,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BranchIte__Branc__5BE2A6F2">
-          <End Role="Branches" Type="Self.Branch" Multiplicity="1" />
-          <End Role="BranchItems" Type="Self.BranchItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Branches">
-              <PropertyRef Name="BranchId" />
-            </Principal>
-            <Dependent Role="BranchItems">
-              <PropertyRef Name="BranchId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__ConsumeIt__Branc__1CBC4616">
           <End Role="Branches" Type="Self.Branch" Multiplicity="1" />
           <End Role="ConsumeItems" Type="Self.ConsumeItem" Multiplicity="*" />
@@ -3186,42 +3164,6 @@
             </Principal>
             <Dependent Role="WastageItems">
               <PropertyRef Name="BranchId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__BranchIte__Creat__5CD6CB2B">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="BranchItems" Type="Self.BranchItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="BranchItems">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__BranchIte__ItemI__5AEE82B9">
-          <End Role="Items" Type="Self.Item" Multiplicity="1" />
-          <End Role="BranchItems" Type="Self.BranchItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Items">
-              <PropertyRef Name="ItemId" />
-            </Principal>
-            <Dependent Role="BranchItems">
-              <PropertyRef Name="ItemId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__BranchIte__Modif__5DCAEF64">
-          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-          <End Role="BranchItems" Type="Self.BranchItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="BranchItems">
-              <PropertyRef Name="ModifiedBy" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4122,7 +4064,6 @@
           <EntitySet Name="Areas" EntityType="Self.Area" />
           <EntitySet Name="BranchAreas" EntityType="Self.BranchArea" />
           <EntitySet Name="Branches" EntityType="Self.Branch" />
-          <EntitySet Name="BranchItems" EntityType="Self.BranchItem" />
           <EntitySet Name="Cities" EntityType="Self.City" />
           <EntitySet Name="ConsumeItemDetails" EntityType="Self.ConsumeItemDetail" />
           <EntitySet Name="ConsumeItems" EntityType="Self.ConsumeItem" />
@@ -4203,10 +4144,6 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Branches" EntitySet="Branches" />
           </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Branc__5BE2A6F2" Association="Self.FK__BranchIte__Branc__5BE2A6F2">
-            <End Role="Branches" EntitySet="Branches" />
-            <End Role="BranchItems" EntitySet="BranchItems" />
-          </AssociationSet>
           <AssociationSet Name="FK__ConsumeIt__Branc__1CBC4616" Association="Self.FK__ConsumeIt__Branc__1CBC4616">
             <End Role="Branches" EntitySet="Branches" />
             <End Role="ConsumeItems" EntitySet="ConsumeItems" />
@@ -4238,18 +4175,6 @@
           <AssociationSet Name="FK__WastageIt__Branc__2739D489" Association="Self.FK__WastageIt__Branc__2739D489">
             <End Role="Branches" EntitySet="Branches" />
             <End Role="WastageItems" EntitySet="WastageItems" />
-          </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Creat__5CD6CB2B" Association="Self.FK__BranchIte__Creat__5CD6CB2B">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="BranchItems" EntitySet="BranchItems" />
-          </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__ItemI__5AEE82B9" Association="Self.FK__BranchIte__ItemI__5AEE82B9">
-            <End Role="Items" EntitySet="Items" />
-            <End Role="BranchItems" EntitySet="BranchItems" />
-          </AssociationSet>
-          <AssociationSet Name="FK__BranchIte__Modif__5DCAEF64" Association="Self.FK__BranchIte__Modif__5DCAEF64">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="BranchItems" EntitySet="BranchItems" />
           </AssociationSet>
           <AssociationSet Name="FK__City__CountryId__05A3D694" Association="Self.FK__City__CountryId__05A3D694">
             <End Role="Country" EntitySet="Countries" />
@@ -4543,7 +4468,95 @@
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
           </AssociationSet>
+          <EntitySet Name="BranchItems" EntityType="DB_RessentialModel.BranchItem" />
+          <AssociationSet Name="FK__BranchIte__Branc__16CE6296" Association="DB_RessentialModel.FK__BranchIte__Branc__16CE6296">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="BranchItem" EntitySet="BranchItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BranchIte__Creat__17C286CF" Association="DB_RessentialModel.FK__BranchIte__Creat__17C286CF">
+            <End Role="User" EntitySet="Users" />
+            <End Role="BranchItem" EntitySet="BranchItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BranchIte__ItemI__15DA3E5D" Association="DB_RessentialModel.FK__BranchIte__ItemI__15DA3E5D">
+            <End Role="Item" EntitySet="Items" />
+            <End Role="BranchItem" EntitySet="BranchItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__BranchIte__Modif__18B6AB08" Association="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08">
+            <End Role="User" EntitySet="Users" />
+            <End Role="BranchItem" EntitySet="BranchItems" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="BranchItem">
+          <Key>
+            <PropertyRef Name="BranchItemId" />
+          </Key>
+          <Property Name="BranchItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <Property Name="BranchId" Type="Int32" Nullable="false" />
+          <Property Name="MinimumStockLevel" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Quantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OpeningStockQuantity" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OpeningStockValue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OpeningStockDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ModifiedBy" Type="Int32" />
+          <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="Branch" Relationship="DB_RessentialModel.FK__BranchIte__Branc__16CE6296" FromRole="BranchItem" ToRole="Branch" />
+          <NavigationProperty Name="User" Relationship="DB_RessentialModel.FK__BranchIte__Creat__17C286CF" FromRole="BranchItem" ToRole="User" />
+          <NavigationProperty Name="Item" Relationship="DB_RessentialModel.FK__BranchIte__ItemI__15DA3E5D" FromRole="BranchItem" ToRole="Item" />
+          <NavigationProperty Name="User1" Relationship="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08" FromRole="BranchItem" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__BranchIte__Branc__16CE6296">
+          <End Type="DB_RessentialModel.Branch" Role="Branch" Multiplicity="1" />
+          <End Type="DB_RessentialModel.BranchItem" Role="BranchItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="BranchItem">
+              <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BranchIte__Creat__17C286CF">
+          <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1" />
+          <End Type="DB_RessentialModel.BranchItem" Role="BranchItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="BranchItem">
+              <PropertyRef Name="CreatedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BranchIte__ItemI__15DA3E5D">
+          <End Type="DB_RessentialModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="DB_RessentialModel.BranchItem" Role="BranchItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ItemId" />
+            </Principal>
+            <Dependent Role="BranchItem">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__BranchIte__Modif__18B6AB08">
+          <End Type="DB_RessentialModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="DB_RessentialModel.BranchItem" Role="BranchItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="BranchItem">
+              <PropertyRef Name="ModifiedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4606,21 +4619,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BranchItems">
-            <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
-              <MappingFragment StoreEntitySet="BranchItems">
-                <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
-                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-                <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Cities">
             <EntityTypeMapping TypeName="DB_RessentialModel.City">
               <MappingFragment StoreEntitySet="City">
@@ -4633,6 +4631,7 @@
           <EntitySetMapping Name="ConsumeItemDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.ConsumeItemDetail">
               <MappingFragment StoreEntitySet="ConsumeItemDetails">
+                <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
                 <ScalarProperty Name="ConsumeItemDetailId" ColumnName="ConsumeItemDetailId" />
                 <ScalarProperty Name="ConsumeItemId" ColumnName="ConsumeItemId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -5122,6 +5121,7 @@
           <EntitySetMapping Name="WastageItemDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.WastageItemDetail">
               <MappingFragment StoreEntitySet="WastageItemDetails">
+                <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
                 <ScalarProperty Name="WastageItemDetailId" ColumnName="WastageItemDetailId" />
                 <ScalarProperty Name="WastageItemId" ColumnName="WastageItemId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
@@ -5161,6 +5161,26 @@
               <ScalarProperty Name="UserId" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="BranchItems">
+            <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
+              <MappingFragment StoreEntitySet="BranchItems">
+                <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
+                <ScalarProperty Name="OpeningStockValue" ColumnName="OpeningStockValue" />
+                <ScalarProperty Name="OpeningStockQuantity" ColumnName="OpeningStockQuantity" />
+                <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

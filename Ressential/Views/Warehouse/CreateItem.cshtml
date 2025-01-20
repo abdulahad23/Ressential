@@ -28,13 +28,6 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(m => m.UnitOfMeasureId, new SelectList(ViewBag.Units, "UnitOfMeasureId", "Name"), "Select Item Unit", new { @class = "form-control" })
-                                @*<select class="form-control" id="unitID" name="">
-                    <option selected value="0">Select Item Unit</option>
-                    <option value="1">Kg  - Kilogram</option>
-                    <option value="2">Pcs - Pieces</option>
-                    <option value="3">G   - Gram</option>
-                    <option value="4">L   - Liter</option>
-                </select>*@
                                 <label for="floatingInput">Item Unit</label>
                             </div>
                         </div>
@@ -69,23 +62,13 @@
                                 <label for="floatingInput">Minimum Stock Level</label>
                             </div>
                         </div>
-                        @*<div class="col-md-6">
-            <div class="form-floating mb-3 mt-3">
-                <select class="form-control" id="costingID" name="">
-                    <option selected value="0">Select Costing Type</option>
-                    <option value="1">FIFO</option>
-                    <option value="2">Average</option>
-                </select>
-                <label for="floatingInput">Costing Type</label>
-            </div>
-        </div>*@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
                                     new { Value = true, Text = "Active" },
                                     new { Value = false, Text = "Inactive" }
                                 }, "Value", "Text"), new { @class = "form-control" })
-                                <label for="floatingInput">Product Status</label>
+                                <label for="floatingInput">Item Status</label>
                             </div>
                         </div>
                         <div class="row mt-3">

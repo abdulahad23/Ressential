@@ -31,30 +31,34 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.OrderDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Order Date", @type = "date" })
                                 <label for="floatingInput">Order Date</label>
+                                @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 <select class="form-control" id="PaymentMethod" name="PaymentMethod">
                                     <option selected value="Cash">Cash</option>
-                                    <option value="Online">Debit or Credit Card</option>
+                                    <option value="Card">Card</option>
                                 </select>
                                 <label for="floatingInput">Payment Method</label>
+                                @Html.ValidationMessageFor(model => model.PaymentMethod, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 <select class="form-control" id="OrderType" name="OrderType">
-                                    <option selected value="Dine-In">Dine-In</option>
-                                    <option value="Take-Away">Take-Away</option>
+                                    <option selected value="DineIn">Dine-In</option>
+                                    <option value="TakeAway">Take-Away</option>
                                 </select>
                                 <label for="floatingInput">Order Type</label>
+                                @Html.ValidationMessageFor(model => model.OrderType, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.TableNo, "", new { @class = "form-control", @placeholder = "Table No" })
                                 <label for="floatingInput">Table No</label>
+                                @Html.ValidationMessageFor(model => model.TableNo, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <h2 class="text-secondary pt-3"><b>Products</b></h2>
@@ -66,7 +70,7 @@
                                             <tr class="item-row">
                                                 <td class="tbl-min-width-7 col-5 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        <select class="form-control product-select" name="OrderDetails[0].ProductId">
+                                                        <select class="form-control product-select" name="OrderDetails[0].ProductId" required>
                                                             <option value="" disabled selected>Select Product</option>
                                                             @foreach (var product in ViewBag.Products)
                                                             {
@@ -78,7 +82,7 @@
                                                 </td>
                                                 <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control quantity" name="OrderDetails[0].ProductQuantity" value="1" />
+                                                        <input type="number" class="form-control quantity" name="OrderDetails[0].ProductQuantity" value="1" required />
                                                         <label>Quantity</label>
                                                     </div>
                                                 </td>
@@ -120,6 +124,7 @@
                                     <label for="totalAmount" class="form-label"><b>Total Amount:</b></label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
+                                        <input type="hidden" id="grandTotalHidden" name="grandTotal" value="@Model.OrderTotal" />
                                         <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount" name="grandTotal" readonly>
                                     </div>
                                 </div>
@@ -160,7 +165,7 @@
         newRow.innerHTML = `
             <td class="tbl-min-width-7 col-5 mb-3 mt-3">
                 <div class="form-floating">
-                    <select class="form-control product-select" name="OrderDetails[${rowIndex}].ProductId">
+                    <select class="form-control product-select" name="OrderDetails[${rowIndex}].ProductId" required>
                         <option value="" disabled selected>Select Product</option>
                         @foreach (var product in ViewBag.Products)
                         {
@@ -174,13 +179,13 @@
             </td>
             <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                 <div class="form-floating">
-                    <input type="number" class="form-control quantity" name="OrderDetails[${rowIndex}].ProductQuantity" value="1" />
+                    <input type="number" class="form-control quantity" name="OrderDetails[${rowIndex}].ProductQuantity" value="1" required/>
                     <label>Quantity</label>
                 </div>
             </td>
             <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                 <div class="form-floating">
-                    <input type="number" class="form-control price" name="OrderDetails[${rowIndex}].ProductPrice" readonly />
+                    <input type="number" class="form-control price" name="OrderDetails[${rowIndex}].ProductPrice" readonly/>
                     <label>Price</label>
                 </div>
             </td>
@@ -201,9 +206,92 @@
     });
 
     $(document).ready(function () {
-        
+        // Error container
+        const errorContainer = $('<div class="text-danger" id="productErrors"></div>');
+        $('.text-secondary.pt-3').after(errorContainer);
 
-        // Update price when product changes
+        function displayError(message) {
+            $('#productErrors').html(message);
+        }
+
+        function clearError() {
+            $('#productErrors').html('');
+        }
+
+        function validateProducts() {
+            let isValid = true;
+            let errorMessage = '';
+            const rows = $('#itemsTableBody .item-row');
+
+            if (rows.length === 0) {
+                errorMessage = 'At least one product must be added.';
+                isValid = false;
+            }
+
+            rows.each(function () {
+                const quantityInput = $(this).find('.quantity');
+                const productSelect = $(this).find('.product-select');
+
+                // Check for valid quantity
+                const quantity = parseFloat(quantityInput.val());
+                if (!Number.isInteger(quantity) || quantity <= 0) {
+                    quantityInput.addClass('is-invalid');
+                    isValid = false;
+                    errorMessage = 'Quantity must be a whole number greater than 0.';
+                } else {
+                    quantityInput.removeClass('is-invalid');
+                }
+
+                // Check for selected product
+                if (productSelect.val() === null || productSelect.val() === '') {
+                    productSelect.addClass('is-invalid');
+                    isValid = false;
+                    errorMessage = 'All rows must have a product selected.';
+                } else {
+                    productSelect.removeClass('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                displayError(errorMessage);
+            } else {
+                clearError();
+            }
+
+            return isValid;
+        }
+
+        // Validate before form submission
+        $('form').on('submit', function (e) {
+            if (!validateProducts()) {
+                e.preventDefault();
+            }
+        });
+
+        // Validate when quantity changes
+        $(document).on('input', '.quantity', function () {
+            validateProducts();
+        });
+
+        // Validate when product changes
+        $(document).on('change', '.product-select', function () {
+            validateProducts();
+        });
+
+        // Remove row validation
+        $(document).on('click', '.removeRowBtn', function () {
+            const rows = $('#itemsTableBody .item-row');
+            if (rows.length > 1) {
+                $(this).closest('.item-row').remove();
+                renumberRows();
+                updateGrandTotal();
+                validateProducts();
+            } else {
+                alert("At least one item is required.");
+            }
+        });
+
+        // Functions for price and grand total remain unchanged
         $(document).on('change', '.product-select', function () {
             const selectedOption = $(this).find(':selected');
             const price = selectedOption.data('price');
@@ -213,13 +301,11 @@
             updateLineTotal(row);
         });
 
-        // Update line total when quantity changes
         $(document).on('input', '.quantity', function () {
             const row = $(this).closest('.item-row');
             updateLineTotal(row);
         });
 
-        // Function to update line total
         function updateLineTotal(row) {
             const quantity = parseFloat(row.find('.quantity').val()) || 0;
             const price = parseFloat(row.find('.price').val()) || 0;
@@ -228,18 +314,6 @@
             updateGrandTotal();
         }
 
-        // Remove row and update grand total
-        $(document).on('click', '.removeRowBtn', function () {
-            if ($('#itemsTableBody .item-row').length > 1) {
-                $(this).closest('.item-row').remove();
-                renumberRows();
-                updateGrandTotal();
-            } else {
-                alert("At least one item is required.");
-            }
-        });
-
-        // Function to calculate and update grand total
         function updateGrandTotal() {
             let grandTotal = 0;
             $('.total').each(function () {
@@ -247,15 +321,15 @@
             });
             $('#totalAmount').val(grandTotal.toFixed(2));
         }
-    });
-    function renumberRows() {
-        $('#itemsTableBody .item-row').each(function (index) {
-            $(this).find('.product-select').attr('name', `OrderDetails[${index}].ProductId`);
-            $(this).find('.quantity').attr('name', `OrderDetails[${index}].ProductQuantity`);
-            $(this).find('.price').attr('name', `OrderDetails[${index}].ProductPrice`);
-            $(this).find('.total').attr('name', `OrderDetails[${index}].ProductTotal`);
-        });
-    }
-</script>
 
+        function renumberRows() {
+            $('#itemsTableBody .item-row').each(function (index) {
+                $(this).find('.product-select').attr('name', `OrderDetails[${index}].ProductId`);
+                $(this).find('.quantity').attr('name', `OrderDetails[${index}].ProductQuantity`);
+                $(this).find('.price').attr('name', `OrderDetails[${index}].ProductPrice`);
+                $(this).find('.total').attr('name', `OrderDetails[${index}].ProductTotal`);
+            });
+        }
+    });
+</script>
 
