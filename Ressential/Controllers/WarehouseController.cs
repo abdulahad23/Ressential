@@ -732,7 +732,19 @@ namespace Ressential.Controllers
             {
                 try
                 {
-                    model.PaymentVoucherNo = GenerateVoucherNumber();
+                    string datePart = DateTime.Now.ToString("yyyyMM");
+                    int nextPaymentVoucherNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.PaymentVouchers.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextPaymentVoucherNumber = _db.PaymentVouchers
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.PaymentVoucherNo.Substring(11)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    model.PaymentVoucherNo = $"PV-{datePart}{nextPaymentVoucherNumber:D4}";
                     model.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     model.CreatedAt = DateTime.Now;
                     model.Status = "Pending";
@@ -784,11 +796,6 @@ namespace Ressential.Controllers
             ViewBag.Vendors = _db.Vendors.ToList();
             ViewBag.Accounts = _db.Accounts.ToList();
             return View(model);
-        }
-
-        private string GenerateVoucherNumber()
-        {
-            return "PV-" + DateTime.Now.Ticks;
         }
 
         public ActionResult PaymentVoucherList(string search)
@@ -998,7 +1005,19 @@ namespace Ressential.Controllers
             {
                 try
                 {
-                    model.ReceiptVoucherNo = GenerateReceiptVoucherNumber();
+                    string datePart = DateTime.Now.ToString("yyyyMM");
+                    int nextReceiptVoucherNumber = 1;
+
+                    // Check if there are any existing purchases first
+                    if (_db.ReceiptVouchers.Any())
+                    {
+                        // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
+                        nextReceiptVoucherNumber = _db.ReceiptVouchers
+                            .AsEnumerable()  // Forces execution in-memory
+                            .Select(p => int.Parse(p.ReceiptVoucherNo.Substring(11)))  // Now we can safely use Convert.ToInt32
+                            .Max() + 1;
+                    }
+                    model.ReceiptVoucherNo = $"RV-{datePart}{nextReceiptVoucherNumber:D4}";
                     model.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     model.CreatedAt = DateTime.Now;
                     model.Status = "Pending";
@@ -1387,6 +1406,7 @@ namespace Ressential.Controllers
                     var existingPurchase = _db.Purchases.Include(p => p.PurchaseDetails).FirstOrDefault(p => p.PurchaseId == purchase.PurchaseId);
                     if (existingPurchase == null)
                     {
+                        TempData["ErrorMessage"] = "Purchase not found";
                         return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
                     }
 
@@ -1413,6 +1433,8 @@ namespace Ressential.Controllers
                         {
                             //decimal RevertedTotalCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice);
                             decimal RevertedQuantity = warehouseItemStock.Quantity - existingDetail.Quantity;
+                            decimal currentQuantity = warehouseItemStock.Quantity;
+                            
                             //decimal RevertedAverageCost = RevertedTotalCost / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
                             //decimal RevertedAverageCost = (warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) / (RevertedQuantity == 0 ? 1 : RevertedQuantity);
 
@@ -1421,9 +1443,14 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return Json(new { status = "error", message = "Quantity Error" }, JsonRequestBehavior.AllowGet);
+                            }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                                warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
                             }
                             
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
@@ -1431,15 +1458,20 @@ namespace Ressential.Controllers
                         }
                         else
                         {
-                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            decimal currentQuantity = warehouseItemStock.Quantity;
                             warehouseItemStock.Quantity = warehouseItemStock.Quantity + newDetail.Quantity; //Updated Quantity
                             if (warehouseItemStock.Quantity == 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return Json(new { status = "error", message = "Quantity Error" }, JsonRequestBehavior.AllowGet);
+                            }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
+                                warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
                             }
                             existingPurchase.PurchaseDetails.Add(newDetail); // Add new detail
                         }
@@ -1451,15 +1483,20 @@ namespace Ressential.Controllers
                         foreach (var item in existingDetails)
                         {
                             var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            decimal currentQuantity = warehouseItemStock.Quantity;
                             warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
                             if (warehouseItemStock.Quantity == 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return Json(new { status = "error", message = "Quantity Error" }, JsonRequestBehavior.AllowGet);
+                            }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
+                                warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
                             }
                         }
                         _db.PurchaseDetails.RemoveRange(existingDetails);
@@ -1510,15 +1547,20 @@ namespace Ressential.Controllers
                     foreach (var item in purchaseDetails)
                     {
                         var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                        decimal oldQuantity = warehouseItemStock.Quantity;
+                        decimal currentQuantity = warehouseItemStock.Quantity;
                         warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
                         if (warehouseItemStock.Quantity == 0)
                         {
                             warehouseItemStock.CostPerUnit = 0;
                         }
+                        else if (warehouseItemStock.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Unable to delete the purchase. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                            return RedirectToAction("PurchaseList");
+                        }
                         else
                         {
-                            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                            warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                         }
                     }
                 }
@@ -1550,12 +1592,6 @@ namespace Ressential.Controllers
                     var purchasesToDelete = _db.Purchases.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
                     var purchaseDetails = _db.PurchaseDetails.Where(c => selectedItems.Contains(c.PurchaseId)).ToList();
 
-                    //foreach (var item in purchasesToDelete)
-                    //{
-                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "Purchase" && w.TransactionTypeId == item.PurchaseId);
-                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
-                    //}
-
                     if (purchaseDetails != null)
                     {
                         foreach (var item in purchaseDetails)
@@ -1566,6 +1602,11 @@ namespace Ressential.Controllers
                             if (warehouseItemStock.Quantity == 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to delete the purchase "+ item.Purchase.PurchaseNo +". Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("PurchaseList");
                             }
                             else
                             {
@@ -1649,17 +1690,7 @@ namespace Ressential.Controllers
                             currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) - (purchaseReturnDetails.Quantity * purchaseReturnDetails.UnitPrice)) / (currentItemStock.Quantity);
                         }
 
-                        //var warehouseItemTransaction = new WarehouseItemTransaction
-                        //{
-                        //    TransactionDate = purchaseReturn.PurchaseReturnDate,
-                        //    ItemId = purchaseReturnDetails.ItemId,
-                        //    TransactionType = "PurchaseReturn",
-                        //    TransactionTypeId = purchaseReturn.PurchaseReturnId,
-                        //    Quantity = purchaseReturnDetails.Quantity,
-                        //    CostPerUnit = purchaseReturnDetails.UnitPrice
-                        //};
                         _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                        //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     }
                     _db.SaveChanges();
 
@@ -1774,9 +1805,14 @@ namespace Ressential.Controllers
 
                             warehouseItemStock.Quantity -= newDetail.Quantity;
                             var newTotalCost = newDetail.Quantity * newDetail.UnitPrice;
-                            if (warehouseItemStock.Quantity <= 0)
+                            if (warehouseItemStock.Quantity == 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase return. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("PurchaseList");
                             }
                             else
                             {
@@ -1793,14 +1829,19 @@ namespace Ressential.Controllers
 
                             warehouseItemStock.Quantity -= newDetail.Quantity; // Subtract new quantity
 
-                            if (warehouseItemStock.Quantity > 0)
+                            if (warehouseItemStock.Quantity == 0)
                             {
-                                var totalCostAfterChange = totalCostBeforeChange + (newDetail.Quantity * newDetail.UnitPrice);
-                                warehouseItemStock.CostPerUnit = totalCostAfterChange / warehouseItemStock.Quantity;
+                                warehouseItemStock.CostPerUnit = 0;
+                            }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase return. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("PurchaseList");
                             }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = 0; // No stock left
+                                var totalCostAfterChange = totalCostBeforeChange + (newDetail.Quantity * newDetail.UnitPrice);
+                                warehouseItemStock.CostPerUnit = totalCostAfterChange / warehouseItemStock.Quantity;
                             }
 
                             existingPurchaseReturn.PurchaseReturnDetails.Add(newDetail); // Add new detail
@@ -1813,15 +1854,20 @@ namespace Ressential.Controllers
                         foreach (var item in existingDetails)
                         {
                             var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                            decimal oldQuantity = warehouseItemStock.Quantity;
+                            decimal currentQuantity = warehouseItemStock.Quantity;
                             warehouseItemStock.Quantity = warehouseItemStock.Quantity + item.Quantity;
                             if (warehouseItemStock.Quantity == 0)
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the purchase return. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("PurchaseList");
+                            }
                             else
                             {
-                                warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
+                                warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
                             }
                         }
                         _db.PurchaseReturnDetails.RemoveRange(existingDetails);
@@ -1832,7 +1878,7 @@ namespace Ressential.Controllers
                     _db.SaveChanges();
                     transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    TempData["SuccessMessage"] = "Purchase return updated successfully.";
                     return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
                 }
                 catch (DbEntityValidationException ex)
@@ -1849,7 +1895,7 @@ namespace Ressential.Controllers
                         }
                     }
 
-                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    TempData["ErrorMessage"] = "An error occurred while updating the purchase return.";
                     return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -1862,7 +1908,7 @@ namespace Ressential.Controllers
                 var purchaseReturn = _db.PurchaseReturns.Find(purchaseReturnId);
                 if (purchaseReturn == null)
                 {
-                    TempData["ErrorMessage"] = "Item not found.";
+                    TempData["ErrorMessage"] = "Purchase return not found.";
                     return RedirectToAction("PurchaseReturnList");
                 }
                 var purchaseReturnDetails = _db.PurchaseReturnDetails.Select(p => p).Where(p => p.PurchaseReturnId == purchaseReturnId);
@@ -1872,32 +1918,37 @@ namespace Ressential.Controllers
                     foreach (var item in purchaseReturnDetails)
                     {
                         var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                        decimal oldQuantity = warehouseItemStock.Quantity;
+                        decimal currentQuantity = warehouseItemStock.Quantity;
                         warehouseItemStock.Quantity = warehouseItemStock.Quantity + item.Quantity;
                         if (warehouseItemStock.Quantity == 0)
                         {
                             warehouseItemStock.CostPerUnit = 0;
                         }
+                        else if (warehouseItemStock.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Unable to delete the purchase return. Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                            return RedirectToAction("PurchaseList");
+                        }
                         else
                         {
-                            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
+                            warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                         }
                     }
                 }
                 _db.PurchaseReturnDetails.RemoveRange(purchaseReturnDetails);
                 _db.PurchaseReturns.Remove(purchaseReturn);
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "Item deleted successfully.";
+                TempData["SuccessMessage"] = "Purchase return deleted successfully.";
             }
             catch (DbUpdateException ex)
             {
                 if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                 {
-                    TempData["ErrorMessage"] = "This Item is already in use and cannot be deleted.";
+                    TempData["ErrorMessage"] = "This purchase return is already in use and cannot be deleted.";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                    TempData["ErrorMessage"] = "An error occurred while deleting the purchase return.";
                 }
             }
             return RedirectToAction("PurchaseReturnList");
@@ -1929,6 +1980,11 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = 0;
                             }
+                            else if (warehouseItemStock.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to delete the purchase return "+item.PurchaseReturn.PurchaseReturnNo+". Quantity of " + warehouseItemStock.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("PurchaseList");
+                            }
                             else
                             {
                                 warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
@@ -1939,17 +1995,17 @@ namespace Ressential.Controllers
                     _db.PurchaseReturnDetails.RemoveRange(purchaseReturnDetails);
                     _db.PurchaseReturns.RemoveRange(purchaseReturnToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Items deleted successfully.";
+                    TempData["SuccessMessage"] = "Purchase returns deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
                     if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                     {
-                        TempData["ErrorMessage"] = "An Item is already in use and cannot be deleted.";
+                        TempData["ErrorMessage"] = "A purchase return is already in use and cannot be deleted.";
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "An error occurred while deleting the Item.";
+                        TempData["ErrorMessage"] = "An error occurred while deleting the purchase return.";
                     }
                 }
             }

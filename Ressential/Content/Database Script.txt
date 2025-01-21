@@ -305,6 +305,7 @@ CREATE TABLE ReturnStockDetails (
     ItemId INT NOT NULL,
     Description NVARCHAR(255) NULL,
     ItemQuantity DECIMAL(18,2) NOT NULL,
+    CostPerUnit DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (ReturnStockId) REFERENCES ReturnStock(ReturnStockId) ON DELETE CASCADE,
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId)
 );

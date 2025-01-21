@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\kitchencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\createwastageitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\createwastageitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -283,10 +287,6 @@
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\createconsumeitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\createwastageitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\createwastageitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\editconsumeitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\editconsumeitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -401,7 +401,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "WarehouseController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\WarehouseController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\WarehouseController.cs",
@@ -421,7 +421,7 @@
               "RelativeDocumentMoniker": "Ressential\\Controllers\\KitchenController.cs",
               "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\KitchenController.cs",
               "RelativeToolTip": "Ressential\\Controllers\\KitchenController.cs",
-              "ViewState": "AgIAACMCAAAAAAAAAAAQwCoCAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAJkDAAAAAAAAAAAqwIMCAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-16T12:52:43.253Z",
               "IsPinned": true,
@@ -429,21 +429,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ReturnStockList.cshtml",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
-              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
-              "RelativeToolTip": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
-              "ViewState": "AgIAAIQAAAAAAAAAAAAAAJsAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T05:47:47.139Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "CreateItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateItem.cshtml",
@@ -456,7 +442,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "CreateItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateItem.cshtml",
@@ -469,7 +455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "EditItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditItem.cshtml",
@@ -482,7 +468,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "EditItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditItem.cshtml",
@@ -495,7 +481,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
+              "Title": "CreateWastageItem.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
+              "ViewState": "AgIAAKsAAAAAAAAAAAAAALwAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-12-01T21:08:49.619Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ReturnStockList.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAAAJsAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-16T05:47:47.139Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "EditPurchase.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditPurchase.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditPurchase.cshtml",
@@ -508,7 +520,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "CreatePurchase.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePurchase.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePurchase.cshtml",
@@ -521,7 +533,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "ItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ItemList.cshtml",
@@ -534,7 +546,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "ItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ItemList.cshtml",
@@ -547,7 +559,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "CreateBranch.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateBranch.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateBranch.cshtml",
@@ -560,7 +572,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "ReceiveStockList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ReceiveStockList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ReceiveStockList.cshtml",
@@ -573,7 +585,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "_WarehouseLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
@@ -586,7 +598,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "ViewReturnStock.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ViewReturnStock.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ViewReturnStock.cshtml",
@@ -599,7 +611,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "ViewIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ViewIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ViewIssue.cshtml",
@@ -612,7 +624,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "RequisitionList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\RequisitionList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\RequisitionList.cshtml",
@@ -625,7 +637,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "OrderList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\OrderList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\OrderList.cshtml",
@@ -638,7 +650,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "EditBranch.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditBranch.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditBranch.cshtml",
@@ -651,7 +663,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "CreateIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateIssue.cshtml",
@@ -664,7 +676,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "CreateOrder.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateOrder.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateOrder.cshtml",
@@ -677,7 +689,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "IssueList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\IssueList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\IssueList.cshtml",
@@ -690,7 +702,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "PartialOrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialOrderDetail.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialOrderDetail.cs",
@@ -703,7 +715,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "Order.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\Order.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\Order.cs",
@@ -716,7 +728,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "PartialOrder.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialOrder.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialOrder.cs",
@@ -729,7 +741,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "WarehouseIssueDetailsHelper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\WarehouseIssueDetailsHelper.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\WarehouseIssueDetailsHelper.cs",
@@ -742,7 +754,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "OrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\OrderDetail.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\OrderDetail.cs",
@@ -755,7 +767,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "CreateUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateUser.cshtml",
@@ -768,7 +780,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "EditUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditUser.cshtml",
@@ -781,7 +793,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "PartialUser.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialUser.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialUser.cs",
@@ -794,7 +806,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "CreateUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateUser.cshtml",
@@ -806,7 +818,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "UserList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\UserList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\UserList.cshtml",
@@ -818,7 +830,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "UserList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\UserList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\UserList.cshtml",
@@ -830,7 +842,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "EditAccount.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\EditAccount.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\EditAccount.cshtml",
@@ -842,7 +854,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "CustomerController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\CustomerController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\CustomerController.cs",
@@ -854,7 +866,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "Cart.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Cart.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Cart.cshtml",
@@ -866,7 +878,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Login.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Login.cshtml",
@@ -878,7 +890,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\AccountController.cs",
@@ -890,7 +902,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Account\\Login.cshtml",
@@ -902,7 +914,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "IssueListViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\IssueListViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\IssueListViewModel.cs",
@@ -914,7 +926,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "EditIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditIssue.cshtml",
@@ -926,7 +938,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "Cart.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\Cart.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\Cart.cs",
@@ -938,7 +950,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "Shop.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Shop.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Shop.cshtml",
@@ -950,7 +962,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "PurchaseList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseList.cshtml",
@@ -962,7 +974,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "CreateRequisitionIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateRequisitionIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateRequisitionIssue.cshtml",
@@ -974,7 +986,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "EditPurchaseReturn.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditPurchaseReturn.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditPurchaseReturn.cshtml",
@@ -986,7 +998,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "CreatePurchaseReturn.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePurchaseReturn.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePurchaseReturn.cshtml",
@@ -998,7 +1010,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "WarehouseIssueHelper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\WarehouseIssueHelper.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\WarehouseIssueHelper.cs",
@@ -1010,7 +1022,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "PurchaseReturnListViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PurchaseReturnListViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PurchaseReturnListViewModel.cs",
@@ -1022,7 +1034,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "AccountSetting.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\AccountSetting.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\AccountSetting.cshtml",
@@ -1034,7 +1046,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\Index.cshtml",
@@ -1046,7 +1058,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\Index.cshtml",
@@ -1058,7 +1070,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "UserDetails.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\UserDetails.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\UserDetails.cs",
@@ -1070,7 +1082,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "Helper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\Helper.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\Helper.cs",
@@ -1082,7 +1094,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 56,
               "Title": "TextConstraints.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\TextConstraints.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\TextConstraints.cs",
@@ -1094,7 +1106,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 55,
               "Title": "EditProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditProduct.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditProduct.cshtml",
@@ -1106,7 +1118,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "PaginationConstraints.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\PaginationConstraints.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\PaginationConstraints.cs",
@@ -1118,7 +1130,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "CreatePaymentVoucher.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePaymentVoucher.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePaymentVoucher.cshtml",
@@ -1130,7 +1142,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "BaseController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\BaseController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\BaseController.cs",
@@ -1142,7 +1154,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "ThankYou.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\ThankYou.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\ThankYou.cshtml",
@@ -1154,7 +1166,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Checkout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Checkout.cshtml",
@@ -1166,7 +1178,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "OnlineOrder.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\OnlineOrder.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\OnlineOrder.cs",
@@ -1178,7 +1190,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "CreateProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateProduct.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateProduct.cshtml",
@@ -1190,7 +1202,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Index.cshtml",
@@ -1202,7 +1214,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "ProductList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ProductList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ProductList.cshtml",
@@ -1214,7 +1226,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "About.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\About.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\About.cshtml",
@@ -1226,7 +1238,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "CreateCategory.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateCategory.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateCategory.cshtml",
@@ -1250,7 +1262,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "WastageItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\WastageItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\WastageItemList.cshtml",
@@ -1262,7 +1274,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 69,
               "Title": "CategoryList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CategoryList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CategoryList.cshtml",
@@ -1287,18 +1299,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 70,
-              "Title": "CreateWastageItem.cshtml",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
-              "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
-              "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
-              "ViewState": "AgIAAFcAAAAAAAAAAAAAAGUAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T21:08:49.619Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 69,
               "Title": "CreateConsumeItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateConsumeItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateConsumeItem.cshtml",

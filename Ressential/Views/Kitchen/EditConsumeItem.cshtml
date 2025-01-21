@@ -197,13 +197,13 @@
                 }
                 else if (response.status == "error")
                 {
-                    window.location.href = '@Url.Action("Index","Error")'
+                   window.location.href = '@Url.Action("ConsumeItemList","Kitchen")'
                 }
                 // Handle the response
             },
             error: function (xhr, status, error) {
                 // Handle unexpected errors
-                alert("An unexpected error occurred: " + error);
+                window.location.href = '@Url.Action("Index","Error")'
             }
          });
      });

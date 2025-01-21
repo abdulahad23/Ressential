@@ -572,10 +572,10 @@ namespace Ressential.Controllers
                     return RedirectToAction("ReceiveStockList");
                 }
 
-
+                var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 foreach (var item in warehouseIssues.WarehouseIssueDetails)
                 {
-                    var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId).FirstOrDefault();
+                    var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
 
                     if (branchItem != null)
                     {
@@ -622,11 +622,13 @@ namespace Ressential.Controllers
                     TempData["ErrorMessage"] = "An issue exist which is already received";
                     return RedirectToAction("ReceiveStockList");
                 }
+                var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+
                 foreach (var warehouseIssue in issuesToReceive)
                 {
                     foreach (var item in warehouseIssue.WarehouseIssueDetails)
                     {
-                        var branchItem = _db.BranchItems.FirstOrDefault(b => b.ItemId == item.ItemId);
+                        var branchItem = _db.BranchItems.FirstOrDefault(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId);
 
                         if (branchItem != null)
                         {
@@ -923,7 +925,7 @@ namespace Ressential.Controllers
                 var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextConsumeItemNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -932,36 +934,39 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextConsumeItemNumber = _db.ConsumeItems
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.ReferenceNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.ReferenceNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     consumeItem.ReferenceNo = $"CON-{datePart}{nextConsumeItemNumber:D4}";
                     consumeItem.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     consumeItem.CreatedAt = DateTime.Now;
                     consumeItem.BranchId = selectedBranchId;
+
+                    foreach (var item in consumeItem.ConsumeItemDetails)
+                    {
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+
+                        if (branchItem != null)
+                        {
+                            if (branchItem.Quantity >= item.ItemQuantity)
+                            {
+                                branchItem.Quantity -= item.ItemQuantity;
+                                item.CostPerUnit = branchItem.CostPerUnit;
+
+                                // Mark the branchItem as modified
+                                _db.Entry(branchItem).State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of "+ branchItem.Item.ItemName +" to create consumption";
+                                return Json("0", JsonRequestBehavior.AllowGet);
+                            }
+
+                        }
+                    }
+
                     _db.ConsumeItems.Add(consumeItem);
                     _db.SaveChanges();
-
-                    //foreach (var consumeItemDetails in consumeItem.ConsumeItemDetails)
-                    //{
-                    //    var currentItemStock = _db.WarehouseItemStocks.Where(i => i.ItemId == purchaseDetails.ItemId).FirstOrDefault();
-                    //    decimal currentQuantity = currentItemStock.Quantity;
-                    //    currentItemStock.Quantity = currentQuantity + purchaseDetails.Quantity;
-                    //    currentItemStock.CostPerUnit = ((currentQuantity * currentItemStock.CostPerUnit) + (purchaseDetails.Quantity * purchaseDetails.UnitPrice)) / (currentItemStock.Quantity);
-
-                    //    var warehouseItemTransaction = new WarehouseItemTransaction
-                    //    {
-                    //        TransactionDate = purchase.PurchaseDate,
-                    //        ItemId = purchaseDetails.ItemId,
-                    //        TransactionType = "Purchase",
-                    //        TransactionTypeId = purchase.PurchaseId,
-                    //        Quantity = purchaseDetails.Quantity,
-                    //        CostPerUnit = purchaseDetails.UnitPrice
-                    //    };
-                    //    _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
-                    //    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
-                    //}
-                    //_db.SaveChanges();
 
                     return Json("0", JsonRequestBehavior.AllowGet);
                 }
@@ -986,22 +991,6 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult EditConsumeItem(ConsumeItem consumeItem)
         {
-            if (consumeItem == null)
-            {
-                foreach (var state in ModelState)
-                {
-                    var key = state.Key; // Property name
-                    var errors = state.Value.Errors; // List of errors for this property
-
-                    foreach (var error in errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
-
-                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
-            }
-
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
@@ -1009,7 +998,8 @@ namespace Ressential.Controllers
                     var existingConsumeItem = _db.ConsumeItems.Include(p => p.ConsumeItemDetails).FirstOrDefault(p => p.ConsumeItemId == consumeItem.ConsumeItemId);
                     if (existingConsumeItem == null)
                     {
-                        return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
+                        TempData["ErrorMessage"] = "Record not found";
+                        return Json(new { status = "error", message = "Record not found" }, JsonRequestBehavior.AllowGet);
                     }
 
                     // Update purchase metadata
@@ -1030,36 +1020,47 @@ namespace Ressential.Controllers
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.ConsumeItemDetailId == newDetail.ConsumeItemDetailId);
-                        //var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == existingDetail.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
                         if (existingDetail != null)
                         {
-                            //decimal RevertedQuantity = warehouseItemStock.Quantity - existingDetail.Quantity;
+                            decimal RevertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
+                            decimal currentQuantity = branchItem.Quantity;
 
-                            //warehouseItemStock.Quantity = RevertedQuantity + newDetail.Quantity; //Updated Quantity
-                            //if (warehouseItemStock.Quantity == 0)
-                            //{
-                            //    warehouseItemStock.CostPerUnit = 0;
-                            //}
-                            //else
-                            //{
-                            //    warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
-                            //}
+                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity; //Updated Quantity
+                            if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                            }
 
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
                             existingDetails.Remove(existingDetail); // Remove from existing list once matched
                         }
                         else
                         {
-                            //decimal oldQuantity = warehouseItemStock.Quantity;
-                            //warehouseItemStock.Quantity = warehouseItemStock.Quantity + newDetail.Quantity; //Updated Quantity
-                            //if (warehouseItemStock.Quantity == 0)
-                            //{
-                            //    warehouseItemStock.CostPerUnit = 0;
-                            //}
-                            //else
-                            //{
-                            //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
-                            //}
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity; //Updated Quantity
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                            }
                             existingConsumeItem.ConsumeItemDetails.Add(newDetail); // Add new detail
                         }
                     }
@@ -1067,20 +1068,25 @@ namespace Ressential.Controllers
                     // Delete unmatched details
                     if (existingDetails != null)
                     {
-                        //foreach (var item in existingDetails)
-                        //{
-                        //var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                        //decimal oldQuantity = warehouseItemStock.Quantity;
-                        //warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                        //if (warehouseItemStock.Quantity == 0)
-                        //{
-                        //    warehouseItemStock.CostPerUnit = 0;
-                        //}
-                        //else
-                        //{
-                        //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
-                        //}
-                        //}
+                        foreach (var item in existingDetails)
+                        {
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
                         _db.ConsumeItemDetails.RemoveRange(existingDetails);
                     }
 
@@ -1089,7 +1095,7 @@ namespace Ressential.Controllers
                     _db.SaveChanges();
                     transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    TempData["SuccessMessage"] = "Consume record updated successfully.";
                     return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
                 }
                 catch (DbEntityValidationException ex)
@@ -1106,7 +1112,7 @@ namespace Ressential.Controllers
                         }
                     }
 
-                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    TempData["ErrorMessage"] = "An error occurred while updating the consume record.";
                     return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -1124,37 +1130,43 @@ namespace Ressential.Controllers
                 }
                 var consumeItemDetails = _db.ConsumeItemDetails.Select(p => p).Where(p => p.ConsumeItemId == consumeItemId);
 
-                //if (consumeItemDetails != null)
-                //{
-                //    foreach (var item in consumeItemDetails)
-                //    {
-                //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                //        decimal oldQuantity = warehouseItemStock.Quantity;
-                //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                //        if (warehouseItemStock.Quantity == 0)
-                //        {
-                //            warehouseItemStock.CostPerUnit = 0;
-                //        }
-                //        else
-                //        {
-                //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
-                //        }
-                //    }
-                //}
+                if (consumeItemDetails != null)
+                {
+                    foreach (var item in consumeItemDetails)
+                    {
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                        if (branchItem.Quantity == 0)
+                        {
+                            branchItem.CostPerUnit = 0;
+                        }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
+                            return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                        }
+                    }
+                }
+
                 _db.ConsumeItemDetails.RemoveRange(consumeItemDetails);
                 _db.ConsumeItems.Remove(consumeItem);
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "ConsumeItem deleted successfully.";
+                TempData["SuccessMessage"] = "Consume item record deleted successfully.";
             }
             catch (DbUpdateException ex)
             {
                 if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                 {
-                    TempData["ErrorMessage"] = "This consumeItem is already in use and cannot be deleted.";
+                    TempData["ErrorMessage"] = "This consume item record is already in use and cannot be deleted.";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "An error occurred while deleting the consumeItem.";
+                    TempData["ErrorMessage"] = "An error occurred while deleting the consume item record.";
                 }
             }
             return RedirectToAction("ConsumeItemList");
@@ -1169,44 +1181,43 @@ namespace Ressential.Controllers
                     var consumeItemsToDelete = _db.ConsumeItems.Where(c => selectedItems.Contains(c.ConsumeItemId)).ToList();
                     var consumeItemDetails = _db.ConsumeItemDetails.Where(c => selectedItems.Contains(c.ConsumeItemId)).ToList();
 
-                    //foreach (var item in consumeItemsToDelete)
-                    //{
-                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "ConsumeItem" && w.TransactionTypeId == item.ConsumeItemId);
-                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
-                    //}
-
-                    //if (consumeItemDetails != null)
-                    //{
-                    //    foreach (var item in consumeItemDetails)
-                    //    {
-                    //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                    //        decimal oldQuantity = warehouseItemStock.Quantity;
-                    //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                    //        if (warehouseItemStock.Quantity == 0)
-                    //        {
-                    //            warehouseItemStock.CostPerUnit = 0;
-                    //        }
-                    //        else
-                    //        {
-                    //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
-                    //        }
-                    //    }
-                    //}
+                    if (consumeItemDetails != null)
+                    {
+                        foreach (var item in consumeItemDetails)
+                        {
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == item.ConsumeItem.BranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
+                    }
 
                     _db.ConsumeItemDetails.RemoveRange(consumeItemDetails);
                     _db.ConsumeItems.RemoveRange(consumeItemsToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "ConsumeItems deleted successfully.";
+                    TempData["SuccessMessage"] = "Consume item records deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
                     if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                     {
-                        TempData["ErrorMessage"] = "A consumeItem is already in use and cannot be deleted.";
+                        TempData["ErrorMessage"] = "A consume item record is already in use and cannot be deleted.";
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "An error occurred while deleting the consumeItem.";
+                        TempData["ErrorMessage"] = "An error occurred while deleting the consume item records.";
                     }
                 }
             }
@@ -1246,7 +1257,7 @@ namespace Ressential.Controllers
                 var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextWastageItemNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -1255,7 +1266,7 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextWastageItemNumber = _db.WastageItems
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.ReferenceNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.ReferenceNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     wastageItem.ReferenceNo = $"WAS-{datePart}{nextWastageItemNumber:D4}";
@@ -1265,7 +1276,7 @@ namespace Ressential.Controllers
 
                     foreach (var item in wastageItem.WastageItemDetails)
                     {
-                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId).FirstOrDefault();
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
 
                         if (branchItem != null)
                         {
@@ -1279,7 +1290,8 @@ namespace Ressential.Controllers
                             }
                             else
                             {
-
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to create wastage record";
+                                return Json("0", JsonRequestBehavior.AllowGet);
                             }
                             
                         }
@@ -1287,7 +1299,7 @@ namespace Ressential.Controllers
 
                     _db.WastageItems.Add(wastageItem);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Wastage item created successfully.";
+                    TempData["SuccessMessage"] = "Wastage item record created successfully.";
                     return Json("0", JsonRequestBehavior.AllowGet);
                 }
 
@@ -1311,22 +1323,6 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult EditWastageItem(WastageItem wastageItem)
         {
-            if (wastageItem == null)
-            {
-                foreach (var state in ModelState)
-                {
-                    var key = state.Key; // Property name
-                    var errors = state.Value.Errors; // List of errors for this property
-
-                    foreach (var error in errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
-
-                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
-            }
-
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
@@ -1334,7 +1330,8 @@ namespace Ressential.Controllers
                     var existingWastageItem = _db.WastageItems.Include(p => p.WastageItemDetails).FirstOrDefault(p => p.WastageItemId == wastageItem.WastageItemId);
                     if (existingWastageItem == null)
                     {
-                        return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
+                        TempData["ErrorMessage"] = "Record not found";
+                        return Json(new { status = "error", message = "Record not found" }, JsonRequestBehavior.AllowGet);
                     }
 
                     // Update purchase metadata
@@ -1355,36 +1352,47 @@ namespace Ressential.Controllers
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.WastageItemDetailId == newDetail.WastageItemDetailId);
-                        //var warehouseItemStock = _db.WarehouseItemStocks.Find(newDetail.ItemId);
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == existingDetail.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
                         if (existingDetail != null)
                         {
-                            //decimal RevertedQuantity = warehouseItemStock.Quantity - existingDetail.Quantity;
+                            decimal RevertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
+                            decimal currentQuantity = branchItem.Quantity;
 
-                            //warehouseItemStock.Quantity = RevertedQuantity + newDetail.Quantity; //Updated Quantity
-                            //if (warehouseItemStock.Quantity == 0)
-                            //{
-                            //    warehouseItemStock.CostPerUnit = 0;
-                            //}
-                            //else
-                            //{
-                            //    warehouseItemStock.CostPerUnit = ((warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
-                            //}
+                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity; //Updated Quantity
+                            if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                            }
 
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
                             existingDetails.Remove(existingDetail); // Remove from existing list once matched
                         }
                         else
                         {
-                            //decimal oldQuantity = warehouseItemStock.Quantity;
-                            //warehouseItemStock.Quantity = warehouseItemStock.Quantity + newDetail.Quantity; //Updated Quantity
-                            //if (warehouseItemStock.Quantity == 0)
-                            //{
-                            //    warehouseItemStock.CostPerUnit = 0;
-                            //}
-                            //else
-                            //{
-                            //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
-                            //}
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity; //Updated Quantity
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                            }
                             existingWastageItem.WastageItemDetails.Add(newDetail); // Add new detail
                         }
                     }
@@ -1392,20 +1400,25 @@ namespace Ressential.Controllers
                     // Delete unmatched details
                     if (existingDetails != null)
                     {
-                        //foreach (var item in existingDetails)
-                        //{
-                        //var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                        //decimal oldQuantity = warehouseItemStock.Quantity;
-                        //warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                        //if (warehouseItemStock.Quantity == 0)
-                        //{
-                        //    warehouseItemStock.CostPerUnit = 0;
-                        //}
-                        //else
-                        //{
-                        //    warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
-                        //}
-                        //}
+                        foreach (var item in existingDetails)
+                        {
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
                         _db.WastageItemDetails.RemoveRange(existingDetails);
                     }
 
@@ -1414,7 +1427,7 @@ namespace Ressential.Controllers
                     _db.SaveChanges();
                     transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Item updated successfully.";
+                    TempData["SuccessMessage"] = "Wastage record updated successfully.";
                     return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
                 }
                 catch (DbEntityValidationException ex)
@@ -1431,7 +1444,7 @@ namespace Ressential.Controllers
                         }
                     }
 
-                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                    TempData["ErrorMessage"] = "An error occurred while updating the wastage record.";
                     return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -1449,37 +1462,43 @@ namespace Ressential.Controllers
                 }
                 var wastageItemDetails = _db.WastageItemDetails.Select(p => p).Where(p => p.WastageItemId == wastageItemId);
 
-                //if (wastageItemDetails != null)
-                //{
-                //    foreach (var item in wastageItemDetails)
-                //    {
-                //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                //        decimal oldQuantity = warehouseItemStock.Quantity;
-                //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                //        if (warehouseItemStock.Quantity == 0)
-                //        {
-                //            warehouseItemStock.CostPerUnit = 0;
-                //        }
-                //        else
-                //        {
-                //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
-                //        }
-                //    }
-                //}
+                if (wastageItemDetails != null)
+                {
+                    foreach (var item in wastageItemDetails)
+                    {
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                        if (branchItem.Quantity == 0)
+                        {
+                            branchItem.CostPerUnit = 0;
+                        }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
+                            return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                        }
+                    }
+                }
+
                 _db.WastageItemDetails.RemoveRange(wastageItemDetails);
                 _db.WastageItems.Remove(wastageItem);
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "WastageItem deleted successfully.";
+                TempData["SuccessMessage"] = "Wastage item record deleted successfully.";
             }
             catch (DbUpdateException ex)
             {
                 if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                 {
-                    TempData["ErrorMessage"] = "This wastageItem is already in use and cannot be deleted.";
+                    TempData["ErrorMessage"] = "This wastage item record is already in use and cannot be deleted.";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "An error occurred while deleting the wastageItem.";
+                    TempData["ErrorMessage"] = "An error occurred while deleting the wastage item record.";
                 }
             }
             return RedirectToAction("WastageItemList");
@@ -1494,44 +1513,43 @@ namespace Ressential.Controllers
                     var wastageItemsToDelete = _db.WastageItems.Where(c => selectedItems.Contains(c.WastageItemId)).ToList();
                     var wastageItemDetails = _db.WastageItemDetails.Where(c => selectedItems.Contains(c.WastageItemId)).ToList();
 
-                    //foreach (var item in wastageItemsToDelete)
-                    //{
-                    //    var warehouseItemTransaction = _db.WarehouseItemTransactions.Where(w => w.TransactionType == "WastageItem" && w.TransactionTypeId == item.WastageItemId);
-                    //    _db.WarehouseItemTransactions.RemoveRange(warehouseItemTransaction);
-                    //}
-
-                    //if (wastageItemDetails != null)
-                    //{
-                    //    foreach (var item in wastageItemDetails)
-                    //    {
-                    //        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
-                    //        decimal oldQuantity = warehouseItemStock.Quantity;
-                    //        warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.Quantity;
-                    //        if (warehouseItemStock.Quantity == 0)
-                    //        {
-                    //            warehouseItemStock.CostPerUnit = 0;
-                    //        }
-                    //        else
-                    //        {
-                    //            warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
-                    //        }
-                    //    }
-                    //}
+                    if (wastageItemDetails != null)
+                    {
+                        foreach (var item in wastageItemDetails)
+                        {
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == item.WastageItem.BranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
+                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
+                    }
 
                     _db.WastageItemDetails.RemoveRange(wastageItemDetails);
                     _db.WastageItems.RemoveRange(wastageItemsToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "WastageItems deleted successfully.";
+                    TempData["SuccessMessage"] = "Wastage item record deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
                     if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
                     {
-                        TempData["ErrorMessage"] = "A wastageItem is already in use and cannot be deleted.";
+                        TempData["ErrorMessage"] = "A wastage item record is already in use and cannot be deleted.";
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "An error occurred while deleting the wastageItem.";
+                        TempData["ErrorMessage"] = "An error occurred while deleting the wastage item records.";
                     }
                 }
             }
