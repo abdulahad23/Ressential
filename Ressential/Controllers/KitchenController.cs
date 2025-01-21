@@ -210,7 +210,7 @@ namespace Ressential.Controllers
                 var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextRequisitionNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -219,7 +219,7 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextRequisitionNumber = _db.Requisitions
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.RequisitionNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.RequisitionNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     requisition.RequisitionNo = $"REQ-{datePart}{nextRequisitionNumber:D4}";
@@ -684,16 +684,28 @@ namespace Ressential.Controllers
                 var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    foreach (var item in returnStock.ReturnStockDetails)
+                    {
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                        if (item.ItemQuantity > branchItem.Quantity)
+                        {
+                            return Json(new { success = false, errorMessage = $"Insufficient stock for {item.Item.ItemName}. The available quantity is {branchItem.Quantity}" });
+                        }
+
+                        item.CostPerUnit = branchItem.CostPerUnit;
+                        branchItem.Quantity = branchItem.Quantity - item.ItemQuantity;
+                    }
+
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextReturnStockNumber = 1;
 
-                    // Check if there are any existing purchases first
+                    // Check if there are any existing return stock record first
                     if (_db.ReturnStocks.Any())
                     {
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextReturnStockNumber = _db.ReturnStocks
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.ReturnNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.ReturnNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     returnStock.ReturnNo = $"RET-{datePart}{nextReturnStockNumber:D4}";
@@ -703,19 +715,17 @@ namespace Ressential.Controllers
                     returnStock.Status = "Pending";
                     _db.ReturnStocks.Add(returnStock);
                     _db.SaveChanges();
-
-
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Stock return record created successfully!";
+                    return Json(new { success = true });
                 }
 
-                ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
-                return View(returnStock);
+                return Json(new { success = false, redirect = Url.Action("Index", "Error") });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log the exception if needed
-                Console.WriteLine($"Error creating purchase: {ex.Message}");
-                return RedirectToAction("Index", "Error");
+                TempData["ErrorMessage"] = "An error occurred while creating the return stock.";
+                return Json(new { success = false, redirect = Url.Action("StockReturnList", "Kitchen") });
             }
         }
         public ActionResult StockReturnList(string search)
@@ -734,17 +744,47 @@ namespace Ressential.Controllers
         {
             try
             {
+                var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                 var returnStock = _db.ReturnStocks.Find(ReturnStockId);
                 if (returnStock == null)
                 {
-                    TempData["ErrorMessage"] = "return Stock not found.";
+                    TempData["ErrorMessage"] = "Return stock not found.";
                     return RedirectToAction("StockReturnList");
                 }
                 var returnStockDetails = _db.ReturnStockDetails.Select(p => p).Where(p => p.ReturnStockId == ReturnStockId);
+
+                if (returnStockDetails != null)
+                {
+                    foreach (var item in returnStockDetails)
+                    {
+                        if (item.ReturnStock.Status == "Settled")
+                        {
+                            TempData["ErrorMessage"] = "Cannot delete settled stock return record.";
+                            return RedirectToAction("StockReturnList");
+                        }
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                        if (branchItem.Quantity == 0)
+                        {
+                            branchItem.CostPerUnit = 0;
+                        }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Unable to delete the stock return. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                            return RedirectToAction("StockReturnList");
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                        }
+                    }
+                }
+
                 _db.ReturnStockDetails.RemoveRange(returnStockDetails);
                 _db.ReturnStocks.Remove(returnStock);
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "Return Stock deleted successfully.";
+                TempData["SuccessMessage"] = "Return stock record deleted successfully.";
             }
             catch (DbUpdateException ex)
             {
@@ -767,13 +807,42 @@ namespace Ressential.Controllers
             {
                 try
                 {
+                    var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
                     var returnStocksToDelete = _db.ReturnStocks.Where(c => selectedItems.Contains(c.ReturnStockId)).ToList();
                     var returnStockDetails = _db.ReturnStockDetails.Where(c => selectedItems.Contains(c.ReturnStockId)).ToList();
+
+                    if (returnStockDetails != null)
+                    {
+                        foreach (var item in returnStockDetails)
+                        {
+                            if (item.ReturnStock.Status == "Settled")
+                            {
+                                TempData["ErrorMessage"] = "Cannot delete settled stock return record.";
+                                return RedirectToAction("StockReturnList");
+                            }
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to delete the stock return "+ item.ReturnStock.ReturnNo +". Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                                return RedirectToAction("StockReturnList");
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
+                    }
 
                     _db.ReturnStockDetails.RemoveRange(returnStockDetails);
                     _db.ReturnStocks.RemoveRange(returnStocksToDelete);
                     _db.SaveChanges();
-                    TempData["SuccessMessage"] = "Return Stock deleted successfully.";
+                    TempData["SuccessMessage"] = "Return stock records deleted successfully.";
                 }
                 catch (DbUpdateException ex)
                 {
@@ -799,30 +868,21 @@ namespace Ressential.Controllers
         [HttpPost]
         public ActionResult EditReturnStock(ReturnStock returnStock)
         {
-            if (returnStock == null)
-            {
-                foreach (var state in ModelState)
-                {
-                    var key = state.Key; // Property name
-                    var errors = state.Value.Errors; // List of errors for this property
-
-                    foreach (var error in errors)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-                    }
-                }
-
-                return Json(new { status = "error", message = "Invalid data provided" }, JsonRequestBehavior.AllowGet);
-            }
-
             using (var transaction = _db.Database.BeginTransaction())
             {
                 try
                 {
+                    var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+
                     var existingReturnStock = _db.ReturnStocks.Include(p => p.ReturnStockDetails).FirstOrDefault(p => p.ReturnStockId == returnStock.ReturnStockId);
                     if (existingReturnStock == null)
                     {
-                        return Json(new { status = "error", message = "Purchase not found" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { status = "error", message = "Stock return record not found" }, JsonRequestBehavior.AllowGet);
+                    }
+                    if (existingReturnStock.Status == "Settled")
+                    {
+                        TempData["ErrorMessage"] = "Cannot update settled stock return record.";
+                        return RedirectToAction("StockReturnList");
                     }
 
                     // Update purchase metadata
@@ -844,15 +904,57 @@ namespace Ressential.Controllers
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.ReturnStockDetailId == newDetail.ReturnStockDetailId);
-
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == newDetail.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
                         if (existingDetail != null)
                         {
+                            // Revert stock to previous state before applying new changes
+                            var revertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
+                            var revertedTotalCost = (branchItem.Quantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit);
+                            var revertedPerUnitCost = revertedTotalCost / revertedQuantity;
+
+                            branchItem.Quantity = revertedQuantity;
+                            branchItem.CostPerUnit = revertedPerUnitCost;
+
+                            branchItem.Quantity -= newDetail.ItemQuantity;
+                            var newTotalCost = newDetail.ItemQuantity * newDetail.CostPerUnit;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((revertedTotalCost - newTotalCost) / branchItem.Quantity);
+                            }
 
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
                             existingDetails.Remove(existingDetail); // Remove from existing list once matched
                         }
                         else
                         {
+                            // For new details, update stock directly
+                            var totalCostBeforeChange = (branchItem.Quantity * branchItem.CostPerUnit);
+
+                            branchItem.Quantity -= newDetail.ItemQuantity; // Subtract new quantity
+
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
+                            }
+                            else
+                            {
+                                var totalCostAfterChange = totalCostBeforeChange + (newDetail.ItemQuantity * newDetail.CostPerUnit);
+                                branchItem.CostPerUnit = totalCostAfterChange / branchItem.Quantity;
+                            }
 
                             existingReturnStock.ReturnStockDetails.Add(newDetail); // Add new detail
                         }
@@ -861,7 +963,26 @@ namespace Ressential.Controllers
                     // Delete unmatched details
                     if (existingDetails != null)
                     {
-
+                        foreach (var item in existingDetails)
+                        {
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                            decimal currentQuantity = branchItem.Quantity;
+                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
+                            if (branchItem.Quantity == 0)
+                            {
+                                branchItem.CostPerUnit = 0;
+                            }
+                            else if (branchItem.Quantity < 0)
+                            {
+                                TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
+                            }
+                            else
+                            {
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
+                            }
+                        }
+                        
                         _db.ReturnStockDetails.RemoveRange(existingDetails);
                     }
 
@@ -870,25 +991,14 @@ namespace Ressential.Controllers
                     _db.SaveChanges();
                     transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Item updated successfully.";
-                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Stock return record updated successfully!";
+                    return Json(new { success = true });
                 }
-                catch (DbEntityValidationException ex)
+                catch (DbEntityValidationException)
                 {
                     transaction.Rollback();
-
-                    // Log the validation errors for debugging
-                    foreach (var validationError in ex.EntityValidationErrors)
-                    {
-                        foreach (var error in validationError.ValidationErrors)
-                        {
-                            // Log property name and error message
-                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-                        }
-                    }
-
-                    TempData["ErrorMessage"] = "An error occurred while updating the Item.";
-                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
+                    TempData["ErrorMessage"] = "An error occurred while updating the return stock record.";
+                    return Json(new { success = false, redirect = Url.Action("StockReturnList", "Kitchen") });
                 }
             }
         }
@@ -1689,6 +1799,7 @@ namespace Ressential.Controllers
         {
             var product = new Product
             {
+                IsActive = true,
                 ProductItemDetails = new List<ProductItemDetail>
                 {
                     new ProductItemDetail()
@@ -1966,7 +2077,8 @@ namespace Ressential.Controllers
         }
         public ActionResult OrderList(string search)
         {
-            var orders = _db.Orders.AsQueryable();
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var orders = _db.Orders.Where(o => o.BranchId == selectedBranchId);
             if (!string.IsNullOrEmpty(search))
             {
                 orders = orders.Where(c => c.OrderNo.Contains(search) ||
@@ -1999,6 +2111,34 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    order.OrderTotalCost = 0;
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        orderDetail.ProductCost = 0;
+                        var orderDetailProduct = _db.Products.Find(orderDetail.ProductId);
+                        foreach (var item in orderDetailProduct.ProductItemDetails)
+                        {
+                            var itemQuantityToLess = item.ItemQuantity * orderDetail.ProductQuantity;
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                            if (branchItem != null)
+                            {
+                                if (branchItem.Quantity >= itemQuantityToLess)
+                                {
+                                    branchItem.Quantity -= itemQuantityToLess;
+                                    orderDetail.ProductCost += (branchItem.CostPerUnit * itemQuantityToLess);
+                                    // Mark the branchItem as modified
+                                    _db.Entry(branchItem).State = EntityState.Modified;
+                                }
+                                else
+                                {
+                                    TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetailProduct.ProductName;
+                                    return RedirectToAction("OrderList");
+                                }
+                            }
+                        }
+                        order.OrderTotalCost += orderDetail.ProductCost;
+                    }
+
                     int nextOrderNumber = 1;
 
                     // Check if there are any existing orders for the current branch
@@ -2068,9 +2208,45 @@ namespace Ressential.Controllers
                     return RedirectToAction("OrderList");
                 }
 
-                order.Status = "Cancelled";
+                if (order.Status == "Cancelled")
+                {
+                    TempData["ErrorMessage"] = "Order is already cancelled.";
+                }
+                else if (order.Status == "Pending")
+                {
+                    order.Status = "Cancelled";
+                    TempData["SuccessMessage"] = "Order cancelled successfully.";
+                }
+                else if (order.Status == "Preparing" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
+                {
+                    //Revert the stock
+
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        foreach (var item in orderDetail.Product.ProductItemDetails)
+                        {
+                            var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
+
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                            if (branchItem != null)
+                            {
+                                branchItem.Quantity += itemQuantityToAdd;
+                                // Mark the branchItem as modified
+                                _db.Entry(branchItem).State = EntityState.Modified;
+                            }
+                        }
+                    }
+
+                    order.Status = "Cancelled";
+                    TempData["SuccessMessage"] = "Order cancelled successfully.";
+                }
+                else if (order.Status == "Completed")
+                {
+                    TempData["ErrorMessage"] = "Completed order can not be cancelled.";
+                }
+
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "Order cancelled successfully.";
+                
             }
             catch (Exception ex)
             {
@@ -2092,8 +2268,38 @@ namespace Ressential.Controllers
                     TempData["ErrorMessage"] = "Order not found.";
                     return RedirectToAction("OrderList");
                 }
-
-                order.Status = "Confirmed";
+                order.OrderTotalCost = 0;
+                if (order.Status == "Cancelled")
+                {
+                    TempData["ErrorMessage"] = "Can not confirm the cancelled order.";
+                    return RedirectToAction("OrderList");
+                }
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    orderDetail.ProductCost = 0;
+                    foreach (var item in orderDetail.Product.ProductItemDetails)
+                    {
+                        var itemQuantityToLess = item.ItemQuantity * orderDetail.ProductQuantity;
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                        if (branchItem != null)
+                        {
+                            if (branchItem.Quantity >= itemQuantityToLess)
+                            {
+                                branchItem.Quantity -= itemQuantityToLess;
+                                orderDetail.ProductCost += (branchItem.CostPerUnit * itemQuantityToLess);
+                                // Mark the branchItem as modified
+                                _db.Entry(branchItem).State = EntityState.Modified;
+                            }
+                            else
+                            {
+                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetail.Product.ProductName;
+                                return RedirectToAction("OrderList");
+                            }
+                        }
+                    }
+                    order.OrderTotalCost += orderDetail.ProductCost;
+                }
+                order.Status = "Preparing";
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Order confirmed successfully.";
             }
@@ -2101,6 +2307,90 @@ namespace Ressential.Controllers
             {
                 TempData["ErrorMessage"] = "An error occurred while confirming the order.";
                 Console.WriteLine($"Error confirming order: {ex.Message}");
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        [HttpPost]
+        public ActionResult CompleteOrder(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("OrderList");
+                }
+
+                if (order.Status == "Cancelled")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                }
+                else if (order.Status == "Pending")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for Pending order.";
+                }
+                else if (order.Status == "Preparing" || order.Status == "Ready" || order.Status == "Out for Delivery")
+                {
+                    order.Status = "Completed";
+                    TempData["SuccessMessage"] = "Order completed successfully.";
+                }
+                else if (order.Status == "Completed")
+                {
+                    TempData["ErrorMessage"] = "The order is already completed.";
+                }
+
+                _db.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the order status.";
+                Console.WriteLine($"Error updating order status: {ex.Message}");
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+        [HttpPost]
+        public ActionResult OutForDelivery(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("OrderList");
+                }
+
+                if (order.Status == "Cancelled")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                }
+                else if (order.Status == "Pending")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for Pending order.";
+                }
+                else if (order.Status == "Preparing" || order.Status == "Ready")
+                {
+                    order.Status = "Out For Delivery";
+                    TempData["SuccessMessage"] = "Order marked as Out for Delivery.";
+                }
+                else if (order.Status == "Completed")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for completed order.";
+                }
+
+                _db.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the order status.";
+                Console.WriteLine($"Error updating order status: {ex.Message}");
             }
 
             return RedirectToAction("OrderList");
@@ -2117,7 +2407,43 @@ namespace Ressential.Controllers
 
                     foreach (var order in ordersToCancel)
                     {
-                        order.Status = "Cancelled";
+                        if (order.Status == "Cancelled")
+                        {
+                            TempData["ErrorMessage"] = "An order exist which is already cancelled.";
+                            return RedirectToAction("OrderList");
+
+                        }
+                        else if (order.Status == "Pending")
+                        {
+                            order.Status = "Cancelled";
+                        }
+                        else if (order.Status == "Preparing" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
+                        {
+                            //Revert the stock
+
+                            foreach (var orderDetail in order.OrderDetails)
+                            {
+                                foreach (var item in orderDetail.Product.ProductItemDetails)
+                                {
+                                    var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
+
+                                    var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                                    if (branchItem != null)
+                                    {
+                                        branchItem.Quantity += itemQuantityToAdd;
+                                        // Mark the branchItem as modified
+                                        _db.Entry(branchItem).State = EntityState.Modified;
+                                    }
+                                }
+                            }
+
+                            order.Status = "Cancelled";
+                        }
+                        else if (order.Status == "Completed")
+                        {
+                            TempData["ErrorMessage"] = "An order exist which is completed and can not be cancelled.";
+                            return RedirectToAction("OrderList");
+                        }
                     }
 
                     _db.SaveChanges();
@@ -2148,7 +2474,38 @@ namespace Ressential.Controllers
 
                     foreach (var order in ordersToConfirm)
                     {
-                        order.Status = "Confirmed";
+                        if (order.Status == "Cancelled")
+                        {
+                            TempData["ErrorMessage"] = "Can not confirm the order. An order exist which is cancelled.";
+                            return RedirectToAction("OrderList");
+                        }
+                        order.OrderTotalCost = 0;
+                        foreach (var orderDetail in order.OrderDetails)
+                        {
+                            orderDetail.ProductCost = 0;
+                            foreach (var item in orderDetail.Product.ProductItemDetails)
+                            {
+                                var itemQuantityToLess = item.ItemQuantity * orderDetail.ProductQuantity;
+                                var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                                if (branchItem != null)
+                                {
+                                    if (branchItem.Quantity >= itemQuantityToLess)
+                                    {
+                                        branchItem.Quantity -= itemQuantityToLess;
+                                        orderDetail.ProductCost += (branchItem.CostPerUnit * itemQuantityToLess);
+                                        // Mark the branchItem as modified
+                                        _db.Entry(branchItem).State = EntityState.Modified;
+                                    }
+                                    else
+                                    {
+                                        TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetail.Product.ProductName;
+                                        return RedirectToAction("OrderList");
+                                    }
+                                }
+                            }
+                            order.OrderTotalCost += orderDetail.ProductCost;
+                        }
+                        order.Status = "Preparing";
                     }
 
                     _db.SaveChanges();

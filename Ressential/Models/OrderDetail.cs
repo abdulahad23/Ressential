@@ -28,6 +28,8 @@ public partial class OrderDetail
 
     public decimal ProductPrice { get; set; }
 
+    public decimal ProductCost { get; set; }
+
 
 
     public virtual Order Order { get; set; }

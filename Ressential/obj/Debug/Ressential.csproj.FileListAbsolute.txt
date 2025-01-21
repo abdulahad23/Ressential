@@ -427,3 +427,4 @@ C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\Ressential.csproj.Up2Date
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\Ressential.dll
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\Ressential.pdb
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Rotativa.dll

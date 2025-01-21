@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Voucher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+
+            .header img {
+                width: 110px;
+                height: 110px;
+                position: absolute;
+                top: 10px;
+                right: 20px;
+            }
+
+            .header .company-info {
+                flex: 1;
+                margin-left: 10px;
+            }
+
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+            .title .heading {
+                font-size: 24px;
+                font-weight: bold;
+                color: #444444;
+                background-color: #eeeeee;
+                width: 300px;
+                padding: 15px;
+                margin: 0 auto;
+            }
+
+        .voucher-details {
+            margin-bottom: 20px;
+        }
+
+            .voucher-details table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+                .voucher-details table th,
+                .voucher-details table td {
+                    padding: 12px 15px;
+                    text-align: left;
+                    border: none;
+                }
+
+        .receipt-details {
+            margin-bottom: 30px;
+        }
+
+            .receipt-details table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            .receipt-details th, .receipt-details td {
+                padding: 12px 15px;
+                border: 1px solid #ddd;
+                text-align: center;
+            }
+
+            .receipt-details th {
+                background-color: grey;
+                color: #fff;
+                font-weight: bold;
+            }
+
+        .footer {
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+            .footer p {
+                margin: 9px 0;
+            }
+
+        .signature {
+            margin-top: 200px;
+            padding: 100px;
+        }
+
+            .signature table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            .signature td {
+                padding: 12px 15px;
+                text-align: center;
+                font-weight: bold;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="@Url.Content("~/Content/assets/images/logo/ressential-logo.png")" alt="Company Logo">
+        <div class="company-info">
+            <div class="company-name">Ressential</div>
+            <p>Plot B 18, Block 2, Gulshan-e-Iqbal, Karachi, Sindh, Pakistan</p>
+        </div>
+    </div>
+
+    <div class="title">
+        <div class="heading">RECEIPT VOUCHER</div>
+    </div>
+
+    <div class="voucher-details">
+        <table>
+            <tr>
+                <td><strong>Voucher Date:</strong></td>
+                <td>@Model.ReceiptVoucherDate.ToString("dd-MMM-yyyy")</td>
+                <td><strong>Voucher No:</strong></td>
+                <td>@Model.ReceiptVoucherNo</td>
+            </tr>
+            <tr>
+                <td><strong>Mode Of Payment:</strong></td>
+                <td>@Model.Account.AccountType</td>
+                <td><strong>Account Name:</strong></td>
+                <td>@Model.Account.AccountTitle</td>
+            </tr>
+            <tr>
+                <td><strong>Bank Name:</strong></td>
+                @if (Model.Account.BankName == null)
+                {
+                    <td>-</td>
+                }
+                else
+                {
+                    <td>@Model.Account.BankName</td>
+                }
+
+                <td><strong>Account No:</strong></td>
+                @if (Model.Account.AccountNumber == null)
+                {
+                    <td>-</td>
+                }
+                else
+                {
+                    <td>@Model.Account.AccountNumber</td>
+                }
+            </tr>
+        </table>
+    </div>
+
+    <div class="receipt-details">
+        <table>
+            <thead>
+                <tr>
+                    <th>Vendor Name</th>
+                    <th>Instrument No</th>
+                    <th>Instrument Date</th>
+                    <th>Amount (PKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Vendor.CompanyName</td>
+                    @if (Model.InstrumentNo == null)
+                    {
+                        <td>-</td>
+                    }
+                    else
+                    {
+                        <td>@Model.InstrumentNo</td>
+                    }
+                    @if (Model.InstrumentDate == null)
+                    {
+                        <td>-</td>
+                    }
+                    else
+                    {
+                        <td>@Model.InstrumentDate.ToString("dd-MMM-yyyy")</td>
+                    }
+                    <td>@Model.Amount.ToString("N0")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p><strong>Amount (PKR):</strong> @Model.Amount.ToString("N0")</p>
+        <p><strong>Amount In Words:</strong> @ViewBag.AmountInWords PKR ONLY</p>
+        <p><strong>Received By:</strong> @Model.User.UserName</p>
+    </div>
+
+    <div class="signature">
+        <table>
+            <tbody>
+                <tr>
+                    <td style="border-top: 1px solid black;">Prepared By</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="border-top: 1px solid black;">Received By</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+

@@ -124,7 +124,6 @@
                                     <label for="totalAmount" class="form-label"><b>Total Amount:</b></label>
                                     <div class="input-group">
                                         <span class="input-group-text">Rs</span>
-                                        <input type="hidden" id="grandTotalHidden" name="grandTotal" value="@Model.OrderTotal" />
                                         <input type="number" class="form-control" id="totalAmount" placeholder="Total Amount" name="grandTotal" readonly>
                                     </div>
                                 </div>
@@ -138,7 +137,7 @@
                                                         class="btn btn-secondary mr-2 ps-4 pe-4 btn-save">
                                                     Save
                                                 </button>
-                                                <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                                                <a class="btn btn-light ms-1 ps-4 pe-4" href="@Url.Action("OrderList","Kitchen")">Cancel</a>
                                             </div>
                                         </div>
                                     </div>

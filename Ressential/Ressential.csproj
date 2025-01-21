@@ -73,6 +73,9 @@
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -231,13 +234,35 @@
     <Compile Include="Models\PartialBankAndCash.cs" />
     <Compile Include="Models\PartialBranch.cs" />
     <Compile Include="Models\PartialBranchItem.cs" />
+    <Compile Include="Models\PartialConsumeItem.cs" />
+    <Compile Include="Models\PartialConsumeItemDetail.cs" />
+    <Compile Include="Models\PartialCustomer.cs" />
     <Compile Include="Models\PartialItem.cs" />
     <Compile Include="Models\PartialItemCategory.cs" />
+    <Compile Include="Models\PartialOnlineOrderDetail.cs" />
     <Compile Include="Models\PartialOrder.cs" />
     <Compile Include="Models\PartialOrderDetail.cs" />
+    <Compile Include="Models\PartialPaymentVoucher.cs" />
+    <Compile Include="Models\PartialPaymentVoucherAttachment.cs" />
+    <Compile Include="Models\PartialProduct.cs" />
     <Compile Include="Models\PartialProductCategory.cs" />
+    <Compile Include="Models\PartialProductItemDetail.cs" />
+    <Compile Include="Models\PartialPurchase.cs" />
+    <Compile Include="Models\PartialPurchaseDetail.cs" />
+    <Compile Include="Models\PartialPurchaseReturn.cs" />
+    <Compile Include="Models\PartialPurchaseReturnDetail.cs" />
+    <Compile Include="Models\PartialReceiptVoucher.cs" />
+    <Compile Include="Models\PartialReceiptVoucherAttachment.cs" />
+    <Compile Include="Models\PartialRequisition.cs" />
+    <Compile Include="Models\PartialRequisitionDetail.cs" />
+    <Compile Include="Models\PartialReturnStock.cs" />
+    <Compile Include="Models\PartialReturnStockDetail.cs" />
     <Compile Include="Models\PartialUser.cs" />
     <Compile Include="Models\PartialVendor.cs" />
+    <Compile Include="Models\PartialWarehouseIssue.cs" />
+    <Compile Include="Models\PartialWarehouseIssueDetail.cs" />
+    <Compile Include="Models\PartialWastageItem.cs" />
+    <Compile Include="Models\PartialWastageItemDetail.cs" />
     <Compile Include="Models\PaymentApply.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -528,6 +553,10 @@
     <Content Include="obj\Debug\TempPE\Ressential.Context.cs.dll" />
     <Content Include="obj\Debug\TempPE\Ressential.cs.dll" />
     <Content Include="obj\Debug\TempPE\Ressential.Designer.cs.dll" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -697,6 +726,7 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -851,6 +881,8 @@
     <Content Include="Views\Kitchen\EditUser.cshtml" />
     <Content Include="Views\Kitchen\ViewIssue.cshtml" />
     <Content Include="Views\Warehouse\ViewReturnStock.cshtml" />
+    <Content Include="Views\Warehouse\PaymentVoucherPDF.cshtml" />
+    <Content Include="Views\Warehouse\ReceiptVoucherPDF.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

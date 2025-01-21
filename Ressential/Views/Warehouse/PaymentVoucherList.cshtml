@@ -94,6 +94,13 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li><button class="dropdown-item" type="button" onclick="submitEditForm(@paymentVoucher.PaymentVoucherId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
                                         <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@paymentVoucher.PaymentVoucherId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        <li>
+                                            <button class="dropdown-item" type="button" onclick="generatePDF(@paymentVoucher.PaymentVoucherId)">
+                                                <i class="bi bi-file-earmark-pdf" style="font-size: 1.25rem;"></i> Print PDF
+                                            </button>
+                                        </li>
+
+
                                     </ul>
                                 </div>
                             </td>
@@ -148,6 +155,15 @@
             form.method = "post";
             form.submit();
         }
-    }
+    }
+
+ 
+function generatePDF(PaymentVoucherId) {
+    const url = `@Url.Action("PaymentVoucherPDF", "Warehouse")?id=${PaymentVoucherId}#print`;
+    window.open(url, '_blank');
+}
+
+
+
 </script>
 

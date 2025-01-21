@@ -71,14 +71,14 @@
                                 @if (Model.Status == "Settled")
                                 {
                                     <div class="col-sm-9">
-                                        <a href="@Url.Action("ReturnStockList", "Kitchen")" class="btn btn-secondary ms-1 ps-4 pe-4">Back</a>
+                                        <a href="@Url.Action("ReturnStockList", "Warehouse")" class="btn btn-secondary ms-1 ps-4 pe-4">Back</a>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-sm-9">
                                         <button class="btn btn-secondary ps-4 pe-4" type="submit">Receive Stock</button>
-                                        <a href="@Url.Action("ReturnStockList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Back</a>
+                                        <a href="@Url.Action("ReturnStockList", "Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Back</a>
                                     </div>
                                 }
                             </div>

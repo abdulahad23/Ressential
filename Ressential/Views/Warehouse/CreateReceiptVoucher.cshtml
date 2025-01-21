@@ -28,28 +28,28 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 <select class="form-control" id="floatingPaymentMethod">
-                                    <option value="Cash">Cash</option>
                                     <option value="Bank">Bank</option>
+                                    <option value="Cash">Cash</option>
                                 </select>
                                 <label for="floatingPaymentMethod">Payment Method</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control", id = "floatingAccountId" })
                                 <label for="floatingInput">Account</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", @placeholder = "Instrument No" })
+                                @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", id = "floatingInstrumentNo", @placeholder = "Instrument No" })
                                 <label for="floatingInstrumentNo">Instrument No</label>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Instrument Date", @type = "date" })
+                                @Html.TextBoxFor(model => model.InstrumentDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", id = "floatingInstrumentDate", @placeholder = "Instrument Date", @type = "date" })
                                 <label for="floatingInstrumentDate">Instrument Date</label>
                             </div>
                         </div>
@@ -172,7 +172,7 @@
                     img.style.objectFit = 'cover';
                     img.style.border = '1px solid #ddd';
                     img.style.borderRadius = '8px';
-                    img.onclick = () => showModal(e.target.result, file.name);  
+                    img.onclick = () => showModal(e.target.result, file.name);
                     fileContainer.appendChild(img);
                 } else {
                     const fileDiv = document.createElement('div');
@@ -182,7 +182,7 @@
                     fileDiv.style.width = '100px';
                     fileDiv.style.textAlign = 'center';
                     fileDiv.style.borderRadius = '8px';
-                    fileDiv.onclick = () => showModal(e.target.result, file.name); 
+                    fileDiv.onclick = () => showModal(e.target.result, file.name);
                     fileContainer.appendChild(fileDiv);
                 }
 
@@ -227,4 +227,45 @@
         const filePreviewModal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
         filePreviewModal.show();
     };
+
+$(document).ready(function () {
+    function loadAccounts(paymentMethod) {
+        $.ajax({
+            url: '@Url.Action("GetAccountsByPaymentMethod", "Warehouse")',
+            type: 'GET',
+            data: { paymentMethod: paymentMethod },
+            success: function (data) {
+                $('#floatingAccountId').empty();
+                $('#floatingAccountId').append('<option value="">Select Account</option>');
+                $.each(data, function (index, item) {
+                    $('#floatingAccountId').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                });
+            },
+            error: function (error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    function togglePaymentMethodFields(paymentMethod) {
+        if (paymentMethod == 'Cash') {
+            $('#floatingInstrumentNo').closest('.form-floating').hide();
+            $('#floatingInstrumentDate').closest('.form-floating').hide();
+        } else {
+            $('#floatingInstrumentNo').closest('.form-floating').show();
+            $('#floatingInstrumentDate').closest('.form-floating').show();
+        }
+    }
+
+    $('#floatingPaymentMethod').change(function () {
+        var paymentMethod = $(this).val();
+        loadAccounts(paymentMethod);
+        togglePaymentMethodFields(paymentMethod);
+    });
+
+    // Set default selection to "Bank" and trigger change to load accounts
+    $('#floatingPaymentMethod').val('Cash');
+    $('#floatingPaymentMethod').trigger('change');
+});
+
 </script>

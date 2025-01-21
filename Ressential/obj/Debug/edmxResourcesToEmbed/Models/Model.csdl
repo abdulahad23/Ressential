@@ -204,6 +204,7 @@
     <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__4D5F7D71" FromRole="OrderDetails" ToRole="Orders" />
     <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__4E53A1AA" FromRole="OrderDetails" ToRole="Products" />
+    <Property Name="ProductCost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="OrderReturnDetail">
     <Key>
@@ -251,6 +252,7 @@
     <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__4D5F7D71" FromRole="Orders" ToRole="OrderDetails" />
     <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__55009F39" FromRole="Orders" ToRole="OrderReturns" />
     <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__4A8310C6" FromRole="Orders" ToRole="Users" />
+    <Property Name="OrderTotalCost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="PaymentApply">
     <Key>
@@ -534,6 +536,7 @@
     <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Item" Relationship="Self.FK__ReturnSto__ItemI__17F790F9" FromRole="ReturnStockDetails" ToRole="Items" />
     <NavigationProperty Name="ReturnStock" Relationship="Self.FK__ReturnSto__Retur__17036CC0" FromRole="ReturnStockDetails" ToRole="ReturnStock" />
+    <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="Role">
     <Key>

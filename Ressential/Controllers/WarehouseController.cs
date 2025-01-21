@@ -649,6 +649,11 @@ namespace Ressential.Controllers
                 {
                     return HttpNotFound();
                 }
+                if (account.AccountType == "Cash")
+                {
+                    account.AccountNumber = null;
+                    account.BankName = null;
+                }
                 account.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                 account.ModifiedAt = DateTime.Now;
                 _db.Entry(existingAccount).CurrentValues.SetValues(account);
@@ -723,7 +728,13 @@ namespace Ressential.Controllers
         {
             ViewBag.Vendors = _db.Vendors.ToList();
             ViewBag.Accounts = _db.Accounts.ToList();
-            return View();
+
+            var paymentVoucher = new PaymentVoucher
+            {
+                PaymentVoucherDate = DateTime.Now,
+                InstrumentDate = DateTime.Now,
+            };
+            return View(paymentVoucher);
         }
         [HttpPost]
         public ActionResult CreatePaymentVoucher(PaymentVoucher model, IEnumerable<HttpPostedFileBase> files)
@@ -826,10 +837,16 @@ namespace Ressential.Controllers
             try
             {
                 var existingPaymentVoucher = _db.PaymentVouchers.Find(paymentVoucher.PaymentVoucherId);
+                var paymentMethod = _db.Accounts.Find(paymentVoucher.AccountId);
 
                 if (existingPaymentVoucher == null)
                 {
                     return HttpNotFound(); // Return 404 if the voucher is not found
+                }
+                if (paymentMethod.AccountType == "Cash")
+                {
+                    paymentVoucher.InstrumentNo = null;
+                    paymentVoucher.InstrumentDate = null;
                 }
 
                 _db.Entry(existingPaymentVoucher).CurrentValues.SetValues(paymentVoucher);
@@ -994,7 +1011,12 @@ namespace Ressential.Controllers
         {
             ViewBag.Vendors = _db.Vendors.ToList();
             ViewBag.Accounts = _db.Accounts.ToList();
-            return View();
+            var receiptVoucher = new ReceiptVoucher
+            {
+                ReceiptVoucherDate = DateTime.Now,
+                InstrumentDate = DateTime.Now,
+            };
+            return View(receiptVoucher);
 
         }
         [HttpPost]
@@ -1186,10 +1208,16 @@ namespace Ressential.Controllers
             try
             {
                 var existingReceiptVoucher = _db.ReceiptVouchers.Find(ReceiptVoucher.ReceiptVoucherId);
+                var paymentMethod = _db.Accounts.Find(ReceiptVoucher.AccountId);
 
                 if (existingReceiptVoucher == null)
                 {
                     return HttpNotFound(); // Return 404 if the voucher is not found
+                }
+                if (paymentMethod.AccountType == "Cash")
+                {
+                    ReceiptVoucher.InstrumentNo = null;
+                    ReceiptVoucher.InstrumentDate = null;
                 }
 
                 _db.Entry(existingReceiptVoucher).CurrentValues.SetValues(ReceiptVoucher);
@@ -1289,7 +1317,7 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextPurchaseNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -1298,7 +1326,7 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextPurchaseNumber = _db.Purchases
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.PurchaseNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.PurchaseNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     purchase.PurchaseNo = $"PUR-{datePart}{nextPurchaseNumber:D4}";
@@ -1657,7 +1685,7 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextPurchaseNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -1666,7 +1694,7 @@ namespace Ressential.Controllers
                         // Bring the PurchaseNo values into memory, then extract the numeric part and calculate the max
                         nextPurchaseNumber = _db.PurchaseReturns
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.PurchaseReturnNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.PurchaseReturnNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     purchaseReturn.PurchaseReturnNo = $"PRE-{datePart}{nextPurchaseNumber:D4}";
@@ -2118,7 +2146,7 @@ namespace Ressential.Controllers
                 }
                 else
                 {
-                    string datePart = DateTime.Now.ToString("yyyyMMdd");
+                    string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextIssueNumber = 1;
 
                     // Check if there are any existing purchases first
@@ -2127,7 +2155,7 @@ namespace Ressential.Controllers
                         // Bring the IssueNo values into memory, then extract the numeric part and calculate the max
                         nextIssueNumber = _db.WarehouseIssues
                             .AsEnumerable()  // Forces execution in-memory
-                            .Select(p => int.Parse(p.IssueNo.Substring(13)))  // Now we can safely use Convert.ToInt32
+                            .Select(p => int.Parse(p.IssueNo.Substring(11)))  // Now we can safely use Convert.ToInt32
                             .Max() + 1;
                     }
                     var requisition = _db.Requisitions.Find(warehouseIssueHelper.RequisitionId);
@@ -2633,6 +2661,29 @@ namespace Ressential.Controllers
             try
             {
                 var returnStocks = _db.ReturnStocks.Find(returnStockId);
+                if (returnStocks.Status == "Settled")
+                {
+                    TempData["ErrorMessage"] = "The return stock is already received";
+                    return RedirectToAction("ReceiveStockList");
+                }
+
+                foreach (var item in returnStocks.ReturnStockDetails)
+                {
+                    var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+
+                    if (warehouseItemStock != null)
+                    {
+                        var currentTotalCost = warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit;
+                        var newTotalCost = item.ItemQuantity * item.CostPerUnit;
+
+                        warehouseItemStock.Quantity += item.ItemQuantity;
+                        warehouseItemStock.CostPerUnit = (currentTotalCost + newTotalCost) / warehouseItemStock.Quantity;
+
+                        // Mark the branchItem as modified
+                        _db.Entry(warehouseItemStock).State = EntityState.Modified;
+                    }
+                }
+
                 returnStocks.Status = "Settled";
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Returned stock received successfully.";
@@ -2651,9 +2702,32 @@ namespace Ressential.Controllers
             try
             {
                 var returnStockToReceive = _db.ReturnStocks.Where(c => selectedItems.Contains(c.ReturnStockId)).ToList();
-                foreach (var item in returnStockToReceive)
+                foreach (var returnStocks in returnStockToReceive)
                 {
-                    item.Status = "Settled";
+                    if (returnStocks.Status == "Settled")
+                    {
+                        TempData["ErrorMessage"] = "A return stock record exist which is already received";
+                        return RedirectToAction("ReceiveStockList");
+                    }
+
+                    foreach (var item in returnStocks.ReturnStockDetails)
+                    {
+                        var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+
+                        if (warehouseItemStock != null)
+                        {
+                            var currentTotalCost = warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit;
+                            var newTotalCost = item.ItemQuantity * item.CostPerUnit;
+
+                            warehouseItemStock.Quantity += item.ItemQuantity;
+                            warehouseItemStock.CostPerUnit = (currentTotalCost + newTotalCost) / warehouseItemStock.Quantity;
+
+                            // Mark the branchItem as modified
+                            _db.Entry(warehouseItemStock).State = EntityState.Modified;
+                        }
+                    }
+
+                    returnStocks.Status = "Settled";
                 }
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Returned stocks received successfully.";
@@ -2913,6 +2987,139 @@ namespace Ressential.Controllers
 
             TempData["SuccessMessage"] = "Account settings updated successfully.";
             return RedirectToAction("Index");
+        }
+
+        public ActionResult PaymentVoucherPDF(int id)
+        {
+            var paymentVoucher = _db.PaymentVouchers
+                .Include(v => v.Vendor)
+                .Include(a => a.Account)
+                .FirstOrDefault(v => v.PaymentVoucherId == id);
+
+            if (paymentVoucher == null)
+            {
+                TempData["ErrorMessage"] = "Payment Voucher not found.";
+                return RedirectToAction("PaymentVoucherList");
+            }
+
+            ViewBag.AmountInWords = NumberToWords((int)Math.Floor(paymentVoucher.Amount)).ToUpper();
+
+            // Generate PDF as a byte array
+            var pdfResult = new Rotativa.ViewAsPdf("PaymentVoucherPDF", paymentVoucher)
+            {
+                PageSize = Rotativa.Options.Size.A4,
+            };
+
+            var pdfBytes = pdfResult.BuildFile(ControllerContext);
+
+            // Set the response headers for inline display
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("Content-Disposition", "inline; filename=PaymentVoucher.pdf");
+            Response.OutputStream.Write(pdfBytes, 0, pdfBytes.Length);
+            Response.Flush();
+            Response.End();
+
+            return new EmptyResult();
+        }
+
+        public ActionResult ReceiptVoucherPDF(int id)
+        {
+            var receiptVoucher = _db.ReceiptVouchers
+                .Include(v => v.Vendor)
+                .Include(a => a.Account)
+                .FirstOrDefault(v => v.ReceiptVoucherId == id);
+
+            if (receiptVoucher == null)
+            {
+                TempData["ErrorMessage"] = "Receipt Voucher not found.";
+                return RedirectToAction("ReceiptVoucherList");
+            }
+
+            ViewBag.AmountInWords = NumberToWords((int)Math.Floor(receiptVoucher.Amount)).ToUpper();
+
+            // Generate PDF as a byte array
+            var pdfResult = new Rotativa.ViewAsPdf("ReceiptVoucherPDF", receiptVoucher)
+            {
+                PageSize = Rotativa.Options.Size.A4,
+            };
+
+            var pdfBytes = pdfResult.BuildFile(ControllerContext);
+
+            // Set the response headers for inline display
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("Content-Disposition", "inline; filename=ReceiptVoucher.pdf");
+            Response.OutputStream.Write(pdfBytes, 0, pdfBytes.Length);
+            Response.Flush();
+            Response.End();
+
+            return new EmptyResult();
+        }
+
+        private static string NumberToWords(int number)
+        {
+            if (number == 0)
+                return "zero";
+
+            if (number < 0)
+                return "minus " + NumberToWords(Math.Abs(number));
+
+            string words = "";
+
+            if ((number / 1000000) > 0)
+            {
+                words += NumberToWords(number / 1000000) + " million ";
+                number %= 1000000;
+            }
+
+            if ((number / 1000) > 0)
+            {
+                words += NumberToWords(number / 1000) + " thousand ";
+                number %= 1000;
+            }
+
+            if ((number / 100) > 0)
+            {
+                words += NumberToWords(number / 100) + " hundred ";
+                number %= 100;
+            }
+
+            if (number > 0)
+            {
+                if (words != "")
+                    words += "and ";
+
+                var unitsMap = new[] { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen" };
+                var tensMap = new[] { "zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety" };
+
+                if (number < 20)
+                    words += unitsMap[number];
+                else
+                {
+                    words += tensMap[number / 10];
+                    if ((number % 10) > 0)
+                        words += "-" + unitsMap[number % 10];
+                }
+            }
+
+            return words;
+        }
+
+        public JsonResult GetAccountsByPaymentMethod(string paymentMethod)
+        {
+            List<Account> accounts = new List<Account>();
+
+            if (paymentMethod == "Cash")
+            {
+                // Fetch Cash Accounts from your database or predefined list
+                accounts = _db.Accounts.Where(a => a.AccountType == "Cash").ToList();
+            }
+            else if (paymentMethod == "Bank")
+            {
+                // Fetch Bank Accounts from your database or predefined list
+                accounts = _db.Accounts.Where(a => a.AccountType == "Bank").ToList();
+            }
+
+            return Json(new SelectList(accounts, "AccountId", "AccountTitle"), JsonRequestBehavior.AllowGet);
         }
     }
 }

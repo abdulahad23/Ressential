@@ -1,111 +1,117 @@
 ﻿@model Ressential.Models.ReceiptVoucher
 
-@{
+@{ 
     ViewBag.Title = "EditReceiptVoucher";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
 @using (Html.BeginForm("EditReceiptVoucher", "Warehouse", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <div class="row">
-        <div class="col-12 grid-margin">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="text-secondary"><b>Update Receipt Voucher</b></h2>
-                    @Html.HiddenFor(model => model.ReceiptVoucherId)
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-secondary"><b>Update Receipt Voucher</b></h2>
+                @Html.HiddenFor(model => model.ReceiptVoucherId)
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.ReceiptVoucherDate, new { @class = "form-control", @placeholder = "Receipt Voucher Date", @type = "date" })
-                                <label for="floatingVoucherDate">Voucher Date</label>
-                            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.ReceiptVoucherDate, Model.ReceiptVoucherDate.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Receipt Voucher Date", @type = "date" })
+                            <label for="floatingVoucherDate">Voucher Date</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.DropDownListFor(model => model.VendorId, new SelectList(ViewBag.Vendors, "VendorId", "Name"), "Select Vendor", new { @class = "form-control" })
-                                <label for="floatingInput">Vendor ID</label>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.DropDownListFor(model => model.VendorId, new SelectList(ViewBag.Vendors, "VendorId", "Name"), "Select Vendor", new { @class = "form-control" })
+                            <label for="floatingInput">Vendor ID</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                <select class="form-control" id="floatingReceiptMethod" name="ReceiptMethod">
-                                    <option value="Cash">Cash</option>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="floatingReceiptMethod" name="ReceiptMethod">
+                                @if (Model.Account.AccountType == "Cash")
+                                {
+                                    <option value="Cash" selected>Cash</option>
                                     <option value="Bank">Bank</option>
-                                </select>
-                                <label for="floatingReceiptMethod">Receipt Method</label>
-                            </div>
+ }
+                                else
+                                {
+                <option value="Cash">Cash</option>
+                                    <option value="Bank" selected>Bank</option>
+}
+                            </select>
+                            <label for="floatingReceiptMethod">Receipt Method</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control" })
-                                <label for="floatingInput">Account</label>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control", id = "floatingAccountId" })
+                            <label for="floatingInput">Account</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", @placeholder = "Instrument No" })
-                                <label for="floatingInstrumentNo">Instrument No</label>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", id = "floatingInstrumentNo", @placeholder = "Instrument No" })
+                            <label for="floatingInstrumentNo">Instrument No</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentDate, new { @class = "form-control", @type = "date", @placeholder = "Instrument Date" })
-                                <label for="floatingInstrumentDate">Instrument Date</label>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.InstrumentDate, Model.InstrumentDate.HasValue ? Model.InstrumentDate.Value.ToString("yyyy-MM-dd") : "", new { @class = "form-control", id = "floatingInstrumentDate", @type = "date", @placeholder = "Instrument Date" })
+                            <label for="floatingInstrumentDate">Instrument Date</label>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @type = "number", @placeholder = "Amount" })
-                                <label for="floatingAmount">Amount</label>
-                            </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @type = "number", @placeholder = "Amount" })
+                            <label for="floatingAmount">Amount</label>
                         </div>
+                    </div>
 
-                        <h2 class="text-secondary"><b>Attachment</b></h2>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3 mt-3">
-                                <div id="drop-zone" class="drop-zone" style="border: 2px dashed #ddd; padding: 20px; text-align: center; cursor: pointer;">
-                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                                    <input type="file" class="form-control" id="floatingReceiptAttachment" name="files" accept=".jpg,.jpeg,.png,.pdf" multiple style="display: none;">
-                                    <br />
-                                    <label for="floatingReceiptAttachment" class="text-primary" style="cursor: pointer;">Browse files</label>
-                                    <p class="text-muted">Drag & drop files here or click to select files</p>
-                                </div>
-                                <div id="preview" class="preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
-                                    @*@foreach (var attachment in Model.ReceiptVoucherAttachments)
-                                        {
-                                            <div>
-                                                <a href="@Url.Content("~/Uploads/" + attachment.AttachmentPath)" target="_blank">@attachment.AttachmentPath</a>
-                                                <span class="text-danger" style="cursor:pointer;" onclick="removeAttachment('@attachment.ReceiptVoucherId')"> &times; Remove</span>
-                                            </div>
-                                        }*@
-
-                                    @foreach (var attachment in Model.ReceiptVoucherAttachments)
+                    <h2 class="text-secondary"><b>Attachment</b></h2>
+                    <div class="col-md-6">
+                        <div class="form-floating mb-3 mt-3">
+                            <div id="drop-zone" class="drop-zone" style="border: 2px dashed #ddd; padding: 20px; text-align: center; cursor: pointer;">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                                <input type="file" class="form-control" id="floatingReceiptAttachment" name="files" accept=".jpg,.jpeg,.png,.pdf" multiple style="display: none;">
+                                <br />
+                                <label for="floatingReceiptAttachment" class="text-primary" style="cursor: pointer;">Browse files</label>
+                                <p class="text-muted">Drag & drop files here or click to select files</p>
+                            </div>
+                            <div id="preview" class="preview-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+                                @*@foreach (var attachment in Model.ReceiptVoucherAttachments)
                                     {
-                                        <div style="position: relative; display: inline-block; margin: 5px;">
-                                            <span class="text-danger" style="cursor:pointer; position: absolute; top: 0; right: 0;" onclick="removeExistingAttachment('@attachment.ReceiptVoucherId')"> &times; </span>
-                                            <a href="javascript:void(0);" onclick="showModal('@Url.Content("~/Uploads/" + attachment.AttachmentPath)', '@System.IO.Path.GetFileName(attachment.AttachmentPath)')">
-                                                @if (attachment.AttachmentPath.EndsWith(".jpg") || attachment.AttachmentPath.EndsWith(".jpeg") || attachment.AttachmentPath.EndsWith(".png"))
-                                                {
-                                                    <img src="@Url.Content("~/Uploads/" + attachment.AttachmentPath)" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 8px;" /> }
-                                                else
-                                                {
-                                                    <div style="border: 1px solid #ddd; padding: 10px; width: 100px; text-align: center; border-radius: 8px;">
-                                                        @System.IO.Path.GetFileName(attachment.AttachmentPath)
-                                                    </div>}
-                                            </a>
+                                        <div>
+                                            <a href="@Url.Content("~/Uploads/" + attachment.AttachmentPath)" target="_blank">@attachment.AttachmentPath</a>
+                                            <span class="text-danger" style="cursor:pointer;" onclick="removeAttachment('@attachment.ReceiptVoucherId')"> &times; Remove</span>
                                         </div>
-                                    }
-                                </div>
+                                    }*@
+
+                                @foreach (var attachment in Model.ReceiptVoucherAttachments)
+                                {
+                <div style="position: relative; display: inline-block; margin: 5px;">
+                    <span class="text-danger" style="cursor:pointer; position: absolute; top: 0; right: 0;" onclick="removeExistingAttachment('@attachment.ReceiptVoucherId')"> &times; </span>
+                    <a href="javascript:void(0);" onclick="showModal('@Url.Content("~/Uploads/" + attachment.AttachmentPath)', '@System.IO.Path.GetFileName(attachment.AttachmentPath)')">
+                        @if (attachment.AttachmentPath.EndsWith(".jpg") || attachment.AttachmentPath.EndsWith(".jpeg") || attachment.AttachmentPath.EndsWith(".png"))
+                        {
+    <img src="@Url.Content("~/Uploads/" + attachment.AttachmentPath)" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd; border-radius: 8px;" /> }
+else
+{
+<div style="border: 1px solid #ddd; padding: 10px; width: 100px; text-align: center; border-radius: 8px;">
+    @System.IO.Path.GetFileName(attachment.AttachmentPath)
+</div>}
+                    </a>
+                </div>}
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row mt-3">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Update</button>
-                                    <a href="@Url.Action("ReceiptVoucherList", "Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
-                                </div>
+                    <div class="row mt-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Update</button>
+                                <a href="@Url.Action("ReceiptVoucherList", "Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -113,24 +119,24 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="filePreviewContent" style="text-align: center;"></div>
-                </div>
-                <div class="modal-footer">
-                    <a id="downloadButton" class="btn btn-primary" href="#" download>Download</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
+</div>
+                <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="filePreviewContent" style="text-align: center;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <a id="downloadButton" class="btn btn-primary" href="#" download>Download</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
 <script>
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('floatingReceiptAttachment');
@@ -251,5 +257,58 @@
         const filePreviewModal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
         filePreviewModal.show();
     };
+
+$(document).ready(function () {
+    // When the payment method changes
+    $('#floatingReceiptMethod').change(function () {
+        var paymentMethod = $(this).val();
+
+        // Perform AJAX request to get accounts based on payment method
+        $.ajax({
+            url: '@Url.Action("GetAccountsByPaymentMethod", "Warehouse")', // Replace with the actual URL of your action
+            type: 'GET',
+            data: { paymentMethod: paymentMethod },
+            success: function (data) {
+                // Clear the existing options in the account dropdown
+                $('#floatingAccountId').empty();
+
+                // Add a default option
+                $('#floatingAccountId').append('<option value="">Select Account</option>');
+
+                // Populate the dropdown with new options
+                $.each(data, function (index, item) {
+                    $('#floatingAccountId').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                });
+            },
+            error: function (error) {
+                console.log("Error: " + error);
+            }
+        });
+
+        // Optionally, show/hide Instrument No and Instrument Date based on payment method
+        togglePaymentMethodFields(paymentMethod);
+    });
+
+    // Function to show/hide fields based on payment method
+    function togglePaymentMethodFields(paymentMethod) {
+        if (paymentMethod == 'Cash') {
+            // Show the account-related fields for Cash
+            $('#floatingAccountId').closest('.form-floating').show();
+            $('#floatingInstrumentNo').closest('.form-floating').hide();
+            $('#floatingInstrumentDate').closest('.form-floating').hide();
+        } else {
+            // Show the account-related fields for Bank
+            $('#floatingInstrumentNo').closest('.form-floating').show();
+            $('#floatingInstrumentDate').closest('.form-floating').show();
+            $('#floatingAccountId').closest('.form-floating').show(); // Make sure Account dropdown is visible for Bank
+        }
+    }
+
+    // Initial check for payment method on page load (for pre-selected payment method)
+    togglePaymentMethodFields($('#floatingReceiptMethod').val());
+});
+
+
+
 </script>
 

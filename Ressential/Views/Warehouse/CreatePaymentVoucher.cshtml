@@ -2,7 +2,7 @@
 
 @{ ViewBag.Title = "CreatePaymentVoucher";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
-@using (Html.BeginForm("CreatePaymentVoucher", "Warehouse", FormMethod.Post, new { enctype = "multipart/form-data" } ))
+@using (Html.BeginForm("CreatePaymentVoucher", "Warehouse", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 <div class="row">
     <div class="col-12 grid-margin">
@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.PaymentVoucherDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Payment Voucher Date", @type = "date"})
+                            @Html.TextBoxFor(model => model.PaymentVoucherDate, @DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Payment Voucher Date", @type = "date" })
 
                             @*@Html.TextBoxFor(model => model.PaymentVoucherDate, DateTime.Today.ToString("mm/dd/yyyy"), new { @class = "form-control", @placeholder = "Payment Voucher Date", @type = "date" })*@
                             <label for="floatingVoucherDate">Voucher Date</label>
@@ -28,27 +28,27 @@
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
                             <select class="form-control" id="floatingPaymentMethod">
-                                <option value="Cash">Cash</option>
-                                <option value="Bank">Bank</option>
+                                <option value="Cash" selected>Cash</option>
+                                <option value="Bank">Bank</option>  
                             </select>
                             <label for="floatingPaymentMethod">Payment Method</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control" , id = "floatingAccountId" })
                             <label for="floatingInput">Account</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", @placeholder = "Instrument No" })
+                            @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", @placeholder = "Instrument No", id = "floatingInstrumentNo" })
                             <label for="floatingInstrumentNo">Instrument No</label>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.InstrumentDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Instrument Date", @type = "date" })
+                            @Html.TextBoxFor(model => model.InstrumentDate, @DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", id ="floatingInstrumentDate", @placeholder = "Instrument Date", @type = "date" })
                             <label for="floatingInstrumentDate">Instrument Date</label>
                         </div>
                     </div>
@@ -87,24 +87,23 @@
         </div>
     </div>
 </div>
-                    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div id="filePreviewContent" style="text-align: center;"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <a id="downloadButton" class="btn btn-primary" href="#" download>Download</a>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                </div>
+                <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-labelledby="filePreviewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="filePreviewModalLabel">File Preview</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="filePreviewContent" style="text-align: center;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <a id="downloadButton" class="btn btn-primary" href="#" download>Download</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             </div>
                         </div>
                     </div>
-                    }
+                </div>}
 <script>
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('floatingPaymentAttachment');
@@ -226,4 +225,46 @@
         const filePreviewModal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
         filePreviewModal.show();
     };
+
+$(document).ready(function () {
+    function loadAccounts(paymentMethod) {
+        $.ajax({
+            url: '@Url.Action("GetAccountsByPaymentMethod", "Warehouse")',
+            type: 'GET',
+            data: { paymentMethod: paymentMethod },
+            success: function (data) {
+                $('#floatingAccountId').empty();
+                $('#floatingAccountId').append('<option value="">Select Account</option>');
+                $.each(data, function (index, item) {
+                    $('#floatingAccountId').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                });
+            },
+            error: function (error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    function togglePaymentMethodFields(paymentMethod) {
+        if (paymentMethod == 'Cash') {
+            $('#floatingInstrumentNo').closest('.form-floating').hide();
+            $('#floatingInstrumentDate').closest('.form-floating').hide();
+        } else {
+            $('#floatingInstrumentNo').closest('.form-floating').show();
+            $('#floatingInstrumentDate').closest('.form-floating').show();
+        }
+    }
+
+    $('#floatingPaymentMethod').change(function () {
+        var paymentMethod = $(this).val();
+        loadAccounts(paymentMethod);
+        togglePaymentMethodFields(paymentMethod);
+    });
+
+    // Set default selection to "Bank" and trigger change to load accounts
+    $('#floatingPaymentMethod').val('Cash');
+    $('#floatingPaymentMethod').trigger('change');
+});
+
+
 </script>

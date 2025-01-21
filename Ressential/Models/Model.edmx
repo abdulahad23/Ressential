@@ -179,6 +179,7 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="ProductQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ProductCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderReturnDetails">
           <Key>
@@ -215,6 +216,7 @@
           <Property Name="Status" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="CreatedBy" Type="int" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="OrderTotalCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="PaymentApply">
           <Key>
@@ -440,6 +442,7 @@
           <Property Name="ItemId" Type="int" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ItemQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CostPerUnit" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="RolePermissions">
           <Key>
@@ -2429,6 +2432,7 @@
           <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__4D5F7D71" FromRole="OrderDetails" ToRole="Orders" />
           <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__4E53A1AA" FromRole="OrderDetails" ToRole="Products" />
+          <Property Name="ProductCost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="OrderReturnDetail">
           <Key>
@@ -2476,6 +2480,7 @@
           <NavigationProperty Name="OrderDetails" Relationship="Self.FK__OrderDeta__Order__4D5F7D71" FromRole="Orders" ToRole="OrderDetails" />
           <NavigationProperty Name="OrderReturns" Relationship="Self.FK__OrderRetu__Order__55009F39" FromRole="Orders" ToRole="OrderReturns" />
           <NavigationProperty Name="User" Relationship="Self.FK__Orders__CreatedB__4A8310C6" FromRole="Orders" ToRole="Users" />
+          <Property Name="OrderTotalCost" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="PaymentApply">
           <Key>
@@ -2759,6 +2764,7 @@
           <Property Name="ItemQuantity" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Item" Relationship="Self.FK__ReturnSto__ItemI__17F790F9" FromRole="ReturnStockDetails" ToRole="Items" />
           <NavigationProperty Name="ReturnStock" Relationship="Self.FK__ReturnSto__Retur__17036CC0" FromRole="ReturnStockDetails" ToRole="ReturnStock" />
+          <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -4724,6 +4730,7 @@
           <EntitySetMapping Name="OrderDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.OrderDetail">
               <MappingFragment StoreEntitySet="OrderDetails">
+                <ScalarProperty Name="ProductCost" ColumnName="ProductCost" />
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -4756,6 +4763,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="DB_RessentialModel.Order">
               <MappingFragment StoreEntitySet="Orders">
+                <ScalarProperty Name="OrderTotalCost" ColumnName="OrderTotalCost" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
                 <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
@@ -5006,6 +5014,7 @@
           <EntitySetMapping Name="ReturnStockDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.ReturnStockDetail">
               <MappingFragment StoreEntitySet="ReturnStockDetails">
+                <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
                 <ScalarProperty Name="ReturnStockDetailId" ColumnName="ReturnStockDetailId" />
                 <ScalarProperty Name="ReturnStockId" ColumnName="ReturnStockId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />

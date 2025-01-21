@@ -437,7 +437,8 @@ CREATE TABLE Orders (
     CustomerId INT NULL,
     PaymentMethod NVARCHAR(20) NOT NULL,
     OrderTotal Decimal NOT NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Confirmed', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled')),
+    OrderTotalCost Decimal NOT NULL,
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled')),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
@@ -452,9 +453,11 @@ CREATE TABLE OrderDetails (
     ProductId INT NOT NULL,
     ProductQuantity DECIMAL(18,2) NOT NULL,
     ProductPrice DECIMAL(18,2) NOT NULL,
+    ProductCost DECIMAL(18,2) NOT NULL,
     FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
     FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
 );
+
 
 -- Table: OnlineOrderDetails
 CREATE TABLE OnlineOrderDetails (

@@ -55,6 +55,8 @@ public partial class Order
 
     public System.DateTime CreatedAt { get; set; }
 
+    public decimal OrderTotalCost { get; set; }
+
 
 
     public virtual Branch Branch { get; set; }

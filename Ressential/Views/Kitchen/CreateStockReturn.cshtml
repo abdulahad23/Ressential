@@ -8,6 +8,8 @@
     <div class="col-12 grid-margin">
         <div class="card">
             <div class="card-body">
+                <div class="alert alert-danger d-none" id="error-message">
+                </div>
                 <h2 class="text-secondary"><b>Create Stock Return</b></h2>
                 <div class="row">
                     <div class="col-md-6">
@@ -39,45 +41,48 @@
 
                                         @foreach (var item in Model.ReturnStockDetails)
                                         {
-                            <tr class="item-row">
-                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                    <div class="form-floating">
-                                        <select class="form-control">
-                                            <option value="0">Select Item</option>
-                                            @foreach (var i in ViewBag.Items)
-                                            {
+                                            <tr class="item-row">
+                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <select class="form-control">
+                                                            <option value="0">Select Item</option>
+                                                            @foreach (var i in ViewBag.Items)
+                                                            {
 
-                                                if (i.ItemId == item.ItemId)
-                                                {
-                            <option selected value="@i.ItemId">@i.Item.ItemName</option> }
-                                                else
-                                                {
-                            <option value="@i.ItemId">@i.Item.ItemName</option>}
-                                            }
-                                        </select>
-                                        <label>Item</label>
-                                    </div>
-                                </td>
-                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                    <div class="form-floating">
-                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
-                                        <label>Description</label>
-                                    </div>
-                                </td>
-                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                    <div class="form-floating">
-                                        @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                        <label>Quantity</label>
-                                    </div>
-                                </td>
-                                <td class="tbl-min-width-1">
-                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                            type="button" data-toggle="tooltip" data-placement="top"
-                                            title="Remove">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </td>
-                            </tr>}
+                                                                if (i.ItemId == item.ItemId)
+                                                                {
+                                                                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
+ }
+                                                                else
+                                                                {
+                                                                    <option value="@i.ItemId">@i.Item.ItemName</option>
+}
+                                                            }
+                                                        </select>
+                                                        <label>Item</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
+                                                        <label>Description</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
+                                                        <label>Quantity</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-1">
+                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                            type="button" data-toggle="tooltip" data-placement="top"
+                                                            title="Remove">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+}
                                     </tbody>
                                 </table>
                             </div>
@@ -187,14 +192,22 @@
              data: JSON.stringify(returnStock),
              contentType: 'application/json',
              success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("StockReturnList", "Kitchen")'
+                if (response.success) {
+                    window.location.href = '@Url.Action("StockReturnList", "Kitchen")';
                 }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
+                else if (response.errorMessage) {
+                    $('#error-message').text(response.errorMessage).removeClass('d-none').show();
+                    $('html, body').animate({ scrollTop: 0 }, 'fast');
                 }
-             }
+                else {
+                    if (response.redirect) {
+                        window.location.href = response.redirect;
+                    }
+                }
+            },
+            error: function () {
+                alert("An error occurred while creating the stock return.");
+            }
          });
      });
 </script>

@@ -28,6 +28,8 @@ public partial class ReturnStockDetail
 
     public decimal ItemQuantity { get; set; }
 
+    public decimal CostPerUnit { get; set; }
+
 
 
     public virtual Item Item { get; set; }

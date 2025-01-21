@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.PurchaseReturnDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Purchase Return Date", @type = "date" })
+                                @Html.TextBoxFor(model => model.PurchaseReturnDate, @DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Purchase Return Date", @type = "date" })
                                 <label for="floatingInput">Purchase Return Date</label>
                             </div>
                         </div>

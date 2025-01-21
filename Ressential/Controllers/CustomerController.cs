@@ -1,6 +1,7 @@
 ﻿using Ressential.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -76,7 +77,13 @@ namespace Ressential.Controllers
             var categories = _db.ProductCategories.ToList(); // Fetch categories from the database
             ViewBag.Categories = categories;
 
-            var products = _db.Products.AsQueryable();
+            if (Session["BranchId"] == null)
+            {
+                RedirectToAction("Index");
+            }
+            var branchId = Convert.ToInt32(Session["BranchId"]);
+
+            var products = _db.Products.Where(p => p.BranchId == branchId);
             if (categoryId.HasValue)
             {
                 products = products.Where(p => p.ProductCategoryId == categoryId.Value);
@@ -289,7 +296,9 @@ namespace Ressential.Controllers
                     CustomerId = customerId,
                     Status = "Pending",
                     OrderTotal = totalAmount,
-                    OrderDetails = new List<OrderDetail>()
+                    OrderDetails = new List<OrderDetail>(),
+                    CreatedAt = DateTime.Now,
+                    OrderTotalCost = 0,
                 };
 
                 foreach (var cartItem in cartList)
@@ -326,8 +335,17 @@ namespace Ressential.Controllers
                 // Redirect to the Order Confirmation page or any other confirmation view
                 return Json(new { success = true, message = "Your order has been placed successfully!" });
             }
-            catch (Exception ex)
+            catch (DbEntityValidationException ex)
             {
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    Console.WriteLine($"Entity of type {validationError.Entry.Entity.GetType().Name} in state {validationError.Entry.State} has validation errors:");
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        Console.WriteLine($"- Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                    }
+                }
+                throw; // Re-throw to preserve the original stack trace
                 return Json(new { success = false, message = "An error occurred while placing the order." });
             }
         }

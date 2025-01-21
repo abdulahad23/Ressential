@@ -17,40 +17,48 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.PaymentVoucherDate, new { @class = "form-control", @placeholder = "Payment Voucher Date", @type = "date"})
+                                @Html.TextBoxFor(model => model.PaymentVoucherDate, Model.PaymentVoucherDate.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Payment Voucher Date", @type = "date"})
                                 <label for="floatingVoucherDate">Voucher Date</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.DropDownListFor(model => model.VendorId, new SelectList(ViewBag.Vendors, "VendorId", "Name"), "Select Vendor", new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.VendorId, new SelectList(ViewBag.Vendors, "VendorId", "Name"), "Select Vendor", new { @class = "form-control" , id = "floatingVendorId" })
                                 <label for="floatingInput">Vendor ID</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 <select class="form-control" id="floatingPaymentMethod" name="PaymentMethod">
-                                    <option value="Cash">Cash</option>
+                                    @if (Model.Account.AccountType == "Cash")
+                                    {
+                                    <option value="Cash" selected>Cash</option>
                                     <option value="Bank">Bank</option>
+                                    }
+                                    else
+                                    {
+                                    <option value="Cash">Cash</option>
+                                    <option value="Bank" selected>Bank</option>
+                                    }
                                 </select>
                                 <label for="floatingPaymentMethod">Payment Method</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control", id = "floatingAccountId" })
                                 <label for="floatingInput">Account</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", @placeholder = "Instrument No" })
+                                @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", id = "floatingInstrumentNo", @placeholder = "Instrument No" })
                                 <label for="floatingInstrumentNo">Instrument No</label>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6">                              
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.InstrumentDate, new { @class = "form-control", @type = "date", @placeholder = "Instrument Date" })
+                                @Html.TextBoxFor(model => model.InstrumentDate, Model.InstrumentDate.HasValue ? Model.InstrumentDate.Value.ToString("yyyy-MM-dd") : "", new { @class = "form-control", id = "floatingInstrumentDate", @type = "date", @placeholder = "Instrument Date" })
                                 <label for="floatingInstrumentDate">Instrument Date</label>
                             </div>
                         </div>
@@ -251,5 +259,58 @@
         const filePreviewModal = new bootstrap.Modal(document.getElementById('filePreviewModal'));
         filePreviewModal.show();
     };
-</script>
+
+$(document).ready(function () {
+    // When the payment method changes
+    $('#floatingPaymentMethod').change(function () {
+        var paymentMethod = $(this).val();
+
+        // Perform AJAX request to get accounts based on payment method
+        $.ajax({
+            url: '@Url.Action("GetAccountsByPaymentMethod", "Warehouse")', // Replace with the actual URL of your action
+            type: 'GET',
+            data: { paymentMethod: paymentMethod },
+            success: function (data) {
+                // Clear the existing options in the account dropdown
+                $('#floatingAccountId').empty();
+
+                // Add a default option
+                $('#floatingAccountId').append('<option value="">Select Account</option>');
+
+                // Populate the dropdown with new options
+                $.each(data, function (index, item) {
+                    $('#floatingAccountId').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                });
+            },
+            error: function (error) {
+                console.log("Error: " + error);
+            }
+        });
+
+        // Optionally, show/hide Instrument No and Instrument Date based on payment method
+        togglePaymentMethodFields(paymentMethod);
+    });
+
+    // Function to show/hide fields based on payment method
+    function togglePaymentMethodFields(paymentMethod) {
+        if (paymentMethod == 'Cash') {
+            // Show the account-related fields for Cash
+            $('#floatingAccountId').closest('.form-floating').show();
+            $('#floatingInstrumentNo').closest('.form-floating').hide();
+            $('#floatingInstrumentDate').closest('.form-floating').hide();
+        } else {
+            // Show the account-related fields for Bank
+            $('#floatingInstrumentNo').closest('.form-floating').show();
+            $('#floatingInstrumentDate').closest('.form-floating').show();
+            $('#floatingAccountId').closest('.form-floating').show(); // Make sure Account dropdown is visible for Bank
+        }
+    }
+
+    // Initial check for payment method on page load (for pre-selected payment method)
+    togglePaymentMethodFields($('#floatingPaymentMethod').val());
+});
+
+
+
+</script> 
 

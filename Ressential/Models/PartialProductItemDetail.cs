@@ -1,0 +1,25 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Ressential.Models
+{
+    [MetadataType(typeof(ProductItemDetailMetadata))]
+    public partial class ProductItemDetail
+    {
+    }
+
+    public class ProductItemDetailMetadata
+    {
+       
+        [Required(ErrorMessage = "Item ID is required")]
+        public int ItemId { get; set; }
+
+        [StringLength(255)]
+        public string Description { get; set; }
+
+        [Required(ErrorMessage = "Item Quantity is required")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Item Quantity must be a positive value.")]
+        public decimal ItemQuantity { get; set; }
+    }
+}

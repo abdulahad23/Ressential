@@ -398,7 +398,8 @@
                 data: { branchId: selectedBranchId },
                 success: function (response) {
                     //alert('Branch updated successfully!');
-                    window.location.href = '@Url.Action("Index","Kitchen")'
+                    //window.location.href = '@Url.Action("Index","Kitchen")'
+                    location.reload();
                 },
                 error: function () {
                     alert('Failed to update branch.');

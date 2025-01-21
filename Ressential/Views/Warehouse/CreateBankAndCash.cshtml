@@ -1,74 +1,95 @@
 ﻿@model Ressential.Models.Account
-
-@{ ViewBag.Title = "CreateBankAndCash";
-    Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
+@{
+    ViewBag.Title = "CreateBankAndCash";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
 
 @using (Html.BeginForm("CreateBankAndCash", "Warehouse", FormMethod.Post))
-{ 
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-secondary"><b>Create Bank & Cash</b></h2>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.DropDownListFor(m => m.AccountType, new SelectList(new[]
-                  {
-            new { Value = "Bank", Text = "Bank" },
-            new { Value = "Cash", Text = "Cash" }
-        }, "Value", "Text"), new { @class = "form-control" })
-                            <label for="floatingInput">Account Type</label>
+{
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-secondary"><b>Create Bank & Cash</b></h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.AccountType, new SelectList(new[]
+                                       {
+                                      new { Value = "Bank", Text = "Bank" },
+                                      new { Value = "Cash", Text = "Cash" }
+                                  }, "Value", "Text"), new { @class = "form-control", id = "AccountType" })
+                                <label for="floatingInput">Account Type</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.AccountTitle, "", new { @class = "form-control", @placeholder = "Account Title" })
-                            <label for="floatingInput">Account Title</label>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.AccountTitle, "", new { @class = "form-control", @placeholder = "Account Title" })
+                                <label for="floatingInput">Account Title</label>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.BankName, "", new { @class = "form-control", @placeholder = "Bank Name" })
-                            <label for="floatingInput">Bank Name</label>
+                        <div class="col-md-6" id="bankNameField">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.BankName, "", new { @class = "form-control", @placeholder = "Bank Name" })
+                                <label for="floatingInput">Bank Name</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.AccountNumber, "", new { @class = "form-control", @placeholder = "Account Number" })
-                            <label for="floatingInput">Account Number</label>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
-                            <label for="floatingInput">Description</label>
-                        </div>
-                    </div>
 
+                        <div class="col-md-6" id="accountNumberField">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.AccountNumber, "", new { @class = "form-control", @placeholder = "Account Number" })
+                                <label for="floatingInput">Account Number</label>
+                            </div>
+                        </div>
 
-                    <div class="row mt-3">
-                        <div class=" row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="col-sm-9">
-                                        <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
-                                        <a href="@Url.Action("BankAndCashList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
+                                <label for="floatingInput">Description</label>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                            <a href="@Url.Action("BankAndCashList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
 
+    <script>
+        $(document).ready(function () {
+            // Check the initial state and hide/show fields based on the selected value
+            toggleBankFields();
 
+            // When Account Type changes, toggle the fields
+            $('#AccountType').change(function () {
+                toggleBankFields();
+            });
 
+            function toggleBankFields() {
+                var accountType = $('#AccountType').val();
+                if (accountType === 'Cash') {
+                    $('#bankNameField').hide();
+                    $('#accountNumberField').hide();
+                } else {
+                    $('#bankNameField').show();
+                    $('#accountNumberField').show();
+                }
+            }
+        });
+    </script>
 }

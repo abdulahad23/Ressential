@@ -81,13 +81,7 @@
                                 <td>
                                     @if (order.Status == "Pending")
                                     {
-                                        <span style="background-color: lightslategrey; color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
-                                            @order.Status
-                                        </span>
-                                    }
-                                    else if (order.Status == "Confirmed")
-                                    {
-                                        <span style="background-color: darkorange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                        <span style="background-color: darkorange; color: white; border-radius: 6px; padding: 5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                             @order.Status
                                         </span>
                                     }
@@ -103,7 +97,7 @@
                                             @order.Status
                                         </span>
                                     }
-                                    else if (order.Status == "Out for Delivery")
+                                    else if (order.Status == "Out For Delivery")
                                     {
                                         <span style="background-color: orange;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                                             @order.Status
@@ -128,9 +122,13 @@
                                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><button class="dropdown-item" type="button" onclick="submitCancelOrder(@order.OrderId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Cancel Order</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitConfirmOrder(@order.OrderId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Confirm Order</button></li>
                                             <li><button class="dropdown-item" type="button" onclick="viewOrder(@order.OrderId)"><i class="bi bi-eye" style="font-size: 1.25rem;"></i> View Order</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitConfirmOrder(@order.OrderId)"><i class="bi bi-check2-circle" style="font-size: 1.25rem;"></i> Confirm Order</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitCompleteOrder(@order.OrderId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Mark Completed</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitOutForDelivery(@order.OrderId)"><i class="bi bi-truck" style="font-size: 1.25rem;"></i> Out For Delivery</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitCancelOrder(@order.OrderId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Cancel Order</button></li>
+
+
                                         </ul>
                                     </div>
                                 </td>
@@ -197,6 +195,22 @@
             form.method = "post";
             form.submit();
         }
+    }
+
+    function submitCompleteOrder(OrderId) {
+        const form = document.getElementById("optionForm");
+        form.action = "@Url.Action("CompleteOrder", "Kitchen")";
+        document.getElementById("formOrderId").value = OrderId;
+        form.method = "post";
+        form.submit();
+    }
+
+    function submitOutForDelivery(OrderId) {
+        const form = document.getElementById("optionForm");
+        form.action = "@Url.Action("OutForDelivery", "Kitchen")";
+        document.getElementById("formOrderId").value = OrderId;
+        form.method = "post";
+        form.submit();
     }
 
     function viewOrder(OrderId) {
