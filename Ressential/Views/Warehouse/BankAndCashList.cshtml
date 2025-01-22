@@ -61,8 +61,22 @@
                 <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@account.AccountId" aria-label="Select Vendor"></td>
                 <td>@account.AccountType</td>
                 <td>@account.AccountTitle</td>
-                <td>@account.BankName</td>
-                <td>@account.AccountNumber</td>
+                @if (account.BankName == null)
+                {
+                    <td>-</td>
+                }
+                else
+                {
+                    <td>@account.BankName</td>
+                }
+                @if (account.AccountNumber == null)
+                {
+                    <td>-</td>
+                }
+                else
+                {
+                    <td>@account.AccountNumber</td>
+                }
                 <td>
                     <div class="dropdown">
                         <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">

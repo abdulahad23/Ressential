@@ -1356,7 +1356,7 @@ namespace Ressential.Controllers
                         //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     }
                     _db.SaveChanges();
-
+                    TempData["SuccessMessage"] = "Purchase created successfully.";
                     return Json("0",JsonRequestBehavior.AllowGet);
                 }
                 ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();

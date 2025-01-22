@@ -16,14 +16,18 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.ItemCategoryName, "", new { @class = "form-control", @placeholder= "Category Name" })
+                                @Html.TextBoxFor(model => model.ItemCategoryName, "", new { @class = "form-control", @placeholder = "Category Name" })
                                 <label for="floatingInput">Category Name</label>
+                                @Html.ValidationMessageFor(model => model.ItemCategoryName, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.Description,"", new { @class = "form-control", @placeholder = "Description" })
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
                                 <label for="floatingInput">Description</label>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 

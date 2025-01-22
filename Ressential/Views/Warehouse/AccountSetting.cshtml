@@ -32,6 +32,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", placeholder = "Username" })
                                 <label for="floatingInput">Username</label>
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -39,6 +40,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "Email", @readonly = "readonly" })
                                 <label for="floatingInput">Email</label>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -46,6 +48,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Current Password" })
                                 <label for="floatingInput">Current Password</label>
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                             </div>
                         </div>
 

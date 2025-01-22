@@ -37,9 +37,6 @@ namespace Ressential.Models
 
         [RegularExpression(@"^\d{5,10}$", ErrorMessage = "Postal Code must be between 5 and 10 digits")]
         public string PostalCode { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreatedAt { get; set; }
-        public Nullable<int> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> ModifiedAt { get; set; }
+   
     }
 }

@@ -18,6 +18,8 @@ namespace Ressential.Models
 
         [Required(ErrorMessage = "Category Name is required.")]
         [StringLength(100, ErrorMessage = "Category Name cannot exceed 100 characters.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Category Name cannot contain special characters.")]
+
         public string ItemCategoryName { get; set; }
 
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]

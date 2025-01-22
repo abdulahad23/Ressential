@@ -1873,11 +1873,11 @@ namespace Ressential.Controllers
         public ActionResult ProductList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
-            var product = _db.Products.Where(c => c.BranchId == selectedBranchId);
+            var product = _db.Products.AsQueryable();
             if (!string.IsNullOrEmpty(search))
             {
 
-                product = product.Where(c => (c.ProductItemDetails.Where(i => i.Product.ProductName.Contains(search)).Count() > 0 || c.ProductCategory.ProductCategoryName.Contains(search)) && c.BranchId == selectedBranchId);
+                product = product.Where(c => (c.ProductItemDetails.Where(i => i.Product.ProductName.Contains(search)).Count() > 0 || c.ProductCategory.ProductCategoryName.Contains(search)));
             }
             return View(product.ToList());
         }

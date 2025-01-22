@@ -20,7 +20,7 @@ namespace Ressential.Models
         [StringLength(50)]
         public string ReferenceNo { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Vendor is required")]
         public int VendorId { get; set; }
 
         [StringLength(255)]

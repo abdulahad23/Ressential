@@ -71,41 +71,70 @@
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="/Kitchen/ItemList">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateItem">Create Item</a></li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Requisition<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/RequisitionList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateRequisition">Create</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/ReceiveStockList">Receive Stock</a></li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Stock Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/StockReturnList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateStockReturn">Create</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link"> Consume <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/ConsumeItemList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateConsumeItem">Create</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link"> Wastage <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/WastageItemList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateWastageItem">Create</a></li>
-                                </ul>
-                            </li>
 
                         </ul>
                     </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-cogs"></i></span><span class="pc-mtext">
+                                Requisition
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/RequisitionList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateRequisition">Create</a></li>
+                        </ul>
+                    </li>
+
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="/Kitchen/ReceiveStockList" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-truck"></i></span>
+                            <span class="pc-mtext">
+                                Receive Stock
+                            </span>
+
+                        </a>
+
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-reply-all"></i></span><span class="pc-mtext">
+                                Stock Return
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/StockReturnList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateStockReturn">Create</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-clipboard-list"></i></span> <!-- Changed icon for Consume -->
+                            <span class="pc-mtext">Consume</span>
+                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/ConsumeItemList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateConsumeItem">Create</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-trash"></i></span> <!-- Changed icon for Wastage -->
+                            <span class="pc-mtext">Wastage</span>
+                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/WastageItemList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateWastageItem">Create</a></li>
+                        </ul>
+                    </li>
+
+
 
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
@@ -140,27 +169,20 @@
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="/Kitchen/OrderList">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateOrder">Create</a></li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Order Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/OrderReturnList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateOrderReturn">Create</a></li>
-                                </ul>
-                            </li>
                         </ul>
                     </li>
                     <li class="pc-item pc-hasmenu">
                         <a href="/Kitchen/OrderView" class="pc-link">
                             <span class="pc-micon"><i class="fas fa-eye"></i></span><span class="pc-mtext">
                                 Order View
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </span>
                         </a>
                     </li>
                     <li class="pc-item pc-hasmenu">
                         <a href="/Kitchen/ChefView" class="pc-link">
                             <span class="pc-micon"><i class="bi bi-display"></i></span><span class="pc-mtext">
                                 Chef View
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </span>
                         </a>
                     </li>
                     <li class="pc-item pc-hasmenu">
@@ -398,7 +420,7 @@
                 data: { branchId: selectedBranchId },
                 success: function (response) {
                     //alert('Branch updated successfully!');
-                    //window.location.href = '@Url.Action("Index","Kitchen")'
+                    @*window.location.href = '@Url.Action("Index","Kitchen")'*@
                     location.reload();
                 },
                 error: function () {

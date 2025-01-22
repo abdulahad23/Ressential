@@ -50,7 +50,7 @@
                             <th scope="col">Payment Method</th>
                             <th scope="col">Instrument No</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Status</th>
+                            @*<th scope="col">Status</th>*@
 
                             <th scope="col" class="fit-content">Option</th>
                         </tr>
@@ -67,7 +67,7 @@
                 <td>@ReceiptVoucher.InstrumentNo</td>
                 <td>Rs @ReceiptVoucher.Amount.ToString("N0")</td>
 
-                <td class="no-wrap">
+                @*<td class="no-wrap">
                     @if (ReceiptVoucher.Status == "Pending")
                     {
                 <span style="background-color: lightslategrey;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
@@ -83,7 +83,7 @@
                 <span style="background-color: red;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
                     Rejected
                 </span>}
-                </td>
+                </td>*@
                 <td>
                     <div class="dropdown">
                         <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">

@@ -1,74 +1,86 @@
-﻿@model Ressential.Models.BranchItem
+﻿﻿@model Ressential.Models.BranchItem
 
 @{ ViewBag.Title = "CreateItem";
-                Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
 
 
 @using (Html.BeginForm("CreateItem", "Kitchen", FormMethod.Post))
 {
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-secondary"><b>Create Item</b></h2>
-                <div class="row">
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-secondary"><b>Create Item</b></h2>
+                    <div class="row">
 
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.DropDownListFor(m => m.ItemId, new SelectList(ViewBag.items, "ItemId", "ItemName"), "Select Item", new { @class = "form-control" })
-                            <label for="ItemId">Item</label>
-                        </div>
-                    </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.ItemId, new SelectList(ViewBag.items, "ItemId", "ItemName"), "Select Item", new { @class = "form-control" })
+                                <label for="ItemId">Item</label>
+                                @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
 
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
-                            <label for="floatingInput">Minimum Stock Level</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number" })
-                            <label for="floatingInput">Quantity In Hand</label>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
+                                <label for="floatingInput">Minimum Stock Level</label>
+                                @Html.ValidationMessageFor(model => model.MinimumStockLevel, "", new { @class = "text-danger" })
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number" })
-                            <label for="floatingInput">Stock Value</label>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number" })
+                                <label for="floatingInput">Quantity In Hand</label>
+                                @Html.ValidationMessageFor(model => model.OpeningStockQuantity, "", new { @class = "text-danger" })
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(m => m.OpeningStockDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date" })
-                            <label for="floatingInput">Opening Stock Date</label>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number" })
+                                <label for="floatingInput">Stock Value</label>
+                                @Html.ValidationMessageFor(model => model.OpeningStockValue, "", new { @class = "text-danger" })
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
-                                    new { Value = true, Text = "Active" },
-                                    new { Value = false, Text = "Inactive" }
-                                }, "Value", "Text"), new { @class = "form-control" })
-                            <label for="floatingInput">Item Status</label>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(m => m.OpeningStockDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date" })
+                                <label for="floatingInput">Opening Stock Date</label>
+                                @Html.ValidationMessageFor(model => model.OpeningStockDate, "", new { @class = "text-danger" })
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class=" row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="col-sm-9">
-                                        <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
-                                        <a href="@Url.Action("ItemList","Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
+                                        new { Value = true, Text = "Active" },
+                                        new { Value = false, Text = "Inactive" }
+                                    }, "Value", "Text"), new { @class = "form-control" })
+                                <label for="floatingInput">Item Status</label>
+                                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class=" row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <div class="col-sm-9">
+                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                            <a href="@Url.Action("ItemList","Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
-</div>}
+        </div>
+    </div>}

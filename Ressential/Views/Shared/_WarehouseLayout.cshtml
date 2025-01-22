@@ -32,33 +32,33 @@
     <link href="~/Content/assets/css/myStyle.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @*<style>
-        /* Default invalid input styling */
-        .input-validation-error {
-            border: 1px solid #dc3545; /* Red border */
-            color: #721c24; /* Dark red text */
-            padding-right: 2.5rem; /* Space for the icon */
-            position: relative;
-        }
-
-            /* Warning icon for invalid fields */
-            .input-validation-error::after {
-                content: '!'; /* Warning icon */
-                color: #dc3545;
-                font-size: 1rem;
-                position: absolute;
-                top: 50%;
-                right: 0.75rem;
-                transform: translateY(-50%);
-                pointer-events: none;
+            /* Default invalid input styling */
+            .input-validation-error {
+                border: 1px solid #dc3545; /* Red border */
+                color: #721c24; /* Dark red text */
+                padding-right: 2.5rem; /* Space for the icon */
+                position: relative;
             }
 
-            /* Styling for focused invalid input */
-            .input-validation-error:focus {
-                border-color: #dc3545; /* Keep the red border */
-                box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.25); /* Red shadow */
-                outline: none; /* Remove default outline */
-            }
-    </style>*@
+                /* Warning icon for invalid fields */
+                .input-validation-error::after {
+                    content: '!'; /* Warning icon */
+                    color: #dc3545;
+                    font-size: 1rem;
+                    position: absolute;
+                    top: 50%;
+                    right: 0.75rem;
+                    transform: translateY(-50%);
+                    pointer-events: none;
+                }
+
+                /* Styling for focused invalid input */
+                .input-validation-error:focus {
+                    border-color: #dc3545; /* Keep the red border */
+                    box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.25); /* Red shadow */
+                    outline: none; /* Remove default outline */
+                }
+        </style>*@
 
 </head>
 <!-- [Head] end -->
@@ -156,6 +156,12 @@
 
                         </ul>
                     </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="/Warehouse/RequisitionList" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-cogs"></i></span> <!-- Changed icon for Requisition -->
+                            <span class="pc-mtext">Requisition</span>
+                        </a>
+                    </li>
 
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
@@ -166,10 +172,17 @@
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/IssueList">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRequisitionIssue">Create</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/RequisitionList">Requisition</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/ReturnStockList">Stock Return</a></li>
+                            @*<li class="pc-item"><a class="pc-link" href="/Warehouse/RequisitionList">Requisition</a></li>
+                                <li class="pc-item"><a class="pc-link" href="/Warehouse/StockReturnList">Stock Return</a></li>*@
 
                         </ul>
+                    </li>
+
+                    <li class="pc-item pc-hasmenu">
+                        <a href="/Warehouse/ReturnStockList" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-reply-all"></i></span> <!-- Changed icon for Stock Return -->
+                            <span class="pc-mtext">Stock Return</span>
+                        </a>
                     </li>
 
 
@@ -222,7 +235,7 @@
                         </ul>
                     </li>
                     <li class="pc-item pc-hasmenu">
-                        <a href="/Kitchen/" class="pc-link">
+                        <a href="/Warehouse/" class="pc-link">
                             <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
                                 Report
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>

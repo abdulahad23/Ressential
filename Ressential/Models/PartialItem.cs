@@ -15,6 +15,8 @@ namespace Ressential.Models
      
         [Required(ErrorMessage = "Item Name is required")]
         [StringLength(100, ErrorMessage = "Item Name cannot exceed 100 characters")]
+        [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Item Name cannot contain special characters.")]
+
         public string ItemName { get; set; }
 
         [Required(ErrorMessage = "SKU is required")]

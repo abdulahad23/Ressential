@@ -15,11 +15,14 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(m => m.AccountType, new SelectList(new[]
-                                       {
+                                                 {
                                       new { Value = "Bank", Text = "Bank" },
                                       new { Value = "Cash", Text = "Cash" }
                                   }, "Value", "Text"), new { @class = "form-control", id = "AccountType" })
                                 <label for="floatingInput">Account Type</label>
+                                @Html.ValidationMessageFor(model => model.AccountType, "", new { @class = "text-danger" })
+
+
                             </div>
                         </div>
 
@@ -27,6 +30,8 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.AccountTitle, "", new { @class = "form-control", @placeholder = "Account Title" })
                                 <label for="floatingInput">Account Title</label>
+                                @Html.ValidationMessageFor(model => model.AccountTitle, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 
@@ -34,6 +39,8 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.BankName, "", new { @class = "form-control", @placeholder = "Bank Name" })
                                 <label for="floatingInput">Bank Name</label>
+                                @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 
@@ -41,6 +48,8 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.AccountNumber, "", new { @class = "form-control", @placeholder = "Account Number" })
                                 <label for="floatingInput">Account Number</label>
+                                @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 
@@ -48,6 +57,8 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
                                 <label for="floatingInput">Description</label>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 

@@ -19,31 +19,41 @@
                         <div class="form-floating mb-3 mt-3">
                             @Html.DropDownListFor(m => m.ItemId, new SelectList(ViewBag.items, "ItemId", "ItemName"), "Select Item", new { @class = "form-control" })
                             <label for="ItemId">Item</label>
+                            @Html.ValidationMessageFor(model => model.ItemId, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number"})
+                            @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
                             <label for="floatingInput">Minimum Stock Level</label>
+                            @Html.ValidationMessageFor(model => model.MinimumStockLevel, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
                             @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number", @readonly = "readonly" })
                             <label for="floatingInput">Quantity In Hand</label>
+                            @Html.ValidationMessageFor(model => model.OpeningStockQuantity, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
                             @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number", @readonly = "readonly" })
                             <label for="floatingInput">Stock Value</label>
+                            @Html.ValidationMessageFor(model => model.OpeningStockValue, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
                             @Html.TextBoxFor(m => m.OpeningStockDate, Model.OpeningStockDate.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date", @readonly = "readonly" })
                             <label for="floatingInput">Opening Stock Date</label>
+                            @Html.ValidationMessageFor(model => model.OpeningStockDate, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -53,6 +63,8 @@
                                         new { Value = false, Text = "Inactive" }
                                     }, "Value", "Text"), new { @class = "form-control" })
                             <label for="floatingInput">Product Status</label>
+                            @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="row mt-3">

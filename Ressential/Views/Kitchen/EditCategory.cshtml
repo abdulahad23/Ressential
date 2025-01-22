@@ -19,12 +19,16 @@
                         <div class="form-floating mb-3 mt-3">
                             @Html.TextBoxFor(model => model.ProductCategoryName, "", new { @class = "form-control", @placeholder = "Category Name" })
                             <label for="floatingInput">Category Name</label>
+                            @Html.ValidationMessageFor(model => model.ProductCategoryName, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-floating mb-3 mt-3">
                             @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
                             <label for="floatingInput">Description</label>
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
                         </div>
                     </div>
 

@@ -16,7 +16,7 @@ namespace Ressential.Models
         public string AccountType { get; set; }
 
         [Required]
-        [StringLength(100, MinimumLength = 9, ErrorMessage = "Account Title must be between 9 and 100 characters.")]
+        [StringLength(100, MinimumLength = 9, ErrorMessage = "Account Title must be between 7 and 100 characters.")]
         public string AccountTitle { get; set; }
 
         [StringLength(100, ErrorMessage = "Bank Name cannot exceed 100 characters")]
