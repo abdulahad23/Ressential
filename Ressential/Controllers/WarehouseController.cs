@@ -26,11 +26,14 @@ namespace Ressential.Controllers
             string userName = Helper.GetUserInfo("userName");
             return View();
         }
+        [HasPermission("Item Category Create")]
         public ActionResult CreateItemCategory()
         {
             return View();
         }
+
         [HttpPost]
+        [HasPermission("Item Category Create")]
         public ActionResult CreateItemCategory(ItemCategory itemCategory)
         {
             try
@@ -45,6 +48,7 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("ItemCategoryList");
         }
+        [HasPermission("Item Category List")]
         public ActionResult ItemCategoryList(string search)
         {
             var itemCategories = _db.ItemCategories.AsQueryable();
@@ -55,6 +59,7 @@ namespace Ressential.Controllers
             }
             return View(itemCategories.ToList());
         }
+        [HasPermission("Item Category Edit")]
         public ActionResult EditItemCategory(int itemCategoryId)
         {
             var ItemCategory = _db.ItemCategories.Find(itemCategoryId);
@@ -65,6 +70,7 @@ namespace Ressential.Controllers
             return View(ItemCategory);
         }
         [HttpPost]
+        [HasPermission("Item Category Edit")]
         public ActionResult EditItemEditItemCategory(ItemCategory itemCategory)
         {
             try
@@ -81,6 +87,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ItemCategoryList");
         }
         [HttpPost]
+        [HasPermission("Item Category Delete")]
         public ActionResult DeleteItemCategory(int itemCategoryId)
         {
             try
@@ -109,6 +116,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ItemCategoryList");
         }
         [HttpPost]
+        [HasPermission("Item Category Delete")]
         public ActionResult DeleteSelectedItemCategories(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -2935,6 +2943,53 @@ namespace Ressential.Controllers
             }
 
             return View(user);
+        }
+        public ActionResult RoleList(String search)
+        {
+            var roles = _db.Roles.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                roles = roles.Where(c => c.RoleName.Contains(search));
+            }
+            return View(roles.ToList());
+        }
+        public ActionResult CreateRole()
+        {
+            var model = new RoleViewModel
+            {
+                Role = new Role(),
+                PermissionsCategories = _db.PermissionsCategories.Include("Permissions").ToList()
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public ActionResult CreateRole(RoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Role.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                model.Role.CreatedAt = DateTime.Now;
+                _db.Roles.Add(model.Role);
+                _db.SaveChanges();
+
+                foreach (var permissionId in model.SelectedPermissions)
+                {
+                    var rolePermission = new RolePermission
+                    {
+                        RoleId = model.Role.RoleId,
+                        PermissionId = permissionId
+                    };
+                    _db.RolePermissions.Add(rolePermission);
+                }
+                _db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Role created successfully.";
+                return RedirectToAction("RoleList");
+            }
+
+            model.PermissionsCategories = _db.PermissionsCategories.Include("Permissions").ToList(); // Re-populate permissions in case of error
+            return View(model);
         }
 
         [HttpPost]

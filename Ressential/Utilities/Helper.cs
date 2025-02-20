@@ -40,5 +40,12 @@ namespace Ressential.Utilities
 
 
         }
+
+        public static List<string> GetPermissions()
+        {
+            var identity = (ClaimsPrincipal)Thread.CurrentPrincipal;
+            string permissionsString = identity.Claims.Where(c => c.Type.Equals("Permissions")).Select(c => c.Value).SingleOrDefault();
+            return permissionsString.Split(',').ToList();
+        }
     }
 }

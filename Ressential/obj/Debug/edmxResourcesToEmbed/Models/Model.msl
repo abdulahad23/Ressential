@@ -249,16 +249,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Permissions">
-      <EntityTypeMapping TypeName="DB_RessentialModel.Permission">
-        <MappingFragment StoreEntitySet="Permissions">
-          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
-          <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
-          <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="ProductCategories">
       <EntityTypeMapping TypeName="DB_RessentialModel.ProductCategory">
         <MappingFragment StoreEntitySet="ProductCategories">
@@ -455,18 +445,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Roles">
-      <EntityTypeMapping TypeName="DB_RessentialModel.Role">
-        <MappingFragment StoreEntitySet="Roles">
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="UnitOfMeasures">
       <EntityTypeMapping TypeName="DB_RessentialModel.UnitOfMeasure">
         <MappingFragment StoreEntitySet="UnitOfMeasure">
@@ -586,22 +564,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="RolePermissions" TypeName="DB_RessentialModel.RolePermissions" StoreEntitySet="RolePermissions">
-      <EndProperty Name="Permissions">
-        <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
-      </EndProperty>
-      <EndProperty Name="Roles">
-        <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="UserRoles" TypeName="DB_RessentialModel.UserRoles" StoreEntitySet="UserRoles">
-      <EndProperty Name="Roles">
-        <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-      </EndProperty>
-      <EndProperty Name="Users">
-        <ScalarProperty Name="UserId" ColumnName="UserId" />
-      </EndProperty>
-    </AssociationSetMapping>
     <EntitySetMapping Name="BranchItems">
       <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
         <MappingFragment StoreEntitySet="BranchItems">
@@ -619,6 +581,53 @@
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="DB_RessentialModel.Role">
+        <MappingFragment StoreEntitySet="Roles">
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserRoles">
+      <EntityTypeMapping TypeName="DB_RessentialModel.UserRole">
+        <MappingFragment StoreEntitySet="UserRoles">
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Permissions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.Permission">
+        <MappingFragment StoreEntitySet="Permissions">
+          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
+          <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PermissionsCategories">
+      <EntityTypeMapping TypeName="DB_RessentialModel.PermissionsCategory">
+        <MappingFragment StoreEntitySet="PermissionsCategory">
+          <ScalarProperty Name="PermissionCategoryName" ColumnName="PermissionCategoryName" />
+          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RolePermissions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.RolePermission">
+        <MappingFragment StoreEntitySet="RolePermissions">
+          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="RolePermissionId" ColumnName="RolePermissionId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

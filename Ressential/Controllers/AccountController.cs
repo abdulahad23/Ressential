@@ -39,6 +39,15 @@ namespace Ressential.Controllers
                     IsActive = user.IsActive,
                     UserName = user.UserName,
                     ProfileImage = user.ProfileImage,
+                    Permissions = user.UserRoles
+                    .SelectMany(r => r.Role.RolePermissions
+                        .Select(p => new
+                        {
+                            PermissionWithCategory = p.Permission.PermissionsCategory.PermissionCategoryName + " " + p.Permission.PermissionName
+                        })
+                        .Distinct())
+                    .Select(x => x.PermissionWithCategory)
+                    .ToList()
                 };
                 SetClaimsIdentity(userDetails);
                 // Set user session on successful login
@@ -77,6 +86,7 @@ namespace Ressential.Controllers
                 claims.Add(new Claim("IsActive", user.IsActive.ToString()));
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
                 claims.Add(new Claim("ProfileImage", user.ProfileImage ?? string.Empty));
+                claims.Add(new Claim("Permissions", string.Join(",", user.Permissions)));
 
                 if (defaultBranchId != 0)
                 {
@@ -256,6 +266,11 @@ namespace Ressential.Controllers
             {
                 smtp.Send(message);
             }
+        }
+
+        public ActionResult Unauthorized()
+        {
+            return View();
         }
     }
 }

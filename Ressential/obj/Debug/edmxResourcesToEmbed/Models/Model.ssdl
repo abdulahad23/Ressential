@@ -254,8 +254,14 @@
     </Key>
     <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="PermissionName" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="Description" Type="nvarchar" MaxLength="255" />
-    <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="PermissionCategoryId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PermissionsCategory">
+    <Key>
+      <PropertyRef Name="PermissionCategoryId" />
+    </Key>
+    <Property Name="PermissionCategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="PermissionCategoryName" Type="nvarchar" MaxLength="100" Nullable="false" />
   </EntityType>
   <EntityType Name="ProductCategories">
     <Key>
@@ -441,9 +447,9 @@
   </EntityType>
   <EntityType Name="RolePermissions">
     <Key>
-      <PropertyRef Name="RoleId" />
-      <PropertyRef Name="PermissionId" />
+      <PropertyRef Name="RolePermissionId" />
     </Key>
+    <Property Name="RolePermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="RoleId" Type="int" Nullable="false" />
     <Property Name="PermissionId" Type="int" Nullable="false" />
   </EntityType>
@@ -476,9 +482,9 @@
   </EntityType>
   <EntityType Name="UserRoles">
     <Key>
-      <PropertyRef Name="UserId" />
-      <PropertyRef Name="RoleId" />
+      <PropertyRef Name="UserRoleId" />
     </Key>
+    <Property Name="UserRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="UserId" Type="int" Nullable="false" />
     <Property Name="RoleId" Type="int" Nullable="false" />
   </EntityType>
@@ -1058,6 +1064,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Permissio__Permi__42ACE4D4">
+    <End Role="PermissionsCategory" Type="Self.PermissionsCategory" Multiplicity="1" />
+    <End Role="Permissions" Type="Self.Permissions" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PermissionsCategory">
+        <PropertyRef Name="PermissionCategoryId" />
+      </Principal>
+      <Dependent Role="Permissions">
+        <PropertyRef Name="PermissionCategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__ProductCa__Creat__30C33EC3">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="ProductCategories" Type="Self.ProductCategories" Multiplicity="*" />
@@ -1492,7 +1510,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__RolePermi__Permi__35BCFE0A">
+  <Association Name="FK__RolePermi__Permi__467D75B8">
     <End Role="Permissions" Type="Self.Permissions" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1506,7 +1524,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__RolePermi__RoleI__34C8D9D1">
+  <Association Name="FK__RolePermi__RoleI__4589517F">
     <End Role="Roles" Type="Self.Roles" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1520,7 +1538,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Roles__CreatedBy__2E1BDC42">
+  <Association Name="FK__Roles__CreatedBy__318258D2">
     <End Role="Users" Type="Self.Users" Multiplicity="1" />
     <End Role="Roles" Type="Self.Roles" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1532,7 +1550,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Roles__ModifiedB__2D27B809">
+  <Association Name="FK__Roles__ModifiedB__308E3499">
     <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
     <End Role="Roles" Type="Self.Roles" Multiplicity="*" />
     <ReferentialConstraint>
@@ -1558,7 +1576,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__UserRoles__RoleI__398D8EEE">
+  <Association Name="FK__UserRoles__RoleI__3BFFE745">
     <End Role="Roles" Type="Self.Roles" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1572,7 +1590,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__UserRoles__UserI__38996AB5">
+  <Association Name="FK__UserRoles__UserI__3B0BC30C">
     <End Role="Users" Type="Self.Users" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -1804,6 +1822,7 @@
     <EntitySet Name="PaymentVoucherAttachments" EntityType="Self.PaymentVoucherAttachments" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PaymentVouchers" EntityType="Self.PaymentVouchers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PermissionsCategory" EntityType="Self.PermissionsCategory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ProductCategories" EntityType="Self.ProductCategories" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ProductItemDetails" EntityType="Self.ProductItemDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
@@ -1986,6 +2005,10 @@
       <End Role="Vendors" EntitySet="Vendors" />
       <End Role="PaymentVouchers" EntitySet="PaymentVouchers" />
     </AssociationSet>
+    <AssociationSet Name="FK__Permissio__Permi__42ACE4D4" Association="Self.FK__Permissio__Permi__42ACE4D4">
+      <End Role="PermissionsCategory" EntitySet="PermissionsCategory" />
+      <End Role="Permissions" EntitySet="Permissions" />
+    </AssociationSet>
     <AssociationSet Name="FK__ProductCa__Creat__30C33EC3" Association="Self.FK__ProductCa__Creat__30C33EC3">
       <End Role="Users" EntitySet="Users" />
       <End Role="ProductCategories" EntitySet="ProductCategories" />
@@ -2126,19 +2149,19 @@
       <End Role="ReturnStock" EntitySet="ReturnStock" />
       <End Role="ReturnStockDetails" EntitySet="ReturnStockDetails" />
     </AssociationSet>
-    <AssociationSet Name="FK__RolePermi__Permi__35BCFE0A" Association="Self.FK__RolePermi__Permi__35BCFE0A">
+    <AssociationSet Name="FK__RolePermi__Permi__467D75B8" Association="Self.FK__RolePermi__Permi__467D75B8">
       <End Role="Permissions" EntitySet="Permissions" />
       <End Role="RolePermissions" EntitySet="RolePermissions" />
     </AssociationSet>
-    <AssociationSet Name="FK__RolePermi__RoleI__34C8D9D1" Association="Self.FK__RolePermi__RoleI__34C8D9D1">
+    <AssociationSet Name="FK__RolePermi__RoleI__4589517F" Association="Self.FK__RolePermi__RoleI__4589517F">
       <End Role="Roles" EntitySet="Roles" />
       <End Role="RolePermissions" EntitySet="RolePermissions" />
     </AssociationSet>
-    <AssociationSet Name="FK__Roles__CreatedBy__2E1BDC42" Association="Self.FK__Roles__CreatedBy__2E1BDC42">
+    <AssociationSet Name="FK__Roles__CreatedBy__318258D2" Association="Self.FK__Roles__CreatedBy__318258D2">
       <End Role="Users" EntitySet="Users" />
       <End Role="Roles" EntitySet="Roles" />
     </AssociationSet>
-    <AssociationSet Name="FK__Roles__ModifiedB__2D27B809" Association="Self.FK__Roles__ModifiedB__2D27B809">
+    <AssociationSet Name="FK__Roles__ModifiedB__308E3499" Association="Self.FK__Roles__ModifiedB__308E3499">
       <End Role="Users" EntitySet="Users" />
       <End Role="Roles" EntitySet="Roles" />
     </AssociationSet>
@@ -2146,11 +2169,11 @@
       <End Role="Branches" EntitySet="Branches" />
       <End Role="UserBranchDetial" EntitySet="UserBranchDetial" />
     </AssociationSet>
-    <AssociationSet Name="FK__UserRoles__RoleI__398D8EEE" Association="Self.FK__UserRoles__RoleI__398D8EEE">
+    <AssociationSet Name="FK__UserRoles__RoleI__3BFFE745" Association="Self.FK__UserRoles__RoleI__3BFFE745">
       <End Role="Roles" EntitySet="Roles" />
       <End Role="UserRoles" EntitySet="UserRoles" />
     </AssociationSet>
-    <AssociationSet Name="FK__UserRoles__UserI__38996AB5" Association="Self.FK__UserRoles__UserI__38996AB5">
+    <AssociationSet Name="FK__UserRoles__UserI__3B0BC30C" Association="Self.FK__UserRoles__UserI__3B0BC30C">
       <End Role="Users" EntitySet="Users" />
       <End Role="UserRoles" EntitySet="UserRoles" />
     </AssociationSet>

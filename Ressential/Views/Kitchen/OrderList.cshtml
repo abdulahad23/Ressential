@@ -115,6 +115,12 @@
                                             @order.Status
                                         </span>
                                     }
+                                    else if (order.Status == "Returned")
+                                    {
+                                        <span style="background-color: darkred;color:white; border-radius:6px; padding:5px 10px 5px 10px; font-size: 0.8rem !important" class="label">
+                                            @order.Status
+                                        </span>
+                                    }
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -127,6 +133,7 @@
                                             <li><button class="dropdown-item" type="button" onclick="submitCompleteOrder(@order.OrderId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Mark Completed</button></li>
                                             <li><button class="dropdown-item" type="button" onclick="submitOutForDelivery(@order.OrderId)"><i class="bi bi-truck" style="font-size: 1.25rem;"></i> Out For Delivery</button></li>
                                             <li><button class="dropdown-item" type="button" onclick="submitCancelOrder(@order.OrderId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Cancel Order</button></li>
+                                            <li><button class="dropdown-item" type="button" onclick="submitOrderReturn(@order.OrderId)"><i class="bi bi-arrow-repeat" style="font-size: 1.25rem;"></i> Sale Return</button></li>
 
 
                                         </ul>
@@ -212,6 +219,13 @@
         form.method = "post";
         form.submit();
     }
+     function submitOrderReturn(OrderId) {
+     const form = document.getElementById("optionForm");
+     form.action = "@Url.Action("OrderReturn", "Kitchen")";
+     document.getElementById("formOrderId").value = OrderId;
+     form.method = "post";
+     form.submit();
+ }
 
     function viewOrder(OrderId) {
         window.location.href = "@Url.Action("OrderDetail", "Kitchen")?orderId=" + OrderId;

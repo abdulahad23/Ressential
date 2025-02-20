@@ -70,8 +70,6 @@ public partial class DB_RessentialEntities : DbContext
 
     public virtual DbSet<PaymentVoucher> PaymentVouchers { get; set; }
 
-    public virtual DbSet<Permission> Permissions { get; set; }
-
     public virtual DbSet<ProductCategory> ProductCategories { get; set; }
 
     public virtual DbSet<ProductItemDetail> ProductItemDetails { get; set; }
@@ -100,8 +98,6 @@ public partial class DB_RessentialEntities : DbContext
 
     public virtual DbSet<ReturnStockDetail> ReturnStockDetails { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
-
     public virtual DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
 
     public virtual DbSet<UserBranchDetial> UserBranchDetials { get; set; }
@@ -121,6 +117,16 @@ public partial class DB_RessentialEntities : DbContext
     public virtual DbSet<WastageItem> WastageItems { get; set; }
 
     public virtual DbSet<BranchItem> BranchItems { get; set; }
+
+    public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
+    public virtual DbSet<Permission> Permissions { get; set; }
+
+    public virtual DbSet<PermissionsCategory> PermissionsCategories { get; set; }
+
+    public virtual DbSet<RolePermission> RolePermissions { get; set; }
 
 }
 

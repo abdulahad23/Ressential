@@ -298,16 +298,6 @@
     <NavigationProperty Name="User1" Relationship="Self.FK__PaymentVo__Modif__681373AD" FromRole="PaymentVouchers" ToRole="Users" />
     <NavigationProperty Name="Vendor" Relationship="Self.FK__PaymentVo__Vendo__65370702" FromRole="PaymentVouchers" ToRole="Vendors" />
   </EntityType>
-  <EntityType Name="Permission">
-    <Key>
-      <PropertyRef Name="PermissionId" />
-    </Key>
-    <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="PermissionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-    <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
-    <NavigationProperty Name="Roles" Relationship="Self.RolePermissions" FromRole="Permissions" ToRole="Roles" />
-  </EntityType>
   <EntityType Name="ProductCategory">
     <Key>
       <PropertyRef Name="ProductCategoryId" />
@@ -538,21 +528,6 @@
     <NavigationProperty Name="ReturnStock" Relationship="Self.FK__ReturnSto__Retur__17036CC0" FromRole="ReturnStockDetails" ToRole="ReturnStock" />
     <Property Name="CostPerUnit" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
   </EntityType>
-  <EntityType Name="Role">
-    <Key>
-      <PropertyRef Name="RoleId" />
-    </Key>
-    <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="RoleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-    <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
-    <Property Name="ModifiedBy" Type="Int32" />
-    <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
-    <NavigationProperty Name="User" Relationship="Self.FK__Roles__CreatedBy__2E1BDC42" FromRole="Roles" ToRole="Users" />
-    <NavigationProperty Name="User1" Relationship="Self.FK__Roles__ModifiedB__2D27B809" FromRole="Roles" ToRole="Users" />
-    <NavigationProperty Name="Permissions" Relationship="Self.RolePermissions" FromRole="Roles" ToRole="Permissions" />
-    <NavigationProperty Name="Users" Relationship="Self.UserRoles" FromRole="Roles" ToRole="Users" />
-  </EntityType>
   <EntityType Name="UnitOfMeasure">
     <Key>
       <PropertyRef Name="UnitOfMeasureId" />
@@ -612,8 +587,6 @@
     <NavigationProperty Name="Requisitions1" Relationship="Self.FK__Requisiti__Modif__70DDC3D8" FromRole="Users" ToRole="Requisitions" />
     <NavigationProperty Name="ReturnStocks" Relationship="Self.FK__ReturnSto__Creat__1332DBDC" FromRole="Users" ToRole="ReturnStock" />
     <NavigationProperty Name="ReturnStocks1" Relationship="Self.FK__ReturnSto__Modif__14270015" FromRole="Users" ToRole="ReturnStock" />
-    <NavigationProperty Name="Roles" Relationship="Self.FK__Roles__CreatedBy__2E1BDC42" FromRole="Users" ToRole="Roles" />
-    <NavigationProperty Name="Roles1" Relationship="Self.FK__Roles__ModifiedB__2D27B809" FromRole="Users" ToRole="Roles" />
     <NavigationProperty Name="Users1" Relationship="Self.FK__Users__CreatedBy__286302EC" FromRole="Users" ToRole="Users1" />
     <NavigationProperty Name="User1" Relationship="Self.FK__Users__CreatedBy__286302EC" FromRole="Users1" ToRole="Users" />
     <NavigationProperty Name="Users11" Relationship="Self.FK__Users__ModifiedB__276EDEB3" FromRole="Users" ToRole="Users1" />
@@ -624,9 +597,11 @@
     <NavigationProperty Name="WarehouseIssues1" Relationship="Self.FK__Warehouse__Modif__7D439ABD" FromRole="Users" ToRole="WarehouseIssues" />
     <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Creat__282DF8C2" FromRole="Users" ToRole="WastageItems" />
     <NavigationProperty Name="WastageItems1" Relationship="Self.FK__WastageIt__Modif__29221CFB" FromRole="Users" ToRole="WastageItems" />
-    <NavigationProperty Name="Roles2" Relationship="Self.UserRoles" FromRole="Users" ToRole="Roles" />
     <NavigationProperty Name="BranchItems" Relationship="DB_RessentialModel.FK__BranchIte__Creat__17C286CF" FromRole="User" ToRole="BranchItem" />
     <NavigationProperty Name="BranchItems1" Relationship="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08" FromRole="User" ToRole="BranchItem" />
+    <NavigationProperty Name="Roles" Relationship="DB_RessentialModel.FK__Roles__CreatedBy__318258D2" FromRole="User" ToRole="Role" />
+    <NavigationProperty Name="Roles1" Relationship="DB_RessentialModel.FK__Roles__ModifiedB__308E3499" FromRole="User" ToRole="Role" />
+    <NavigationProperty Name="UserRoles" Relationship="DB_RessentialModel.FK__UserRoles__UserI__3B0BC30C" FromRole="User" ToRole="UserRole" />
   </EntityType>
   <EntityType Name="Vendor">
     <Key>
@@ -1681,30 +1656,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Roles__CreatedBy__2E1BDC42">
-    <End Role="Users" Type="Self.User" Multiplicity="1" />
-    <End Role="Roles" Type="Self.Role" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Roles">
-        <PropertyRef Name="CreatedBy" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK__Roles__ModifiedB__2D27B809">
-    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
-    <End Role="Roles" Type="Self.Role" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Users">
-        <PropertyRef Name="UserId" />
-      </Principal>
-      <Dependent Role="Roles">
-        <PropertyRef Name="ModifiedBy" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="FK__Users__CreatedBy__286302EC">
     <End Role="Users" Type="Self.User" Multiplicity="0..1" />
     <End Role="Users1" Type="Self.User" Multiplicity="*" />
@@ -1829,14 +1780,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="RolePermissions">
-    <End Role="Permissions" Type="Self.Permission" Multiplicity="*" />
-    <End Role="Roles" Type="Self.Role" Multiplicity="*" />
-  </Association>
-  <Association Name="UserRoles">
-    <End Role="Roles" Type="Self.Role" Multiplicity="*" />
-    <End Role="Users" Type="Self.User" Multiplicity="*" />
-  </Association>
   <EntityContainer Name="DB_RessentialEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="Accounts" EntityType="Self.Account" />
     <EntitySet Name="Areas" EntityType="Self.Area" />
@@ -1857,7 +1800,6 @@
     <EntitySet Name="PaymentApplies" EntityType="Self.PaymentApply" />
     <EntitySet Name="PaymentVoucherAttachments" EntityType="Self.PaymentVoucherAttachment" />
     <EntitySet Name="PaymentVouchers" EntityType="Self.PaymentVoucher" />
-    <EntitySet Name="Permissions" EntityType="Self.Permission" />
     <EntitySet Name="ProductCategories" EntityType="Self.ProductCategory" />
     <EntitySet Name="ProductItemDetails" EntityType="Self.ProductItemDetail" />
     <EntitySet Name="Products" EntityType="Self.Product" />
@@ -1872,7 +1814,6 @@
     <EntitySet Name="Requisitions" EntityType="Self.Requisition" />
     <EntitySet Name="ReturnStocks" EntityType="Self.ReturnStock" />
     <EntitySet Name="ReturnStockDetails" EntityType="Self.ReturnStockDetail" />
-    <EntitySet Name="Roles" EntityType="Self.Role" />
     <EntitySet Name="UnitOfMeasures" EntityType="Self.UnitOfMeasure" />
     <EntitySet Name="UserBranchDetials" EntityType="Self.UserBranchDetial" />
     <EntitySet Name="Users" EntityType="Self.User" />
@@ -2190,14 +2131,6 @@
       <End Role="ReturnStock" EntitySet="ReturnStocks" />
       <End Role="ReturnStockDetails" EntitySet="ReturnStockDetails" />
     </AssociationSet>
-    <AssociationSet Name="FK__Roles__CreatedBy__2E1BDC42" Association="Self.FK__Roles__CreatedBy__2E1BDC42">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Roles" EntitySet="Roles" />
-    </AssociationSet>
-    <AssociationSet Name="FK__Roles__ModifiedB__2D27B809" Association="Self.FK__Roles__ModifiedB__2D27B809">
-      <End Role="Users" EntitySet="Users" />
-      <End Role="Roles" EntitySet="Roles" />
-    </AssociationSet>
     <AssociationSet Name="FK__Users__CreatedBy__286302EC" Association="Self.FK__Users__CreatedBy__286302EC">
       <End Role="Users" EntitySet="Users" />
       <End Role="Users1" EntitySet="Users" />
@@ -2238,14 +2171,6 @@
       <End Role="WastageItems" EntitySet="WastageItems" />
       <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
     </AssociationSet>
-    <AssociationSet Name="RolePermissions" Association="Self.RolePermissions">
-      <End Role="Permissions" EntitySet="Permissions" />
-      <End Role="Roles" EntitySet="Roles" />
-    </AssociationSet>
-    <AssociationSet Name="UserRoles" Association="Self.UserRoles">
-      <End Role="Roles" EntitySet="Roles" />
-      <End Role="Users" EntitySet="Users" />
-    </AssociationSet>
     <EntitySet Name="BranchItems" EntityType="DB_RessentialModel.BranchItem" />
     <AssociationSet Name="FK__BranchIte__Branc__16CE6296" Association="DB_RessentialModel.FK__BranchIte__Branc__16CE6296">
       <End Role="Branch" EntitySet="Branches" />
@@ -2262,6 +2187,39 @@
     <AssociationSet Name="FK__BranchIte__Modif__18B6AB08" Association="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08">
       <End Role="User" EntitySet="Users" />
       <End Role="BranchItem" EntitySet="BranchItems" />
+    </AssociationSet>
+    <EntitySet Name="Roles" EntityType="DB_RessentialModel.Role" />
+    <EntitySet Name="UserRoles" EntityType="DB_RessentialModel.UserRole" />
+    <AssociationSet Name="FK__Roles__CreatedBy__318258D2" Association="DB_RessentialModel.FK__Roles__CreatedBy__318258D2">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Role" EntitySet="Roles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Roles__ModifiedB__308E3499" Association="DB_RessentialModel.FK__Roles__ModifiedB__308E3499">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Role" EntitySet="Roles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__RoleI__3BFFE745" Association="DB_RessentialModel.FK__UserRoles__RoleI__3BFFE745">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserRoles__UserI__3B0BC30C" Association="DB_RessentialModel.FK__UserRoles__UserI__3B0BC30C">
+      <End Role="User" EntitySet="Users" />
+      <End Role="UserRole" EntitySet="UserRoles" />
+    </AssociationSet>
+    <EntitySet Name="Permissions" EntityType="DB_RessentialModel.Permission" />
+    <EntitySet Name="PermissionsCategories" EntityType="DB_RessentialModel.PermissionsCategory" />
+    <EntitySet Name="RolePermissions" EntityType="DB_RessentialModel.RolePermission" />
+    <AssociationSet Name="FK__Permissio__Permi__42ACE4D4" Association="DB_RessentialModel.FK__Permissio__Permi__42ACE4D4">
+      <End Role="PermissionsCategory" EntitySet="PermissionsCategories" />
+      <End Role="Permission" EntitySet="Permissions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__RolePermi__Permi__467D75B8" Association="DB_RessentialModel.FK__RolePermi__Permi__467D75B8">
+      <End Role="Permission" EntitySet="Permissions" />
+      <End Role="RolePermission" EntitySet="RolePermissions" />
+    </AssociationSet>
+    <AssociationSet Name="FK__RolePermi__RoleI__4589517F" Association="DB_RessentialModel.FK__RolePermi__RoleI__4589517F">
+      <End Role="Role" EntitySet="Roles" />
+      <End Role="RolePermission" EntitySet="RolePermissions" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="BranchItem">
@@ -2332,6 +2290,151 @@
       </Principal>
       <Dependent Role="BranchItem">
         <PropertyRef Name="ModifiedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Role">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+    <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="ModifiedBy" Type="Int32" />
+    <Property Name="ModifiedAt" Type="DateTime" Precision="7" />
+    <NavigationProperty Name="User" Relationship="DB_RessentialModel.FK__Roles__CreatedBy__318258D2" FromRole="Role" ToRole="User" />
+    <NavigationProperty Name="User1" Relationship="DB_RessentialModel.FK__Roles__ModifiedB__308E3499" FromRole="Role" ToRole="User" />
+    <NavigationProperty Name="UserRoles" Relationship="DB_RessentialModel.FK__UserRoles__RoleI__3BFFE745" FromRole="Role" ToRole="UserRole" />
+    <NavigationProperty Name="RolePermissions" Relationship="DB_RessentialModel.FK__RolePermi__RoleI__4589517F" FromRole="Role" ToRole="RolePermission" />
+  </EntityType>
+  <EntityType Name="UserRole">
+    <Key>
+      <PropertyRef Name="UserRoleId" />
+    </Key>
+    <Property Name="UserRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Role" Relationship="DB_RessentialModel.FK__UserRoles__RoleI__3BFFE745" FromRole="UserRole" ToRole="Role" />
+    <NavigationProperty Name="User" Relationship="DB_RessentialModel.FK__UserRoles__UserI__3B0BC30C" FromRole="UserRole" ToRole="User" />
+  </EntityType>
+  <Association Name="FK__Roles__CreatedBy__318258D2">
+    <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1" />
+    <End Type="DB_RessentialModel.Role" Role="Role" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Role">
+        <PropertyRef Name="CreatedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Roles__ModifiedB__308E3499">
+    <End Type="DB_RessentialModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="DB_RessentialModel.Role" Role="Role" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Role">
+        <PropertyRef Name="ModifiedBy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__RoleI__3BFFE745">
+    <End Type="DB_RessentialModel.Role" Role="Role" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserRoles__UserI__3B0BC30C">
+    <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.UserRole" Role="UserRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="UserRole">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Permission">
+    <Key>
+      <PropertyRef Name="PermissionId" />
+    </Key>
+    <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PermissionName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="PermissionCategoryId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="PermissionsCategory" Relationship="DB_RessentialModel.FK__Permissio__Permi__42ACE4D4" FromRole="Permission" ToRole="PermissionsCategory" />
+    <NavigationProperty Name="RolePermissions" Relationship="DB_RessentialModel.FK__RolePermi__Permi__467D75B8" FromRole="Permission" ToRole="RolePermission" />
+  </EntityType>
+  <EntityType Name="PermissionsCategory">
+    <Key>
+      <PropertyRef Name="PermissionCategoryId" />
+    </Key>
+    <Property Name="PermissionCategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PermissionCategoryName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Permissions" Relationship="DB_RessentialModel.FK__Permissio__Permi__42ACE4D4" FromRole="PermissionsCategory" ToRole="Permission" />
+  </EntityType>
+  <EntityType Name="RolePermission">
+    <Key>
+      <PropertyRef Name="RolePermissionId" />
+    </Key>
+    <Property Name="RolePermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+    <Property Name="PermissionId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Permission" Relationship="DB_RessentialModel.FK__RolePermi__Permi__467D75B8" FromRole="RolePermission" ToRole="Permission" />
+    <NavigationProperty Name="Role" Relationship="DB_RessentialModel.FK__RolePermi__RoleI__4589517F" FromRole="RolePermission" ToRole="Role" />
+  </EntityType>
+  <Association Name="FK__Permissio__Permi__42ACE4D4">
+    <End Type="DB_RessentialModel.PermissionsCategory" Role="PermissionsCategory" Multiplicity="1" />
+    <End Type="DB_RessentialModel.Permission" Role="Permission" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PermissionsCategory">
+        <PropertyRef Name="PermissionCategoryId" />
+      </Principal>
+      <Dependent Role="Permission">
+        <PropertyRef Name="PermissionCategoryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__RolePermi__Permi__467D75B8">
+    <End Type="DB_RessentialModel.Permission" Role="Permission" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.RolePermission" Role="RolePermission" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Permission">
+        <PropertyRef Name="PermissionId" />
+      </Principal>
+      <Dependent Role="RolePermission">
+        <PropertyRef Name="PermissionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__RolePermi__RoleI__4589517F">
+    <End Type="DB_RessentialModel.Role" Role="Role" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.RolePermission" Role="RolePermission" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Role">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="RolePermission">
+        <PropertyRef Name="RoleId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

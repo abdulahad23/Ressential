@@ -275,6 +275,9 @@
     <Compile Include="Models\Permission.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PermissionsCategory.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Product.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -320,6 +323,10 @@
     <Compile Include="Models\Role.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RolePermission.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RoleViewModel.cs" />
     <Compile Include="Models\UnitOfMeasure.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -327,6 +334,9 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserBranchDetial.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserRole.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Vendor.cs">
@@ -347,6 +357,8 @@
     <Compile Include="Models\WastageItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\HasPermissionAttribute.cs" />
+    <Compile Include="Utilities\HtmlHelperExtensions.cs" />
     <Compile Include="Utilities\TextConstraints.cs" />
     <Compile Include="Utilities\PaginationConstraints.cs" />
     <Compile Include="Models\PurchaseReturnListViewModel.cs" />
@@ -883,6 +895,9 @@
     <Content Include="Views\Warehouse\ViewReturnStock.cshtml" />
     <Content Include="Views\Warehouse\PaymentVoucherPDF.cshtml" />
     <Content Include="Views\Warehouse\ReceiptVoucherPDF.cshtml" />
+    <Content Include="Views\Account\Unauthorized.cshtml" />
+    <Content Include="Views\Warehouse\RoleList.cshtml" />
+    <Content Include="Views\Warehouse\CreateRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

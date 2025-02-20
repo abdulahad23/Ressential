@@ -76,10 +76,6 @@ public partial class User
 
         this.ReturnStocks1 = new HashSet<ReturnStock>();
 
-        this.Roles = new HashSet<Role>();
-
-        this.Roles1 = new HashSet<Role>();
-
         this.Users1 = new HashSet<User>();
 
         this.Users11 = new HashSet<User>();
@@ -96,11 +92,15 @@ public partial class User
 
         this.WastageItems1 = new HashSet<WastageItem>();
 
-        this.Roles2 = new HashSet<Role>();
-
         this.BranchItems = new HashSet<BranchItem>();
 
         this.BranchItems1 = new HashSet<BranchItem>();
+
+        this.Roles = new HashSet<Role>();
+
+        this.Roles1 = new HashSet<Role>();
+
+        this.UserRoles = new HashSet<UserRole>();
 
     }
 
@@ -237,14 +237,6 @@ public partial class User
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Role> Roles { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<Role> Roles1 { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
     public virtual ICollection<User> Users1 { get; set; }
 
     public virtual User User1 { get; set; }
@@ -281,15 +273,23 @@ public partial class User
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Role> Roles2 { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
     public virtual ICollection<BranchItem> BranchItems { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<BranchItem> BranchItems1 { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Role> Roles { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Role> Roles1 { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<UserRole> UserRoles { get; set; }
 
 }
 

@@ -2258,6 +2258,63 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        public ActionResult OrderReturn(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction("OrderList");
+                }
+
+                if (order.Status == "Preparing" || order.Status == "Cancelled" || order.Status == "Pending" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
+                {
+                    TempData["ErrorMessage"] = "Order can be returned only for Completed orders";
+                }
+                else if (order.Status == "Returned")
+                {
+                    TempData["ErrorMessage"] = "Order status is already Returned";
+                }
+                else if (order.Status == "Completed")
+                {
+                    //Revert the stock
+
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        foreach (var item in orderDetail.Product.ProductItemDetails)
+                        {
+                            var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
+
+                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                            if (branchItem != null)
+                            {
+                                branchItem.Quantity += itemQuantityToAdd;
+                                // Mark the branchItem as modified
+                                _db.Entry(branchItem).State = EntityState.Modified;
+                            }
+                        }
+                    }
+
+                    order.Status = "Returned";
+                    TempData["SuccessMessage"] = "Order returned successfully.";
+                }
+
+                _db.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while cancelling the order.";
+                Console.WriteLine($"Error cancelling order: {ex.Message}");
+            }
+
+            return RedirectToAction("OrderList");
+        }
+
+
+        [HttpPost]
         public ActionResult ConfirmOrder(int orderId)
         {
             try

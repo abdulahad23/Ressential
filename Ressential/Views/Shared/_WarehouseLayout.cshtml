@@ -86,19 +86,27 @@
                         <h2 class="text-secondary border-bottom border-3 "><b>Warehouse</b></h2>
                         <i class="ti ti-dashboard"></i>
                     </li>
+                    @if (Html.HasPermission("Item Category Menu"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-collection-fill"></i></span><span class="pc-mtext">
+                                    Item Category
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Item Category List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemCategoryList">All</a></li>
+}
+                                @if (Html.HasPermission("Item Category Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItemCategory">Create</a></li>
+}
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-collection-fill"></i></span><span class="pc-mtext">
-                                Item Category
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemCategoryList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItemCategory">Create</a></li>
-                        </ul>
-                    </li>
-
+                            </ul>
+                        </li>
+                    }
                     <li class="pc-item pc-hasmenu">
                         <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="bi bi-box-seam-fill"></i></span><span class="pc-mtext">
@@ -173,7 +181,7 @@
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/IssueList">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRequisitionIssue">Create</a></li>
                             @*<li class="pc-item"><a class="pc-link" href="/Warehouse/RequisitionList">Requisition</a></li>
-                                <li class="pc-item"><a class="pc-link" href="/Warehouse/StockReturnList">Stock Return</a></li>*@
+                <li class="pc-item"><a class="pc-link" href="/Warehouse/StockReturnList">Stock Return</a></li>*@
 
                         </ul>
                     </li>
@@ -232,6 +240,17 @@
                         <ul class="pc-submenu">
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/UserList">All</a></li>
                             <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateUser">Create</a></li>
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#!" class="pc-link">
+                            <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
+                                Roles
+                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                        </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a class="pc-link" href="/Warehouse/RoleList">All</a></li>
+                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRole">Create</a></li>
                         </ul>
                     </li>
                     <li class="pc-item pc-hasmenu">

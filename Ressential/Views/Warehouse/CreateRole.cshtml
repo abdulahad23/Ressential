@@ -1,0 +1,87 @@
+﻿@model Ressential.Models.RoleViewModel
+
+@{
+    ViewBag.Title = "CreateRole";
+    Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12 grid-margin">
+        <div class="card">
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+                <h2 class="text-secondary"><b>Create Role</b></h2>
+
+                @using (Html.BeginForm("CreateRole", "Warehouse", FormMethod.Post))
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Role.RoleName, new { @class = "form-control", placeholder = "Role Name" })
+                                <label for="floatingInput">Role Name</label>
+                                @Html.ValidationMessageFor(model => model.Role.RoleName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Permissions</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Permission Category</th>
+                                        <th>Menu</th>
+                                        <th>List</th>
+                                        <th>Create</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var category in Model.PermissionsCategories)
+                                    {
+                                        <tr>
+                                            <td>@category.PermissionCategoryName</td>
+                                            @foreach (var permission in category.Permissions)
+                                            {
+                                                <td>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="permission_@permission.PermissionId" name="SelectedPermissions" value="@permission.PermissionId">
+                                                        <label class="form-check-label" for="permission_@permission.PermissionId">@permission.PermissionName</label>
+                                                    </div>
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="col-sm-9">
+                                    <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                    <a href="@Url.Action("RoleList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

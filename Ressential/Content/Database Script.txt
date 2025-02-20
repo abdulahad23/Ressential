@@ -26,28 +26,35 @@ CREATE TABLE Roles (
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
+-- Table: PermissionsCategory
+CREATE TABLE PermissionsCategory (
+    PermissionCategoryId INT PRIMARY KEY IDENTITY(1,1),
+    PermissionCategoryName NVARCHAR(100) NOT NULL UNIQUE,
+);
+
 -- Table: Permissions
 CREATE TABLE Permissions (
     PermissionId INT PRIMARY KEY IDENTITY(1,1),
     PermissionName NVARCHAR(100) NOT NULL UNIQUE,
-    Description NVARCHAR(255) NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE()
+    PermissionCategoryId INT NOT NULL,
+    FOREIGN KEY (PermissionCategoryId) REFERENCES PermissionsCategory(PermissionCategoryId),
+
 );
 
 -- Table: RolePermissions
 CREATE TABLE RolePermissions (
+    RolePermissionId INT PRIMARY KEY IDENTITY(1,1),
     RoleId INT NOT NULL,
     PermissionId INT NOT NULL,
-    PRIMARY KEY (RoleId, PermissionId),
     FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE,
     FOREIGN KEY (PermissionId) REFERENCES Permissions(PermissionId) ON DELETE CASCADE
 );
 
 -- Table: UserRoles
 CREATE TABLE UserRoles (
+    UserRoleId INT PRIMARY KEY IDENTITY(1,1),
     UserId INT NOT NULL,
     RoleId INT NOT NULL,
-    PRIMARY KEY (UserId, RoleId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
     FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE
 );
@@ -438,7 +445,7 @@ CREATE TABLE Orders (
     PaymentMethod NVARCHAR(20) NOT NULL,
     OrderTotal Decimal NOT NULL,
     OrderTotalCost Decimal NOT NULL,
-    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled')),
+    Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Pending', 'Preparing', 'Ready', 'Out for Delivery', 'Completed', 'Cancelled', 'Returned')),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),

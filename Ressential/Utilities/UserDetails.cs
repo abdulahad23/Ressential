@@ -14,5 +14,7 @@ namespace Ressential.Utilities
         public bool IsActive { get; set; }
 
         public int BranchId { get; set; }
+
+        public List<string> Permissions { get; set; }
     }
 }

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="15ef3b59ed5c48d7b04da910c093d83f" Name="Diagram1">
+      <Diagram DiagramId="15ef3b59ed5c48d7b04da910c093d83f" Name="Diagram1" ZoomLevel="83">
         <EntityTypeShape EntityType="DB_RessentialModel.Account" Width="1.5" PointX="7.5" PointY="38" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.Area" Width="1.5" PointX="7.5" PointY="54.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.BranchArea" Width="1.5" PointX="9.75" PointY="46.5" IsExpanded="true" />
@@ -24,7 +24,6 @@
         <EntityTypeShape EntityType="DB_RessentialModel.PaymentApply" Width="1.5" PointX="18" PointY="58.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucherAttachment" Width="1.5" PointX="12" PointY="63.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.PaymentVoucher" Width="1.5" PointX="9.75" PointY="55.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Permission" Width="1.5" PointX="0.75" PointY="46.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ProductCategory" Width="1.5" PointX="7.5" PointY="59.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ProductItemDetail" Width="1.5" PointX="23.75" PointY="54.5" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.Product" Width="1.5" PointX="15.75" PointY="49.875" IsExpanded="true" />
@@ -39,7 +38,6 @@
         <EntityTypeShape EntityType="DB_RessentialModel.Requisition" Width="1.5" PointX="12.75" PointY="40.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ReturnStock" Width="1.5" PointX="15.75" PointY="44.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.ReturnStockDetail" Width="1.5" PointX="23.75" PointY="50.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_RessentialModel.Role" Width="1.5" PointX="3" PointY="46.25" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.UnitOfMeasure" Width="1.5" PointX="16.25" PointY="33.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.UserBranchDetial" Width="1.5" PointX="9.75" PointY="76.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DB_RessentialModel.User" Width="1.5" PointX="5.25" PointY="42.25" IsExpanded="true" />
@@ -126,8 +124,6 @@
         <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Creat__1332DBDC" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Modif__14270015" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__ReturnSto__Retur__17036CC0" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__Roles__CreatedBy__2E1BDC42" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.FK__Roles__ModifiedB__2D27B809" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Users__CreatedBy__286302EC" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Users__ModifiedB__276EDEB3" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Vendors__Created__4E88ABD4" ManuallyRouted="false" />
@@ -138,13 +134,23 @@
         <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Modif__29221CFB" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__Warehouse__Issue__00200768" ManuallyRouted="false" />
         <AssociationConnector Association="DB_RessentialModel.FK__WastageIt__Wasta__2BFE89A6" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.RolePermissions" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_RessentialModel.UserRoles" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DB_RessentialModel.BranchItem" Width="1.5" PointX="26.75" PointY="50.5" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Branc__16CE6296" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Creat__17C286CF" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__ItemI__15DA3E5D" />
         <AssociationConnector Association="DB_RessentialModel.FK__BranchIte__Modif__18B6AB08" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Role" Width="1.5" PointX="7.5" PointY="29.25" />
+        <EntityTypeShape EntityType="DB_RessentialModel.UserRole" Width="1.5" PointX="9.75" PointY="37.25" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Roles__CreatedBy__318258D2" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Roles__ModifiedB__308E3499" />
+        <AssociationConnector Association="DB_RessentialModel.FK__UserRoles__RoleI__3BFFE745" />
+        <AssociationConnector Association="DB_RessentialModel.FK__UserRoles__UserI__3B0BC30C" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Permission" Width="1.5" PointX="3" PointY="0.875" />
+        <EntityTypeShape EntityType="DB_RessentialModel.PermissionsCategory" Width="1.5" PointX="0.75" PointY="1.125" />
+        <EntityTypeShape EntityType="DB_RessentialModel.RolePermission" Width="1.5" PointX="10.125" PointY="15.625" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Permissio__Permi__42ACE4D4" />
+        <AssociationConnector Association="DB_RessentialModel.FK__RolePermi__Permi__467D75B8" />
+        <AssociationConnector Association="DB_RessentialModel.FK__RolePermi__RoleI__4589517F" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

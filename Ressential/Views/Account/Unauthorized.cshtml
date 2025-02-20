@@ -1,0 +1,24 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Unauthorized</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="display-4 text-danger">Unauthorized</h1>
+                <p class="lead">You do not have permission to access this page.</p>
+                <a href="@Url.Action("Login", "Account")" class="btn btn-primary">Return to Login</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

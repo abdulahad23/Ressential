@@ -15,31 +15,27 @@ namespace Ressential.Models
 using System;
     using System.Collections.Generic;
     
-public partial class Permission
+public partial class PermissionsCategory
 {
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public Permission()
+    public PermissionsCategory()
     {
 
-        this.RolePermissions = new HashSet<RolePermission>();
+        this.Permissions = new HashSet<Permission>();
 
     }
 
 
-    public int PermissionId { get; set; }
-
-    public string PermissionName { get; set; }
-
     public int PermissionCategoryId { get; set; }
 
+    public string PermissionCategoryName { get; set; }
 
 
-    public virtual PermissionsCategory PermissionsCategory { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<RolePermission> RolePermissions { get; set; }
+    public virtual ICollection<Permission> Permissions { get; set; }
 
 }
 
