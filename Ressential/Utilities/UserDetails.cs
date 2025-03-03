@@ -16,5 +16,6 @@ namespace Ressential.Utilities
         public int BranchId { get; set; }
 
         public List<string> Permissions { get; set; }
+        public List<int> BranchPermissions { get; set; }
     }
 }

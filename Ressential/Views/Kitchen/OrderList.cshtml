@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Ressential.Models.Order>
+@using Ressential.Utilities
 
 @{
     ViewBag.Title = "OrderList";
@@ -24,8 +25,12 @@
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="cancel">Cancel</option>
-                        <option value="confirm">Confirm</option>
+                        @if (Html.HasPermission("Order Status Update"))
+                        {
+                            <option value="cancel">Cancel</option>
+                            <option value="confirm">Confirm</option>
+                        }
+
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
@@ -128,14 +133,18 @@
                                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><button class="dropdown-item" type="button" onclick="viewOrder(@order.OrderId)"><i class="bi bi-eye" style="font-size: 1.25rem;"></i> View Order</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitConfirmOrder(@order.OrderId)"><i class="bi bi-check2-circle" style="font-size: 1.25rem;"></i> Confirm Order</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitCompleteOrder(@order.OrderId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Mark Completed</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitOutForDelivery(@order.OrderId)"><i class="bi bi-truck" style="font-size: 1.25rem;"></i> Out For Delivery</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitCancelOrder(@order.OrderId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Cancel Order</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitOrderReturn(@order.OrderId)"><i class="bi bi-arrow-repeat" style="font-size: 1.25rem;"></i> Sale Return</button></li>
-
-
+                                            @if (Html.HasPermission("Order View"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="viewOrder(@order.OrderId)"><i class="bi bi-eye" style="font-size: 1.25rem;"></i> View Order</button></li>
+                                            }
+                                            @if (Html.HasPermission("Order Status Update"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitConfirmOrder(@order.OrderId)"><i class="bi bi-check2-circle" style="font-size: 1.25rem;"></i> Confirm Order</button></li>
+                                                <li><button class="dropdown-item" type="button" onclick="submitCompleteOrder(@order.OrderId)"><i class="bi bi-check-circle" style="font-size: 1.25rem;"></i> Mark Completed</button></li>
+                                                <li><button class="dropdown-item" type="button" onclick="submitOutForDelivery(@order.OrderId)"><i class="bi bi-truck" style="font-size: 1.25rem;"></i> Out For Delivery</button></li>
+                                                <li><button class="dropdown-item" type="button" onclick="submitCancelOrder(@order.OrderId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Cancel Order</button></li>
+                                                <li><button class="dropdown-item" type="button" onclick="submitOrderReturn(@order.OrderId)"><i class="bi bi-arrow-repeat" style="font-size: 1.25rem;"></i> Sale Return</button></li>
+                                            }
                                         </ul>
                                     </div>
                                 </td>

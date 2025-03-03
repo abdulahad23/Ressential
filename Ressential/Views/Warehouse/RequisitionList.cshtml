@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Ressential.Models.Requisition>
+@using Ressential.Utilities
 
 @{
     ViewBag.Title = "RequisitionList";
@@ -23,7 +24,10 @@
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="reject">Reject</option>
+                        @if (Html.HasPermission("Requisition Status Update"))
+                        {
+                            <option value="reject">Reject</option>
+                        }
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
@@ -111,9 +115,15 @@
                                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><button class="dropdown-item" type="button" onclick="submitCreateIssue(@requisition.RequisitionId)"><i class="bi bi-box-arrow-up" style="font-size: 1.25rem;"></i> Issue Item</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitRejectRequisition(@requisition.RequisitionId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Reject Requisition</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitPendingRequisition(@requisition.RequisitionId)"><i class="bi bi-clock" style="font-size: 1.25rem;"></i> Mark Pending</button></li>
+                                            @if (Html.HasPermission("Issue Create"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitCreateIssue(@requisition.RequisitionId)"><i class="bi bi-box-arrow-up" style="font-size: 1.25rem;"></i> Issue Item</button></li>
+                                            }
+                                            @if (Html.HasPermission("Requisition Status Update"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitRejectRequisition(@requisition.RequisitionId)"><i class="bi bi-x-circle" style="font-size: 1.25rem;"></i> Reject Requisition</button></li>
+                                                <li><button class="dropdown-item" type="button" onclick="submitPendingRequisition(@requisition.RequisitionId)"><i class="bi bi-clock" style="font-size: 1.25rem;"></i> Mark Pending</button></li>
+                                            }
                                         </ul>
                                     </div>
                                 </td>

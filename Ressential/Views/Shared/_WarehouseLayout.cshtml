@@ -86,7 +86,7 @@
                         <h2 class="text-secondary border-bottom border-3 "><b>Warehouse</b></h2>
                         <i class="ti ti-dashboard"></i>
                     </li>
-                    @if (Html.HasPermission("Item Category Menu"))
+                    @if (Html.HasPermission("Item Category List") || Html.HasPermission("Item Category Create"))
                     {
                         <li class="pc-item pc-hasmenu">
                             <a href="#!" class="pc-link">
@@ -98,161 +98,267 @@
                                 @if (Html.HasPermission("Item Category List"))
                                 {
                                     <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemCategoryList">All</a></li>
-}
+                                }
                                 @if (Html.HasPermission("Item Category Create"))
                                 {
                                     <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItemCategory">Create</a></li>
-}
+                                }
 
                             </ul>
                         </li>
                     }
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-box-seam-fill"></i></span><span class="pc-mtext">
-                                Item
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItem">Create</a></li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Item List") || Html.HasPermission("Item Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-box-seam-fill"></i></span><span class="pc-mtext">
+                                    Item
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Item List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/ItemList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Item Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateItem">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-people-fill"></i></span><span class="pc-mtext">
-                                Vendor
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/VendorList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateVendor">Create</a></li>
+                    @if (Html.HasPermission("Vendor List") || Html.HasPermission("Vendor Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-people-fill"></i></span><span class="pc-mtext">
+                                    Vendor
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Vendor List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/VendorList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Vendor Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateVendor">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-building"></i></span><span class="pc-mtext">
-                                Branch
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/BranchList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateBranch">Create</a></li>
-
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-cart-arrow-down"></i></span><span class="pc-mtext">
-                                Purchase
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/PurchaseList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePurchase">Create</a></li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link">Purchase Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/PurchaseReturnList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePurchaseReturn">Create</a></li>
-                                </ul>
-                            </li>
-
-
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Warehouse/RequisitionList" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-cogs"></i></span> <!-- Changed icon for Requisition -->
-                            <span class="pc-mtext">Requisition</span>
-                        </a>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-boxes"></i></span><span class="pc-mtext">
-                                Issue
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/IssueList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRequisitionIssue">Create</a></li>
-                            @*<li class="pc-item"><a class="pc-link" href="/Warehouse/RequisitionList">Requisition</a></li>
-                <li class="pc-item"><a class="pc-link" href="/Warehouse/StockReturnList">Stock Return</a></li>*@
-
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Warehouse/ReturnStockList" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-reply-all"></i></span> <!-- Changed icon for Stock Return -->
-                            <span class="pc-mtext">Stock Return</span>
-                        </a>
-                    </li>
+                    @if (Html.HasPermission("Branch List") || Html.HasPermission("Branch Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-building"></i></span><span class="pc-mtext">
+                                    Branch
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Branch List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/BranchList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Branch Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateBranch">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-bank2"></i></span><span class="pc-mtext">
-                                Bank & Cash
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/BankAndCashList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateBankAndCash">Create</a></li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Purchase List") || Html.HasPermission("Purchase Create") || Html.HasPermission("Purchase Return List") || Html.HasPermission("Purchase Return Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-cart-arrow-down"></i></span><span class="pc-mtext">
+                                    Purchase
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Purchase List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/PurchaseList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Purchase Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePurchase">Create</a></li>
+                                }
+                                @if (Html.HasPermission("Purchase Return List") || Html.HasPermission("Purchase Return Create"))
+                                {
+                                    <li class="pc-item pc-hasmenu">
+                                        <a href="#!" class="pc-link">Purchase Return<span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                        <ul class="pc-submenu">
+                                            @if (Html.HasPermission("Purchase Return List"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/PurchaseReturnList">All</a></li>
+                                            }
+                                            @if (Html.HasPermission("Purchase Return Create"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePurchaseReturn">Create</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Requisition List"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Warehouse/RequisitionList" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-cogs"></i></span>
+                                <span class="pc-mtext">Requisition</span>
+                            </a>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Issue Create") || Html.HasPermission("Issue List"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-boxes"></i></span><span class="pc-mtext">
+                                    Issue
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Issue List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/IssueList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Issue Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRequisitionIssue">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Stock Return List"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Warehouse/ReturnStockList" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-reply-all"></i></span>
+                                <span class="pc-mtext">Stock Return</span>
+                            </a>
+                        </li>
+                    }
 
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-receipt"></i></span><span class="pc-mtext">
-                                Voucher
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link"> Payment Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/PaymentVoucherList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePaymentVoucher">Create</a></li>
-                                </ul>
-                            </li>
-                            <li class="pc-item pc-hasmenu">
-                                <a href="#!" class="pc-link"> Receipt Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="pc-submenu">
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/ReceiptVoucherList">All</a></li>
-                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateReceiptVoucher">Create</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Bank And Cash List") || Html.HasPermission("Bank And Cash Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-bank2"></i></span><span class="pc-mtext">
+                                    Bank & Cash
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Bank And Cash List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/BankAndCashList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Bank And Cash Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateBankAndCash">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
-                                User
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/UserList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateUser">Create</a></li>
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
-                                Roles
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/RoleList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRole">Create</a></li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Payment Voucher List") || Html.HasPermission("Payment Voucher Create") || Html.HasPermission("Receipt Voucher List") || Html.HasPermission("Receipt Voucher Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-receipt"></i></span><span class="pc-mtext">
+                                    Voucher
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Payment Voucher List") || Html.HasPermission("Payment Voucher Create"))
+                                {
+                                    <li class="pc-item pc-hasmenu">
+                                        <a href="#!" class="pc-link"> Payment Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                        <ul class="pc-submenu">
+                                            @if (Html.HasPermission("Payment Voucher List"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/PaymentVoucherList">All</a></li>
+                                            }
+                                            @if (Html.HasPermission("Payment Voucher Create"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/CreatePaymentVoucher">Create</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (Html.HasPermission("Receipt Voucher List") || Html.HasPermission("Receipt Voucher Create"))
+                                {
+                                    <li class="pc-item pc-hasmenu">
+                                        <a href="#!" class="pc-link"> Receipt Voucher <span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                                        <ul class="pc-submenu">
+                                            @if (Html.HasPermission("Receipt Voucher List"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/ReceiptVoucherList">All</a></li>
+                                            }
+                                            @if (Html.HasPermission("Receipt Voucher Create"))
+                                            {
+                                                <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateReceiptVoucher">Create</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("User List") || Html.HasPermission("User Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
+                                    User
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("User List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/UserList">All</a></li>
+                                }
+                                @if (Html.HasPermission("User Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateUser">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Role List") || Html.HasPermission("Role Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
+                                    Roles
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Role List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/RoleList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Role Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Warehouse/CreateRole">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
                     <li class="pc-item pc-hasmenu">
                         <a href="/Warehouse/" class="pc-link">
                             <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
@@ -314,8 +420,14 @@
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item">
                         <select class="form-select p-r-35" id="managementSelect">
-                            <option value="@Url.Action("Index", "Kitchen")">Kitchen Management</option>
-                            <option selected value="@Url.Action("Index", "Warehouse")">Warehouse Management</option>
+                            @if (Html.HasKitchenPermission())
+                            {
+                                <option value="@Url.Action("DefaultBranch", "Warehouse")">Kitchen Management</option>
+                            }
+                            @if (Html.HasWarehousePermission())
+                            {
+                                <option selected value="@Url.Action("Index", "Warehouse")">Warehouse Management</option>
+                            }
                         </select>
                     </li>
                     <li class="dropdown pc-h-item">

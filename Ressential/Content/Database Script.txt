@@ -4,38 +4,76 @@ CREATE TABLE Users (
     UserName NVARCHAR(100) NOT NULL,
     Email NVARCHAR(100) NOT NULL UNIQUE,
     Password NVARCHAR(255) NOT NULL,
+    RoleId INT NOT NULL,
     ProfileImage NVARCHAR(max) NULL,
     IsActive BIT NOT NULL DEFAULT 1,
+    HasWarehousePermission BIT NOT NULL DEFAULT 0,
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
     ModifiedAt DATETIME2 NULL,
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
 );
 
 -- Table: Roles
 CREATE TABLE Roles (
     RoleId INT PRIMARY KEY IDENTITY(1,1),
     RoleName NVARCHAR(100) NOT NULL UNIQUE,
+    IsBranchRole BIT NOT NULL DEFAULT 0,
+    BranchId INT NULL,
+    CreatedBy INT NULL,
+    CreatedAt DATETIME2 NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+);
+
+ALTER TABLE Users 
+ADD CONSTRAINT FK_Users_Role FOREIGN KEY (RoleId) REFERENCES Roles(RoleId);
+
+-- Table: PermissionsCategory
+CREATE TABLE PermissionsCategory (
+    PermissionCategoryId INT PRIMARY KEY IDENTITY(1,1),
+    PermissionModule NVARCHAR(100) NOT NULL CHECK (PermissionModule IN ('Warehouse', 'Kitchen')),
+    PermissionCategoryName NVARCHAR(100) NOT NULL UNIQUE,
+);
+
+-- Table: Branches
+CREATE TABLE Branches (
+    BranchId INT PRIMARY KEY IDENTITY(1,1),
+    BranchName NVARCHAR(100) NOT NULL,
+    BranchCode NVARCHAR(50) NOT NULL UNIQUE,
+    BranchContact NVARCHAR(50) NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
+    City NVARCHAR(100) NOT NULL,
+    Country NVARCHAR(100) NOT NULL,
+    PostalCode NVARCHAR(20) NULL,
+    OwnerName NVARCHAR(100) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
     ModifiedAt DATETIME2 NULL,
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+
 );
 
--- Table: PermissionsCategory
-CREATE TABLE PermissionsCategory (
-    PermissionCategoryId INT PRIMARY KEY IDENTITY(1,1),
-    PermissionCategoryName NVARCHAR(100) NOT NULL UNIQUE,
+-- Table: UserBranchPermissions
+CREATE TABLE UserBranchPermissions (
+    UserBranchPermissionsId INT PRIMARY KEY IDENTITY(1,1),
+    UserId INT NOT NULL,
+    BranchId INT NOT NULL,
+    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE
 );
 
 -- Table: Permissions
 CREATE TABLE Permissions (
     PermissionId INT PRIMARY KEY IDENTITY(1,1),
-    PermissionName NVARCHAR(100) NOT NULL UNIQUE,
+    PermissionName NVARCHAR(100) NOT NULL,
     PermissionCategoryId INT NOT NULL,
     FOREIGN KEY (PermissionCategoryId) REFERENCES PermissionsCategory(PermissionCategoryId),
 
@@ -48,15 +86,6 @@ CREATE TABLE RolePermissions (
     PermissionId INT NOT NULL,
     FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE,
     FOREIGN KEY (PermissionId) REFERENCES Permissions(PermissionId) ON DELETE CASCADE
-);
-
--- Table: UserRoles
-CREATE TABLE UserRoles (
-    UserRoleId INT PRIMARY KEY IDENTITY(1,1),
-    UserId INT NOT NULL,
-    RoleId INT NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
-    FOREIGN KEY (RoleId) REFERENCES Roles(RoleId) ON DELETE CASCADE
 );
 
 -- Table: UnitOfMeasure
@@ -122,26 +151,6 @@ CREATE TABLE Vendors (
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
 );
 
--- Table: Branches
-CREATE TABLE Branches (
-    BranchId INT PRIMARY KEY IDENTITY(1,1),
-    BranchName NVARCHAR(100) NOT NULL,
-    BranchCode NVARCHAR(50) NOT NULL UNIQUE,
-    BranchContact NVARCHAR(50) NOT NULL,
-    Address NVARCHAR(255) NOT NULL,
-    City NVARCHAR(100) NOT NULL,
-    Country NVARCHAR(100) NOT NULL,
-    PostalCode NVARCHAR(20) NULL,
-    OwnerName NVARCHAR(100) NOT NULL,
-    IsActive BIT NOT NULL DEFAULT 1,
-    CreatedBy INT NOT NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-    ModifiedBy INT NULL,
-    ModifiedAt DATETIME2 NULL,
-    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
-
-);
 
 -- Table: BranchItems
 CREATE TABLE BranchItems(
@@ -595,14 +604,6 @@ CREATE TABLE ReceiptVoucherAttachments (
     FOREIGN KEY (ReceiptVoucherId) REFERENCES ReceiptVouchers(ReceiptVoucherId) ON DELETE CASCADE
 );
 
--- Table: UserBranchDetial
-CREATE TABLE UserBranchDetial (
-    UserBranchDetialId INT PRIMARY KEY IDENTITY(1,1),
-    UserId INT NOT NULL,
-    BranchId INT NOT NULL,
-    FOREIGN KEY (BranchId) REFERENCES Branches(BranchId) ON DELETE CASCADE
-);
-
 -- Create Country table
 CREATE TABLE Country (
     CountryId INT PRIMARY KEY IDENTITY(1,1),
@@ -646,11 +647,14 @@ VALUES ('Kilogram', 'kg'),
        ('Milliliter', 'ml'),
        ('Piece', 'pcs');
 
-INSERT INTO USERS (UserName, Email, Password, IsActive)
-VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '123', 1),
-       ('Syeda Saba', 'syedha.sabaali@gmail.com', '123', 1),
-       ('Waniya Rana', 'waniyarana@gmail.com', '123', 1),
-       ('Abdul Basit', 'abdulbasit@gmail.com', '123', 1);
+INSERT INTO ROLES (RoleName)
+VALUES ('Super Admin');
+
+INSERT INTO USERS (UserName, Email, Password, IsActive, RoleId)
+VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '123', 1, 1),
+       ('Syeda Saba', 'syedha.sabaali@gmail.com', '123', 1, 1),
+       ('Waniya Rana', 'waniyarana@gmail.com', '123', 1, 1),
+       ('Abdul Basit', 'abdulbasit@gmail.com', '123', 1, 1);
 
 INSERT INTO ITEMCATEGORY (ItemCategoryName, Description)
 VALUES ('Meat', 'All type of meats'),
@@ -682,13 +686,13 @@ VALUES ('Tipu Sultan', '137256', '+923112824123', 'A-21, Street-3, Tipu Sultan R
        ('Landhi', '137258', '+923163033321', 'R-221, Street-4, Landhi No. 5', 'Karachi', 'Pakistan', 'Najma Begum', 1),
        ('Korangi', '137259', '+923452131241', 'B-76, Street-5, Korangi No. 6', 'Karachi', 'Pakistan', 'Syed Muhammad Ali', 1);
 
-INSERT INTO BranchItems (ItemId, BranchId, MinimumStockLevel, IsActive, CreatedBy)
+INSERT INTO BranchItems (ItemId, BranchId, Quantity, OpeningStockQuantity, OpeningStockValue, CostPerUnit, OpeningStockDate, MinimumStockLevel, IsActive, CreatedBy)
 VALUES 
-    (1, 1, 10, 1, 1),
-    (2, 1, 15, 1, 1),
-    (3, 1, 5, 1, 1),
-    (4, 1, 20, 1, 1),
-    (5, 1, 8, 1, 1);
+    (1, 1, 0, 0, 0, 0, SYSDATETIME(), 10, 1, 1),
+    (2, 1, 0, 0, 0, 0, SYSDATETIME(), 15, 1, 1),
+    (3, 1, 0, 0, 0, 0, SYSDATETIME(), 5, 1, 1),
+    (4, 1, 0, 0, 0, 0, SYSDATETIME(), 20, 1, 1),
+    (5, 1, 0, 0, 0, 0, SYSDATETIME(), 8, 1, 1);
 
 INSERT INTO CUSTOMERS (CustomerName,Email,Password,ContactNo,Address,City,Country)
 VALUES  ('Abdul Ahad','abdulahad.ad23@gmail.com','123','+923112824123','House # A-392, Sector 31/D, P&T Society, Korangi','Karachi','Pakistan');
@@ -732,6 +736,182 @@ VALUES
 ('P020', 'Kheer', 1, 'kheer.jpg', 180, 'Traditional Pakistani rice pudding dessert', 7, 1, 1);
 
 
+INSERT INTO PermissionsCategory (PermissionModule, PermissionCategoryName)
+VALUES 
+('Warehouse','Role'),
+('Warehouse', 'Item Category'),
+('Warehouse', 'Item'),
+('Warehouse', 'Vendor'),
+('Warehouse', 'Branch'),
+('Warehouse', 'Purchase'),
+('Warehouse', 'Purchase Return'),
+('Warehouse', 'Requisition'),
+('Warehouse', 'Issue'),
+('Warehouse', 'Stock Return'),
+('Warehouse', 'Bank And Cash'),
+('Warehouse', 'Payment Voucher'),
+('Warehouse', 'Receipt Voucher'),
+('Warehouse', 'User');
 
+
+
+-- Insert into Permissions table
+INSERT INTO Permissions (PermissionName, PermissionCategoryId)
+VALUES 
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item Category')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item Category')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item Category')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item Category')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Item')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Vendor')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Vendor')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Vendor')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Vendor')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Branch')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Branch')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Branch')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Branch')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase Return')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase Return')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase Return')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase Return')),
+
+('Status Update', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Requisition')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Stock Return')),
+('Status Update', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Stock Return')),
+('View', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Stock Return')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Bank And Cash')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Bank And Cash')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Bank And Cash')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Bank And Cash')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Payment Voucher')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Payment Voucher')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Payment Voucher')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Payment Voucher')),
+('View PDF', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Payment Voucher')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Receipt Voucher')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Receipt Voucher')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Receipt Voucher')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Receipt Voucher')),
+('View PDF', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Receipt Voucher')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'User')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'User')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'User')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'User')),
+
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Role')),
+('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Role')),
+('Edit', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Role')),
+('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Role'));
+
+
+-- Insert unique Permission Categories into PermissionsCategory table
+INSERT INTO PermissionsCategory (PermissionModule, PermissionCategoryName)
+SELECT DISTINCT 'Kitchen', CategoryName
+FROM (VALUES
+    ('Branch Item'),
+    ('Branch Requisition'),
+    ('Branch Issue'),
+    ('Branch Stock Return'),
+    ('Consume'),
+    ('Wastage'),
+    ('Product Category'),
+    ('Product'),
+    ('Order'),
+    ('Order View'),
+    ('Chef View'),
+    ('Kitchen User'),
+    ('Kitchen Role')
+) AS Categories(CategoryName)
+WHERE NOT EXISTS (
+    SELECT 1 FROM PermissionsCategory pc WHERE pc.PermissionModule = 'Kitchen' AND pc.PermissionCategoryName = Categories.CategoryName
+);
+
+-- Insert permissions into Permissions table
+INSERT INTO Permissions (PermissionName, PermissionCategoryId)
+SELECT p.PermissionName, pc.PermissionCategoryId
+FROM (
+    VALUES
+    ('List', 'Branch Item'),
+    ('Create', 'Branch Item'),
+    ('Edit', 'Branch Item'),
+    ('Delete', 'Branch Item'),
+    
+    ('List', 'Branch Requisition'),
+    ('Create', 'Branch Requisition'),
+    ('Edit', 'Branch Requisition'),
+    ('Delete', 'Branch Requisition'),
+    
+    ('List', 'Branch Issue'),
+    ('View', 'Branch Issue'),
+    ('Status Update', 'Branch Issue'),
+
+    ('List', 'Branch Stock Return'),
+    ('Create', 'Branch Stock Return'),
+    ('Edit', 'Branch Stock Return'),
+    ('Delete', 'Branch Stock Return'),
+    
+    ('List', 'Consume'),
+    ('Create', 'Consume'),
+    ('Edit', 'Consume'),
+    ('Delete', 'Consume'),
+    
+    ('List', 'Wastage'),
+    ('Create', 'Wastage'),
+    ('Edit', 'Wastage'),
+    ('Delete', 'Wastage'),
+    
+    ('List', 'Product Category'),
+    ('Create', 'Product Category'),
+    ('Edit', 'Product Category'),
+    ('Delete', 'Product Category'),
+    
+    ('List', 'Product'),
+    ('Create', 'Product'),
+    ('Edit', 'Product'),
+    ('Delete', 'Product'),
+    
+    ('List', 'Order'),
+    ('Create', 'Order'),
+    ('View', 'Order'),
+    ('Status Update', 'Order'),
+    
+    ('View', 'Order View'),
+    ('View', 'Chef View'),
+    
+    ('List', 'Kitchen User'),
+    ('Create', 'Kitchen User'),
+    ('Edit', 'Kitchen User'),
+    ('Delete', 'Kitchen User'),
+    
+    ('List', 'Kitchen Role'),
+    ('Create', 'Kitchen Role'),
+    ('Edit', 'Kitchen Role'),
+    ('Delete', 'Kitchen Role')
+) AS p(PermissionName, PermissionCategory)
+JOIN PermissionsCategory pc ON p.PermissionCategory = pc.PermissionCategoryName
+WHERE pc.PermissionModule = 'Kitchen';
 
 

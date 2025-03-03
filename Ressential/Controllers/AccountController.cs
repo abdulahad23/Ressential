@@ -33,26 +33,57 @@ namespace Ressential.Controllers
             var user = _db.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
             if (user != null && user.IsActive == true)
             {
-                UserDetails userDetails = new UserDetails{
+                // Retrieve branch permissions for the user
+                var branchPermissions = _db.UserBranchPermissions
+                    .Where(ubp => ubp.UserId == user.UserId)
+                    .Select(ubp => ubp.BranchId)
+                    .ToList();
+
+                // Add 0 to branch permissions if the user has warehouse permission
+                if (user.HasWarehousePermission)
+                {
+                    branchPermissions.Add(0);
+                }
+
+                UserDetails userDetails = new UserDetails
+                {
                     Email = user.Email,
                     UserId = user.UserId,
                     IsActive = user.IsActive,
                     UserName = user.UserName,
                     ProfileImage = user.ProfileImage,
-                    Permissions = user.UserRoles
-                    .SelectMany(r => r.Role.RolePermissions
-                        .Select(p => new
-                        {
-                            PermissionWithCategory = p.Permission.PermissionsCategory.PermissionCategoryName + " " + p.Permission.PermissionName
-                        })
-                        .Distinct())
+                    Permissions = user.Role.RolePermissions
+                    .Select(p => new
+                    {
+                        PermissionWithCategory = p.Permission.PermissionsCategory.PermissionCategoryName + " " + p.Permission.PermissionName
+                    })
+                    .Distinct()
                     .Select(x => x.PermissionWithCategory)
-                    .ToList()
+                    .ToList(),
+                    BranchPermissions = branchPermissions
+
+                    //Permissions = user.UserRoles
+                    //.SelectMany(r => r.Role.RolePermissions
+                    //    .Select(p => new
+                    //    {
+                    //        PermissionWithCategory = p.Permission.PermissionsCategory.PermissionCategoryName + " " + p.Permission.PermissionName
+                    //    })
+                    //    .Distinct())
+                    //.Select(x => x.PermissionWithCategory)
+                    //.ToList()
                 };
                 SetClaimsIdentity(userDetails);
                 // Set user session on successful login
                 Session["UserEmail"] = email;
-                return RedirectToAction("Index", "Warehouse");  // Redirect to the dashboard or another protected area
+                if (branchPermissions.Contains(0))
+                {
+                    return RedirectToAction("Index", "Warehouse");
+                }
+                else if (branchPermissions.Count > 0)
+                {
+                    return RedirectToAction("Index", "Kitchen");
+                }
+                return RedirectToAction("Unauthorized", "Account");  // Redirect to the dashboard or another protected area
             }
             else if(user != null && user.IsActive == false)
             {
@@ -74,11 +105,14 @@ namespace Ressential.Controllers
             var claims = new List<Claim>();
             try
             {
-                var defaultBranchId = _db.Branches
-            .Where(b => b.IsActive)
-            .OrderBy(b => b.BranchId)
-            .Select(b => b.BranchId)
-            .FirstOrDefault();
+                // Get the user's branch permissions
+                var userBranchPermissions = _db.UserBranchPermissions
+                    .Where(ubp => ubp.UserId == user.UserId)
+                    .Select(ubp => ubp.BranchId)
+                    .ToList();
+
+                // Determine the default branch ID based on user branch permissions
+                var defaultBranchId = userBranchPermissions.FirstOrDefault();
 
                 // Setting    
                 claims.Add(new Claim(ClaimTypes.Name, user.UserName));
@@ -87,6 +121,7 @@ namespace Ressential.Controllers
                 claims.Add(new Claim(ClaimTypes.Email, user.Email));
                 claims.Add(new Claim("ProfileImage", user.ProfileImage ?? string.Empty));
                 claims.Add(new Claim("Permissions", string.Join(",", user.Permissions)));
+                claims.Add(new Claim("BranchPermissions", string.Join(",", user.BranchPermissions)));
 
                 if (defaultBranchId != 0)
                 {

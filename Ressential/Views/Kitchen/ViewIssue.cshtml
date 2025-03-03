@@ -1,4 +1,5 @@
 ﻿@model Ressential.Models.WarehouseIssue
+@using Ressential.Utilities
 
 @{
     ViewBag.Title = "View Issue";
@@ -71,10 +72,13 @@
                                 }
                                 else
                                 {
-                                    <div class="col-sm-9">
-                                        <button class="btn btn-secondary ps-4 pe-4" type="submit">Receive Stock</button>
-                                        <a href="@Url.Action("ReceiveStockList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Back</a>
-                                    </div>
+                            <div class="col-sm-9">
+                                @if (Html.HasPermission("Branch Issue Status Update"))
+                                {
+                                    <button class="btn btn-secondary ps-4 pe-4" type="submit">Receive Stock</button>
+                                }
+                                <a href="@Url.Action("ReceiveStockList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Back</a>
+                            </div>
                                 }
                             </div>
                         </div>

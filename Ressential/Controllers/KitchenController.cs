@@ -19,12 +19,14 @@ using System.Net.Security;
 namespace Ressential.Controllers
 {
     [Authorize]
-    public class KitchenController : Controller
+    [HasBranchAccess]
+    public class KitchenController : PermissionsController
     {
         DB_RessentialEntities _db = new DB_RessentialEntities();
         public ActionResult Index() { 
             return View();
         }
+        [HasPermission("Branch Item List")]
         public ActionResult ItemList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -36,6 +38,7 @@ namespace Ressential.Controllers
             }
             return View(branchItems.ToList());
         }
+        [HasPermission("Branch Item Create")]
         public ActionResult CreateItem()
         {
             BranchItem branchItem = new BranchItem {
@@ -47,6 +50,7 @@ namespace Ressential.Controllers
             return View(branchItem);
         }
         [HttpPost]
+        [HasPermission("Branch Item Create")]
         public ActionResult CreateItem(BranchItem branchItems)
         {
             try
@@ -78,6 +82,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ItemList");
         }
         [HttpPost]
+        [HasPermission("Branch Item Delete")]
         public ActionResult DeleteItem(int BranchItemId)
         {
             try
@@ -107,6 +112,7 @@ namespace Ressential.Controllers
         }
         [HttpPost]
 
+        [HasPermission("Branch Item Delete")]
         public ActionResult DeleteSelectedItems(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -134,6 +140,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ItemList");
 
         }
+        [HasPermission("Branch Item Edit")]
         public ActionResult EditItem(int BranchItemId)
         {
             var branchItems = _db.BranchItems.Find(BranchItemId);
@@ -147,6 +154,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Branch Item Edit")]
         public ActionResult EditItem(BranchItem branchItem)
         {
             try
@@ -176,6 +184,7 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("ItemList");
         }
+        [HasPermission("Branch Requisition List")]
         public ActionResult RequisitionList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -187,6 +196,7 @@ namespace Ressential.Controllers
             return View(requisition.ToList());
 
         }
+        [HasPermission("Branch Requisition Create")]
         public ActionResult CreateRequisition()
         {
             var requisition = new Requisition
@@ -203,6 +213,7 @@ namespace Ressential.Controllers
             return View(requisition);
         }
         [HttpPost]
+        [HasPermission("Branch Requisition Create")]
         public ActionResult CreateRequisition(Requisition requisition)
         {
             try
@@ -264,6 +275,7 @@ namespace Ressential.Controllers
                 return RedirectToAction("Index", "Error");
             }
         }
+        [HasPermission("Branch Requisition Edit")]
         public ActionResult EditRequisition(int requisitionId)
         {
             Requisition requisition = _db.Requisitions.Find(requisitionId);
@@ -287,6 +299,7 @@ namespace Ressential.Controllers
             return View(requisition);
         }
         [HttpPost]
+        [HasPermission("Branch Requisition Edit")]
         public ActionResult EditRequisition(Requisition requisition)
         {
             if (requisition == null)
@@ -416,6 +429,7 @@ namespace Ressential.Controllers
             }
         }
         [HttpPost]
+        [HasPermission("Branch Requisition Delete")]
         public ActionResult DeleteRequisition(int requisitionId)
         {
             try
@@ -479,6 +493,7 @@ namespace Ressential.Controllers
             return RedirectToAction("RequisitionList");
         }
         [HttpPost]
+        [HasPermission("Branch Requisition Delete")]
         public ActionResult DeleteSelectedRequisitions(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -537,6 +552,7 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("RequisitionList");
         }
+        [HasPermission("Branch Issue List")]
         public ActionResult ReceiveStockList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -547,6 +563,7 @@ namespace Ressential.Controllers
             }
             return View(warehouseIssues);
         }
+        [HasPermission("Branch Issue View")]
         public ActionResult ViewIssue(int issueId)
         {
             var issue = _db.WarehouseIssues.Find(issueId);
@@ -561,6 +578,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Branch Issue Status Update")]
         public ActionResult ReceiveIssue(int IssueId)
         {
             try
@@ -608,6 +626,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Branch Issue Status Update")]
         public ActionResult ReceiveSelectedIssues(int[] selectedItems)
         {
             try
@@ -661,6 +680,7 @@ namespace Ressential.Controllers
             }
         }
 
+        [HasPermission("Branch Stock Return Create")]
         public ActionResult CreateStockReturn()
         {
             var returnStock = new ReturnStock
@@ -677,6 +697,7 @@ namespace Ressential.Controllers
             return View(returnStock);
         }
         [HttpPost]
+        [HasPermission("Branch Stock Return Create")]
         public ActionResult CreateStockReturn(ReturnStock returnStock)
         {
             try
@@ -728,6 +749,7 @@ namespace Ressential.Controllers
                 return Json(new { success = false, redirect = Url.Action("StockReturnList", "Kitchen") });
             }
         }
+        [HasPermission("Branch Stock Return List")]
         public ActionResult StockReturnList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -740,6 +762,7 @@ namespace Ressential.Controllers
         }
         [HttpPost]
 
+        [HasPermission("Branch Stock Return Delete")]
         public ActionResult DeleteReturnStock(int ReturnStockId)
         {
             try
@@ -801,6 +824,7 @@ namespace Ressential.Controllers
 
         }
         [HttpPost]
+        [HasPermission("Branch Stock Return Delete")]
         public ActionResult DeleteSelectedStockReturns(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -858,6 +882,7 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("StockReturnList");
         }
+        [HasPermission("Branch Stock Return Edit")]
         public ActionResult EditReturnStock(int ReturnStockId)
         {
             ReturnStock returnStock = _db.ReturnStocks.Find(ReturnStockId);
@@ -866,6 +891,7 @@ namespace Ressential.Controllers
             return View(returnStock);
         }
         [HttpPost]
+        [HasPermission("Branch Stock Return Edit")]
         public ActionResult EditReturnStock(ReturnStock returnStock)
         {
             using (var transaction = _db.Database.BeginTransaction())
@@ -1002,6 +1028,7 @@ namespace Ressential.Controllers
                 }
             }
         }
+        [HasPermission("Consume List")]
         public ActionResult ConsumeItemList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -1012,6 +1039,7 @@ namespace Ressential.Controllers
             }
             return View(consumeItem.ToList());
         }
+        [HasPermission("Consume Create")]
         public ActionResult CreateConsumeItem()
         {
             var consumeItem = new ConsumeItem
@@ -1028,6 +1056,7 @@ namespace Ressential.Controllers
             return View(consumeItem);
         }
         [HttpPost]
+        [HasPermission("Consume Create")]
         public ActionResult CreateConsumeItem(ConsumeItem consumeItem)
         {
             try
@@ -1091,6 +1120,7 @@ namespace Ressential.Controllers
                 return RedirectToAction("Index", "Error");
             }
         }
+        [HasPermission("Consume Edit")]
         public ActionResult EditConsumeItem(int consumeItemId)
         {
             ConsumeItem consumeItem = _db.ConsumeItems.Find(consumeItemId);
@@ -1099,6 +1129,7 @@ namespace Ressential.Controllers
             return View(consumeItem);
         }
         [HttpPost]
+        [HasPermission("Consume Edit")]
         public ActionResult EditConsumeItem(ConsumeItem consumeItem)
         {
             using (var transaction = _db.Database.BeginTransaction())
@@ -1228,6 +1259,7 @@ namespace Ressential.Controllers
             }
         }
         [HttpPost]
+        [HasPermission("Consume Delete")]
         public ActionResult DeleteConsumeItem(int consumeItemId)
         {
             try
@@ -1282,6 +1314,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ConsumeItemList");
         }
         [HttpPost]
+        [HasPermission("Consume Delete")]
         public ActionResult DeleteSelectedConsumeItems(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -1334,6 +1367,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ConsumeItemList");
         }
 
+        [HasPermission("Wastage List")]
         public ActionResult WastageItemList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -1344,6 +1378,7 @@ namespace Ressential.Controllers
             }
             return View(wastageItem.ToList());
         }
+        [HasPermission("Wastage Create")]
         public ActionResult CreateWastageItem()
         {
             var wastageItem = new WastageItem
@@ -1360,6 +1395,7 @@ namespace Ressential.Controllers
             return View(wastageItem);
         }
         [HttpPost]
+        [HasPermission("Wastage Create")]
         public ActionResult CreateWastageItem(WastageItem wastageItem)
         {
             try
@@ -1423,6 +1459,7 @@ namespace Ressential.Controllers
                 return RedirectToAction("Index", "Error");
             }
         }
+        [HasPermission("Wastage Edit")]
         public ActionResult EditWastageItem(int wastageItemId)
         {
             WastageItem wastageItem = _db.WastageItems.Find(wastageItemId);
@@ -1431,6 +1468,7 @@ namespace Ressential.Controllers
             return View(wastageItem);
         }
         [HttpPost]
+        [HasPermission("Wastage Edit")]
         public ActionResult EditWastageItem(WastageItem wastageItem)
         {
             using (var transaction = _db.Database.BeginTransaction())
@@ -1560,6 +1598,7 @@ namespace Ressential.Controllers
             }
         }
         [HttpPost]
+        [HasPermission("Wastage Delete")]
         public ActionResult DeleteWastageItem(int wastageItemId)
         {
             try
@@ -1614,6 +1653,7 @@ namespace Ressential.Controllers
             return RedirectToAction("WastageItemList");
         }
         [HttpPost]
+        [HasPermission("Wastage Delete")]
         public ActionResult DeleteSelectedWastageItems(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -1666,11 +1706,13 @@ namespace Ressential.Controllers
             return RedirectToAction("WastageItemList");
         }
 
+        [HasPermission("Product Category Create")]
         public ActionResult CreateCategory()
         {
             return View();
         }
         [HttpPost]
+        [HasPermission("Product Category Create")]
         public ActionResult CreateCategory(ProductCategory productCategory)
         {
             try
@@ -1689,6 +1731,7 @@ namespace Ressential.Controllers
             return RedirectToAction("CategoryList");
         }
 
+        [HasPermission("Product Category List")]
         public ActionResult CategoryList(string search)
         {
             var productCategory = _db.ProductCategories.AsQueryable();
@@ -1700,6 +1743,7 @@ namespace Ressential.Controllers
             return View(productCategory.ToList());
         }
 
+        [HasPermission("Product Category Edit")]
         public ActionResult EditCategory(int ProductCategoryId)
         {
             var ProductCategory = _db.ProductCategories.Find(ProductCategoryId);
@@ -1710,6 +1754,7 @@ namespace Ressential.Controllers
             return View(ProductCategory);
         }
         [HttpPost]
+        [HasPermission("Product Category Edit")]
         public ActionResult EditCategory(ProductCategory productCategory)
         {
             try
@@ -1739,6 +1784,7 @@ namespace Ressential.Controllers
 
 
         [HttpPost]
+        [HasPermission("Product Category Delete")]
         public ActionResult DeleteCategory(int ProductCategoryId)
         {
             try
@@ -1768,6 +1814,7 @@ namespace Ressential.Controllers
         }
         [HttpPost]
 
+        [HasPermission("Product Category Delete")]
         public ActionResult DeleteSelectedCategory(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -1795,6 +1842,7 @@ namespace Ressential.Controllers
             return RedirectToAction("CategoryList");
 
         }
+        [HasPermission("Product Create")]
         public ActionResult CreateProduct()
         {
             var product = new Product
@@ -1815,6 +1863,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Product Create")]
         public ActionResult CreateProduct(Product product, HttpPostedFileBase imageFile)
         {
             try
@@ -1870,6 +1919,7 @@ namespace Ressential.Controllers
                 return RedirectToAction("Index", "Error");
             }
         }
+        [HasPermission("Product List")]
         public ActionResult ProductList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -1883,6 +1933,7 @@ namespace Ressential.Controllers
         }
         [HttpPost]
 
+        [HasPermission("Product Delete")]
         public ActionResult DeleteProduct(int ProductId)
         {
             try
@@ -1914,6 +1965,7 @@ namespace Ressential.Controllers
 
         }
         [HttpPost]
+        [HasPermission("Product Delete")]
         public ActionResult DeleteSelectedProducts(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -1943,6 +1995,7 @@ namespace Ressential.Controllers
             return RedirectToAction("ProductList");
         }
 
+        [HasPermission("Product Edit")]
         public ActionResult EditProduct(int ProductId)
         {
             Product product = _db.Products.Find(ProductId);
@@ -1953,6 +2006,7 @@ namespace Ressential.Controllers
             return View(product);
         }
         [HttpPost]
+        [HasPermission("Product Edit")]
         public ActionResult EditProduct(Product product, HttpPostedFileBase imageFile)
         {
             if (product == null)
@@ -2075,6 +2129,7 @@ namespace Ressential.Controllers
                 }
             }
         }
+        [HasPermission("Order List")]
         public ActionResult OrderList(string search)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -2088,6 +2143,7 @@ namespace Ressential.Controllers
             return View(orders.ToList());
         }
 
+        [HasPermission("Order Create")]
         public ActionResult CreateOrder()
         {
             var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -2104,6 +2160,7 @@ namespace Ressential.Controllers
             return View(order);
         }
         [HttpPost]
+        [HasPermission("Order Create")]
         public ActionResult CreateOrder(Order order, decimal grandTotal)
         {
             var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
@@ -2197,6 +2254,7 @@ namespace Ressential.Controllers
             }
         }
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult CancelOrder(int orderId)
         {
             try
@@ -2258,6 +2316,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult OrderReturn(int orderId)
         {
             try
@@ -2315,6 +2374,7 @@ namespace Ressential.Controllers
 
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult ConfirmOrder(int orderId)
         {
             try
@@ -2370,6 +2430,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult CompleteOrder(int orderId)
         {
             try
@@ -2412,6 +2473,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult OutForDelivery(int orderId)
         {
             try
@@ -2454,6 +2516,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult CancelSelectedOrders(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -2521,6 +2584,7 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
+        [HasPermission("Order Status Update")]
         public ActionResult ConfirmSelectedOrders(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -2582,6 +2646,7 @@ namespace Ressential.Controllers
             return RedirectToAction("OrderList");
         }
 
+        [HasPermission("Order View")]
         public ActionResult OrderDetail(int orderId)
         {
             var order = _db.Orders.Include(o => o.OrderDetails.Select(od => od.Product)).FirstOrDefault(o => o.OrderId == orderId);
@@ -2601,19 +2666,25 @@ namespace Ressential.Controllers
         {
             return View();
         }
+        [HasPermission("Order View View")]
         public ActionResult OrderView()
         {
             return View();
         }
+        [HasPermission("Chef View View")]
         public ActionResult ChefView()
         {
             return View();
         }
 
+        [HasPermission("Kitchen User List")]
         public ActionResult UserList(String search)
         {
-            //Convert.ToInt32(Helper.GetUserInfo("branchId"));
-            var users = _db.Users.AsQueryable();
+            var selectedBranch = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var users = _db.Users
+            .Where(u => _db.UserBranchPermissions
+                .Any(ubp => ubp.UserId == u.UserId && ubp.BranchId == selectedBranch))
+            .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -2621,12 +2692,15 @@ namespace Ressential.Controllers
             }
             return View(users.ToList());
         }
+        [HasPermission("Kitchen User Create")]
         public ActionResult CreateUser()
         {
+            ViewBag.Roles = _db.Roles.Where(r => r.IsBranchRole);
             return View();
         }
 
         [HttpPost]
+        [HasPermission("Kitchen User Create")]
         public ActionResult CreateUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
             try
@@ -2662,6 +2736,16 @@ namespace Ressential.Controllers
                 user.CreatedAt = DateTime.Now;
                 _db.Users.Add(user);
                 _db.SaveChanges();
+
+                var userBranchPermission = new UserBranchPermission
+                {
+                    UserId = user.UserId,
+                    BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"))
+                };
+                _db.UserBranchPermissions.Add(userBranchPermission);
+                _db.SaveChanges();
+                
+
                 TempData["SuccessMessage"] = "User created successfully!";
                 return RedirectToAction("UserList");
             }
@@ -2671,22 +2755,24 @@ namespace Ressential.Controllers
             }
 
             TempData["ErrorMessage"] = "An error occurred while creating the user";
-            return View();
-
+            return View(user);
         }
+
+        [HasPermission("Kitchen User Edit")]
         public ActionResult EditUser(int userId)
         {
-            var User = _db.Users.Find(userId);
-            if (User == null)
+            var user = _db.Users.Find(userId);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(User);
+            ViewBag.Roles = _db.Roles.Where(r => r.IsBranchRole).ToList();
+            return View(user);
         }
         [HttpPost]
+        [HasPermission("Kitchen User Edit")]
         public ActionResult EditUser(User user, String ConfirmPassword, HttpPostedFileBase ProfileImage)
         {
-
             try
             {
                 var existingUser = _db.Users.Find(user.UserId);
@@ -2711,10 +2797,9 @@ namespace Ressential.Controllers
                 _db.Entry(existingUser).Property(x => x.CreatedBy).IsModified = false;
                 _db.Entry(existingUser).Property(x => x.CreatedAt).IsModified = false;
 
-
                 if (ProfileImage != null && ProfileImage.ContentLength > 0)
                 {
-                    string uploadsFolder = Server.MapPath(TextConstraints.ProfileImagesPath);
+                    string uploadsFolder = Server.MapPath("~/Uploads/ProfileImages");
 
                     if (!string.IsNullOrEmpty(existingImageName))
                     {
@@ -2757,17 +2842,26 @@ namespace Ressential.Controllers
                 }
                 _db.Entry(existingUser).State = EntityState.Modified;
                 _db.SaveChanges();
+
                 TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction("UserList");
             }
-            catch (Exception ex)
+            catch (DbEntityValidationException ex)
             {
-                ModelState.AddModelError("", "An error occurred while creating the user: " + ex.Message);
+                foreach (var validationErrors in ex.EntityValidationErrors)
+                {
+                    foreach (var validationError in validationErrors.ValidationErrors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                    }
+                }
+                ModelState.AddModelError("", "An error occurred while updating the user: " + ex.Message);
             }
             TempData["ErrorMessage"] = "An error occurred while updating the user";
-            return View();
+            return View(user);
         }
         [HttpPost]
+        [HasPermission("Kitchen User Delete")]
         public ActionResult DeleteUser(int userId)
         {
             var user = _db.Users.Find(userId);
@@ -2776,6 +2870,7 @@ namespace Ressential.Controllers
             return RedirectToAction("UserList");
         }
         [HttpPost]
+        [HasPermission("Kitchen User Delete")]
         public ActionResult DeleteSelectedUsers(int[] selectedItems)
         {
             if (selectedItems != null && selectedItems.Length > 0)
@@ -2785,43 +2880,6 @@ namespace Ressential.Controllers
                 _db.SaveChanges();
             }
             return RedirectToAction("UserList");
-        }
-
-        [ChildActionOnly]
-        public ActionResult BranchesDropdown()
-        {
-            var branches = _db.Branches.Where(b => b.IsActive).ToList();
-
-            // Get the selected branchId from claims
-            var branchIdClaim = Convert.ToInt32(Helper.GetUserInfo("branchId"));
-            ViewBag.SelectedBranchId = branchIdClaim;
-            return PartialView("_BranchesDropdown", branches);
-        }
-
-        [HttpPost]
-        public ActionResult SetBranchClaim(int branchId)
-        {
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-
-            // Remove existing branch claim if exists
-            var existingClaim = claimsIdentity?.FindFirst("BranchId");
-            if (existingClaim != null)
-            {
-                claimsIdentity.RemoveClaim(existingClaim);
-            }
-
-            // Add the new branch claim
-            claimsIdentity?.AddClaim(new Claim("BranchId", branchId.ToString()));
-
-            // Update the authentication cookie
-            var ctx = Request.GetOwinContext();
-            var authenticationManager = ctx.Authentication;
-            authenticationManager.AuthenticationResponseGrant = new AuthenticationResponseGrant(
-                new ClaimsPrincipal(claimsIdentity),
-                new AuthenticationProperties() { IsPersistent = true }
-            );
-
-            return Json(new { success = true });
         }
         public ActionResult AccountSetting()
         {
@@ -2837,7 +2895,6 @@ namespace Ressential.Controllers
 
             return View(user);
         }
-
         [HttpPost]
         public ActionResult AccountSetting(User model, string NewPassword, string ConfirmPassword)
         {
@@ -2888,6 +2945,230 @@ namespace Ressential.Controllers
 
             TempData["SuccessMessage"] = "Account settings updated successfully.";
             return RedirectToAction("Index");
+        }
+        [HasPermission("Kitchen Role List")]
+        public ActionResult RoleList(String search)
+        {
+            var roles = _db.Roles.Where(r => r.IsBranchRole).AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                roles = roles.Where(c => c.RoleName.Contains(search));
+            }
+            return View(roles.ToList());
+        }
+        [HasPermission("Kitchen Role Create")]
+        public ActionResult CreateRole()
+        {
+            var model = new RoleViewModel
+            {
+                Role = new Role(),
+                PermissionsCategories = _db.PermissionsCategories.Where(p => p.PermissionModule == "Kitchen").Include("Permissions").ToList()
+            };
+            return View(model);
+        }
+        [HttpPost]
+        [HasPermission("Kitchen Role Create")]
+        public ActionResult CreateRole(RoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Role.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                model.Role.CreatedAt = DateTime.Now;
+                model.Role.IsBranchRole = true;
+                _db.Roles.Add(model.Role);
+                _db.SaveChanges();
+
+                foreach (var permissionId in model.SelectedPermissions)
+                {
+                    var rolePermission = new RolePermission
+                    {
+                        RoleId = model.Role.RoleId,
+                        PermissionId = permissionId
+                    };
+                    _db.RolePermissions.Add(rolePermission);
+                }
+                _db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Role created successfully.";
+                return RedirectToAction("RoleList");
+            }
+
+            model.PermissionsCategories = _db.PermissionsCategories.Where(p => p.PermissionModule == "Kitchen").Include("Permissions").ToList(); // Re-populate permissions in case of error
+            return View(model);
+        }
+
+        [HasPermission("Kitchen Role Edit")]
+        public ActionResult EditRole(int roleId)
+        {
+            var role = _db.Roles.Include(r => r.RolePermissions).FirstOrDefault(r => r.RoleId == roleId);
+            if (role == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new RoleViewModel
+            {
+                Role = role,
+                PermissionsCategories = _db.PermissionsCategories.Where(p => p.PermissionModule == "Kitchen").Include("Permissions").ToList(),
+                SelectedPermissions = role.RolePermissions.Select(rp => rp.PermissionId).ToList()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [HasPermission("Kitchen Role Edit")]
+        public ActionResult EditRole(RoleViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingRole = _db.Roles.Include(r => r.RolePermissions).FirstOrDefault(r => r.RoleId == model.Role.RoleId);
+                if (existingRole == null)
+                {
+                    return HttpNotFound();
+                }
+
+                existingRole.RoleName = model.Role.RoleName;
+                existingRole.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                existingRole.ModifiedAt = DateTime.Now;
+
+                // Update role permissions
+                var existingPermissions = existingRole.RolePermissions.ToList();
+                foreach (var permission in existingPermissions)
+                {
+                    _db.RolePermissions.Remove(permission);
+                }
+
+                foreach (var permissionId in model.SelectedPermissions)
+                {
+                    var rolePermission = new RolePermission
+                    {
+                        RoleId = existingRole.RoleId,
+                        PermissionId = permissionId
+                    };
+                    _db.RolePermissions.Add(rolePermission);
+                }
+
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Role updated successfully.";
+                return RedirectToAction("RoleList");
+            }
+
+            model.PermissionsCategories = _db.PermissionsCategories.Where(p => p.PermissionModule == "Kitchen").Include("Permissions").ToList(); // Re-populate permissions in case of error
+            return View(model);
+        }
+
+        [HttpPost]
+        [HasPermission("Kitchen Role Delete")]
+        public ActionResult DeleteRole(int RoleId)
+        {
+            try
+            {
+                var Role = _db.Roles.Find(RoleId);
+                if (Role == null)
+                {
+                    TempData["ErrorMessage"] = "Role not found.";
+                    return RedirectToAction("RoleList");
+                }
+
+                _db.Roles.Remove(Role);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Role deleted successfully.";
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                {
+                    TempData["ErrorMessage"] = "This Role is already in use and cannot be deleted.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while deleting the Role.";
+                }
+            }
+            return RedirectToAction("RoleList");
+        }
+        [HttpPost]
+        [HasPermission("Kitchen Role Delete")]
+        public ActionResult DeleteSelectedRoles(int[] selectedItems)
+        {
+            if (selectedItems != null && selectedItems.Length > 0)
+            {
+                try
+                {
+                    var itemsToDelete = _db.Roles.Where(c => selectedItems.Contains(c.RoleId)).ToList();
+                    _db.Roles.RemoveRange(itemsToDelete);
+                    _db.SaveChanges();
+                    TempData["SuccessMessage"] = "Role deleted successfully.";
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException?.InnerException is SqlException sqlEx && sqlEx.Number == 547) // SQL error code for foreign key constraint
+                    {
+                        TempData["ErrorMessage"] = "A Role is already in use and cannot be deleted.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "An error occurred while deleting the Role.";
+                    }
+                }
+            }
+            return RedirectToAction("RoleList");
+        }
+
+
+
+        [ChildActionOnly]
+        public ActionResult BranchesDropdown()
+        {
+            var branches = _db.Branches.Where(b => b.IsActive).ToList();
+
+            // Filter branches based on user access
+            var accessibleBranches = branches.Where(b => Helper.HasBranchAccess(b.BranchId)).ToList();
+
+            // Get the selected branchId from claims
+            var branchIdClaim = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            if (Helper.HasBranchAccess(branchIdClaim))
+            {
+                ViewBag.SelectedBranchId = branchIdClaim;
+            }
+            else if (accessibleBranches.Count > 0)
+            {
+                SetBranchClaim(accessibleBranches[0].BranchId);
+                return PartialView("_RedirectToIndex");
+            }
+            else
+            {
+                return RedirectToAction("Unauthorized", "Accounts");
+            }
+            return PartialView("_BranchesDropdown", accessibleBranches);
+        }
+
+        [HttpPost]
+        public ActionResult SetBranchClaim(int branchId)
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+
+            // Remove existing branch claim if exists
+            var existingClaim = claimsIdentity?.FindFirst("BranchId");
+            if (existingClaim != null)
+            {
+                claimsIdentity.RemoveClaim(existingClaim);
+            }
+
+            // Add the new branch claim
+            claimsIdentity?.AddClaim(new Claim("BranchId", branchId.ToString()));
+
+            // Update the authentication cookie
+            var ctx = Request.GetOwinContext();
+            var authenticationManager = ctx.Authentication;
+            authenticationManager.AuthenticationResponseGrant = new AuthenticationResponseGrant(
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties() { IsPersistent = true }
+            );
+
+            return Json(new { success = true });
         }
     }
 }

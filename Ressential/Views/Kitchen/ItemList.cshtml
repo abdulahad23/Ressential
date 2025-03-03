@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Ressential.Models.BranchItem>
+@using Ressential.Utilities
 
 @{ ViewBag.Title = "ItemList";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
@@ -19,13 +20,15 @@
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
-                            <option selected>Choose Action</option>
-                            @*<option value="1">Create Requisition</option>
-                            <option value="2">Create Consume</option>
-                            <option value="3">Create Wastage</option>*@
+                        <option selected>Choose Action</option>
+                        @*<option value="1">Create Requisition</option>
+                        <option value="2">Create Consume</option>
+                        <option value="3">Create Wastage</option>*@
+                        @if (Html.HasPermission("Branch Item Delete"))
+                        {
                             <option value="delete">Delete</option>
-
-                        </select>
+                        }
+                    </select>
                         <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
             </div>
@@ -108,13 +111,19 @@
                                         <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><button class="dropdown-item" type="button" onclick="submitEditForm(@branchItems.BranchItemId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                                        <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@branchItems.BranchItemId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        @if (Html.HasPermission("Branch Item Edit"))
+                                        {
+                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@branchItems.BranchItemId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                        }
+                                        @if (Html.HasPermission("Branch Item Delete"))
+                                        {
+                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@branchItems.BranchItemId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        }
                                         @*<li><button class="dropdown-item" type="button" onclick="submitRequisitionForm(@branchItems.ItemId)"><i class="bi bi-file-earmark-plus" style="font-size: 1.25rem;"></i>Create Requisition</button></li>
 
-                                        <li><button class="dropdown-item" type="button" onclick="submitConsumeForm(@branchItems.ItemId)"><i class="bi bi-basket" style="font-size: 1.25rem;"></i>Create Consume</button></li>
+        <li><button class="dropdown-item" type="button" onclick="submitConsumeForm(@branchItems.ItemId)"><i class="bi bi-basket" style="font-size: 1.25rem;"></i>Create Consume</button></li>
 
-                                        <li><button class="dropdown-item" type="button" onclick="submitWastageForm(@branchItems.ItemId)"><i class="bi bi-recycle" style="font-size: 1.25rem;"></i>Create Wastage</button></li>*@
+        <li><button class="dropdown-item" type="button" onclick="submitWastageForm(@branchItems.ItemId)"><i class="bi bi-recycle" style="font-size: 1.25rem;"></i>Create Wastage</button></li>*@
 
                                     </ul>
                                 </div>

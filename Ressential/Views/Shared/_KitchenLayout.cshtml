@@ -61,148 +61,268 @@
                         <i class="ti ti-dashboard"></i>
                     </li>
 
+                    @if (Html.HasPermission("Branch Item List") || Html.HasPermission("Branch Item Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-box-seam-fill"></i></span><span class="pc-mtext">
+                                    Item
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Branch Item List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/ItemList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Branch Item Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateItem">Create Item</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-box-seam-fill"></i></span><span class="pc-mtext">
-                                Item
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/ItemList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateItem">Create Item</a></li>
-
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-cogs"></i></span><span class="pc-mtext">
-                                Requisition
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/RequisitionList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateRequisition">Create</a></li>
-                        </ul>
-                    </li>
-
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Kitchen/ReceiveStockList" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-truck"></i></span>
-                            <span class="pc-mtext">
-                                Receive Stock
-                            </span>
-
-                        </a>
-
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-reply-all"></i></span><span class="pc-mtext">
-                                Stock Return
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/StockReturnList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateStockReturn">Create</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-clipboard-list"></i></span> <!-- Changed icon for Consume -->
-                            <span class="pc-mtext">Consume</span>
-                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/ConsumeItemList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateConsumeItem">Create</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-trash"></i></span> <!-- Changed icon for Wastage -->
-                            <span class="pc-mtext">Wastage</span>
-                            <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/WastageItemList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateWastageItem">Create</a></li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Branch Requisition List") || Html.HasPermission("Branch Requisition Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-cogs"></i></span><span class="pc-mtext">
+                                    Requisition
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Branch Requisition List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/RequisitionList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Branch Requisition Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateRequisition">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
 
 
+                    @if (Html.HasPermission("Branch Issue List"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Kitchen/ReceiveStockList" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-truck"></i></span>
+                                <span class="pc-mtext">
+                                    Receive Stock
+                                </span>
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-th"></i></span><span class="pc-mtext">
-                                Category
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CategoryList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateCategory">Create</a></li>
-                        </ul>
-                    </li>
+                            </a>
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-utensils"></i></span><span class="pc-mtext">
-                                Product
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/ProductList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateProduct">Create</a></li>
-                        </ul>
-                    </li>
+                        </li>
+                    }
 
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-shopping-cart"></i></span><span class="pc-mtext">
-                                Order
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/OrderList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateOrder">Create</a></li>
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Kitchen/OrderView" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-eye"></i></span><span class="pc-mtext">
-                                Order View
-                            </span>
-                        </a>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Kitchen/ChefView" class="pc-link">
-                            <span class="pc-micon"><i class="bi bi-display"></i></span><span class="pc-mtext">
-                                Chef View
-                            </span>
-                        </a>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
-                                User
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/UserList">All</a></li>
-                            <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateUser">Create</a></li>
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="/Kitchen/" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
-                                Report
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                    </li>
+                    @if (Html.HasPermission("Branch Stock Return List") || Html.HasPermission("Branch Stock Return Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-reply-all"></i></span><span class="pc-mtext">
+                                    Stock Return
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Branch Stock Return List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/StockReturnList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Branch Stock Return Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateStockReturn">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+
+                    @if (Html.HasPermission("Consume List") || Html.HasPermission("Consume Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-clipboard-list"></i></span>
+                                <span class="pc-mtext">Consume</span>
+                                <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Consume List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/ConsumeItemList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Consume Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateConsumeItem">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Wastage List") || Html.HasPermission("Wastage Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-trash"></i></span> <!-- Changed icon for Wastage -->
+                                <span class="pc-mtext">Wastage</span>
+                                <span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Wastage List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/WastageItemList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Wastage Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateWastageItem">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+
+
+                    @if (Html.HasPermission("Product Category List") || Html.HasPermission("Product Category Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-th"></i></span><span class="pc-mtext">
+                                    Category
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Product Category List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CategoryList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Product Category Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateCategory">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Product List") || Html.HasPermission("Product Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-utensils"></i></span><span class="pc-mtext">
+                                    Product
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Product List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/ProductList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Product Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateProduct">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+
+                    @if (Html.HasPermission("Order List") || Html.HasPermission("Order Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-shopping-cart"></i></span><span class="pc-mtext">
+                                    Order
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Order List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/OrderList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Order Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateOrder">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Order View View"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Kitchen/OrderView" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-eye"></i></span><span class="pc-mtext">
+                                    Order View
+                                </span>
+                            </a>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Chef View View"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Kitchen/ChefView" class="pc-link">
+                                <span class="pc-micon"><i class="bi bi-display"></i></span><span class="pc-mtext">
+                                    Chef View
+                                </span>
+                            </a>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Kitchen User List") || Html.HasPermission("Kitchen User Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
+                                    User
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Kitchen User List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/UserList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Kitchen User Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateUser">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (Html.HasPermission("Kitchen Role List") || Html.HasPermission("Kitchen Role Create"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-user"></i></span><span class="pc-mtext">
+                                    Roles
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Kitchen Role List"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/RoleList">All</a></li>
+                                }
+                                @if (Html.HasPermission("Kitchen Role Create"))
+                                {
+                                    <li class="pc-item"><a class="pc-link" href="/Kitchen/CreateRole">Create</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    @if (true)
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="/Kitchen/" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
+                                    Report
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                        </li>
+                    }
+
                     <div style="height:100px">
 
                     </div>
@@ -257,16 +377,17 @@
                 <ul class="list-unstyled">
                     <li class="dropdown pc-h-item me-1">
                         @{ Html.RenderAction("BranchesDropdown", "Kitchen"); }
-                        @*<select class="form-select p-r-35" id="branchSelect">
-                                <option selected value="">Shahrah-e-Faisal</option>
-                                <option value="">Korangi Crossing</option>
-                                <option value="">North Nazimabad</option>
-                            </select>*@
                     </li>
                     <li class="dropdown pc-h-item">
                         <select class="form-select p-r-35" id="managementSelect">
-                            <option selected value="@Url.Action("Index", "Kitchen")">Kitchen Management</option>
-                            <option value="@Url.Action("Index", "Warehouse")">Warehouse Management</option>
+                            @if (Html.HasKitchenPermission())
+                            {
+                                <option selected value="@Url.Action("DefaultBranch", "Warehouse")">Kitchen Management</option>
+                            }
+                            @if (Html.HasWarehousePermission())
+                            {
+                                <option value="@Url.Action("Index", "Warehouse")">Warehouse Management</option>
+                            }
                         </select>
                     </li>
 

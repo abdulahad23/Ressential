@@ -57,6 +57,26 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="BranchItems">
+      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
+        <MappingFragment StoreEntitySet="BranchItems">
+          <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
+          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
+          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
+          <ScalarProperty Name="OpeningStockQuantity" ColumnName="OpeningStockQuantity" />
+          <ScalarProperty Name="OpeningStockValue" ColumnName="OpeningStockValue" />
+          <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
+          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Cities">
       <EntityTypeMapping TypeName="DB_RessentialModel.City">
         <MappingFragment StoreEntitySet="City">
@@ -69,12 +89,12 @@
     <EntitySetMapping Name="ConsumeItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ConsumeItemDetail">
         <MappingFragment StoreEntitySet="ConsumeItemDetails">
-          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
           <ScalarProperty Name="ConsumeItemDetailId" ColumnName="ConsumeItemDetailId" />
           <ScalarProperty Name="ConsumeItemId" ColumnName="ConsumeItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -162,12 +182,12 @@
     <EntitySetMapping Name="OrderDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.OrderDetail">
         <MappingFragment StoreEntitySet="OrderDetails">
-          <ScalarProperty Name="ProductCost" ColumnName="ProductCost" />
           <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
           <ScalarProperty Name="ProductQuantity" ColumnName="ProductQuantity" />
           <ScalarProperty Name="ProductPrice" ColumnName="ProductPrice" />
+          <ScalarProperty Name="ProductCost" ColumnName="ProductCost" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -195,7 +215,6 @@
     <EntitySetMapping Name="Orders">
       <EntityTypeMapping TypeName="DB_RessentialModel.Order">
         <MappingFragment StoreEntitySet="Orders">
-          <ScalarProperty Name="OrderTotalCost" ColumnName="OrderTotalCost" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
           <ScalarProperty Name="OrderNo" ColumnName="OrderNo" />
@@ -205,6 +224,7 @@
           <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
           <ScalarProperty Name="PaymentMethod" ColumnName="PaymentMethod" />
           <ScalarProperty Name="OrderTotal" ColumnName="OrderTotal" />
+          <ScalarProperty Name="OrderTotalCost" ColumnName="OrderTotalCost" />
           <ScalarProperty Name="Status" ColumnName="Status" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
@@ -246,6 +266,24 @@
           <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
           <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
           <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Permissions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.Permission">
+        <MappingFragment StoreEntitySet="Permissions">
+          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+          <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PermissionsCategories">
+      <EntityTypeMapping TypeName="DB_RessentialModel.PermissionsCategory">
+        <MappingFragment StoreEntitySet="PermissionsCategory">
+          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
+          <ScalarProperty Name="PermissionModule" ColumnName="PermissionModule" />
+          <ScalarProperty Name="PermissionCategoryName" ColumnName="PermissionCategoryName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -436,12 +474,35 @@
     <EntitySetMapping Name="ReturnStockDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.ReturnStockDetail">
         <MappingFragment StoreEntitySet="ReturnStockDetails">
-          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
           <ScalarProperty Name="ReturnStockDetailId" ColumnName="ReturnStockDetailId" />
           <ScalarProperty Name="ReturnStockId" ColumnName="ReturnStockId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="RolePermissions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.RolePermission">
+        <MappingFragment StoreEntitySet="RolePermissions">
+          <ScalarProperty Name="RolePermissionId" ColumnName="RolePermissionId" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Roles">
+      <EntityTypeMapping TypeName="DB_RessentialModel.Role">
+        <MappingFragment StoreEntitySet="Roles">
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="IsBranchRole" ColumnName="IsBranchRole" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -454,22 +515,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="UserBranchDetials">
-      <EntityTypeMapping TypeName="DB_RessentialModel.UserBranchDetial">
-        <MappingFragment StoreEntitySet="UserBranchDetial">
-          <ScalarProperty Name="UserBranchDetialId" ColumnName="UserBranchDetialId" />
-          <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="DB_RessentialModel.User">
         <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="HasWarehousePermission" ColumnName="HasWarehousePermission" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
           <ScalarProperty Name="ProfileImage" ColumnName="ProfileImage" />
           <ScalarProperty Name="IsActive" ColumnName="IsActive" />
           <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -540,12 +594,12 @@
     <EntitySetMapping Name="WastageItemDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.WastageItemDetail">
         <MappingFragment StoreEntitySet="WastageItemDetails">
-          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
           <ScalarProperty Name="WastageItemDetailId" ColumnName="WastageItemDetailId" />
           <ScalarProperty Name="WastageItemId" ColumnName="WastageItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="ItemQuantity" ColumnName="ItemQuantity" />
+          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -564,70 +618,12 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="BranchItems">
-      <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
-        <MappingFragment StoreEntitySet="BranchItems">
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-          <ScalarProperty Name="OpeningStockDate" ColumnName="OpeningStockDate" />
-          <ScalarProperty Name="OpeningStockValue" ColumnName="OpeningStockValue" />
-          <ScalarProperty Name="OpeningStockQuantity" ColumnName="OpeningStockQuantity" />
-          <ScalarProperty Name="CostPerUnit" ColumnName="CostPerUnit" />
-          <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="MinimumStockLevel" ColumnName="MinimumStockLevel" />
+    <EntitySetMapping Name="UserBranchPermissions">
+      <EntityTypeMapping TypeName="DB_RessentialModel.UserBranchPermission">
+        <MappingFragment StoreEntitySet="UserBranchPermissions">
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
-          <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-          <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Roles">
-      <EntityTypeMapping TypeName="DB_RessentialModel.Role">
-        <MappingFragment StoreEntitySet="Roles">
-          <ScalarProperty Name="ModifiedAt" ColumnName="ModifiedAt" />
-          <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-          <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
-          <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="UserRoles">
-      <EntityTypeMapping TypeName="DB_RessentialModel.UserRole">
-        <MappingFragment StoreEntitySet="UserRoles">
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Permissions">
-      <EntityTypeMapping TypeName="DB_RessentialModel.Permission">
-        <MappingFragment StoreEntitySet="Permissions">
-          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
-          <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
-          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="PermissionsCategories">
-      <EntityTypeMapping TypeName="DB_RessentialModel.PermissionsCategory">
-        <MappingFragment StoreEntitySet="PermissionsCategory">
-          <ScalarProperty Name="PermissionCategoryName" ColumnName="PermissionCategoryName" />
-          <ScalarProperty Name="PermissionCategoryId" ColumnName="PermissionCategoryId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="RolePermissions">
-      <EntityTypeMapping TypeName="DB_RessentialModel.RolePermission">
-        <MappingFragment StoreEntitySet="RolePermissions">
-          <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
-          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-          <ScalarProperty Name="RolePermissionId" ColumnName="RolePermissionId" />
+          <ScalarProperty Name="UserBranchPermissionsId" ColumnName="UserBranchPermissionsId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Ressential.Models.Product>
+@using Ressential.Utilities
 
 @{ ViewBag.Title = "ProductList";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
@@ -21,7 +22,10 @@
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="delete">Delete</option>
+                        @if (Html.HasPermission("Product Delete"))
+                        {
+                            <option value="delete">Delete</option>
+                        }
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
@@ -81,8 +85,14 @@
                                         <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li><button class="dropdown-item" type="button" onclick="submitEditForm(@product.ProductId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                                        <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@product.ProductId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        @if (Html.HasPermission("Product Edit"))
+                                        {
+                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@product.ProductId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                        }
+                                        @if (Html.HasPermission("Product Delete"))
+                                        {
+                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@product.ProductId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                        }
                                     </ul>
                                 </div>
                             </td>

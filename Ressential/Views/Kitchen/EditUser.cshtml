@@ -63,6 +63,14 @@
 
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
+                                @Html.DropDownListFor(model => model.RoleId, new SelectList(ViewBag.Roles, "RoleId", "RoleName"), "Select Role", new { @class = "form-control" })
+                                <label for="floatingInput">Role</label>
+                                @Html.ValidationMessageFor(model => model.RoleId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(m => m.IsActive, new SelectList(new[] {
                                 new { Value = true, Text = "Active" },
                                 new { Value = false, Text = "Inactive" }
@@ -70,6 +78,7 @@
                                 <label for="Status">Status</label>
                             </div>
                         </div>
+
                         <h2 class="text-secondary mt-3"><b>Profile Image</b></h2>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">

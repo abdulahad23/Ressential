@@ -154,6 +154,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
@@ -333,10 +334,7 @@
     <Compile Include="Models\User.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\UserBranchDetial.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserRole.cs">
+    <Compile Include="Models\UserBranchPermission.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Vendor.cs">
@@ -357,6 +355,7 @@
     <Compile Include="Models\WastageItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\HasBranchAccessAttribute.cs" />
     <Compile Include="Utilities\HasPermissionAttribute.cs" />
     <Compile Include="Utilities\HtmlHelperExtensions.cs" />
     <Compile Include="Utilities\TextConstraints.cs" />
@@ -731,6 +730,7 @@
     <Content Include="obj\Debug\Ressential.csproj.CopyComplete" />
     <Content Include="obj\Debug\Ressential.csproj.CoreCompileInputs.cache" />
     <Content Include="obj\Debug\Ressential.csproj.Up2Date" />
+    <Content Include="App_Browsers\qt.browser" />
     <EntityDeploy Include="Models\Model.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model.Designer.cs</LastGenOutput>
@@ -738,7 +738,6 @@
     <Content Include="Models\Model.edmx.diagram">
       <DependentUpon>Model.edmx</DependentUpon>
     </Content>
-    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -809,8 +808,6 @@
     <Content Include="Views\Warehouse\IssueList.cshtml" />
     <Content Include="Views\Warehouse\CreateBankAndCash.cshtml" />
     <Content Include="Views\Warehouse\BankAndCashList.cshtml" />
-    <Content Include="Views\Warehouse\PaymentVouncherList.cshtml" />
-    <Content Include="Views\Warehouse\ReceiptVouncherList.cshtml" />
     <Content Include="Views\Kitchen\ItemList.cshtml" />
     <Content Include="Views\Kitchen\RequisitionList.cshtml" />
     <Content Include="Views\Kitchen\CreateRequisition.cshtml" />
@@ -827,7 +824,6 @@
     <Content Include="Views\Kitchen\CreateProduct.cshtml" />
     <Content Include="Views\Kitchen\OrderList.cshtml" />
     <Content Include="Views\Kitchen\CreateOrder.cshtml" />
-    <Content Include="Views\Kitchen\OrderReturnList.cshtml" />
     <Content Include="Views\Kitchen\CreateOrderReturn.cshtml" />
     <Content Include="Views\Warehouse\CreatePurchase.cshtml" />
     <Content Include="Views\Warehouse\RequisitionList.cshtml" />
@@ -898,9 +894,15 @@
     <Content Include="Views\Account\Unauthorized.cshtml" />
     <Content Include="Views\Warehouse\RoleList.cshtml" />
     <Content Include="Views\Warehouse\CreateRole.cshtml" />
+    <Content Include="Views\Shared\_RedirectToIndex.cshtml" />
+    <Content Include="Views\Warehouse\EditRole.cshtml" />
+    <Content Include="Views\Kitchen\RoleList.cshtml" />
+    <Content Include="Views\Kitchen\CreateRole.cshtml" />
+    <Content Include="Views\Kitchen\EditRole.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base2\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

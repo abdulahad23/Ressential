@@ -13,5 +13,13 @@ namespace Ressential.Utilities
             var permissions = Helper.GetPermissions();
             return permissions != null && permissions.Contains(permission);
         }
+        public static bool HasWarehousePermission(this HtmlHelper htmlHelper)
+        {
+            return Helper.HasBranchAccess(0);
+        }
+        public static bool HasKitchenPermission(this HtmlHelper htmlHelper)
+        {
+            return Helper.HasKitchenModule();
+        }
     }
 }

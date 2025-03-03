@@ -1,0 +1,137 @@
+﻿@model  IEnumerable<Ressential.Models.Role>
+@using Ressential.Utilities
+
+
+@{
+    ViewBag.Title = "RoleList";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+<div class="card">
+    <div class="card-body">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                @TempData["ErrorMessage"]
+            </div>}
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                @TempData["SuccessMessage"]
+            </div>}
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group input-group-sm mb-3">
+                    <select class="form-select" id="actionDropdown" aria-label="Select action">
+                        <option selected>Choose Action</option>
+                        @if (Html.HasPermission("Kitchen Role Delete"))
+                        {
+                            <option value="delete">Delete</option>
+                        }
+                    </select>
+                    <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
+                </div>
+            </div>
+            <div class="col-md-3 ms-auto">
+                <form id="searchForm" action="@Url.Action("RoleList", "Kitchen")" method="get">
+                    <div class="input-group input-group-sm mb-3">
+                        <input type="text" name="search" class="form-control" id="floatingInput" placeholder="Search" value="@Request.QueryString["search"]">
+                        <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <form id="actionForm" action="@Url.Action("DeleteSelectedRoles", "Kitchen")" method="post">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="fit-content">
+                                <input class="form-check-input" type="checkbox" value="" id="selectAll" onclick="toggleAll(this)">
+                            </th>
+                            <th scope="col">Role Name</th>
+                            <th scope="col" class="fit-content">Option</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input user-checkbox" name="selectedItems" value="@role.RoleId"></td>
+                                <td>@role.RoleName</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if (Html.HasPermission("Kitchen Role Edit"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitEditForm(@role.RoleId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                            }
+                                            @if (Html.HasPermission("Kitchen Role Delete"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@role.RoleId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </form>
+            <!-- Hidden Form for Edit/Delete Actions -->
+            <form id="editDeleteForm" method="post" style="display: none;">
+                <input type="hidden" name="roleId" id="formRoleId" />
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Function to toggle all checkboxes
+    function toggleAll(source) {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = source.checked);
+    }
+
+
+    function applyAction() {
+        const action = document.getElementById("actionDropdown").value;
+        const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+
+        if (action === "delete") {
+            if (checkboxes.length === 0) {
+                alert("No records selected to delete.");
+                return;
+            }
+            if (confirm("Are you sure you want to delete the selected roles?")) {
+                document.getElementById("actionForm").submit();
+            }
+        }
+    }
+     function submitEditForm(roleId) {
+         const form = document.getElementById("editDeleteForm");
+         form.action = "@Url.Action("EditRole", "Kitchen")";
+         document.getElementById("formRoleId").value = roleId;
+         form.method = "get";
+         form.submit();
+    }
+
+    function submitDeleteForm(roleId) {
+         if (confirm('Are you sure you want to delete this role?')) {
+             const form = document.getElementById("editDeleteForm");
+             form.action = "@Url.Action("DeleteRole", "Kitchen")";
+             document.getElementById("formRoleId").value = roleId;
+             form.method = "post";
+             form.submit();
+         }
+     }
+</script>
+
+

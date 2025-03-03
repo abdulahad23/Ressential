@@ -1,4 +1,5 @@
 ﻿@model  IEnumerable<Ressential.Models.User>
+@using Ressential.Utilities
 
 @{
     ViewBag.Title = "UserList";
@@ -23,7 +24,10 @@
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="delete">Delete</option>
+                        @if (Html.HasPermission("Kitchen User Delete"))
+                        {
+                            <option value="delete">Delete</option>
+                        }
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
@@ -61,7 +65,7 @@
                                 <td><input type="checkbox" class="form-check-input user-checkbox" name="selectedItems" value="@user.UserId"></td>
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
-                                <td>Super Admin</td>
+                                <td>@user.Role.RoleName</td>
                                 <td>
                                     @if (user.IsActive)
                                     {
@@ -82,8 +86,14 @@
                                             <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@user.UserId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@user.UserId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                            @if (Html.HasPermission("Kitchen User Edit"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitEditForm(@user.UserId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                            }
+                                            @if (Html.HasPermission("Kitchen User Delete"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@user.UserId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                            }
                                         </ul>
                                     </div>
                                 </td>

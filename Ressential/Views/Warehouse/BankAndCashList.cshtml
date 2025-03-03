@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Ressential.Models.Account>
+@using Ressential.Utilities
 
 @{ ViewBag.Title = "BankAndCashList";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml"; }
@@ -8,21 +9,24 @@
     <div class="card-body">
         @if (TempData["ErrorMessage"] != null)
         {
-<div class="alert alert-danger">
-    @TempData["ErrorMessage"]
-</div>}
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>}
         @if (TempData["SuccessMessage"] != null)
         {
-<div class="alert alert-success">
-    @TempData["SuccessMessage"]
-</div>}
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>}
 
         <div class="row">
             <div class="col-md-3">
                 <div class="input-group input-group-sm mb-3">
                     <select class="form-select" id="actionDropdown" aria-label="Select action">
                         <option selected>Choose Action</option>
-                        <option value="delete">Delete</option>
+                        @if (Html.HasPermission("Bank And Cash Delete"))
+                        {
+                            <option value="delete">Delete</option>
+                        }
                     </select>
                     <button class="btn btn-secondary" type="button" onclick="applyAction()">Apply</button>
                 </div>
@@ -57,38 +61,45 @@
                     <tbody>
                         @foreach (var account in Model)
                         {
-            <tr>
-                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@account.AccountId" aria-label="Select Vendor"></td>
-                <td>@account.AccountType</td>
-                <td>@account.AccountTitle</td>
-                @if (account.BankName == null)
-                {
-                    <td>-</td>
-                }
-                else
-                {
-                    <td>@account.BankName</td>
-                }
-                @if (account.AccountNumber == null)
-                {
-                    <td>-</td>
-                }
-                else
-                {
-                    <td>@account.AccountNumber</td>
-                }
-                <td>
-                    <div class="dropdown">
-                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
-                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><button class="dropdown-item" type="button" onclick="submitEditForm(@account.AccountId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
-                            <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@account.AccountId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
-                        </ul>
-                    </div>
-                </td>
-            </tr>}
+                            <tr>
+                                <td><input type="checkbox" class="form-check-input item-checkbox" name="selectedItems" value="@account.AccountId" aria-label="Select Vendor"></td>
+                                <td>@account.AccountType</td>
+                                <td>@account.AccountTitle</td>
+                                @if (account.BankName == null)
+                                {
+                                    <td>-</td>
+                                }
+                                else
+                                {
+                                    <td>@account.BankName</td>
+                                }
+                                @if (account.AccountNumber == null)
+                                {
+                                    <td>-</td>
+                                }
+                                else
+                                {
+                                    <td>@account.AccountNumber</td>
+                                }
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none;">
+                                            <i class="bi bi-three-dots-vertical" style="font-size: 1.5rem;"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            @if (Html.HasPermission("Bank And Cash Edit"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitEditForm(@account.AccountId)"><i class="bi bi-pencil" style="font-size: 1.25rem;"></i> Edit</button></li>
+                                            }
+                                            @if (Html.HasPermission("Bank And Cash Delete"))
+                                            {
+                                                <li><button class="dropdown-item" type="button" onclick="submitDeleteForm(@account.AccountId)"><i class="bi bi-trash" style="font-size: 1.25rem;"></i> Delete</button></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+}
                     </tbody>
                 </table>
             </form>
