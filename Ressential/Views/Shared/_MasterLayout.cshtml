@@ -1,5 +1,132 @@
-﻿@{
-    Layout = "~/Views/Shared/_BranchesDropdown.cshtml";
-}
+﻿<!DOCTYPE html>
+<html>
 
+<head>
+    <title>Ressential | @ViewBag.Title</title>
+    <!-- [Meta] -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Berry is trending dashboard template made using Bootstrap 5 design framework. Berry is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies.">
+    <meta name="keywords" content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard">
+    <meta name="author" content="codedthemes">
+
+    <!-- [Favicon] icon -->
+    <link rel="icon" href="~/Content/assets/images/logo/ressential-logo-small.png" type="image/x-icon">
+    <!-- [Google Font] Family -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" id="main-font-link">
+    <!-- [Tabler Icons] https://tablericons.com -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/tabler-icons.min.css">
+    <!-- [Feather Icons] https://feathericons.com -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/feather.css">
+    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/fontawesome.css">
+    <!-- [Material Icons] https://fonts.google.com/icons -->
+    <link rel="stylesheet" href="~/Content/assets/fonts/material.css">
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="~/Content/assets/css/style.css" id="main-style-link">
+    <link rel="stylesheet" href="~/Content/assets/css/style-preset.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/Content/assets/css/myStyle.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+@RenderBody()
+<script src="~/Scripts/jquery.signalR-2.4.3.js"></script>
+<script src="~/signalr/hubs"></script>
+<script type="text/javascript">
+    $(function () {
+        // Create the SignalR proxy to the NotificationHub
+        var proxy = $.connection.ressentialHub;
+        var reconnectInterval = 5000; // Start with 5 seconds
+        var maxReconnectInterval = 30000; // Max retry interval of 30 seconds
+
+        // Add client-side methods here (if any) that will be triggered by the server
+        proxy.client.OnConnected = function () {
+            console.log("Connected to the SignalR hub!");
+        };
+
+        // Function to handle the reconnection logic
+        function startSignalRConnection() {
+            $.connection.hub.start().done(function () {
+                console.log("SignalR connection established!");
+                reconnectInterval = 5000;
+
+                // Call server-side methods like SaveUserConnection
+
+                proxy.server.saveUserConnection()
+                    .done(function () {
+                        console.log("User connection saved.");
+                    })
+                    .fail(function (error) {
+                        console.error("Error saving user connection: " + error);
+                    });
+            }).fail(function (error) {
+                console.error("Error establishing SignalR connection: " + error);
+                // Retry after some time (e.g., 5 seconds)
+                setTimeout(startSignalRConnection, reconnectInterval);
+                reconnectInterval = Math.min(reconnectInterval * 2, maxReconnectInterval); // Exponential backoff
+            });
+        }
+
+
+        // Start the connection for the first time
+        startSignalRConnection();
+
+        // Connection lifecycle events
+        $.connection.hub.reconnecting(function () {
+            console.warn("SignalR is attempting to reconnect...");
+        });
+
+        // Detect when the connection is lost and attempt to reconnect
+        $.connection.hub.stateChanged(function (state) {
+            if (state.newState === $.signalR.connectionState.disconnected) {
+                console.log("Connection lost. Attempting to reconnect...");
+                startSignalRConnection(); // Attempt to reconnect
+            }
+        });
+
+        $.connection.hub.reconnected(function () {
+            console.log("SignalR reconnected successfully!");
+            reconnectInterval = 5000; // Reset retry interval
+        });
+
+        $.connection.hub.disconnected(function () {
+            console.warn("SignalR disconnected. Attempting to reconnect...");
+            setTimeout(startSignalRConnection, reconnectInterval);
+        });
+
+        $.connection.hub.error(function (error) {
+            console.error("SignalR error occurred: " + error);
+        });
+
+
+        proxy.client.Notify = function (message) {
+            debugger;
+            alert(message);
+        };
+
+        proxy.client.UpdateChefView = function () {
+            debugger;
+            alert("Updated");
+            loadProducts(1);
+        };
+
+
+        //For View to View updation
+
+        //proxy.client.receiveProductUpdate = function (message) {
+        //    loadProducts(1);
+        //};
+
+        //$("#btnSignalR").click(function () {
+
+        //    proxy.server.sendProductUpdate();
+
+        //})
+
+    });
+</script>
+
+
+</html>
 

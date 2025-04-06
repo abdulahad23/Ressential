@@ -175,7 +175,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Hub\ProductHub.cs" />
+    <Compile Include="Hub\RessentialHub.cs" />
     <Compile Include="Models\Account.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -914,6 +914,7 @@
     <Content Include="Views\Kitchen\RoleList.cshtml" />
     <Content Include="Views\Kitchen\CreateRole.cshtml" />
     <Content Include="Views\Kitchen\EditRole.cshtml" />
+    <Content Include="Views\Shared\_MasterLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

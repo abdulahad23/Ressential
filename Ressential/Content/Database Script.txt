@@ -77,7 +77,6 @@ CREATE TABLE Permissions (
     PermissionName NVARCHAR(100) NOT NULL,
     PermissionCategoryId INT NOT NULL,
     FOREIGN KEY (PermissionCategoryId) REFERENCES PermissionsCategory(PermissionCategoryId),
-
 );
 
 -- Table: RolePermissions
@@ -472,7 +471,7 @@ CREATE TABLE OrderDetails (
     ProductQuantity DECIMAL(18,2) NOT NULL,
     ProductPrice DECIMAL(18,2) NOT NULL,
     ProductCost DECIMAL(18,2) NOT NULL,
-    ProductStatus NVARCHAR(20) NOT NULL CHECK (ProductStatus IN ('Pending', 'Preparing', 'Ready', 'Cancelled')),
+    ProductStatus NVARCHAR(20) NOT NULL CHECK (ProductStatus IN ('Pending', 'Preparing', 'Ready', 'Cancelled', 'Completed')),
     StartTime DATETIME2 NULL,
     EndTime DATETIME2 NULL,
     FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
@@ -918,5 +917,14 @@ FROM (
 ) AS p(PermissionName, PermissionCategory)
 JOIN PermissionsCategory pc ON p.PermissionCategory = pc.PermissionCategoryName
 WHERE pc.PermissionModule = 'Kitchen';
+
+
+INSERT INTO Roles (RoleName) VALUES ('Super Admin');
+
+INSERT INTO RolePermissions (RoleId, PermissionId)
+SELECT 1, PermissionId FROM Permissions;
+
+UPDATE Users
+SET HasWarehousePermission = 1;
 
 

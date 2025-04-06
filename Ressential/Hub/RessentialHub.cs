@@ -10,12 +10,12 @@ using System.Web;
 
 namespace Ressential.Hub
 {
-    [HubName("productHub")]
-    public class ProductHub : Microsoft.AspNet.SignalR.Hub
+    [HubName("ressentialHub")]
+    public class RessentialHub : Microsoft.AspNet.SignalR.Hub
     {
         
         private readonly DB_RessentialEntities _db;
-        public ProductHub()
+        public RessentialHub()
         {
             _db = new DB_RessentialEntities();
         }

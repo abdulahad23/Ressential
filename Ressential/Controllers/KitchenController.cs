@@ -2234,10 +2234,12 @@ namespace Ressential.Controllers
                     //context.Clients.All.ReceiveProductUpdate();
 
 
-                    string Connection = _db.Users.Where(u => u.UserId == 1).FirstOrDefault().ConnectionId;
-                    var context = GlobalHost.ConnectionManager.GetHubContext<ProductHub>();
-                    context.Clients.Client(Connection).Notify("Hi");
-
+                    List<string> Connections = _db.Users.Select(u => u.ConnectionId).ToList();
+                    var context = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                    foreach (var connection in Connections)
+                    {
+                        context.Clients.Client(connection).UpdateChefView();
+                    }
 
                     TempData["SuccessMessage"] = "Order placed successfully.";
                     return RedirectToAction("CreateOrder", "Kitchen");
