@@ -9,12 +9,35 @@ CREATE TABLE Users (
     IsActive BIT NOT NULL DEFAULT 1,
     IsChef BIT NOT NULL,
     HasWarehousePermission BIT NOT NULL DEFAULT 0,
+    ConnectionId NVARCHAR(MAX),
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
     ModifiedAt DATETIME2 NULL,
     FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
+);
+
+
+-- Table: Branches
+CREATE TABLE Branches (
+    BranchId INT PRIMARY KEY IDENTITY(1,1),
+    BranchName NVARCHAR(100) NOT NULL,
+    BranchCode NVARCHAR(50) NOT NULL UNIQUE,
+    BranchContact NVARCHAR(50) NOT NULL,
+    Address NVARCHAR(255) NOT NULL,
+    City NVARCHAR(100) NOT NULL,
+    Country NVARCHAR(100) NOT NULL,
+    PostalCode NVARCHAR(20) NULL,
+    OwnerName NVARCHAR(100) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 1,
+    CreatedBy INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    ModifiedBy INT NULL,
+    ModifiedAt DATETIME2 NULL,
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
+
 );
 
 -- Table: Roles
@@ -42,26 +65,6 @@ CREATE TABLE PermissionsCategory (
     PermissionCategoryName NVARCHAR(100) NOT NULL UNIQUE,
 );
 
--- Table: Branches
-CREATE TABLE Branches (
-    BranchId INT PRIMARY KEY IDENTITY(1,1),
-    BranchName NVARCHAR(100) NOT NULL,
-    BranchCode NVARCHAR(50) NOT NULL UNIQUE,
-    BranchContact NVARCHAR(50) NOT NULL,
-    Address NVARCHAR(255) NOT NULL,
-    City NVARCHAR(100) NOT NULL,
-    Country NVARCHAR(100) NOT NULL,
-    PostalCode NVARCHAR(20) NULL,
-    OwnerName NVARCHAR(100) NOT NULL,
-    IsActive BIT NOT NULL DEFAULT 1,
-    CreatedBy INT NOT NULL,
-    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
-    ModifiedBy INT NULL,
-    ModifiedAt DATETIME2 NULL,
-    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
-    FOREIGN KEY (CreatedBy) REFERENCES Users(UserId)
-
-);
 
 -- Table: UserBranchPermissions
 CREATE TABLE UserBranchPermissions (
@@ -654,11 +657,11 @@ VALUES ('Kilogram', 'kg'),
 INSERT INTO ROLES (RoleName)
 VALUES ('Super Admin');
 
-INSERT INTO USERS (UserName, Email, Password, IsActive, RoleId)
-VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '123', 1, 1),
-       ('Syeda Saba', 'syedha.sabaali@gmail.com', '123', 1, 1),
-       ('Waniya Rana', 'waniyarana@gmail.com', '123', 1, 1),
-       ('Abdul Basit', 'abdulbasit@gmail.com', '123', 1, 1);
+INSERT INTO USERS (UserName, Email, Password, IsActive, RoleId, IsChef)
+VALUES ('Abdul Ahad', 'abdulahad.ad23@gmail.com', '1234567', 1, 1, 1),
+       ('Syeda Saba', 'syedha.sabaali@gmail.com', '1234567', 1, 1, 1),
+       ('Waniya Rana', 'waniyarana@gmail.com', '1234567', 1, 1, 1),
+       ('Abdul Basit', 'abdulbasit@gmail.com', '1234567', 1, 1, 1);
 
 INSERT INTO ITEMCATEGORY (ItemCategoryName, Description)
 VALUES ('Meat', 'All type of meats'),
@@ -716,28 +719,28 @@ VALUES
 
 
 
-INSERT INTO Products (ProductCode, ProductName, BranchId, ProductImage, ProductPrice, Description, ProductCategoryId, IsActive, CreatedBy)
+INSERT INTO Products (ProductCode, ProductName, BranchId, ProductImage, ProductPrice, Description, ProductCategoryId, IsActive, CreatedBy, ChefID)
 VALUES
-('P001', 'Margherita Pizza', 1, 'pizza.jpg', 899, 'Classic Italian pizza with mozzarella and basil', 1, 1, 1),
-('P002', 'Pepperoni Pizza', 1, 'pepperoni.jpg', 899, 'Pizza topped with pepperoni and cheese', 1, 1, 1),
-('P003', 'Chicken Burger', 1, 'chicken_burger.jpg', 450, 'Grilled chicken burger with lettuce and mayo', 2, 1, 1),
-('P004', 'Beef Burger', 1, 'beef_burger.jpg', 850, 'Juicy beef burger with cheddar cheese', 2, 1, 1),
-('P005', 'Caesar Salad', 1, 'caesar_salad.jpg', 490, 'Fresh romaine lettuce with Caesar dressing', 5, 1, 1),
-('P006', 'Pasta Alfredo', 1, 'pasta_alfredo.jpg', 1199, 'Creamy Alfredo pasta with chicken', 4, 1, 1),
-('P007', 'Veggie Wrap', 1, 'veggie_wrap.jpg', 580, 'Healthy wrap filled with fresh vegetables', 6, 1, 1),
-('P008', 'Grilled Salmon', 1, 'grilled_salmon.jpg', 1299, 'Grilled salmon served with lemon butter', 8, 1, 1),
-('P009', 'Tacos', 1, 'tacos.jpg', 750, 'Soft tacos filled with seasoned beef and veggies', 6, 1, 1),
-('P010', 'Chocolate Cake', 1, 'chocolate_cake.jpeg', 1199, 'Rich chocolate cake with ganache topping', 7, 1, 1),
-('P011', 'Biryani', 1, 'biryani.jpeg', 499, 'Traditional Pakistani rice dish with spices and chicken', 10, 1, 1),
-('P012', 'Karahi Gosht', 1, 'karahi_gosht.jpeg', 1250, 'Spicy and flavorful mutton curry', 10, 1, 1),
-('P013', 'Haleem', 1, 'haleem.jpg', 220, 'Thick and hearty stew made with lentils and meat', 10, 1, 1),
-('P014', 'Chicken Tikka', 1, 'chicken_tikka.jpg', 450, 'Grilled chicken marinated in spices', 9, 1, 1),
-('P015', 'Seekh Kebabs', 1, 'seekh_kebabs.jpg', 390, 'Minced meat kebabs grilled to perfection', 9, 1, 1),
-('P016', 'Paya', 1, 'paya.jpeg', 390, 'Slow-cooked goat trotters curry', 10, 1, 1),
-('P017', 'Nihari', 1, 'nihari.jpg', 450, 'Spicy beef stew cooked with aromatic spices', 10, 1, 1),
-('P018', 'Chapli Kebab', 1, 'chapli_kebab.jpeg', 220, 'Fried minced meat patties with herbs and spices', 10, 1, 1),
-('P019', 'Gol Gappay', 1, 'gol_gappay.png', 300, 'Crispy shells filled with spicy tamarind water', 10, 1, 1),
-('P020', 'Kheer', 1, 'kheer.jpg', 180, 'Traditional Pakistani rice pudding dessert', 7, 1, 1);
+('P001', 'Margherita Pizza', 1, 'pizza.jpg', 899, 'Classic Italian pizza with mozzarella and basil', 1, 1, 1, 1),
+('P002', 'Pepperoni Pizza', 1, 'pepperoni.jpg', 899, 'Pizza topped with pepperoni and cheese', 1, 1, 1, 1),
+('P003', 'Chicken Burger', 1, 'chicken_burger.jpg', 450, 'Grilled chicken burger with lettuce and mayo', 2, 1, 1, 1),
+('P004', 'Beef Burger', 1, 'beef_burger.jpg', 850, 'Juicy beef burger with cheddar cheese', 2, 1, 1, 1),
+('P005', 'Caesar Salad', 1, 'caesar_salad.jpg', 490, 'Fresh romaine lettuce with Caesar dressing', 5, 1, 1, 1),
+('P006', 'Pasta Alfredo', 1, 'pasta_alfredo.jpg', 1199, 'Creamy Alfredo pasta with chicken', 4, 1, 1, 1),
+('P007', 'Veggie Wrap', 1, 'veggie_wrap.jpg', 580, 'Healthy wrap filled with fresh vegetables', 6, 1, 1, 1),
+('P008', 'Grilled Salmon', 1, 'grilled_salmon.jpg', 1299, 'Grilled salmon served with lemon butter', 8, 1, 1, 1),
+('P009', 'Tacos', 1, 'tacos.jpg', 750, 'Soft tacos filled with seasoned beef and veggies', 6, 1, 1, 1),
+('P010', 'Chocolate Cake', 1, 'chocolate_cake.jpeg', 1199, 'Rich chocolate cake with ganache topping', 7, 1, 1, 1),
+('P011', 'Biryani', 1, 'biryani.jpeg', 499, 'Traditional Pakistani rice dish with spices and chicken', 10, 1, 1, 1),
+('P012', 'Karahi Gosht', 1, 'karahi_gosht.jpeg', 1250, 'Spicy and flavorful mutton curry', 10, 1, 1, 1),
+('P013', 'Haleem', 1, 'haleem.jpg', 220, 'Thick and hearty stew made with lentils and meat', 10, 1, 1, 1),
+('P014', 'Chicken Tikka', 1, 'chicken_tikka.jpg', 450, 'Grilled chicken marinated in spices', 9, 1, 1, 1),
+('P015', 'Seekh Kebabs', 1, 'seekh_kebabs.jpg', 390, 'Minced meat kebabs grilled to perfection', 9, 1, 1, 1),
+('P016', 'Paya', 1, 'paya.jpeg', 390, 'Slow-cooked goat trotters curry', 10, 1, 1, 1),
+('P017', 'Nihari', 1, 'nihari.jpg', 450, 'Spicy beef stew cooked with aromatic spices', 10, 1, 1, 1),
+('P018', 'Chapli Kebab', 1, 'chapli_kebab.jpeg', 220, 'Fried minced meat patties with herbs and spices', 10, 1, 1, 1),
+('P019', 'Gol Gappay', 1, 'gol_gappay.png', 300, 'Crispy shells filled with spicy tamarind water', 10, 1, 1, 1),
+('P020', 'Kheer', 1, 'kheer.jpg', 180, 'Traditional Pakistani rice pudding dessert', 7, 1, 1, 1);
 
 
 INSERT INTO PermissionsCategory (PermissionModule, PermissionCategoryName)
@@ -918,13 +921,8 @@ FROM (
 JOIN PermissionsCategory pc ON p.PermissionCategory = pc.PermissionCategoryName
 WHERE pc.PermissionModule = 'Kitchen';
 
-
-INSERT INTO Roles (RoleName) VALUES ('Super Admin');
-
 INSERT INTO RolePermissions (RoleId, PermissionId)
 SELECT 1, PermissionId FROM Permissions;
 
 UPDATE Users
 SET HasWarehousePermission = 1;
-
-
