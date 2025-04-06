@@ -7,6 +7,7 @@ CREATE TABLE Users (
     RoleId INT NOT NULL,
     ProfileImage NVARCHAR(max) NULL,
     IsActive BIT NOT NULL DEFAULT 1,
+    IsChef BIT NOT NULL,
     HasWarehousePermission BIT NOT NULL DEFAULT 0,
     CreatedBy INT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -405,7 +406,7 @@ CREATE TABLE Products (
     ProductPrice DECIMAL(18,2) NOT NULL,
     Description NVARCHAR(255) NULL,
     ProductCategoryId INT NOT NULL,
-    ChefID INT NULL,
+    ChefID INT NOT NULL,
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -414,7 +415,8 @@ CREATE TABLE Products (
     FOREIGN KEY (BranchId) REFERENCES Branches(BranchId),
     FOREIGN KEY (ProductCategoryId) REFERENCES ProductCategories(ProductCategoryId),
     FOREIGN KEY (CreatedBy) REFERENCES Users(UserId),
-    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId)
+    FOREIGN KEY (ModifiedBy) REFERENCES Users(UserId),
+    FOREIGN KEY (ChefID) REFERENCES Users(UserId),
 );
 
 -- Table: ProductItemDetails
@@ -446,7 +448,7 @@ CREATE TABLE Customers (
 CREATE TABLE Orders (
     OrderId INT PRIMARY KEY IDENTITY(1,1),
     OrderDate DATETIME2 NOT NULL,
-    OrderNo NVARCHAR(50) NOT NULL UNIQUE,
+    OrderNo NVARCHAR(50) NOT NULL,
     OrderType NVARCHAR(20) NOT NULL CHECK (OrderType IN ('DineIn', 'TakeAway', 'Online')),
     TableNo NVARCHAR(10) NULL,
     BranchId INT NOT NULL,
@@ -470,6 +472,9 @@ CREATE TABLE OrderDetails (
     ProductQuantity DECIMAL(18,2) NOT NULL,
     ProductPrice DECIMAL(18,2) NOT NULL,
     ProductCost DECIMAL(18,2) NOT NULL,
+    ProductStatus NVARCHAR(20) NOT NULL CHECK (ProductStatus IN ('Pending', 'Preparing', 'Ready', 'Cancelled')),
+    StartTime DATETIME2 NULL,
+    EndTime DATETIME2 NULL,
     FOREIGN KEY (OrderId) REFERENCES Orders(OrderId) ON DELETE CASCADE,
     FOREIGN KEY (ProductId) REFERENCES Products(ProductId)
 );

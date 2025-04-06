@@ -56,16 +56,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <select class="form-control" id="chefId" name="chefId">
-                                <option selected value="0">Select Chef</option>
-                                <option value="1">Saba</option>
-                                <option value="2">Ahad</option>
-                                <option value="3">Waniya</option>
-                                <option value="4">Haniya</option>
-                                <option value="5">Abdul Basit</option>
-                            </select>
-                            <label for="chefId">Chef Name</label>
-
+                            @Html.DropDownListFor(m => m.ChefID, new SelectList(ViewBag.Chefs, "UserId", "UserName"), "Select Chef", new { @class = "form-control" })
+                            <label for="ChefID">Chef Name</label>
                         </div>
                     </div>
 
@@ -248,6 +240,7 @@
         formData.append("ProductCode", $('#ProductCode').val());
         formData.append("ProductPrice", $('#ProductPrice').val());
         formData.append("IsActive", $('#IsActive').val());
+        formData.append("ChefID", $('#ChefID').val());
         formData.append("ProductCategoryId", $('#ProductCategoryId').val());
         formData.append("Description", $('#Description').val());
 

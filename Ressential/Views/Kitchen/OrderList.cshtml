@@ -195,49 +195,81 @@
 
     function submitCancelOrder(OrderId) {
         if (confirm('Are you sure you want to cancel the order?')) {
-            const form = document.getElementById("optionForm");
-            form.action = "@Url.Action("CancelOrder", "Kitchen")";
-            document.getElementById("formOrderId").value = OrderId;
-            form.method = "post";
-            form.submit();
+            $.ajax({
+                url: '@Url.Action("CancelOrder", "Kitchen")',
+                type: 'POST',
+                data: { orderId: OrderId },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
         }
     }
 
     function submitConfirmOrder(OrderId) {
         if (confirm('Are you sure you want to confirm the order?')) {
-            const form = document.getElementById("optionForm");
-            form.action = "@Url.Action("ConfirmOrder", "Kitchen")";
-            document.getElementById("formOrderId").value = OrderId;
-            form.method = "post";
-            form.submit();
+            $.ajax({
+                url: '@Url.Action("ConfirmOrder", "Kitchen")',
+                type: 'POST',
+                data: { orderId: OrderId },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
         }
     }
 
     function submitCompleteOrder(OrderId) {
-        const form = document.getElementById("optionForm");
-        form.action = "@Url.Action("CompleteOrder", "Kitchen")";
-        document.getElementById("formOrderId").value = OrderId;
-        form.method = "post";
-        form.submit();
+        $.ajax({
+            url: '@Url.Action("CompleteOrder", "Kitchen")',
+            type: 'POST',
+            data: { orderId: OrderId },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
     }
 
     function submitOutForDelivery(OrderId) {
-        const form = document.getElementById("optionForm");
-        form.action = "@Url.Action("OutForDelivery", "Kitchen")";
-        document.getElementById("formOrderId").value = OrderId;
-        form.method = "post";
-        form.submit();
+        $.ajax({
+            url: '@Url.Action("OutForDelivery", "Kitchen")',
+            type: 'POST',
+            data: { orderId: OrderId },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
     }
-     function submitOrderReturn(OrderId) {
-     const form = document.getElementById("optionForm");
-     form.action = "@Url.Action("OrderReturn", "Kitchen")";
-     document.getElementById("formOrderId").value = OrderId;
-     form.method = "post";
-     form.submit();
- }
+
+    function submitOrderReturn(OrderId) {
+        $.ajax({
+            url: '@Url.Action("OrderReturn", "Kitchen")',
+            type: 'POST',
+            data: { orderId: OrderId },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                alert('Error: ' + error);
+            }
+        });
+    }
 
     function viewOrder(OrderId) {
         window.location.href = "@Url.Action("OrderDetail", "Kitchen")?orderId=" + OrderId;
     }
 </script>
+
 

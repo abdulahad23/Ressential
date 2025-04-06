@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "ChefView";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
 }
@@ -7,9 +6,319 @@
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
-            <div class="card-body d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card-body">
                 <h2 class="text-center text-5xl text-secondary">Chef View</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="chefSelect">Select Chef</label>
+                            <select id="chefSelect" class="form-control">
+                                <option value="">All</option>
+                                @foreach (var chef in ViewBag.Chefs)
+                                {
+                                    <option value="@chef.Value">@chef.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="statusSelect">Select Status</label>
+                            <select id="statusSelect" class="form-control" multiple="multiple">
+                                <option value="Pending">Pending</option>
+                                <option value="Preparing">Preparing</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="productCards" class="row border-2" style="background-color: #e0e0e0; padding: 20px;">
+                    <!-- Product cards will be appended here -->
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center pt-4" id="pagination">
+                        <!-- Pagination items will be appended here -->
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <script>
+        var maxVisiblePages = @ViewBag.MaxPage;
+        $(document).ready(function () {
+            $('#statusSelect').select2({
+                width: '100%' // Ensure the select2 dropdown takes the full width of its container
+            });
+
+            var currentPage = 1;
+            var maxVisiblePages = @ViewBag.MaxPage; // Maximum number of visible page links
+
+
+
+            function loadProducts(page) {
+
+                currentPage = page;
+                var chefId = $('#chefSelect').val();
+                var statuses = $('#statusSelect').val();
+                $.ajax({
+                    url: '@Url.Action("GetChefProducts", "Kitchen")',
+                    type: 'POST',
+                    data: { chefId: chefId, statuses: statuses, page: page },
+                    success: function (data) {
+
+                        $('#productCards').empty();
+                        $.each(data.products, function (index, product) {
+                            var statusBadge = '';
+                            if (product.ProductStatus === 'Pending') {
+                                statusBadge = `<span class="badge badge-primary badge-status"><span class="status-dot"></span> Pending</span>`;
+                            } else if (product.ProductStatus === 'Preparing') {
+                                statusBadge = `<span class="badge badge-warning badge-status"><span class="status-dot"></span> Preparing</span>`;
+                            } else if (product.ProductStatus === 'Ready') {
+                                statusBadge = `<span class="badge badge-success badge-status"><span class="status-dot"></span> Ready</span>`;
+                            } else if (product.ProductStatus === 'Cancelled') {
+                                statusBadge = `<span class="badge badge-danger badge-status"><span class="status-dot"></span> Cancelled</span>`;
+                            }
+
+                            var actionButton = '';
+                            if (product.ProductStatus === 'Pending') {
+                                actionButton = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Preparing')"><i class="fas fa-hourglass-start"></i> Prepare</button>`;
+                            } else if (product.ProductStatus === 'Preparing') {
+                                actionButton = `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Ready')"><i class="fas fa-check"></i> Ready</button>`;
+                            } else if (product.ProductStatus === 'Ready') {
+                                actionButton = `<span class="badge badge-success custom-badge"><i class="fas fa-check-circle"></i> Completed</span>`;
+                            } else if (product.ProductStatus === 'Cancelled') {
+                                actionButton = `<span class="badge badge-danger custom-badge"><i class="fas fa-times-circle"></i> Cancelled</span>`;
+                            }
+
+                            var card = `
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+                                    <div class="card mb-4 shadow" style="background-color: white; padding: 15px;">
+                                        <div class="row no-gutters">
+                                            <div class="col-12 text-center position-relative">
+                                                <img class="card-img" src="/Uploads/ProductImages/${product.ProductImage}" alt="${product.ProductName}" style="width: 100%; height: 100%; object-fit: contain;">
+                                                <div class="position-absolute top-0 start-0 m-2">
+                                                    ${statusBadge}
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="card-body text-center">
+                                                    <h5 class="card-title h3">${product.ProductName}</h5>
+                                                    <p class="card-text">Order No: ${product.OrderNo}</p>
+                                                    <p class="card-text">Quantity: ${product.ProductQuantity}</p>
+                                                    ${actionButton}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            $('#productCards').append(card);
+                        });
+
+                        // Update pagination
+                        updatePagination(data.totalProducts, page);
+                    }
+                });
+            }
+
+            $('#chefSelect, #statusSelect').change(function () {
+                currentPage = 1;
+                loadProducts(currentPage);
+            });
+
+            // Set default selected statuses and trigger change event to load products initially
+            $('#statusSelect').val(['Pending', 'Preparing']).trigger('change');
+
+        });
+
+        function updateOrderStatus(orderId, status) {
+            $.ajax({
+                url: '@Url.Action("UpdateOrderStatus", "Kitchen")',
+                type: 'POST',
+                data: { orderId: orderId, status: status },
+                success: function (response) {
+                    //alert(response.message);
+                    // Reload the products to reflect the updated status
+                    $('#chefSelect').change();
+                }
+            });
+        }
+
+        function updatePagination(totalProducts, currentPage) {
+            var pageSize = @ViewBag.PageSize;
+            var totalPages = Math.ceil(totalProducts / pageSize);
+            var paginationHtml = '';
+
+            // Add "Previous" button
+            if (currentPage > 1) {
+                paginationHtml += `<li class="page-item">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+                </li>`;
+            }
+
+            // Calculate the start and end page numbers
+            var startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            var endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            // Adjust startPage if endPage is at the end
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // Add page links
+            for (var i = startPage; i <= endPage; i++) {
+                paginationHtml += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <a class="page-link" href="#" data-page="${i}">${i}</a>
+                </li>`;
+            }
+
+            // Add "Next" button
+            if (currentPage < totalPages) {
+                paginationHtml += `<li class="page-item">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+                </li>`;
+            }
+
+            $('#pagination').html(paginationHtml);
+
+            // Attach click event to dynamically created pagination links
+            $('#pagination .page-link').off('click').on('click', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).attr('data-page'));
+                if (page !== currentPage) {
+                    loadProducts(page);
+                }
+            });
+        }
+
+        function loadProducts(page) {
+
+            currentPage = page;
+            var chefId = $('#chefSelect').val();
+            var statuses = $('#statusSelect').val();
+            $.ajax({
+                url: '@Url.Action("GetChefProducts", "Kitchen")',
+                type: 'POST',
+                data: { chefId: chefId, statuses: statuses, page: page },
+                success: function (data) {
+
+                    debugger;
+
+                    $('#productCards').empty();
+                    $.each(data.products, function (index, product) {
+                        var statusBadge = '';
+                        if (product.ProductStatus === 'Pending') {
+                            statusBadge = `<span class="badge badge-primary badge-status"><span class="status-dot"></span> Pending</span>`;
+                        } else if (product.ProductStatus === 'Preparing') {
+                            statusBadge = `<span class="badge badge-warning badge-status"><span class="status-dot"></span> Preparing</span>`;
+                        } else if (product.ProductStatus === 'Ready') {
+                            statusBadge = `<span class="badge badge-success badge-status"><span class="status-dot"></span> Ready</span>`;
+                        } else if (product.ProductStatus === 'Cancelled') {
+                            statusBadge = `<span class="badge badge-danger badge-status"><span class="status-dot"></span> Cancelled</span>`;
+                        }
+
+                        var actionButton = '';
+                        if (product.ProductStatus === 'Pending') {
+                            actionButton = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Preparing')"><i class="fas fa-hourglass-start"></i> Prepare</button>`;
+                        } else if (product.ProductStatus === 'Preparing') {
+                            actionButton = `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Ready')"><i class="fas fa-check"></i> Ready</button>`;
+                        } else if (product.ProductStatus === 'Ready') {
+                            actionButton = `<span class="badge badge-success custom-badge"><i class="fas fa-check-circle"></i> Completed</span>`;
+                        } else if (product.ProductStatus === 'Cancelled') {
+                            actionButton = `<span class="badge badge-danger custom-badge"><i class="fas fa-times-circle"></i> Cancelled</span>`;
+                        }
+
+                        var card = `
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+                                <div class="card mb-4 shadow" style="background-color: white; padding: 15px;">
+                                    <div class="row no-gutters">
+                                        <div class="col-12 text-center position-relative">
+                                            <img class="card-img" src="/Uploads/ProductImages/${product.ProductImage}" alt="${product.ProductName}" style="width: 100%; height: 100%; object-fit: contain;">
+                                            <div class="position-absolute top-0 start-0 m-2">
+                                                ${statusBadge}
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title h3">${product.ProductName}</h5>
+                                                <p class="card-text">Order No: ${product.OrderNo}</p>
+                                                <p class="card-text">Quantity: ${product.ProductQuantity}</p>
+                                                ${actionButton}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $('#productCards').append(card);
+                    });
+
+                    // Update pagination
+                    updatePagination(data.totalProducts, page);
+                }
+            });
+        }
+    </script>
+    <style>
+        .custom-badge {
+            font-size: 14px;
+            padding: 0.5em 1em;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .badge-status {
+            font-size: 12px;
+            padding: 0.25em 0.5em;
+            position: relative;
+        }
+
+        .badge-primary {
+            background-color: #007bff;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .select2-selection__rendered {
+            padding: 3px 3px 3px 5px !important;
+        }
+    </style>
+}

@@ -175,6 +175,9 @@
     <Property Name="ProductQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="ProductCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="ProductStatus" Type="nvarchar" MaxLength="20" Nullable="false" />
+    <Property Name="StartTime" Type="datetime2" Precision="7" />
+    <Property Name="EndTime" Type="datetime2" Precision="7" />
   </EntityType>
   <EntityType Name="OrderReturnDetails">
     <Key>
@@ -298,7 +301,7 @@
     <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="255" />
     <Property Name="ProductCategoryId" Type="int" Nullable="false" />
-    <Property Name="ChefID" Type="int" />
+    <Property Name="ChefID" Type="int" Nullable="false" />
     <Property Name="IsActive" Type="bit" Nullable="false" />
     <Property Name="CreatedBy" Type="int" Nullable="false" />
     <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -499,6 +502,8 @@
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
     <Property Name="HasWarehousePermission" Type="bit" Nullable="false" />
+    <Property Name="IsChef" Type="bit" Nullable="false" />
+    <Property Name="ConnectionId" Type="varchar(max)" />
   </EntityType>
   <EntityType Name="Vendors">
     <Key>
@@ -1781,6 +1786,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Products_Chef">
+    <End Role="Users" Type="Self.Users" Multiplicity="1" />
+    <End Role="Products" Type="Self.Products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Products">
+        <PropertyRef Name="ChefID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Users_Role">
     <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
     <End Role="Users" Type="Self.Users" Multiplicity="*" />
@@ -2228,6 +2245,10 @@
     <AssociationSet Name="FK__WastageIt__Wasta__2CF2ADDF" Association="Self.FK__WastageIt__Wasta__2CF2ADDF">
       <End Role="WastageItems" EntitySet="WastageItems" />
       <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Products_Chef" Association="Self.FK_Products_Chef">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Products" EntitySet="Products" />
     </AssociationSet>
     <AssociationSet Name="FK_Users_Role" Association="Self.FK_Users_Role">
       <End Role="Roles" EntitySet="Roles" />

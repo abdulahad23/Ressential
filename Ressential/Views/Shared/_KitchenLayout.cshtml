@@ -568,13 +568,107 @@
 
 
     <script>preset_change("preset-5");</script>
-
+    @RenderSection("scripts", required: false)
 
     <!-- [Page Specific JS] start -->
     <!-- Apex Chart -->
     <script src="~/Content/assets/js/plugins/apexcharts.min.js"></script>
     <script src="~/Content/assets/js/pages/dashboard-default.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.3.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script type="text/javascript">
+$(function () {
+            // Create the SignalR proxy to the NotificationHub
+    var proxy = $.connection.productHub;
+    var reconnectInterval = 5000; // Start with 5 seconds
+    var maxReconnectInterval = 30000; // Max retry interval of 30 seconds
+
+            // Add client-side methods here (if any) that will be triggered by the server
+            proxy.client.OnConnected = function () {
+                console.log("Connected to the SignalR hub!");
+            };
+
+            // Function to handle the reconnection logic
+            function startSignalRConnection() {
+                $.connection.hub.start().done(function () {
+                    console.log("SignalR connection established!");
+                    reconnectInterval = 5000;
+
+                    // Call server-side methods like SaveUserConnection
+                    
+                    proxy.server.saveUserConnection()
+                        .done(function () {
+                            console.log("User connection saved.");
+                        })
+                        .fail(function (error) {
+                            console.error("Error saving user connection: " + error);
+                        });
+                }).fail(function (error) {
+                    console.error("Error establishing SignalR connection: " + error);
+                    // Retry after some time (e.g., 5 seconds)
+                    setTimeout(startSignalRConnection, reconnectInterval);
+                    reconnectInterval = Math.min(reconnectInterval * 2, maxReconnectInterval); // Exponential backoff
+                });
+            }
+
+
+            // Start the connection for the first time
+            startSignalRConnection();
+
+            // Connection lifecycle events
+            $.connection.hub.reconnecting(function () {
+                console.warn("SignalR is attempting to reconnect...");
+            });
+
+            // Detect when the connection is lost and attempt to reconnect
+            $.connection.hub.stateChanged(function (state) {
+                if (state.newState === $.signalR.connectionState.disconnected) {
+                    console.log("Connection lost. Attempting to reconnect...");
+                    startSignalRConnection(); // Attempt to reconnect
+                }
+            });
+
+            $.connection.hub.reconnected(function () {
+                console.log("SignalR reconnected successfully!");
+                reconnectInterval = 5000; // Reset retry interval
+            });
+
+            $.connection.hub.disconnected(function () {
+                console.warn("SignalR disconnected. Attempting to reconnect...");
+                setTimeout(startSignalRConnection, reconnectInterval);
+            });
+
+            $.connection.hub.error(function (error) {
+                console.error("SignalR error occurred: " + error);
+            });
+
+
+            proxy.client.Notify = function (message) {
+                debugger;
+                alert(message);
+            };
+
+            proxy.client.receiveProductUpdate = function (message) {
+                loadProducts(1);
+            };
+
+
+
+
+            $("#btnSignalR").click(function () {
+                
+                proxy.server.sendProductUpdate();
+
+            })
+
+        });
+    </script>
+
+
     <!-- [Page Specific JS] end -->
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")*@
+
 </body>
 <!-- [Body] end -->
 </html>

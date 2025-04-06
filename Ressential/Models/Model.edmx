@@ -180,6 +180,9 @@
           <Property Name="ProductQuantity" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="ProductCost" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="ProductStatus" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="StartTime" Type="datetime2" Precision="7" />
+          <Property Name="EndTime" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="OrderReturnDetails">
           <Key>
@@ -303,7 +306,7 @@
           <Property Name="ProductPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ProductCategoryId" Type="int" Nullable="false" />
-          <Property Name="ChefID" Type="int" />
+          <Property Name="ChefID" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
@@ -504,6 +507,8 @@
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
           <Property Name="HasWarehousePermission" Type="bit" Nullable="false" />
+          <Property Name="IsChef" Type="bit" Nullable="false" />
+          <Property Name="ConnectionId" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Vendors">
           <Key>
@@ -1786,6 +1791,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Products_Chef">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Products" Type="Self.Products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Products">
+              <PropertyRef Name="ChefID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Users_Role">
           <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
           <End Role="Users" Type="Self.Users" Multiplicity="*" />
@@ -2234,6 +2251,10 @@
             <End Role="WastageItems" EntitySet="WastageItems" />
             <End Role="WastageItemDetails" EntitySet="WastageItemDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_Products_Chef" Association="Self.FK_Products_Chef">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
           <AssociationSet Name="FK_Users_Role" Association="Self.FK_Users_Role">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
@@ -2472,6 +2493,9 @@
           <Property Name="ProductCost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__4E53A1AA" FromRole="OrderDetails" ToRole="Orders" />
           <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__4F47C5E3" FromRole="OrderDetails" ToRole="Products" />
+          <Property Name="ProductStatus" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StartTime" Type="DateTime" Precision="7" />
+          <Property Name="EndTime" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="OrderReturnDetail">
           <Key>
@@ -2623,7 +2647,7 @@
           <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ProductCategoryId" Type="Int32" Nullable="false" />
-          <Property Name="ChefID" Type="Int32" />
+          <Property Name="ChefID" Type="Int32" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
           <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
@@ -2636,6 +2660,7 @@
           <NavigationProperty Name="ProductItemDetails" Relationship="Self.FK__ProductIt__Produ__3E1D39E1" FromRole="Products" ToRole="ProductItemDetails" />
           <NavigationProperty Name="User" Relationship="Self.FK__Products__Create__3A4CA8FD" FromRole="Products" ToRole="Users" />
           <NavigationProperty Name="User1" Relationship="Self.FK__Products__Modifi__3B40CD36" FromRole="Products" ToRole="Users" />
+          <NavigationProperty Name="User2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="Product" ToRole="User" />
         </EntityType>
         <EntityType Name="PurchaseDetail">
           <Key>
@@ -2909,6 +2934,9 @@
           <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Creat__29221CFB" FromRole="Users" ToRole="WastageItems" />
           <NavigationProperty Name="WastageItems1" Relationship="Self.FK__WastageIt__Modif__2A164134" FromRole="Users" ToRole="WastageItems" />
           <Property Name="HasWarehousePermission" Type="Boolean" Nullable="false" />
+          <Property Name="IsChef" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Products2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="User" ToRole="Product" />
+          <Property Name="ConnectionId" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -4637,6 +4665,10 @@
             <End Role="Branch" EntitySet="Branches" />
             <End Role="UserBranchPermission" EntitySet="UserBranchPermissions" />
           </AssociationSet>
+          <AssociationSet Name="FK_Products_Chef" Association="DB_RessentialModel.FK_Products_Chef">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK__Roles__BranchId__11158940">
           <End Type="DB_RessentialModel.Branch" Role="Branch" Multiplicity="0..1" />
@@ -4670,6 +4702,18 @@
             </Principal>
             <Dependent Role="UserBranchPermission">
               <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Products_Chef">
+          <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1" />
+          <End Type="DB_RessentialModel.Product" Role="Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="ChefID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4860,6 +4904,9 @@
           <EntitySetMapping Name="OrderDetails">
             <EntityTypeMapping TypeName="DB_RessentialModel.OrderDetail">
               <MappingFragment StoreEntitySet="OrderDetails">
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="ProductStatus" ColumnName="ProductStatus" />
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -5196,6 +5243,8 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DB_RessentialModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ConnectionId" ColumnName="ConnectionId" />
+                <ScalarProperty Name="IsChef" ColumnName="IsChef" />
                 <ScalarProperty Name="HasWarehousePermission" ColumnName="HasWarehousePermission" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />

@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "OrderView";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
 }
@@ -7,10 +6,211 @@
 <div class="row">
     <div class="col-12 grid-margin">
         <div class="card">
-            <div class="card-body d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
                 <h2 class="text-center text-5xl text-secondary">Orders View</h2>
+                <div id="orderCards" class="row border-2" style="background-color: #e0e0e0; padding: 20px;">
+                    <!-- Order cards will be appended here -->
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            loadOrders();
+
+
+
+        });
+        function loadOrders() {
+            $.ajax({
+                url: '@Url.Action("GetOrders", "Kitchen")',
+                type: 'GET',
+                success: function (data) {
+                    $('#orderCards').empty();
+                    $.each(data.orders, function (index, order) {
+                        var orderStatusBadge = '';
+                        if (order.Status === 'Pending') {
+                            orderStatusBadge = `<span class="badge badge-primary badge-status">Pending</span>`;
+                        } else if (order.Status === 'Preparing') {
+                            orderStatusBadge = `<span class="badge badge-warning badge-status">Preparing</span>`;
+                        } else if (order.Status === 'Ready') {
+                            orderStatusBadge = `<span class="badge badge-success badge-status">Ready</span>`;
+                        } else if (order.Status === 'Cancelled') {
+                            orderStatusBadge = `<span class="badge badge-danger badge-status">Cancelled</span>`;
+                        } else if (order.Status === 'Returned') {
+                            orderStatusBadge = `<span class="badge badge-danger badge-status">Returned</span>`;
+                        } else if (order.Status === 'Completed') {
+                            orderStatusBadge = `<span class="badge badge-info badge-status">Completed</span>`;
+                        } else if (order.Status === 'Out for Delivery') {
+                            orderStatusBadge = `<span class="badge badge-info badge-status">Out for Delivery</span>`;
+                        }
+
+                        var productsList = '';
+                        $.each(order.OrderDetails, function (index, product) {
+                            var productStatusBadge = '';
+                            if (product.ProductStatus === 'Pending') {
+                                productStatusBadge = `<span class="badge badge-primary badge-status">Pending</span>`;
+                            } else if (product.ProductStatus === 'Preparing') {
+                                productStatusBadge = `<span class="badge badge-warning badge-status">Preparing</span>`;
+                            } else if (product.ProductStatus === 'Ready') {
+                                productStatusBadge = `<span class="badge badge-success badge-status">Ready</span>`;
+                            } else if (product.ProductStatus === 'Cancelled') {
+                                productStatusBadge = `<span class="badge badge-danger badge-status">Cancelled</span>`;
+                            }
+
+                            productsList += `
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-column flex-md-row">
+                                    <span class="product-name">${product.ProductName}</span>
+                                    <span class="product-qty-status">
+                                        <span class="product-qty">Qty: ${product.ProductQuantity}</span>
+                                        ${productStatusBadge}
+                                    </span>
+                                </li>`;
+                        });
+
+                        var actionButtons = '';
+                        if (order.Status === 'Pending' || order.Status === 'Preparing' || order.Status === 'Ready' || order.Status === 'Out for Delivery') {
+                            actionButtons = `
+                                <button class="btn btn-danger btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Cancelled')"><i class="fas fa-times-circle"></i> Cancel</button>
+                                <button class="btn btn-success btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Completed')"><i class="fas fa-check-circle"></i> Completed</button>`;
+                        }
+                        if (order.OrderType === 'Online' && order.Status === 'Pending') {
+                            actionButtons = `
+                                <button class="btn btn-danger btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Cancelled')"><i class="fas fa-times-circle"></i> Cancel</button>
+                                <button class="btn btn-primary btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Confirm')"><i class="fas fa-check-circle"></i> Confirm</button>`;
+                        }
+                        if (order.OrderType === 'Online' && (order.Status === 'Preparing' || order.Status === 'Ready')) {
+                            actionButtons = `
+                                <button class="btn btn-danger btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Cancelled')"><i class="fas fa-times-circle"></i> Cancel</button>
+                                <button class="btn btn-info btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Out for Delivery')"><i class="fas fa-truck"></i> Out for Delivery</button>`;
+                        }
+                        if (order.OrderType === 'Online' && order.Status === 'Out for Delivery') {
+                            actionButtons = `
+                                <button class="btn btn-danger btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Cancelled')"><i class="fas fa-times-circle"></i> Cancel</button>
+                                <button class="btn btn-success btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Completed')"><i class="fas fa-check-circle"></i> Completed</button>`;
+                        }
+
+                        var card = `
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
+                                <div class="card mb-4 shadow fixed-width-card" style="background-color: white; padding: 15px;">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title">Order No: ${order.OrderNo}</h5>
+                                            ${orderStatusBadge}
+                                        </div>
+                                        <p class="card-text">Order Type: ${order.OrderType}</p>
+                                        <p class="card-text">Table No: ${order.TableNo}</p>
+                                        <ul class="list-group mt-3">
+                                            ${productsList}
+                                        </ul>
+                                        <div class="mt-3 d-flex justify-content-center">
+                                            ${actionButtons}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $('#orderCards').append(card);
+                    });
+                }
+            });
+        }
+
+        function updateOrderStatus(orderId, status) {
+            $.ajax({
+                url: '@Url.Action("UpdateOrderStatus", "Kitchen")',
+                type: 'POST',
+                data: { orderId: orderId, status: status },
+                success: function (response) {
+                    loadOrders();
+                }
+            });
+        }
+        function ConfirmOrder(orderId) {
+            $.ajax({
+                url: '@Url.Action("ConfirmOrder", "Kitchen")',
+                type: 'POST',
+                data: { orderId: orderId},
+                success: function (response) {
+                    debugger
+                    loadOrders();
+                }
+            });
+        }
+    </script>
+    <style>
+        .badge-status {
+            font-size: 12px;
+            padding: 0.25em 0.5em;
+            position: relative;
+        }
+
+        .badge-primary {
+            background-color: #007bff;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+        }
+
+        .badge-danger {
+            background-color: #dc3545;
+        }
+
+        .badge-info {
+            background-color: #17a2b8;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .fixed-width-card {
+            width: 350px; /* Set a fixed width for the cards */
+        }
+
+        .product-name {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-qty-status {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .product-qty {
+            margin-right: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+    </style>
+}

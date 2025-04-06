@@ -20,6 +20,9 @@ namespace Ressential.Models
         public decimal ProductQuantity { get; set; }
         public decimal ProductPrice { get; set; }
         public decimal ProductCost { get; set; }
+        public string ProductStatus { get; set; }
+        public Nullable<System.DateTime> StartTime { get; set; }
+        public Nullable<System.DateTime> EndTime { get; set; }
     
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }

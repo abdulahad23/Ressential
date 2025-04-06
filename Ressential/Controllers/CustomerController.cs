@@ -289,7 +289,7 @@ namespace Ressential.Controllers
                 var orderItem = new Order
                 {
                     OrderNo = newOrderNo,
-                    PaymentMethod = paymentMethod,
+                    PaymentMethod = "CashOnDelivery",
                     OrderDate = DateTime.Now,
                     OrderType = "Online",
                     BranchId = branchId,
@@ -310,6 +310,7 @@ namespace Ressential.Controllers
                             ProductId = cartItem.ProductID,
                             ProductPrice = (decimal)cartItem.Price,
                             ProductQuantity = cartItem.Quantity,
+                            ProductStatus = "Pending",
                         }
                     );
                 }
@@ -345,7 +346,7 @@ namespace Ressential.Controllers
                         Console.WriteLine($"- Property: {error.PropertyName}, Error: {error.ErrorMessage}");
                     }
                 }
-                throw; // Re-throw to preserve the original stack trace
+                //throw; // Re-throw to preserve the original stack trace
                 return Json(new { success = false, message = "An error occurred while placing the order." });
             }
         }

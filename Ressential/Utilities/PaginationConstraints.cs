@@ -8,5 +8,7 @@ namespace Ressential.Models
     public static class PaginationConstraints
     {
         public static int CustomerShopPageSize { get; set; } = 8;
+        public static int ChefViewPageSize { get; set; } = 30;
+        public static int ChefViewMaxPage { get; set; } = 10;
     }
 }

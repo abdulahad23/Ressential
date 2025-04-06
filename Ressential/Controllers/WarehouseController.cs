@@ -28,6 +28,9 @@ namespace Ressential.Controllers
         {
             return View();
         }
+
+        #region ItemCategory
+
         [HasPermission("Item Category Create")]
         public ActionResult CreateItemCategory()
         {
@@ -85,7 +88,7 @@ namespace Ressential.Controllers
             {
                 TempData["ErrorMessage"] = "An error occurred while updating the Item Category.";
             }
-            
+
             return RedirectToAction("ItemCategoryList");
         }
         [HttpPost]
@@ -144,6 +147,10 @@ namespace Ressential.Controllers
             }
             return RedirectToAction("ItemCategoryList");
         }
+
+        #endregion
+
+
         [HasPermission("Item Create")]
         public ActionResult CreateItem()
         {

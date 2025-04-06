@@ -79,6 +79,13 @@
                             </div>
                         </div>
 
+                        <div class="col-md-6">
+                            <div class="form-check form-switch mb-3 mt-3">
+                                @Html.CheckBoxFor(m => m.IsChef, new { @class = "form-check-input", role = "switch", id = "IsChef" })
+                                <label class="form-check-label" for="IsChef">Is Chef</label>
+                            </div>
+                        </div>
+
                         <h2 class="text-secondary mt-3"><b>Profile Image</b></h2>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">

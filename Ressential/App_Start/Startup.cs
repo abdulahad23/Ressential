@@ -19,6 +19,7 @@ namespace Ressential.App_Start
                 LoginPath = new PathString("/Account/Login"),
                 // Additional options can be set here, e.g., ExpireTimeSpan, SlidingExpiration, etc.
             });
+            app.MapSignalR();
 
         }
     }

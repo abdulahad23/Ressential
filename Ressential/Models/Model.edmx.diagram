@@ -150,6 +150,7 @@
         <AssociationConnector Association="DB_RessentialModel.FK__Roles__BranchId__11158940" />
         <EntityTypeShape EntityType="DB_RessentialModel.UserBranchPermission" Width="1.5" PointX="0.75" PointY="0.75" />
         <AssociationConnector Association="DB_RessentialModel.FK__UserBranc__Branc__13F1F5EB" />
+        <AssociationConnector Association="DB_RessentialModel.FK_Products_Chef" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

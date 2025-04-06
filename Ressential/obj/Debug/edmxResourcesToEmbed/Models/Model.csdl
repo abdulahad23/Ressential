@@ -229,6 +229,9 @@
     <Property Name="ProductCost" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <NavigationProperty Name="Order" Relationship="Self.FK__OrderDeta__Order__4E53A1AA" FromRole="OrderDetails" ToRole="Orders" />
     <NavigationProperty Name="Product" Relationship="Self.FK__OrderDeta__Produ__4F47C5E3" FromRole="OrderDetails" ToRole="Products" />
+    <Property Name="ProductStatus" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="StartTime" Type="DateTime" Precision="7" />
+    <Property Name="EndTime" Type="DateTime" Precision="7" />
   </EntityType>
   <EntityType Name="OrderReturnDetail">
     <Key>
@@ -380,7 +383,7 @@
     <Property Name="ProductPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
     <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="ProductCategoryId" Type="Int32" Nullable="false" />
-    <Property Name="ChefID" Type="Int32" />
+    <Property Name="ChefID" Type="Int32" Nullable="false" />
     <Property Name="IsActive" Type="Boolean" Nullable="false" />
     <Property Name="CreatedBy" Type="Int32" Nullable="false" />
     <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
@@ -393,6 +396,7 @@
     <NavigationProperty Name="ProductItemDetails" Relationship="Self.FK__ProductIt__Produ__3E1D39E1" FromRole="Products" ToRole="ProductItemDetails" />
     <NavigationProperty Name="User" Relationship="Self.FK__Products__Create__3A4CA8FD" FromRole="Products" ToRole="Users" />
     <NavigationProperty Name="User1" Relationship="Self.FK__Products__Modifi__3B40CD36" FromRole="Products" ToRole="Users" />
+    <NavigationProperty Name="User2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="Product" ToRole="User" />
   </EntityType>
   <EntityType Name="PurchaseDetail">
     <Key>
@@ -666,6 +670,9 @@
     <NavigationProperty Name="WastageItems" Relationship="Self.FK__WastageIt__Creat__29221CFB" FromRole="Users" ToRole="WastageItems" />
     <NavigationProperty Name="WastageItems1" Relationship="Self.FK__WastageIt__Modif__2A164134" FromRole="Users" ToRole="WastageItems" />
     <Property Name="HasWarehousePermission" Type="Boolean" Nullable="false" />
+    <Property Name="IsChef" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Products2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="User" ToRole="Product" />
+    <Property Name="ConnectionId" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Vendor">
     <Key>
@@ -2394,6 +2401,10 @@
       <End Role="Branch" EntitySet="Branches" />
       <End Role="UserBranchPermission" EntitySet="UserBranchPermissions" />
     </AssociationSet>
+    <AssociationSet Name="FK_Products_Chef" Association="DB_RessentialModel.FK_Products_Chef">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
   </EntityContainer>
   <Association Name="FK__Roles__BranchId__11158940">
     <End Type="DB_RessentialModel.Branch" Role="Branch" Multiplicity="0..1" />
@@ -2427,6 +2438,18 @@
       </Principal>
       <Dependent Role="UserBranchPermission">
         <PropertyRef Name="BranchId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Products_Chef">
+    <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1" />
+    <End Type="DB_RessentialModel.Product" Role="Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="ChefID" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

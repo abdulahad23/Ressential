@@ -63,3 +63,16 @@
     box-shadow: 0 0 0 0.18rem rgba(220, 53, 69, 0.25); /* Red shadow */
     outline: none; /* Remove default outline */
 }
+
+@media (max-width: 576px) {
+    .product-qty-status {
+        display: block;
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .action-btn {
+        flex: 1 1 100%;
+        margin: 5px 0;
+    }
+}

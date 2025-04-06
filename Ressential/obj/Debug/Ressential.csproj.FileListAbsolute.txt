@@ -428,3 +428,12 @@ C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\Ressential.dll
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Debug\Ressential.pdb
 C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Rotativa.dll
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.Core.dll
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.SystemWeb.dll
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Cors.dll
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\System.Web.Cors.dll
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.Core.pdb
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.Core.xml
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.SystemWeb.pdb
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.AspNet.SignalR.SystemWeb.xml
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\bin\Microsoft.Owin.Cors.xml

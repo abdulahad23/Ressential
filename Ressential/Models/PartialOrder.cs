@@ -26,7 +26,7 @@ namespace Ressential.Models
 
         [Required]
         [StringLength(20)]
-        [RegularExpression(@"Cash|Card|CashOnDelivery", ErrorMessage = "Invalid Payment Method.")]
+        [RegularExpression(@"CashOnDelivery|Cash|Card", ErrorMessage = "Invalid Payment Method.")]
         public string PaymentMethod { get; set; }
 
         [Required(ErrorMessage = "Order Total is required")]

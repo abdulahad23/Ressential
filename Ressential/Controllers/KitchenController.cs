@@ -15,10 +15,12 @@ using System.Data.Entity.Validation;
 using System.IO;
 using Microsoft.AspNet.Identity;
 using System.Net.Security;
+using Ressential.Hub;
+using Microsoft.AspNet.SignalR;
 
 namespace Ressential.Controllers
 {
-    [Authorize]
+    [System.Web.Mvc.Authorize]
     [HasBranchAccess]
     public class KitchenController : PermissionsController
     {
@@ -1857,7 +1859,7 @@ namespace Ressential.Controllers
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
             ViewBag.ProductCategories = _db.ProductCategories.ToList();
-
+            ViewBag.Chefs = _db.Users.Where(u => u.IsChef).ToList();
 
             return View(product);
         }
@@ -1910,6 +1912,7 @@ namespace Ressential.Controllers
 
                 ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
                 ViewBag.ProductCategories = _db.ProductCategories.ToList();
+                ViewBag.Chefs = _db.Users.Where(u => u.IsChef).ToList();
 
                 return View(product);
             }
@@ -2002,6 +2005,7 @@ namespace Ressential.Controllers
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
             ViewBag.ProductCategories = _db.ProductCategories.ToList();
+            ViewBag.Chefs = _db.Users.Where(u => u.IsChef).ToList();
 
             return View(product);
         }
@@ -2146,7 +2150,7 @@ namespace Ressential.Controllers
         [HasPermission("Order Create")]
         public ActionResult CreateOrder()
         {
-            var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            //var branchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             var order = new Order
             {
                 OrderDetails = new List<OrderDetail>
@@ -2155,7 +2159,8 @@ namespace Ressential.Controllers
                 }
 
             };
-            ViewBag.Products = _db.Products.Where(i => i.IsActive == true && i.BranchId == branchId).ToList();
+            //ViewBag.Products = _db.Products.Where(i => i.IsActive == true && i.BranchId == branchId).ToList();
+            ViewBag.Products = _db.Products.Where(i => i.IsActive == true).ToList();
 
             return View(order);
         }
@@ -2171,6 +2176,7 @@ namespace Ressential.Controllers
                     order.OrderTotalCost = 0;
                     foreach (var orderDetail in order.OrderDetails)
                     {
+                        orderDetail.ProductStatus = "Pending";
                         orderDetail.ProductCost = 0;
                         var orderDetailProduct = _db.Products.Find(orderDetail.ProductId);
                         foreach (var item in orderDetailProduct.ProductItemDetails)
@@ -2219,10 +2225,19 @@ namespace Ressential.Controllers
                     order.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     order.OrderDate = DateTime.Now;
                     order.CreatedAt = DateTime.Now;
-                    order.Status = "Preparing";
+                    order.Status = "Pending";
 
                     _db.Orders.Add(order);
                     _db.SaveChanges();
+
+                    //var context = GlobalHost.ConnectionManager.GetHubContext<ProductHub>();
+                    //context.Clients.All.ReceiveProductUpdate();
+
+
+                    string Connection = _db.Users.Where(u => u.UserId == 1).FirstOrDefault().ConnectionId;
+                    var context = GlobalHost.ConnectionManager.GetHubContext<ProductHub>();
+                    context.Clients.Client(Connection).Notify("Hi");
+
 
                     TempData["SuccessMessage"] = "Order placed successfully.";
                     return RedirectToAction("CreateOrder", "Kitchen");
@@ -2263,12 +2278,17 @@ namespace Ressential.Controllers
                 if (order == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new {success = false});
                 }
 
                 if (order.Status == "Cancelled")
                 {
                     TempData["ErrorMessage"] = "Order is already cancelled.";
+                }
+                else if (order.Status == "Returned")
+                {
+                    TempData["ErrorMessage"] = "Returned Order cannot be cancelled.";
                 }
                 else if (order.Status == "Pending")
                 {
@@ -2281,6 +2301,7 @@ namespace Ressential.Controllers
 
                     foreach (var orderDetail in order.OrderDetails)
                     {
+                        orderDetail.ProductStatus = "Cancelled";
                         foreach (var item in orderDetail.Product.ProductItemDetails)
                         {
                             var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
@@ -2312,7 +2333,8 @@ namespace Ressential.Controllers
                 Console.WriteLine($"Error cancelling order: {ex.Message}");
             }
 
-            return RedirectToAction("OrderList");
+            //return RedirectToAction("OrderList");
+            return Json(new { success = true });
         }
 
         [HttpPost]
@@ -2325,7 +2347,8 @@ namespace Ressential.Controllers
                 if (order == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new { success = false });
                 }
 
                 if (order.Status == "Preparing" || order.Status == "Cancelled" || order.Status == "Pending" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
@@ -2342,6 +2365,7 @@ namespace Ressential.Controllers
 
                     foreach (var orderDetail in order.OrderDetails)
                     {
+                        orderDetail.ProductStatus = "Cancelled";
                         foreach (var item in orderDetail.Product.ProductItemDetails)
                         {
                             var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
@@ -2369,7 +2393,8 @@ namespace Ressential.Controllers
                 Console.WriteLine($"Error cancelling order: {ex.Message}");
             }
 
-            return RedirectToAction("OrderList");
+            //return RedirectToAction("OrderList");
+            return Json(new { success = true });
         }
 
 
@@ -2383,13 +2408,19 @@ namespace Ressential.Controllers
                 if (order == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new { success = false });
                 }
                 order.OrderTotalCost = 0;
                 if (order.Status == "Cancelled")
                 {
                     TempData["ErrorMessage"] = "Can not confirm the cancelled order.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new { success = false });
+                }
+                else if (order.Status == "Returned")
+                {
+                    TempData["ErrorMessage"] = "Can not confirm the returned order.";
                 }
                 foreach (var orderDetail in order.OrderDetails)
                 {
@@ -2410,7 +2441,8 @@ namespace Ressential.Controllers
                             else
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetail.Product.ProductName;
-                                return RedirectToAction("OrderList");
+                                //return RedirectToAction("OrderList");
+                                return Json(new { success = false });
                             }
                         }
                     }
@@ -2426,7 +2458,8 @@ namespace Ressential.Controllers
                 Console.WriteLine($"Error confirming order: {ex.Message}");
             }
 
-            return RedirectToAction("OrderList");
+            //return RedirectToAction("OrderList");
+            return Json(new { success = true });
         }
 
         [HttpPost]
@@ -2439,12 +2472,17 @@ namespace Ressential.Controllers
                 if (order == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new { success = false });
                 }
 
                 if (order.Status == "Cancelled")
                 {
                     TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                }
+                else if (order.Status == "Returned")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for returned order.";
                 }
                 else if (order.Status == "Pending")
                 {
@@ -2469,7 +2507,8 @@ namespace Ressential.Controllers
                 Console.WriteLine($"Error updating order status: {ex.Message}");
             }
 
-            return RedirectToAction("OrderList");
+            //return RedirectToAction("OrderList");
+            return Json(new { success = true });
         }
 
         [HttpPost]
@@ -2482,12 +2521,17 @@ namespace Ressential.Controllers
                 if (order == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
-                    return RedirectToAction("OrderList");
+                    //return RedirectToAction("OrderList");
+                    return Json(new { success = false });
                 }
 
                 if (order.Status == "Cancelled")
                 {
                     TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                }
+                else if (order.Status == "Returned")
+                {
+                    TempData["ErrorMessage"] = "Unable to update the status for returned order.";
                 }
                 else if (order.Status == "Pending")
                 {
@@ -2512,7 +2556,8 @@ namespace Ressential.Controllers
                 Console.WriteLine($"Error updating order status: {ex.Message}");
             }
 
-            return RedirectToAction("OrderList");
+            //return RedirectToAction("OrderList");
+            return Json(new { success = true });
         }
 
         [HttpPost]
@@ -2543,6 +2588,7 @@ namespace Ressential.Controllers
 
                             foreach (var orderDetail in order.OrderDetails)
                             {
+                                orderDetail.ProductStatus = "Cancelled";
                                 foreach (var item in orderDetail.Product.ProductItemDetails)
                                 {
                                     var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
@@ -2671,10 +2717,115 @@ namespace Ressential.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+        public ActionResult GetOrders()
+        {
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var orders = _db.Orders
+                            .Where(o => o.BranchId == selectedBranchId)
+                            .Select(o => new
+                            {
+                                o.OrderId,
+                                o.OrderNo,
+                                o.OrderType,
+                                o.TableNo,
+                                o.Status,
+                                OrderDetails = o.OrderDetails.Select(od => new
+                                {
+                                    od.Product.ProductName,
+                                    od.ProductQuantity,
+                                    od.ProductStatus
+                                }).ToList()
+                            }).ToList();
+
+            return Json(new { orders }, JsonRequestBehavior.AllowGet);
+        }
+
         [HasPermission("Chef View View")]
         public ActionResult ChefView()
         {
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var branchChefs = _db.UserBranchPermissions
+                     .Where(ubp => ubp.BranchId == selectedBranchId)
+                     .Select(ubp => ubp.UserId)
+                     .ToList();
+
+            var chefs = _db.Users
+                           .Where(u => branchChefs.Contains(u.UserId) && u.IsChef)
+                           .ToList();
+
+            ViewBag.Chefs = new SelectList(chefs, "UserId", "UserName");
+            ViewBag.PageSize = PaginationConstraints.ChefViewPageSize;
+            ViewBag.MaxPage = PaginationConstraints.ChefViewMaxPage;
             return View();
+        }
+
+
+        [HttpPost]
+        [HasPermission("Chef View View")]
+        public ActionResult GetChefProducts(int? chefId, List<string> statuses, int page = 1)
+        {
+            int pageSize = PaginationConstraints.ChefViewPageSize;
+            var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+
+            var productsQuery = _db.OrderDetails.Include(od => od.Product)
+                                                .Include(od => od.Order)
+                                                .Where(od => od.Order.BranchId == selectedBranchId)
+                                                .AsQueryable();
+
+            if (chefId.HasValue)
+            {
+                productsQuery = productsQuery.Where(od => od.Product.ChefID == chefId);
+            }
+
+            if (statuses != null && statuses.Count > 0)
+            {
+                productsQuery = productsQuery.Where(od => statuses.Contains(od.ProductStatus));
+            }
+
+            var totalProducts = productsQuery.Count();
+            var products = productsQuery.OrderBy(od => od.OrderDetailId)
+                                        .Skip((page - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .Select(od => new
+                                        {
+                                            od.Order.OrderNo,
+                                            od.Product.ProductImage,
+                                            od.Product.ProductName,
+                                            od.ProductQuantity,
+                                            od.OrderId,
+                                            od.OrderDetailId,
+                                            od.ProductStatus
+                                        }).ToList();
+
+            return Json(new { totalProducts, products }, JsonRequestBehavior.AllowGet);
+        }
+
+        
+        [HttpPost]
+        [HasPermission("Order Status Update")]
+        public ActionResult UpdateOrderStatus(int orderId, string status)
+        {
+            if (status == "Confirm")
+            {
+                ConfirmOrder(orderId);
+            }
+
+            var orderDetail = _db.OrderDetails.Find(orderId);
+            if (orderDetail == null)
+            {
+                return Json(new { success = false, message = "Order not found" });
+            }
+            if (status == "Preparing")
+            {
+                orderDetail.Order.Status = "Preparing";
+
+            }
+            orderDetail.ProductStatus = status;
+            _db.SaveChanges();
+
+            return Json(new { success = true, message = "Order status updated successfully" });
         }
 
         [HasPermission("Kitchen User List")]
@@ -2683,7 +2834,7 @@ namespace Ressential.Controllers
             var selectedBranch = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             var users = _db.Users
             .Where(u => _db.UserBranchPermissions
-                .Any(ubp => ubp.UserId == u.UserId && ubp.BranchId == selectedBranch))
+                .Any(ubp => ubp.UserId == u.UserId && ubp.BranchId == selectedBranch) && !u.HasWarehousePermission)
             .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))

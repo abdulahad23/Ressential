@@ -182,6 +182,9 @@
     <EntitySetMapping Name="OrderDetails">
       <EntityTypeMapping TypeName="DB_RessentialModel.OrderDetail">
         <MappingFragment StoreEntitySet="OrderDetails">
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+          <ScalarProperty Name="ProductStatus" ColumnName="ProductStatus" />
           <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
           <ScalarProperty Name="OrderId" ColumnName="OrderId" />
           <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -518,6 +521,8 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="DB_RessentialModel.User">
         <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="ConnectionId" ColumnName="ConnectionId" />
+          <ScalarProperty Name="IsChef" ColumnName="IsChef" />
           <ScalarProperty Name="HasWarehousePermission" ColumnName="HasWarehousePermission" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />

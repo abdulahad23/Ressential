@@ -30,7 +30,7 @@ namespace Ressential.Models
         public decimal ProductPrice { get; set; }
         public string Description { get; set; }
         public int ProductCategoryId { get; set; }
-        public Nullable<int> ChefID { get; set; }
+        public int ChefID { get; set; }
         public bool IsActive { get; set; }
         public int CreatedBy { get; set; }
         public System.DateTime CreatedAt { get; set; }
@@ -47,5 +47,6 @@ namespace Ressential.Models
         public virtual ICollection<ProductItemDetail> ProductItemDetails { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
+        public virtual User User2 { get; set; }
     }
 }

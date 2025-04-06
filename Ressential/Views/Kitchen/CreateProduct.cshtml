@@ -54,16 +54,8 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
-                            <select class="form-control" id="chefId" name="chefId">
-                                <option selected value="0">Select Chef</option>
-                                <option value="1">Saba</option>
-                                <option value="2">Ahad</option>
-                                <option value="3">Waniya</option>
-                                <option value="4">Haniya</option>
-                                <option value="5">Abdul Basit</option>
-                            </select>
-                            <label for="chefId">Chef Name</label>
-
+                            @Html.DropDownListFor(m => m.ChefID, new SelectList(ViewBag.Chefs, "UserId", "UserName"), "Select Chef", new { @class = "form-control" })
+                            <label for="ChefID">Chef Name</label>
                         </div>
                     </div>
 
@@ -112,48 +104,48 @@
 
                                         @foreach (var item in Model.ProductItemDetails)
                                         {
-                        <tr class="item-row">
-                            <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                <div class="form-floating">
-                                    <select class="form-control">
-                                        <option value="0">Select Item</option>
-                                        @foreach (var i in ViewBag.Items)
-                                        {
+                                            <tr class="item-row">
+                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        <select class="form-control">
+                                                            <option value="0">Select Item</option>
+                                                            @foreach (var i in ViewBag.Items)
+                                                            {
 
-                                            if (i.ItemId == item.ItemId)
-                                            {
-                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
- }
-                else
-                {
-                <option value="@i.ItemId">@i.Item.ItemName</option>
-}
-        }
-                                    </select>
-                                    <label>Item</label>
-                                </div>
-                            </td>
-                            <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                <div class="form-floating">
-                                    @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
-                                    <label>Description</label>
-                                </div>
-                            </td>
-                            <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                <div class="form-floating">
-                                    @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                    <label>Quantity</label>
-                                </div>
-                            </td>
-                            <td class="tbl-min-width-1">
-                                <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                        type="button" data-toggle="tooltip" data-placement="top"
-                                        title="Remove">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </td>
-                        </tr>
-}
+                                                                if (i.ItemId == item.ItemId)
+                                                                {
+                                                                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option value="@i.ItemId">@i.Item.ItemName</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <label>Item</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
+                                                        <label>Description</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                    <div class="form-floating">
+                                                        @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
+                                                        <label>Quantity</label>
+                                                    </div>
+                                                </td>
+                                                <td class="tbl-min-width-1">
+                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                            type="button" data-toggle="tooltip" data-placement="top"
+                                                            title="Remove">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -243,6 +235,7 @@
     formData.append("ProductCode", $('#ProductCode').val());
     formData.append("ProductPrice", $('#ProductPrice').val());
     formData.append("IsActive", $('#IsActive').val());
+    formData.append("ChefID", $('#ChefID').val());
     formData.append("ProductCategoryId", $('#ProductCategoryId').val());
     formData.append("Description", $('#Description').val());
 
