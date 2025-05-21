@@ -57,6 +57,7 @@ namespace Ressential.Models
             this.WastageItems = new HashSet<WastageItem>();
             this.WastageItems1 = new HashSet<WastageItem>();
             this.Products2 = new HashSet<Product>();
+            this.Notifications = new HashSet<Notification>();
         }
     
         public int UserId { get; set; }
@@ -157,5 +158,7 @@ namespace Ressential.Models
         public virtual ICollection<WastageItem> WastageItems1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

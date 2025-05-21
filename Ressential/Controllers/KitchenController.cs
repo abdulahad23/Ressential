@@ -17,6 +17,7 @@ using Microsoft.AspNet.Identity;
 using System.Net.Security;
 using Ressential.Hub;
 using Microsoft.AspNet.SignalR;
+using OfficeOpenXml;
 
 namespace Ressential.Controllers
 {
@@ -28,6 +29,56 @@ namespace Ressential.Controllers
         public ActionResult Index() { 
             return View();
         }
+
+public ActionResult GetUnreadNotifications()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var notifications = _db.Notifications
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .ToList();
+
+            return PartialView("_NotificationsPartial", notifications);
+        }
+
+        [HttpPost]
+        public JsonResult MarkAsRead(int notificationId)
+        {
+            var notification = _db.Notifications.SingleOrDefault(n => n.NotificationId == notificationId);
+            if (notification != null)
+            {
+                notification.IsRead = true;
+                _db.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        public JsonResult GetUnreadNotificationCount()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var count = _db.Notifications
+                .Count(n => n.UserId == currentUserId && !n.IsRead);
+
+            return Json(new { count }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult MarkAllAsRead()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var notifications = _db.Notifications
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .ToList();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            _db.SaveChanges();
+            return Json(new { success = true });
+        }
+
         [HasPermission("Branch Item List")]
         public ActionResult ItemList(string search)
         {
@@ -241,6 +292,37 @@ namespace Ressential.Controllers
                     requisition.BranchId = selectedBranchId;
                     requisition.Status = "Pending";
                     _db.Requisitions.Add(requisition);
+
+                    var notifications = new List<Notification>();
+                    var branch = _db.Branches.Find(selectedBranchId);
+                    Notification notification = new Notification
+                    {
+                        DateTime = DateTime.Now,
+                        Title = "Received Requisition",
+                        Message = "Received requisition from " + branch.BranchName + " branch.",
+                        RedirectUrl = "/Warehouse/RequisitionList?search=" + requisition.RequisitionNo,
+                        Type = "Requisition Alert",
+                        IsRead = false,
+                        BranchId = 0
+                    };
+                    var users = _db.Users.Where(u => u.HasWarehousePermission);
+                    foreach (var user in users)
+                    {
+                        var userNotification = new Notification
+                        {
+                            DateTime = notification.DateTime,
+                            Title = notification.Title,
+                            Message = notification.Message,
+                            RedirectUrl = notification.RedirectUrl,
+                            Type = notification.Type,
+                            IsRead = notification.IsRead,
+                            BranchId = notification.BranchId,
+                            UserId = user.UserId
+                        };
+                        notifications.Add(userNotification);
+                    }
+
+                    _db.Notifications.AddRange(notifications);
                     _db.SaveChanges();
 
                     //foreach (var requisitionDetails in requisition.RequisitionDetails)
@@ -2144,6 +2226,7 @@ namespace Ressential.Controllers
                                            c.OrderTotal.ToString().Equals(search) ||
                                            c.Status.Contains(search));
             }
+            orders = orders.OrderByDescending(o => o.OrderId);
             return View(orders.ToList());
         }
 
@@ -2189,13 +2272,11 @@ namespace Ressential.Controllers
                                 {
                                     branchItem.Quantity -= itemQuantityToLess;
                                     orderDetail.ProductCost += (branchItem.CostPerUnit * itemQuantityToLess);
-                                    // Mark the branchItem as modified
                                     _db.Entry(branchItem).State = EntityState.Modified;
                                 }
                                 else
                                 {
-                                    TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetailProduct.ProductName;
-                                    return RedirectToAction("OrderList");
+                                    return Json(new { success = false, message = "Insufficient quantity of " + branchItem.Item.ItemName + " to prepare " + orderDetailProduct.ProductName });
                                 }
                             }
                         }
@@ -2203,13 +2284,11 @@ namespace Ressential.Controllers
                     }
 
                     int nextOrderNumber = 1;
-
-                    // Check if there are any existing orders for the current branch
                     if (_db.Orders.Any(o => o.BranchId == branchId))
                     {
                         nextOrderNumber = _db.Orders
                             .Where(o => o.BranchId == branchId)
-                            .AsEnumerable() // Force in-memory execution
+                            .AsEnumerable()
                             .Select(o =>
                             {
                                 int orderNo;
@@ -2217,8 +2296,6 @@ namespace Ressential.Controllers
                             })
                             .Max() + 1;
                     }
-
-                    // Format OrderNo with a 5-digit sequence
                     order.OrderNo = nextOrderNumber.ToString("D5");
                     order.BranchId = branchId;
                     order.OrderTotal = grandTotal;
@@ -2230,45 +2307,62 @@ namespace Ressential.Controllers
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-                    //var context = GlobalHost.ConnectionManager.GetHubContext<ProductHub>();
-                    //context.Clients.All.ReceiveProductUpdate();
 
 
-                    List<string> Connections = _db.Users.Select(u => u.ConnectionId).ToList();
-                    var context = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
-                    foreach (var connection in Connections)
-                    {
-                        context.Clients.Client(connection).UpdateChefView();
-                    }
+                    //var branch = _db.Branches.Find(order.BranchId);
 
-                    TempData["SuccessMessage"] = "Order placed successfully.";
-                    return RedirectToAction("CreateOrder", "Kitchen");
+
+                    //     List<string> Connections = _db.Users.Select(u => u.ConnectionId).ToList();
+                    //var context = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                    //foreach (var connection in Connections)
+                    //{
+                    //    context.Clients.Client(connection).UpdateChefView();
+                    //}
+
+                    //TempData["SuccessMessage"] = "Order placed successfully.";
+                    //return RedirectToAction("CreateOrder", "Kitchen");
+                    //}
+
+                    var branch = _db.Branches.Find(order.BranchId);
+                    var user = _db.Users.Find(order.CreatedBy);
+
+                    string formattedPhone = FormatPhoneNumber(branch.BranchContact);
+                    return Json(new {
+                        success = true,
+                        orderNo = order.OrderNo,
+                        orderDate = order.OrderDate.ToString("yyyy-MM-dd"),
+                        branchName = branch.BranchName,
+                        branchAddress = branch.Address,
+                        branchPhone = formattedPhone,
+                        staffName = user.UserName,
+                    });
                 }
-                //else
-                //{
-                //    // Log ModelState errors
-                //    foreach (var state in ModelState)
-                //    {
-                //        var key = state.Key; // Property name
-                //        var errors = state.Value.Errors; // List of errors for this property
-
-                //        foreach (var error in errors)
-                //        {
-                //            System.Diagnostics.Debug.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
-                //        }
-                //    }
-
-                //    TempData["ErrorMessage"] = "There were validation errors. Please check the input values.";
-                //}
-                ViewBag.Products = _db.Products.Where(i => i.IsActive && i.BranchId == branchId).ToList();
-                return View(order);
+                return Json(new { success = false, message = "Invalid order data." });
             }
             catch (Exception ex)
             {
-                // Log the exception if needed
-                Console.WriteLine($"Error creating order: {ex.Message}");
-                return RedirectToAction("Index", "Error");
+                return Json(new { success = false, message = "Error creating order: " + ex.Message });
             }
+        }
+        string FormatPhoneNumber(string phone)
+        {
+            if (string.IsNullOrEmpty(phone)) return phone;
+
+            phone = phone.Trim();
+
+            if (phone.StartsWith("+92") && phone.Length == 13)
+            {
+                // Format: +923163033321 -> +92-316-3033321
+                return $"+92-{phone.Substring(3, 3)}-{phone.Substring(6)}";
+            }
+            else if (phone.StartsWith("03") && phone.Length == 11)
+            {
+                // Format: 03112824123 -> +92-311-2824123
+                return $"+92-{phone.Substring(1, 3)}-{phone.Substring(4)}";
+            }
+
+            // If format doesn't match, return as is
+            return phone;
         }
         [HttpPost]
         [HasPermission("Order Status Update")]
@@ -2423,6 +2517,7 @@ namespace Ressential.Controllers
                 else if (order.Status == "Returned")
                 {
                     TempData["ErrorMessage"] = "Can not confirm the returned order.";
+                    return Json(new { success = false });
                 }
                 foreach (var orderDetail in order.OrderDetails)
                 {
@@ -2822,7 +2917,6 @@ namespace Ressential.Controllers
             if (status == "Preparing")
             {
                 orderDetail.Order.Status = "Preparing";
-
             }
             orderDetail.ProductStatus = status;
             _db.SaveChanges();
@@ -3312,6 +3406,7 @@ namespace Ressential.Controllers
 
             // Add the new branch claim
             claimsIdentity?.AddClaim(new Claim("BranchId", branchId.ToString()));
+            Session["LastSelectedBranchId"] = branchId;
 
             // Update the authentication cookie
             var ctx = Request.GetOwinContext();
@@ -3323,5 +3418,540 @@ namespace Ressential.Controllers
 
             return Json(new { success = true });
         }
+
+        public ActionResult ItemStockReport()
+        {
+            var BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+            var Branch = _db.Branches.Find(BranchId);
+            ViewBag.BranchName = Branch.BranchName;
+            ViewBag.Categories = new SelectList(_db.ItemCategories, "ItemCategoryId", "ItemCategoryName");
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GenerateBranchItemStockReport(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                var data = GetBranchItemStockReportData(categoryId, status, searchTerm, sortBy);
+                var BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                var Branch = _db.Branches.Find(BranchId);
+
+                ViewBag.CategoryName = categoryId > 0 
+                    ? _db.ItemCategories.FirstOrDefault(c => c.ItemCategoryId == categoryId)?.ItemCategoryName 
+                    : "All Categories";
+
+                ViewBag.BranchName = Branch.BranchName;
+                ViewBag.Status = status == "active" ? "Active" : status == "inactive" ? "Inactive" : "All";
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.SortBy = sortBy;
+                ViewBag.CategoryId = categoryId;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                
+                return View("BranchItemStockReportDisplay", data);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while generating the report: " + ex.Message;
+                return RedirectToAction("ItemStockReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportBranchItemStockReportToPDF(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                var data = GetBranchItemStockReportData(categoryId, status, searchTerm, sortBy);
+                var BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                var Branch = _db.Branches.Find(BranchId);
+
+                ViewBag.CategoryName = categoryId > 0 
+                    ? _db.ItemCategories.FirstOrDefault(c => c.ItemCategoryId == categoryId)?.ItemCategoryName 
+                    : "All Categories";
+
+                ViewBag.BranchName = Branch.BranchName;
+                ViewBag.Status = status == "active" ? "Active" : status == "inactive" ? "Inactive" : "All";
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.SortBy = sortBy;
+                ViewBag.CategoryId = categoryId;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+                
+                // Convert view to PDF
+                var fileName = $"Branch_Item_Stock_Report_{DateTime.Now:yyyyMMdd}";
+                return new Rotativa.ViewAsPdf("BranchItemStockReportDisplay", data)
+                {
+                    FileName = fileName + ".pdf",
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    PageMargins = new Rotativa.Options.Margins(5, 5, 5, 5)
+                };
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while exporting the report to PDF: " + ex.Message;
+                return RedirectToAction("ItemStockReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportBranchItemStockReportToExcel(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                // Get report data
+                var data = GetBranchItemStockReportData(categoryId, status, searchTerm, sortBy);
+                var BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                var Branch = _db.Branches.Find(BranchId);
+                
+                // Set category name
+                string categoryName = "All Categories";
+                string fileName = "All_Categories";
+
+                if (categoryId > 0)
+                {
+                    var category = _db.ItemCategories.Find(categoryId);
+                    if (category == null)
+                    {
+                        TempData["ErrorMessage"] = "Category not found.";
+                        return RedirectToAction("ItemStockReport");
+                    }
+                    categoryName = category.ItemCategoryName;
+                    fileName = category.ItemCategoryName.Replace(" ", "_");
+                }
+                
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new ExcelPackage())
+                {
+                    // Add a worksheet
+                    var worksheet = package.Workbook.Worksheets.Add("Branch Item Stock Report");
+                    
+                    // Set document properties
+                    package.Workbook.Properties.Title = "Branch Item Stock Report";
+                    package.Workbook.Properties.Author = "Ressential";
+                    package.Workbook.Properties.Company = "Ressential";
+                    package.Workbook.Properties.Created = DateTime.Now;
+                    
+                    // Professional color scheme
+                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
+                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
+                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
+                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
+                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
+                    
+                    // Set column widths
+                    worksheet.Column(1).Width = 6;      // S.No
+                    worksheet.Column(2).Width = 15;     // Item Code
+                    worksheet.Column(3).Width = 30;     // Item Name
+                    worksheet.Column(4).Width = 20;     // Category
+                    worksheet.Column(5).Width = 10;     // Unit
+                    worksheet.Column(6).Width = 15;     // Current Stock
+                    worksheet.Column(7).Width = 15;     // Min Stock
+                    worksheet.Column(8).Width = 15;     // Price
+                    worksheet.Column(9).Width = 15;     // Stock Value
+                    worksheet.Column(10).Width = 15;    // Stock Status
+                    worksheet.Column(11).Width = 15;    // Item Status
+                    
+                    // Add company logo placeholder and title (row 1)
+                    worksheet.Cells[1, 1, 1, 11].Merge = true;
+                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
+                    worksheet.Cells[1, 1].Style.Font.Size = 20;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
+                    worksheet.Row(1).Height = 30; // Increase row height
+                    
+                    // Add report title (row 2)
+                    worksheet.Cells[2, 1, 2, 11].Merge = true;
+                    worksheet.Cells[2, 1].Value = "Branch Item Stock Report";
+                    worksheet.Cells[2, 1].Style.Font.Size = 16;
+                    worksheet.Cells[2, 1].Style.Font.Bold = true;
+                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Row(2).Height = 25; // Increase row height
+                    
+                    // Empty row for spacing
+                    worksheet.Row(3).Height = 10;
+                    
+                    // Report information section with styled boxes (rows 4-5)
+                    // Branch info box
+                    worksheet.Cells[4, 1, 4, 2].Merge = true;
+                    worksheet.Cells[4, 1].Value = "BRANCH";
+                    worksheet.Cells[4, 1].Style.Font.Bold = true;
+                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 1, 5, 2].Merge = true;
+                    worksheet.Cells[5, 1].Value = Branch.BranchName;
+                    worksheet.Cells[5, 1].Style.Font.Size = 11;
+                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Category info box
+                    worksheet.Cells[4, 3, 4, 5].Merge = true;
+                    worksheet.Cells[4, 3].Value = "CATEGORY";
+                    worksheet.Cells[4, 3].Style.Font.Bold = true;
+                    worksheet.Cells[4, 3].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 3].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 3, 5, 5].Merge = true;
+                    worksheet.Cells[5, 3].Value = categoryName;
+                    worksheet.Cells[5, 3].Style.Font.Size = 11;
+                    worksheet.Cells[5, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 3].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 3].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Status and search term box
+                    worksheet.Cells[4, 6, 4, 8].Merge = true;
+                    worksheet.Cells[4, 6].Value = status == "active" ? "ACTIVE ITEMS" : status == "inactive" ? "INACTIVE ITEMS" : "ALL ITEMS";
+                    worksheet.Cells[4, 6].Style.Font.Bold = true;
+                    worksheet.Cells[4, 6].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 6].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 6].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 6, 5, 8].Merge = true;
+                    worksheet.Cells[5, 6].Value = string.IsNullOrEmpty(searchTerm) ? "No Search Term" : searchTerm;
+                    worksheet.Cells[5, 6].Style.Font.Size = 11;
+                    worksheet.Cells[5, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 6].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 6].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Date generated box
+                    worksheet.Cells[4, 9, 4, 11].Merge = true;
+                    worksheet.Cells[4, 9].Value = "GENERATED ON";
+                    worksheet.Cells[4, 9].Style.Font.Bold = true;
+                    worksheet.Cells[4, 9].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 9].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 9].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 9, 5, 11].Merge = true;
+                    worksheet.Cells[5, 9].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    worksheet.Cells[5, 9].Style.Font.Size = 11;
+                    worksheet.Cells[5, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 9].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Space before data
+                    worksheet.Row(6).Height = 15;
+                    
+                    // Add table headers (row 7)
+                    string[] headers = new string[] { 
+                        "S.No", "Item Code", "Item Name", "Category", "Unit", 
+                        "Current Stock", "Reorder Level", "Cost Per Unit", "Stock Value", "Stock Status", "Item Status" 
+                    };
+                    
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        var cell = worksheet.Cells[7, i + 1];
+                        cell.Value = headers[i];
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
+                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                    }
+                    worksheet.Row(7).Height = 22; // Increase header row height
+                    
+                    // Freeze panes for better navigation (fix header row)
+                    worksheet.View.FreezePanes(8, 1);
+                    
+                    // Add data rows
+                    int currentRow = 8;
+                        int serialNo = 1;
+                        decimal totalStockValue = 0;
+                        
+                        foreach (var item in data)
+                        {
+                        // Apply alternating row background for better readability
+                        if (serialNo % 2 == 0)
+                        {
+                            var range = worksheet.Cells[currentRow, 1, currentRow, 11];
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                        }
+                        
+                        // Calculate stock value
+                            decimal stockValue = item.Stock * item.Price;
+                            totalStockValue += stockValue;
+                            
+                        // Determine stock status
+                            string stockStatus = "";
+                            
+                            if (item.Stock <= 0)
+                            {
+                                stockStatus = "Out of Stock";
+                            }
+                            else if (item.Stock < item.MinStock)
+                            {
+                                stockStatus = "Low Stock";
+                            }
+                            else
+                            {
+                                stockStatus = "Good";
+                            }
+                            
+                        // Add row data
+                        worksheet.Cells[currentRow, 1].Value = serialNo++;
+                        worksheet.Cells[currentRow, 2].Value = item.ItemCode;
+                        worksheet.Cells[currentRow, 3].Value = item.ItemName;
+                        worksheet.Cells[currentRow, 4].Value = item.CategoryName;
+                        worksheet.Cells[currentRow, 5].Value = item.Unit;
+                        worksheet.Cells[currentRow, 6].Value = item.Stock;
+                        worksheet.Cells[currentRow, 7].Value = item.MinStock;
+                        worksheet.Cells[currentRow, 8].Value = item.Price;
+                        worksheet.Cells[currentRow, 9].Value = stockValue;
+                        worksheet.Cells[currentRow, 10].Value = stockStatus;
+                        worksheet.Cells[currentRow, 11].Value = item.IsActive ? "Active" : "Inactive";
+                        
+                        // Format cells
+                        for (int i = 1; i <= 11; i++)
+                        {
+                            worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        }
+                        
+                        // Numeric format for quantities and price
+                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                        
+                        // Apply color to stock status cell based on status
+                            if (stockStatus == "Out of Stock")
+                            {
+                            worksheet.Cells[currentRow, 10].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[currentRow, 10].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(231, 76, 60));
+                            worksheet.Cells[currentRow, 10].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            }
+                            else if (stockStatus == "Low Stock")
+                            {
+                            worksheet.Cells[currentRow, 10].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[currentRow, 10].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(243, 156, 18));
+                            worksheet.Cells[currentRow, 10].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            }
+                            else
+                            {
+                            worksheet.Cells[currentRow, 10].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[currentRow, 10].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(46, 204, 113));
+                            worksheet.Cells[currentRow, 10].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            }
+                            
+                            // Apply color to item status cell
+                            if (item.IsActive)
+                            {
+                            worksheet.Cells[currentRow, 11].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[currentRow, 11].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(39, 174, 96));
+                            worksheet.Cells[currentRow, 11].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            }
+                            else
+                            {
+                            worksheet.Cells[currentRow, 11].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            worksheet.Cells[currentRow, 11].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(192, 57, 43));
+                            worksheet.Cells[currentRow, 11].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        }
+                        
+                        currentRow++;
+                    }
+                    
+                    // Add summary row
+                    if (data.Any())
+                    {
+                        // Total row style
+                        var totalRange = worksheet.Cells[currentRow, 1, currentRow, 11];
+                        totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
+                        totalRange.Style.Font.Bold = true;
+                        totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        
+                        // Total row content
+                        worksheet.Cells[currentRow, 1, currentRow, 8].Merge = true;
+                        worksheet.Cells[currentRow, 1].Value = "TOTAL STOCK VALUE:";
+                        worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                        
+                        worksheet.Cells[currentRow, 9].Value = totalStockValue;
+                        worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 9, currentRow, 11].Merge = true;
+                        worksheet.Cells[currentRow, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        
+                        // Add another row with item count
+                        currentRow++;
+                        var countRange = worksheet.Cells[currentRow, 1, currentRow, 11];
+                        countRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        countRange.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                        countRange.Style.Font.Bold = true;
+                        countRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        
+                        worksheet.Cells[currentRow, 1, currentRow, 11].Merge = true;
+                        worksheet.Cells[currentRow, 1].Value = $"Total Items: {data.Count()}";
+                        worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    }
+                    
+                    // Return the Excel file
+                    byte[] excelBytes = package.GetAsByteArray();
+                    return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Branch_Item_Stock_Report_{Branch.BranchName.Replace(" ", "_")}_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating Excel: {ex.Message}";
+                return RedirectToAction("ItemStockReport");
+            }
+        }
+
+        private List<BranchItemStockReportViewModel> GetBranchItemStockReportData(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                var BranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
+                
+                // First, query the branch items with status filtering
+                var branchItems = _db.BranchItems.Where(bi => bi.BranchId == BranchId);
+                
+                // Apply status filter
+                if (status == "active")
+                {
+                    branchItems = branchItems.Where(bi => bi.IsActive);
+                }
+                else if (status == "inactive")
+                {
+                    branchItems = branchItems.Where(bi => !bi.IsActive);
+                }
+                
+                // Now project to view model
+                var query = branchItems.Select(bi => new BranchItemStockReportViewModel
+                {
+                    BranchItemId = bi.BranchItemId,
+                    ItemId = bi.ItemId,
+                    ItemCode = bi.Item.Sku,
+                    ItemName = bi.Item.ItemName,
+                    CategoryId = bi.Item.ItemCategoryId,
+                    CategoryName = bi.Item.ItemCategory.ItemCategoryName,
+                    BranchId = bi.BranchId,
+                    Unit = bi.Item.UnitOfMeasure.Symbol,
+                    Stock = bi.Quantity,
+                    MinStock = bi.MinimumStockLevel,
+                    Price = bi.CostPerUnit,
+                    StockValue = bi.Quantity * bi.CostPerUnit,
+                    IsActive = bi.IsActive
+                });
+
+                // Apply category filter
+                if (categoryId > 0)
+                {
+                    query = query.Where(i => i.CategoryId == categoryId);
+                }
+
+                if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    searchTerm = searchTerm.ToLower();
+                    query = query.Where(i => i.ItemName.ToLower().Contains(searchTerm) || 
+                                         i.ItemCode.ToLower().Contains(searchTerm) ||
+                                         i.CategoryName.ToLower().Contains(searchTerm));
+                }
+
+                // Apply sorting
+                switch (sortBy)
+                {
+                    case "name":
+                        query = query.OrderBy(i => i.ItemName);
+                        break;
+                    case "code":
+                        query = query.OrderBy(i => i.ItemCode);
+                        break;
+                    case "category":
+                        query = query.OrderBy(i => i.CategoryName).ThenBy(i => i.ItemName);
+                        break;
+                    case "stock":
+                        query = query.OrderByDescending(i => i.Stock);
+                        break;
+                    case "price":
+                        query = query.OrderByDescending(i => i.Price);
+                        break;
+                    default:
+                        query = query.OrderBy(i => i.ItemName);
+                        break;
+                }
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error retrieving branch item stock data: " + ex.Message);
+            }
+        }
+
+        public JsonResult GetOrderReceiptData(int orderId)
+        {
+            try
+            {
+                var order = _db.Orders.Find(orderId);
+
+                if (order == null)
+                {
+                    return Json(new { success = false, message = "Order not found" });
+                }
+
+                var items = order.OrderDetails.Select(od => new
+                {
+                    name = od.Product.ProductName,
+                    quantity = od.ProductQuantity,
+                    price = od.ProductPrice,
+                    total = od.ProductQuantity * od.ProductPrice
+                }).ToList();
+
+                var subtotal = items.Sum(i => i.total);
+                var deliveryCharges = order.OnlineOrderDetails.FirstOrDefault()?.DeliveryCharges??0;
+                var grandTotal = subtotal + deliveryCharges;
+
+                var contactNo = FormatPhoneNumber(order.Branch.BranchContact);
+
+                var receiptData = new
+                {
+                    success = true,
+                    branchLogo = Url.Content("~/Content/assets/images/logo/ressential-logo-small.png"),
+                    branchName = order.Branch.BranchName,
+                    branchAddress = order.Branch.Address,
+                    branchPhone = contactNo,
+                    orderNo = order.OrderNo,
+                    orderDate = order.OrderDate.ToString("dd-MMM-yyyy"),
+                    orderTime = order.OrderDate.ToString("HH:mm:ss"),
+                    orderType = order.OrderType,
+                    tableNo = order.TableNo,
+                    staffName = order.CreatedBy != null ? _db.Users.Find(order.CreatedBy).UserName : "System",
+                    customerName = order.OrderType == "Online" ? order.Customer.CustomerName : null,
+                    customerContact = order.OrderType == "Online" ? order.Customer.ContactNo : null,
+                    customerAddress = order.OrderType == "Online" ? order.OnlineOrderDetails.FirstOrDefault().Address : null,
+                    items = items,
+                    subtotal = subtotal,
+                    deliveryCharges = deliveryCharges,
+                    grandTotal = grandTotal,
+                    paymentMethod = order.PaymentMethod,
+                    qrCode = Url.Content("~/Content/assets/images/qr-code.png")
+                };
+
+                return Json(receiptData, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error generating receipt: " + ex.Message });
+            }
+        }
+        
     }
 }

@@ -1,0 +1,324 @@
+@model IEnumerable<Ressential.Models.BranchItemStockReportViewModel>
+@{
+    ViewBag.Title = "Branch Item Stock Report";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Heading with Breadcrumb -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Kitchen")">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Branch Item Stock Report</li>
+                </ol>
+            </nav>
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body d-flex align-items-center py-3">
+                    <div class="bg-primary p-3 me-3 rounded-circle">
+                        <i class="fas fa-boxes text-white fa-2x"></i>
+                    </div>
+                    <div>
+                        <h2 class="mb-1 text-primary fw-bold">Branch Item Stock Report</h2>
+                        <p class="text-muted mb-0">Generate detailed reports for branch inventory and stock levels</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section with Enhanced UI -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 d-flex align-items-center"><i class="fas fa-filter me-2 text-primary"></i>Report Filters</h5>
+                </div>
+                
+                <div class="card-body">
+                    <form id="stockFilterForm">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="form-group mb-3">
+                                    <label for="CategoryId" class="form-label fw-bold">
+                                        <i class="fas fa-tags me-1 text-primary"></i>Category
+                                    </label>
+                                    <select id="CategoryId" name="CategoryId" class="form-select shadow-sm">
+                                        <option value="0">All Categories</option>
+                                        @foreach (var category in ViewBag.Categories)
+                                        {
+                                            <option value="@category.Value">@category.Text</option>
+                                        }
+                                    </select>
+                                    <div class="form-text">Select a specific category or all categories</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="form-group mb-3">
+                                    <label for="Status" class="form-label fw-bold">
+                                        <i class="fas fa-toggle-on me-1 text-primary"></i>Status
+                                    </label>
+                                    <select id="Status" name="Status" class="form-select shadow-sm">
+                                        <option value="all">All Items</option>
+                                        <option value="active" selected>Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                    <div class="form-text">Filter by item status</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="form-group mb-3">
+                                    <label for="SearchTerm" class="form-label fw-bold">
+                                        <i class="fas fa-search me-1 text-primary"></i>Search Term
+                                    </label>
+                                    <input type="text" id="SearchTerm" name="SearchTerm" class="form-control shadow-sm" placeholder="Search by name, code, etc." />
+                                    <div class="form-text">Enter keywords to filter results</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="form-group mb-3">
+                                    <label for="SortBy" class="form-label fw-bold">
+                                        <i class="fas fa-sort me-1 text-primary"></i>Sort By
+                                    </label>
+                                    <select id="SortBy" name="SortBy" class="form-select shadow-sm">
+                                        <option value="name">Item Name</option>
+                                        <option value="code">Item Code</option>
+                                        <option value="category">Category</option>
+                                        <option value="stock">Stock (High to Low)</option>
+                                        <option value="price">Cost Per Unit (High to Low)</option>
+                                    </select>
+                                    <div class="form-text">Choose sorting method for report</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons with a horizontal divider -->
+                        <hr class="my-4" />
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- Left-aligned reset button -->
+                                    <button type="button" class="btn btn-outline-secondary" id="btnReset">
+                                        <i class="fas fa-undo me-2"></i>Reset Filters
+                                    </button>
+                                    
+                                    <!-- Right-aligned action buttons -->
+                                    <div class="d-flex">
+                                        <div class="btn-group me-2">
+                                            <button type="button" class="btn btn-success" id="btnShow">
+                                                <i class="fas fa-eye me-2"></i>Show Report
+                                            </button>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-download me-2"></i>Export Options
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                <li><h6 class="dropdown-header">Choose Format</h6></li>
+                                                <li><button id="btnPDF" class="dropdown-item" type="button"><i class="fas fa-file-pdf text-danger me-2"></i>Export to PDF</button></li>
+                                                <li><button id="btnExcel" class="dropdown-item" type="button"><i class="fas fa-file-excel text-success me-2"></i>Export to Excel</button></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Information Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 d-flex align-items-center"><i class="fas fa-info-circle me-2 text-primary"></i>Report Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info border-left border-4 mb-0 d-flex align-items-center">
+                        <i class="fas fa-lightbulb me-3 fa-2x"></i>
+                        <div>
+                            <h6 class="alert-heading mb-1 fw-bold">About this report</h6>
+                            <p class="mb-0">The Branch Item Stock Report shows all inventory items in your branches with current stock levels, reorder thresholds, and valuation. Use this report to monitor inventory and identify items that need to be restocked.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Links Card -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 d-flex align-items-center"><i class="fas fa-link me-2 text-primary"></i>Related Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6 col-lg-3">
+                            <a href="@Url.Action("RequisitionList", "Kitchen")" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center py-4">
+                                        <i class="fas fa-clipboard-list fa-2x mb-3 text-primary"></i>
+                                        <h6 class="mb-0">Requisitions</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="@Url.Action("ReceiveStockList", "Kitchen")" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center py-4">
+                                        <i class="fas fa-truck-loading fa-2x mb-3 text-primary"></i>
+                                        <h6 class="mb-0">Received Stock</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="@Url.Action("StockReturnList", "Kitchen")" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center py-4">
+                                        <i class="fas fa-undo-alt fa-2x mb-3 text-primary"></i>
+                                        <h6 class="mb-0">Stock Returns</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+                            <a href="@Url.Action("ItemList", "Kitchen")" class="text-decoration-none">
+                                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                                    <div class="card-body text-center py-4">
+                                        <i class="fas fa-list fa-2x mb-3 text-primary"></i>
+                                        <h6 class="mb-0">Item List</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Prevent form submission on enter key
+            $('#stockFilterForm').on('submit', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // Button click handlers
+            $('#btnShow').click(function(e) {
+                e.preventDefault();
+                openReportInNewTab();
+            });
+
+            $('#btnPDF').click(function(e) {
+                e.preventDefault();
+                exportToPDF();
+            });
+
+            $('#btnExcel').click(function(e) {
+                e.preventDefault();
+                exportToExcel();
+            });
+            
+            $('#btnReset').click(function() {
+                $('#CategoryId').val('0');
+                $('#Status').val('active');
+                $('#SearchTerm').val('');
+                $('#SortBy').val('name');
+            });
+            
+            // Add hover effect to the cards
+            $('.hover-shadow').hover(
+                function() { $(this).addClass('shadow'); },
+                function() { $(this).removeClass('shadow'); }
+            );
+        });
+
+        function openReportInNewTab() {
+            var categoryId = $('#CategoryId').val();
+            var status = $('#Status').val();
+            var searchTerm = $('#SearchTerm').val();
+            var sortBy = $('#SortBy').val();
+
+            // Construct the URL with query parameters
+            var url = '@Url.Action("GenerateBranchItemStockReport", "Kitchen")' +
+                '?categoryId=' + encodeURIComponent(categoryId) +
+                '&status=' + encodeURIComponent(status) +
+                '&searchTerm=' + encodeURIComponent(searchTerm) +
+                '&sortBy=' + encodeURIComponent(sortBy);
+
+            // Open the URL in a new tab
+            window.open(url, '_blank');
+        }
+
+        function exportToPDF() {
+            var categoryId = $('#CategoryId').val();
+            var status = $('#Status').val();
+            var searchTerm = $('#SearchTerm').val();
+            var sortBy = $('#SortBy').val();
+
+            // Construct the URL with query parameters
+            var url = '@Url.Action("ExportBranchItemStockReportToPDF", "Kitchen")' +
+                '?categoryId=' + encodeURIComponent(categoryId) +
+                '&status=' + encodeURIComponent(status) +
+                '&searchTerm=' + encodeURIComponent(searchTerm) +
+                '&sortBy=' + encodeURIComponent(sortBy);
+
+            // Redirect to the export URL
+            window.location.href = url;
+        }
+        
+        function exportToExcel() {
+            var categoryId = $('#CategoryId').val();
+            var status = $('#Status').val();
+            var searchTerm = $('#SearchTerm').val();
+            var sortBy = $('#SortBy').val();
+
+            // Construct the URL with query parameters
+            var url = '@Url.Action("ExportBranchItemStockReportToExcel", "Kitchen")' +
+                '?categoryId=' + encodeURIComponent(categoryId) +
+                '&status=' + encodeURIComponent(status) +
+                '&searchTerm=' + encodeURIComponent(searchTerm) +
+                '&sortBy=' + encodeURIComponent(sortBy);
+
+            // Redirect to the export URL
+            window.location.href = url;
+        }
+    </script>
+}
+
+<!-- Custom CSS for page-specific styling -->
+<style>
+    /* Add subtle shadow to form controls */
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    
+    /* Custom alert styling */
+    .alert.border-left {
+        border-left-width: 5px !important;
+    }
+    
+    /* Button styling */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+    
+    /* Card hover effect */
+    .hover-shadow:hover {
+        transform: translateY(-3px);
+        transition: all 0.3s ease;
+    }
+</style> 

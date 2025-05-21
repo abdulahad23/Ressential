@@ -300,11 +300,18 @@
                     }
 
                     <li class="pc-item pc-hasmenu">
-                        <a href="/Warehouse/" class="pc-link">
+                        <a href="#!" class="pc-link">
                             <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
                                 Report
                             </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                         </a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item"><a href="/Warehouse/VendorLedger" class="pc-link">Vendor Ledger</a></li>
+                            <li class="pc-item"><a href="/Warehouse/RequisitionReport" class="pc-link">Requisition Report</a></li>
+                            <li class="pc-item"><a href="/Warehouse/ItemStockReport" class="pc-link">Item Stock Report</a></li>
+                            <li class="pc-item"><a href="/Warehouse/PurchaseReport" class="pc-link">Purchase Report</a></li>
+                            <li class="pc-item"><a href="/Warehouse/PurchaseReturnReport" class="pc-link">Purchase Return Report</a></li>
+                        </ul>
                     </li>
                     <div style="height:100px">
 
@@ -370,53 +377,82 @@
                             }
                         </select>
                     </li>
-                    <li class="dropdown pc-h-item">
-                        <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                           role="button" aria-haspopup="false" aria-expanded="false">
-                            <i class="ti ti-bell"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
-                            <div class="dropdown-header">
-                                <a href="#!" class="link-primary float-end text-decoration-underline">Mark as all read</a>
-                                <h5>All Notification <span class="badge bg-warning rounded-pill ms-1">01</span></h5>
-                            </div>
-                            <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
-                                 style="max-height: calc(100vh - 215px)">
-                                <div class="list-group list-group-flush w-100">
-                                    <div class="list-group-item list-group-item-action">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <div class="user-avtar bg-light-success"><i class="ti ti-building-store"></i></div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-1">
-                                                <span class="float-end text-muted">3 min ago</span>
-                                                <h5>Received Requisition</h5>
-                                                <p class="text-body fs-6">Requisition received from Korangi Branch</p>
-                                                <div class="badge rounded-pill bg-light-danger">Unread</div>
+                    @*<li class="dropdown pc-h-item">
+                            <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
+                               role="button" aria-haspopup="false" aria-expanded="false">
+                                <i class="ti ti-bell"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
+                                <div class="dropdown-header">
+                                    <a href="#!" class="link-primary float-end text-decoration-underline">Mark as all read</a>
+                                    <h5>All Notification <span class="badge bg-warning rounded-pill ms-1">01</span></h5>
+                                </div>
+                                <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
+                                     style="max-height: calc(100vh - 215px)">
+                                    <div class="list-group list-group-flush w-100">
+                                        <div class="list-group-item list-group-item-action">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0">
+                                                    <div class="user-avtar bg-light-success"><i class="ti ti-building-store"></i></div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-1">
+                                                    <span class="float-end text-muted">3 min ago</span>
+                                                    <h5>Received Requisition</h5>
+                                                    <p class="text-body fs-6">Requisition received from Korangi Branch</p>
+                                                    <div class="badge rounded-pill bg-light-danger">Unread</div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="list-group-item list-group-item-action">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <div class="user-avtar bg-light-success"><i class="ti ti-building-store"></i></div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-1">
-                                                <span class="float-end text-muted">3 min ago</span>
-                                                <h5>Stock Return</h5>
-                                                <p class="text-body fs-6">Stock returned from Shahrah-e-Faisal branch</p>
-                                                <div class="badge rounded-pill bg-light-danger">Unread</div>
+                                        <div class="list-group-item list-group-item-action">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0">
+                                                    <div class="user-avtar bg-light-success"><i class="ti ti-building-store"></i></div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-1">
+                                                    <span class="float-end text-muted">3 min ago</span>
+                                                    <h5>Stock Return</h5>
+                                                    <p class="text-body fs-6">Stock returned from Shahrah-e-Faisal branch</p>
+                                                    <div class="badge rounded-pill bg-light-danger">Unread</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="text-center py-2">
+                                    <a href="#!" class="link-primary">Mark as all read</a>
+                                </div>
                             </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="text-center py-2">
-                                <a href="#!" class="link-primary">Mark as all read</a>
+                        </li>*@
+
+                <li class="dropdown pc-h-item">
+                    <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0 position-relative"
+                       data-bs-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="false" aria-expanded="false">
+                        <i class="ti ti-bell" style="font-size: 24px; position: relative;"></i>
+                        <span id="notificationIndicator" class="badge bg-danger rounded-circle"
+                              style="position: absolute; top: -5px; right: -5px; width: 12px; height: 12px; padding: 0; border: 2px solid white;"></span>
+                    </a>
+
+
+                    <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
+                        <div class="dropdown-header">
+                            <a href="#!" class="link-primary float-end text-decoration-underline markAllAsRead">Mark as all read</a>
+                            <h5>All Notification <span class="badge bg-warning rounded-pill ms-1" id="notificationCount">01</span></h5>
+                        </div>
+                        <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
+                             style="max-height: calc(100vh - 215px)">
+                            <div class="list-group list-group-flush w-100" id="notificationList">
+                                @Html.Action("GetUnreadNotifications", "Warehouse")
                             </div>
                         </div>
-                    </li>
+                        <div class="dropdown-divider"></div>
+                        <div class="text-center py-2">
+                            <a href="#!" class="link-primary markAllAsRead">Mark as all read</a>
+                        </div>
+                    </div>
+                </li>
+
                     <li class="dropdown pc-h-item header-user-profile">
                         <a class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                            role="button" aria-haspopup="false" aria-expanded="false">
@@ -505,6 +541,49 @@
             if (selectedUrl) {
                 window.location.href = selectedUrl;
             }
+        });
+
+        // Attach a 'change' event listener to the select element
+        document.getElementById('managementSelect').addEventListener('change', function () {
+            var selectedUrl = this.value;
+
+            // Redirect to the selected URL
+            if (selectedUrl) {
+                window.location.href = selectedUrl;
+            }
+        });
+
+        $(document).ready(function () {
+            // Fetch and display the count of unread notifications
+            $.ajax({
+                url: '@Url.Action("GetUnreadNotificationCount", "Warehouse")',
+                type: 'GET',
+                success: function (response) {
+                    $('#notificationCount').text(response.count);
+                    if (response.count > 0) {
+                        $('#notificationIndicator').show();
+                    } else {
+                        $('#notificationIndicator').hide();
+                    }
+                }
+            });
+
+            // Mark all notifications as read
+            $('.markAllAsRead').click(function () {
+                $.ajax({
+                    url: '@Url.Action("MarkAllAsRead", "Warehouse")',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#notificationList').empty();
+                            $('#notificationCount').text('0');
+                            $('#notificationIndicator').hide();
+                        } else {
+                            alert('Failed to mark all as read.');
+                        }
+                    }
+                });
+            });
         });
     </script>
 

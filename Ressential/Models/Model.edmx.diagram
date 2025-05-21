@@ -151,6 +151,8 @@
         <EntityTypeShape EntityType="DB_RessentialModel.UserBranchPermission" Width="1.5" PointX="0.75" PointY="0.75" />
         <AssociationConnector Association="DB_RessentialModel.FK__UserBranc__Branc__13F1F5EB" />
         <AssociationConnector Association="DB_RessentialModel.FK_Products_Chef" />
+        <EntityTypeShape EntityType="DB_RessentialModel.Notification" Width="1.5" PointX="3.375" PointY="0.75" />
+        <AssociationConnector Association="DB_RessentialModel.FK__Notificat__UserI__1D7B6025" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

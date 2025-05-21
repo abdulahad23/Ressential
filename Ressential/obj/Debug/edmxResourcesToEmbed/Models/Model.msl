@@ -148,6 +148,7 @@
     <EntitySetMapping Name="Items">
       <EntityTypeMapping TypeName="DB_RessentialModel.Item">
         <MappingFragment StoreEntitySet="Items">
+          <ScalarProperty Name="StockLevelState" ColumnName="StockLevelState" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="ItemName" ColumnName="ItemName" />
           <ScalarProperty Name="Sku" ColumnName="Sku" />
@@ -629,6 +630,22 @@
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
           <ScalarProperty Name="UserId" ColumnName="UserId" />
           <ScalarProperty Name="UserBranchPermissionsId" ColumnName="UserBranchPermissionsId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Notifications">
+      <EntityTypeMapping TypeName="DB_RessentialModel.Notification">
+        <MappingFragment StoreEntitySet="Notifications">
+          <ScalarProperty Name="Title" ColumnName="Title" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+          <ScalarProperty Name="ReferenceId" ColumnName="ReferenceId" />
+          <ScalarProperty Name="RedirectUrl" ColumnName="RedirectUrl" />
+          <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+          <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

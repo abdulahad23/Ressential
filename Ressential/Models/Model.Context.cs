@@ -72,5 +72,6 @@ namespace Ressential.Models
         public virtual DbSet<WastageItemDetail> WastageItemDetails { get; set; }
         public virtual DbSet<WastageItem> WastageItems { get; set; }
         public virtual DbSet<UserBranchPermission> UserBranchPermissions { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
     }
 }

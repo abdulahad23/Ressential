@@ -113,6 +113,7 @@ CREATE TABLE Items (
     ItemCategoryId INT NOT NULL,
     UnitOfMeasureId INT NOT NULL,
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
+    Status NVARCHAR(50) NOT NULL,
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -646,6 +647,21 @@ CREATE TABLE BranchArea (
 );
 
 
+-- Notifications table
+CREATE TABLE Notifications (
+    NotificationId INT PRIMARY KEY IDENTITY(1,1),
+    DateTime DATETIME2 NOT NULL DEFAULT GETDATE(),
+    Title NVARCHAR(50) NOT NULL,
+    Message NVARCHAR(500) NOT NULL,
+    Type NVARCHAR(50) NOT NULL,
+    IsRead BIT NOT NULL DEFAULT 0,
+    RedirectUrl NVARCHAR(255) NULL,
+    ReferenceId INT NULL,
+    BranchId INT NULL,
+    UserId INT NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
 
 INSERT INTO UnitOfMeasure (Name, Symbol)
 VALUES ('Kilogram', 'kg'),
@@ -926,3 +942,6 @@ SELECT 1, PermissionId FROM Permissions;
 
 UPDATE Users
 SET HasWarehousePermission = 1;
+
+INSERT INTO Notifications (Message, Title, Type,IsRead, RedirectUrl, ReferenceId, BranchId, UserId)
+VALUES ('Requisition received from Korangi Branch', 'Received Requisition', 'Requisition', 0, 'https://example.com/update', NULL, 0, 1);

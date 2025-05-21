@@ -137,7 +137,12 @@
                 type: 'POST',
                 data: { orderId: orderId, status: status },
                 success: function (response) {
-                    loadOrders();
+                    if (response.success) {
+                        loadOrders();
+                    }
+                    else {
+                        alert(@TempData["ErrorMessage"])
+                    }   
                 }
             });
         }

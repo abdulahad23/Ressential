@@ -23,7 +23,16 @@
                         @TempData["SuccessMessage"]
                     </div>
                 }
-                <h2 class="text-secondary"><b>Order Details</b></h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2 class="text-secondary"><b>Order Details</b></h2>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="button" class="btn btn-secondary" onclick="printReceipt(@Model.OrderId)">
+                            <i class="bi bi-printer"></i> Print Receipt
+                        </button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-floating mb-3 mt-3">
@@ -110,3 +119,162 @@
         </div>
     </div>
 </div>
+
+<script>
+    function printReceipt(OrderId) {
+        $.ajax({
+            url: '@Url.Action("GetOrderReceiptData", "Kitchen")',
+            type: 'GET',
+            data: { orderId: OrderId },
+            success: function (response) {
+                if (response.success) {
+                    const printWindow = window.open('', '_blank', 'width=800,height=600');
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Print Receipt</title>
+                            <style>
+                                @@media print {
+                                    body {
+                                        margin: 0;
+                                        padding: 0;
+                                        width: 80mm;
+                                        -webkit-print-color-adjust: exact !important;
+                                        print-color-adjust: exact !important;
+                                    }
+                                    @@page {
+                                        size: 80mm auto;
+                                        margin: 0;
+                                    }
+                                    * {
+                                        font-family: 'Arial', sans-serif !important;
+                                        color: black !important;
+                                        -webkit-print-color-adjust: exact !important;
+                                        print-color-adjust: exact !important;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td, th {
+                                        padding: 2px 0;
+                                    }
+                                    img {
+                                        -webkit-filter: contrast(150%) brightness(100%);
+                                        filter: contrast(150%) brightness(100%);
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div id="receipt" style="width: 70mm; font-family: 'Arial', sans-serif; margin: 0 auto; padding: 10px 20px 30px 20px;">
+                                <div style="text-align: center; margin-bottom: 10px;">
+                                    <img src="${response.branchLogo}" alt="Branch Logo" style="max-width: 60%; height: auto; filter: contrast(150%) brightness(100%);" />
+                                    <h2 style="margin: 10px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">${response.branchName}</h2>
+                                </div>
+                                <div style="text-align: center; margin-bottom: 10px;">
+                                    <p style="margin: 0; font-size: 14px;">${response.branchName}</p>
+                                    <p style="margin: 0; font-size: 12px;">${response.branchAddress}</p>
+                                    <p style="margin: 0; font-size: 12px;">Contact: ${response.branchPhone}</p>
+                                </div>
+                                <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; padding: 8px 0; margin-bottom: 10px;">
+                                    <table style="width: 100%; font-size: 12px;">
+                                        <tr>
+                                            <td style="width: 50%;">Order #: <span style="font-weight: bold;">${response.orderNo}</span></td>
+                                            <td style="width: 50%; text-align: right;">Date: ${response.orderDate}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Type: ${response.orderType}</td>
+                                            <td style="text-align: right;">Time: ${response.orderTime}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>${response.orderType === 'Online' ? '' : 'Staff: ' + response.staffName}</td>
+                                            <td style="text-align: right;">${response.orderType === 'DineIn' ? 'Table #: ' + response.tableNo : ''}</td>
+                                        </tr>
+                                        ${response.orderType === 'Online' ? `
+                                        <tr style="margin: 5px 0px 0px 0px;">
+                                            <td colspan="2">Customer: ${response.customerName}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Contact: ${response.customerContact}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">Address: ${response.customerAddress}</td>
+                                        </tr>
+                                        ` : ''}
+                                    </table>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                                        <thead>
+                                            <tr style="border-bottom: 1px dashed black;">
+                                                <th style="text-align: left; padding-bottom: 5px; font-weight: bold;">Item</th>
+                                                <th style="text-align: center; padding-bottom: 5px; font-weight: bold;">Qty</th>
+                                                <th style="text-align: right; padding-bottom: 5px; font-weight: bold;">Price</th>
+                                                <th style="text-align: right; padding-bottom: 5px; font-weight: bold;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${response.items.map(item => `
+                                                <tr style="padding: 4px 0;">
+                                                    <td style="text-align: left; padding: 3px 0;">${item.name}</td>
+                                                    <td style="text-align: center; padding: 3px 0;">${item.quantity}</td>
+                                                    <td style="text-align: right; padding: 3px 0;">Rs ${item.price.toFixed(2)}</td>
+                                                    <td style="text-align: right; padding: 3px 0;">Rs ${item.total.toFixed(2)}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="border-top: 1px dashed black; padding-top: 8px; margin-bottom: 10px;">
+                                    <table style="width: 100%; font-size: 12px;">
+                                        <tr>
+                                            <td style="width: 60%; text-align: right;">Subtotal:</td>
+                                            <td style="width: 40%; text-align: right;">Rs ${response.subtotal.toFixed(2)}</td>
+                                        </tr>
+                                        ${response.orderType === 'Online' ? `
+                                        <tr>
+                                            <td style="text-align: right;">Delivery Fee:</td>
+                                            <td style="text-align: right;">Rs ${response.deliveryCharges.toFixed(2)}</td>
+                                        </tr>
+                                        ` : ''}
+                                        <tr>
+                                            <td style="text-align: right; font-weight: bold;">Grand Total:</td>
+                                            <td style="text-align: right; font-weight: bold;">Rs ${response.grandTotal.toFixed(2)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: right;">Payment Method:</td>
+                                            <td style="text-align: right;">${response.paymentMethod}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="text-align: center; margin-top: 45px; margin-bottom: 30px; font-size: 12px;">
+                                    <img src="${response.qrCode}" alt="QR Code" style="max-width: 30%; height: auto; margin:0px 0px 10px 0px;" />
+                                    <p style="margin: 0;">Thank you for your order!</p>
+                                    <p style="margin: 5px 0;">Please visit us again</p>
+                                    <p style="margin: 25px 0;">.</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    printWindow.onload = function() {
+                        printWindow.focus();
+                        setTimeout(function() {
+                            printWindow.print();
+                            setTimeout(function() {
+                                printWindow.close();
+                            }, 1000);
+                        }, 500);
+                    };
+                } else {
+                    alert(response.message || "Failed to generate receipt.");
+                }
+            },
+            error: function() {
+                alert("An error occurred while generating the receipt.");
+            }
+        });
+    }
+</script>

@@ -15,6 +15,13 @@ using System.Data.Entity.Migrations;
 using System.Data.Entity.Validation;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Text;
+using OfficeOpenXml;
+using System.ComponentModel;
+using Microsoft.AspNet.SignalR;
+using AuthorizeAttribute = System.Web.Mvc.AuthorizeAttribute;
 
 namespace Ressential.Controllers
 {
@@ -27,6 +34,53 @@ namespace Ressential.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+        public ActionResult GetUnreadNotifications()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var notifications = _db.Notifications
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .ToList();
+
+            return PartialView("_NotificationsPartial", notifications);
+        }
+        [HttpPost]
+        public JsonResult MarkAsRead(int notificationId)
+        {
+            var notification = _db.Notifications.SingleOrDefault(n => n.NotificationId == notificationId);
+            if (notification != null)
+            {
+                notification.IsRead = true;
+                _db.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        public JsonResult GetUnreadNotificationCount()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var count = _db.Notifications
+                .Count(n => n.UserId == currentUserId && !n.IsRead);
+
+            return Json(new { count }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult MarkAllAsRead()
+        {
+            int currentUserId = Convert.ToInt32(Helper.GetUserInfo("userId"));
+            var notifications = _db.Notifications
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .ToList();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            _db.SaveChanges();
+            return Json(new { success = true });
         }
 
         #region ItemCategory
@@ -296,9 +350,19 @@ namespace Ressential.Controllers
                 _db.SaveChanges();
                 TempData["SuccessMessage"] = "Item updated successfully.";
             }
-            catch
+            catch (DbEntityValidationException ex)
             {
-                TempData["ErrorMessage"] = "An error occurred while updating the Item.";
+                // Log validation errors
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        // Log property name and error message
+                        System.Diagnostics.Debug.WriteLine($"Entity: {validationError.Entry.Entity.GetType().Name}, Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                TempData["ErrorMessage"] = "An error occurred while updating the Item. Please check the logs for details.";
             }
             return RedirectToAction("ItemList");
         }
@@ -1544,7 +1608,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (existingDetail.Quantity * existingDetail.UnitPrice) + (newDetail.Quantity * newDetail.UnitPrice)) / warehouseItemStock.Quantity; //Updated Per Unit Cost
                             }
-                            
+                            var Notifications = CheckStockLevel(warehouseItemStock.ItemId);
+                            SendStockLevelNotifications(Notifications);
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
                             existingDetails.Remove(existingDetail); // Remove from existing list once matched
                         }
@@ -1590,6 +1655,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
                             }
+                            var Notifications = CheckStockLevel(item.ItemId);
+                            SendStockLevelNotifications(Notifications);
                         }
                         _db.PurchaseDetails.RemoveRange(existingDetails);
                     }
@@ -1655,6 +1722,8 @@ namespace Ressential.Controllers
                         {
                             warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                         }
+                        var Notifications = CheckStockLevel(item.ItemId);
+                        SendStockLevelNotifications(Notifications);
                     }
                 }
                 _db.PurchaseDetails.RemoveRange(purchaseDetails);
@@ -1706,6 +1775,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) - (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                             }
+                            var Notifications = CheckStockLevel(item.ItemId);
+                            SendStockLevelNotifications(Notifications);
                         }
                     }
 
@@ -1788,6 +1859,8 @@ namespace Ressential.Controllers
                         }
 
                         _db.WarehouseItemStocks.AddOrUpdate(currentItemStock);
+                        var Notifications = CheckStockLevel(purchaseReturnDetails.ItemId);
+                        SendStockLevelNotifications(Notifications);
                     }
                     _db.SaveChanges();
 
@@ -1918,7 +1991,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((revertedTotalCost - newTotalCost) / warehouseItemStock.Quantity);
                             }
-
+                            var Notifications = CheckStockLevel(newDetail.ItemId);
+                            SendStockLevelNotifications(Notifications);
                             _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
                             existingDetails.Remove(existingDetail); // Remove from existing list once matched
                         }
@@ -1943,7 +2017,6 @@ namespace Ressential.Controllers
                                 var totalCostAfterChange = totalCostBeforeChange + (newDetail.Quantity * newDetail.UnitPrice);
                                 warehouseItemStock.CostPerUnit = totalCostAfterChange / warehouseItemStock.Quantity;
                             }
-
                             existingPurchaseReturn.PurchaseReturnDetails.Add(newDetail); // Add new detail
                         }
                     }
@@ -1969,6 +2042,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / (warehouseItemStock.Quantity == 0 ? 1 : warehouseItemStock.Quantity);
                             }
+                            var Notifications = CheckStockLevel(item.ItemId);
+                            SendStockLevelNotifications(Notifications);
                         }
                         _db.PurchaseReturnDetails.RemoveRange(existingDetails);
                     }
@@ -2034,6 +2109,8 @@ namespace Ressential.Controllers
                         {
                             warehouseItemStock.CostPerUnit = ((currentQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                         }
+                        var Notifications = CheckStockLevel(item.ItemId);
+                        SendStockLevelNotifications(Notifications);
                     }
                 }
                 _db.PurchaseReturnDetails.RemoveRange(purchaseReturnDetails);
@@ -2091,6 +2168,8 @@ namespace Ressential.Controllers
                             {
                                 warehouseItemStock.CostPerUnit = ((oldQuantity * warehouseItemStock.CostPerUnit) + (item.Quantity * item.UnitPrice)) / warehouseItemStock.Quantity;
                             }
+                            var Notifications = CheckStockLevel(item.ItemId);
+                            SendStockLevelNotifications(Notifications);
                         }
                     }
 
@@ -2279,6 +2358,8 @@ namespace Ressential.Controllers
                         };
                         warehouseIssueDetails.Add(warehouseIssueDetail);
                         warehouseItemStock.Quantity = warehouseItemStock.Quantity - item.IssuedQuantity;
+                        var Notifications = CheckStockLevel(item.ItemId);
+                        SendStockLevelNotifications(Notifications);
                     }
                     if (isSettled)
                     {
@@ -2288,6 +2369,50 @@ namespace Ressential.Controllers
 
                     _db.WarehouseIssues.Add(warehouseIssue);
                     _db.SaveChanges();
+
+                    // Send notifications to users with branch permissions
+                    var branchId = requisition.BranchId;
+                    var usersWithPermission = _db.UserBranchPermissions
+                        .Where(ubp => ubp.BranchId == branchId)
+                        .Select(ubp => ubp.UserId)
+                        .ToList();
+
+                    var issueNotifications = new List<Notification>();
+                    foreach (var userId in usersWithPermission)
+                    {
+                        var user = _db.Users.Find(userId);
+                        if (user != null)
+                        {
+                            var notification = new Notification
+                            {
+                                DateTime = DateTime.Now,
+                                Title = "New Issue Created",
+                                Message = $"A new issue has been created for requisition #{requisition.RequisitionNo} from {requisition.Branch.BranchName}",
+                                RedirectUrl = $"/Kitchen/ViewIssue?IssueId={warehouseIssue.IssueId}",
+                                Type = "Issue Alert",
+                                IsRead = false,
+                                BranchId = branchId,
+                                UserId = userId,
+                                ReferenceId = warehouseIssue.IssueId
+                            };
+                            issueNotifications.Add(notification);
+                        }
+                    }
+
+                    if (issueNotifications.Any())
+                    {
+                        _db.Notifications.AddRange(issueNotifications);
+                        _db.SaveChanges();
+
+                        // Send real-time notifications via SignalR
+                        var hubContext = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<Hub.RessentialHub>();
+                        foreach (var notification in issueNotifications)
+                        {
+                            hubContext.Clients.Client(notification.User?.ConnectionId)
+                                .receiveStockAlert(notification.Title, notification.Message, notification.NotificationId, notification.RedirectUrl);
+                        }
+                    }
+
                     TempData["SuccessMessage"] = "Warehouse Issue Created Successfully!";
                     return Json(new { success = true });
                 }
@@ -2420,6 +2545,8 @@ namespace Ressential.Controllers
                         existingDetail.Quantity = detail.IssuedQuantity;
                         existingDetail.CostApplied = warehouseItemStock.CostPerUnit;
                     }
+                    var Notifications = CheckStockLevel(detail.ItemId);
+                    SendStockLevelNotifications(Notifications);
                 }
                 if (isSettled)
                 {
@@ -3437,6 +3564,12 @@ namespace Ressential.Controllers
             {
                 var claimsIdentity = User.Identity as ClaimsIdentity;
 
+                // Retrieve the last selected branch from the session or database
+                var lastSelectedBranchId = Session["LastSelectedBranchId"] as int?;
+
+                // If no branch was previously selected, default to the first accessible branch
+                var selectedBranchId = lastSelectedBranchId ?? accessibleBranches[0].BranchId;
+
                 // Remove existing branch claim if exists
                 var existingClaim = claimsIdentity?.FindFirst("BranchId");
                 if (existingClaim != null)
@@ -3445,7 +3578,7 @@ namespace Ressential.Controllers
                 }
 
                 // Add the new branch claim
-                claimsIdentity?.AddClaim(new Claim("BranchId", accessibleBranches[0].BranchId.ToString()));
+                claimsIdentity?.AddClaim(new Claim("BranchId", selectedBranchId.ToString()));
 
                 // Update the authentication cookie
                 var ctx = Request.GetOwinContext();
@@ -3454,13 +3587,2379 @@ namespace Ressential.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     new AuthenticationProperties() { IsPersistent = true }
                 );
-                return RedirectToAction("Index","Kitchen");
+
+                // Store the selected branch in the session
+                Session["LastSelectedBranchId"] = selectedBranchId;
+
+                return RedirectToAction("Index", "Kitchen");
             }
             else
             {
                 return RedirectToAction("Unauthorized", "Account");
             }
+        }
 
+        public List<Notification> CheckStockLevel(int itemId)
+        {
+            var notifications = new List<Notification>();
+            var item = _db.Items.Find(itemId);
+            if (item != null)
+            {
+                var warehouseItemStock = _db.WarehouseItemStocks.Find(itemId);
+                
+                // Define notification type and message based on stock level
+                string notificationType = null;
+                string title = null;
+                string message = null;
+                string newStockLevelState = null;
+                
+                if (warehouseItemStock.Quantity == 0)
+                {
+                    notificationType = "Out of Stock";
+                    title = "Out of Stock";
+                    message = item.Sku + " - " + item.ItemName + " is out of stock.";
+                    newStockLevelState = "OutOfStock";
+                }
+                else if (warehouseItemStock.Quantity < item.MinimumStockLevel)
+                {
+                    notificationType = "Low Stock";
+                    title = "Low Stock";
+                    message = item.Sku + " - " + item.ItemName + " is low in stock.";
+                    newStockLevelState = "LowStock";
+                }
+                else
+                {
+                    newStockLevelState = "Normal";
+                }
+                
+                // Only create notifications if the stock level state has changed
+                if (notificationType != null && item.StockLevelState != newStockLevelState)
+                {
+                    // Create a notification for each user with warehouse permission
+                    var users = _db.Users.Where(u => u.HasWarehousePermission);
+                    foreach (var user in users)
+                    {
+                        var userNotification = new Notification
+                        {
+                            DateTime = DateTime.Now,
+                            Title = title,
+                            Message = message,
+                            RedirectUrl = "/Warehouse/ItemList?search=" + item.Sku,
+                            Type = "Stock Level Alert",
+                            IsRead = false,
+                            BranchId = 0,
+                            UserId = user.UserId,
+                            ReferenceId = itemId
+                        };
+                        notifications.Add(userNotification);
+                    }
+
+                    // Update the item's stock level state
+                    item.StockLevelState = newStockLevelState;
+                    _db.Entry(item).State = EntityState.Modified;
+                }
+            }
+            return notifications;
+        }
+
+        #region Vendor Ledger
+        public ActionResult VendorLedger()
+        {
+            ViewBag.Vendors = new SelectList(_db.Vendors.OrderBy(v => v.Name), "VendorId", "Name");
+            ViewBag.Accounts = new SelectList(_db.Accounts.Where(a => a.AccountType == "Bank" || a.AccountType == "Cash").OrderBy(a => a.AccountTitle), "AccountId", "AccountTitle");
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GenerateVendorLedgerReport(int vendorId, DateTime? fromDate, DateTime? toDate, int? accountId)
+        {
+            try
+            {
+                // If vendorId is 0, it means "All Vendors"
+                string vendorName = "All Vendors";
+                
+                // Get vendor information if specific vendor selected
+                if (vendorId > 0)
+                {
+                    var vendor = _db.Vendors.Find(vendorId);
+                    if (vendor == null)
+                    {
+                        TempData["ErrorMessage"] = "Vendor not found.";
+                        return RedirectToAction("VendorLedger");
+                    }
+                    vendorName = vendor.Name;
+                }
+
+                // Setup ViewBag data
+                ViewBag.VendorName = vendorName;
+                ViewBag.VendorId = vendorId;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.AccountId = accountId;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = false;
+
+                // Get vendor ledger data
+                var ledgerData = GetVendorLedgerData(vendorId, fromDate, toDate, accountId);
+
+                return View("VendorLedgerReport", ledgerData);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating report: {ex.Message}";
+                return RedirectToAction("VendorLedger");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportVendorLedgerToPDF(int vendorId, DateTime? fromDate, DateTime? toDate, int? accountId)
+        {
+            try
+            {
+                // If vendorId is 0, it means "All Vendors"
+                string vendorName = "All Vendors";
+                string fileName = "All_Vendors";
+                
+                // Get vendor information if specific vendor selected
+                if (vendorId > 0)
+                {
+                    var vendor = _db.Vendors.Find(vendorId);
+                    if (vendor == null)
+                    {
+                        TempData["ErrorMessage"] = "Vendor not found.";
+                        return RedirectToAction("VendorLedger");
+                    }
+                    vendorName = vendor.Name;
+                    fileName = vendor.Name;
+                }
+
+                // Setup ViewBag data
+                ViewBag.VendorName = vendorName;
+                ViewBag.VendorId = vendorId;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.AccountId = accountId;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+
+                // Get vendor ledger data
+                var ledgerData = GetVendorLedgerData(vendorId, fromDate, toDate, accountId);
+
+                // Generate PDF
+                var pdfResult = new Rotativa.ViewAsPdf("VendorLedgerReport", ledgerData)
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    FileName = $"Vendor_Ledger_{fileName}_{DateTime.Now:yyyyMMdd}.pdf"
+                };
+
+                return pdfResult;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating PDF: {ex.Message}";
+                return RedirectToAction("VendorLedger");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportVendorLedgerToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, int? accountId)
+        {
+            try
+            {
+                // If vendorId is 0, it means "All Vendors"
+                string vendorName = "All Vendors";
+                string fileName = "All_Vendors";
+                
+                // Get vendor information if specific vendor selected
+                if (vendorId > 0)
+                {
+                    var vendor = _db.Vendors.Find(vendorId);
+                    if (vendor == null)
+                    {
+                        TempData["ErrorMessage"] = "Vendor not found.";
+                        return RedirectToAction("VendorLedger");
+                    }
+                    vendorName = vendor.Name;
+                    fileName = vendor.Name;
+                }
+
+                // Set ViewBag values in case we need to render a view
+                ViewBag.VendorName = vendorName;
+                ViewBag.VendorId = vendorId;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.AccountId = accountId;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = false;
+
+                // Get vendor ledger data
+                var ledgerData = GetVendorLedgerData(vendorId, fromDate, toDate, accountId);
+
+
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new ExcelPackage())
+                {
+                    // Add a worksheet
+                    var worksheet = package.Workbook.Worksheets.Add("Vendor Ledger");
+                    
+                    // Set document properties
+                    package.Workbook.Properties.Title = "Vendor Ledger Report";
+                    package.Workbook.Properties.Author = "Ressential";
+                    package.Workbook.Properties.Company = "Ressential";
+                    package.Workbook.Properties.Created = DateTime.Now;
+                    
+                    // Set column widths for better readability
+                    worksheet.Column(1).Width = 6;      // S.No
+                    worksheet.Column(2).Width = 18;     // Reference No.
+                    worksheet.Column(3).Width = 12;     // Date
+                    worksheet.Column(4).Width = 25;     // Vendor Name
+                    worksheet.Column(5).Width = 25;     // Memo
+                    worksheet.Column(6).Width = 20;     // Account
+                    worksheet.Column(7).Width = 18;     // Instrument No.
+                    worksheet.Column(8).Width = 15;     // Instrument Date
+                    worksheet.Column(9).Width = 14;     // Dr
+                    worksheet.Column(10).Width = 14;    // Cr
+                    worksheet.Column(11).Width = 14;    // Balance
+                    
+                    // Professional color scheme
+                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
+                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
+                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
+                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
+                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
+                    
+                    // Add company logo placeholder and title (row 1)
+                    worksheet.Cells[1, 1, 1, 11].Merge = true;
+                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
+                    worksheet.Cells[1, 1].Style.Font.Size = 20;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
+                    worksheet.Row(1).Height = 30; // Increase row height
+                    
+                    // Add report title (row 2)
+                    worksheet.Cells[2, 1, 2, 11].Merge = true;
+                    worksheet.Cells[2, 1].Value = "Vendor Ledger Report";
+                    worksheet.Cells[2, 1].Style.Font.Size = 16;
+                    worksheet.Cells[2, 1].Style.Font.Bold = true;
+                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Row(2).Height = 25; // Increase row height
+                    
+                    // Empty row for spacing
+                    worksheet.Row(3).Height = 10;
+                    
+                    // Report information section with styled boxes (rows 4-5)
+                    // Vendor info (left box)
+                    worksheet.Cells[4, 1, 4, 3].Merge = true;
+                    worksheet.Cells[4, 1].Value = "VENDOR";
+                    worksheet.Cells[4, 1].Style.Font.Bold = true;
+                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 1, 5, 3].Merge = true;
+                    worksheet.Cells[5, 1].Value = vendorName;
+                    worksheet.Cells[5, 1].Style.Font.Size = 11;
+                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Date range (middle box)
+                    worksheet.Cells[4, 5, 4, 7].Merge = true;
+                    worksheet.Cells[4, 5].Value = "DATE RANGE";
+                    worksheet.Cells[4, 5].Style.Font.Bold = true;
+                    worksheet.Cells[4, 5].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 5].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 5].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 5].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 5, 5, 7].Merge = true;
+                    worksheet.Cells[5, 5].Value = $"{(fromDate?.ToString("yyyy-MM-dd") ?? "All")} to {(toDate?.ToString("yyyy-MM-dd") ?? "All")}";
+                    worksheet.Cells[5, 5].Style.Font.Size = 11;
+                    worksheet.Cells[5, 5].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 5].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 5].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Generated info (right box)
+                    worksheet.Cells[4, 9, 4, 11].Merge = true;
+                    worksheet.Cells[4, 9].Value = "GENERATED ON";
+                    worksheet.Cells[4, 9].Style.Font.Bold = true;
+                    worksheet.Cells[4, 9].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 9].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 9].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 9, 5, 11].Merge = true;
+                    worksheet.Cells[5, 9].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    worksheet.Cells[5, 9].Style.Font.Size = 11;
+                    worksheet.Cells[5, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 9].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Space before data
+                    worksheet.Row(6).Height = 15;
+                    
+                    // Add table headers (row 7)
+                    string[] headers = new string[] { "S.No", "Reference No.", "Date", "Vendor Name", "Memo", "Account", "Instrument No.", "Instrument Date", "Dr", "Cr", "Balance" };
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        var cell = worksheet.Cells[7, i + 1];
+                        cell.Value = headers[i];
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
+                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                    }
+                    worksheet.Row(7).Height = 22; // Increase header row height
+                    
+                    // Freeze panes for better navigation (fix header row)
+                    worksheet.View.FreezePanes(8, 1);
+                    
+                    // Add data rows (starting at row 8)
+                    int row = 8;
+                    int serialNo = 1;
+                    foreach (var item in ledgerData)
+                    {
+                        // Check if this is the opening balance row
+                        bool isOpeningBalance = item.ReferenceNo == "OPENING";
+
+                        // Add cell values
+                        worksheet.Cells[row, 1].Value = isOpeningBalance ? (object)"" : serialNo++;
+                        worksheet.Cells[row, 2].Value = item.ReferenceNo;
+                        worksheet.Cells[row, 3].Value = item.Date;
+                        worksheet.Cells[row, 4].Value = item.VendorName;
+                        worksheet.Cells[row, 5].Value = item.Memo;
+                        worksheet.Cells[row, 6].Value = item.Account;
+                        worksheet.Cells[row, 7].Value = item.InstrumentNo;
+                        worksheet.Cells[row, 8].Value = item.InstrumentDate;
+                        worksheet.Cells[row, 9].Value = item.Dr;
+                        worksheet.Cells[row, 10].Value = item.Cr;
+                        worksheet.Cells[row, 11].Value = item.Balance;
+                        
+                        // Format cells
+                        worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, 3].Style.Numberformat.Format = "yyyy-mm-dd";
+                        worksheet.Cells[row, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        
+                        if (item.InstrumentDate.HasValue)
+                        {
+                            worksheet.Cells[row, 8].Style.Numberformat.Format = "yyyy-mm-dd";
+                            worksheet.Cells[row, 8].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                        
+                        // Format currency columns with right alignment and thousands separator
+                        worksheet.Cells[row, 9].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[row, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                        worksheet.Cells[row, 10].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[row, 10].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                        worksheet.Cells[row, 11].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[row, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                        
+                        // Apply thin borders to all cells in the row
+                        for (int i = 1; i <= 11; i++)
+                        {
+                            worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        }
+                        
+                        // Special formatting for opening balance row
+                        if (isOpeningBalance)
+                        {
+                            // Merge cells for opening balance description
+                            worksheet.Cells[row, 2, row, 8].Merge = true;
+                            worksheet.Cells[row, 2].Value = "Opening Balance as of " + item.Date.ToString("yyyy-MM-dd");
+                            worksheet.Cells[row, 2].Style.Font.Bold = true;
+                            worksheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Left;
+                            
+                            // Style the opening balance row
+                            var openingRowRange = worksheet.Cells[row, 1, row, 11];
+                            openingRowRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            openingRowRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(235, 241, 222)); // Light green
+                            openingRowRange.Style.Font.Bold = true;
+                            
+                            // Add a thicker border around the opening balance row
+                            openingRowRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium, System.Drawing.Color.FromArgb(17, 120, 100)); // Dark green
+                        }
+                        else
+                        {
+                            // Apply alternating row color for regular rows
+                            if (serialNo % 2 == 0)
+                            {
+                                var rowRange = worksheet.Cells[row, 1, row, 11];
+                                rowRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                rowRange.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                            }
+                        }
+                        
+                        row++;
+                    }
+                    
+                    // Add total row with enhanced styling
+                    // Add a separator line before totals
+                    var separatorRow = row;
+                    worksheet.Cells[separatorRow, 1, separatorRow, 11].Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    worksheet.Cells[separatorRow, 1, separatorRow, 11].Style.Border.Top.Color.SetColor(headerBackground);
+                    
+                    // Totals row
+                    worksheet.Cells[row, 1, row, 8].Merge = true;
+                    worksheet.Cells[row, 1].Value = "TOTAL";
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                    
+                    worksheet.Cells[row, 9].Formula = $"SUM(I8:I{row-1})";
+                    worksheet.Cells[row, 9].Style.Numberformat.Format = "#,##0.00";
+                    worksheet.Cells[row, 9].Style.Font.Bold = true;
+                    worksheet.Cells[row, 9].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                    
+                    worksheet.Cells[row, 10].Formula = $"SUM(J8:J{row-1})";
+                    worksheet.Cells[row, 10].Style.Numberformat.Format = "#,##0.00";
+                    worksheet.Cells[row, 10].Style.Font.Bold = true;
+                    worksheet.Cells[row, 10].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                    
+                    worksheet.Cells[row, 11].Formula = $"I{row}-J{row}";
+                    worksheet.Cells[row, 11].Style.Numberformat.Format = "#,##0.00";
+                    worksheet.Cells[row, 11].Style.Font.Bold = true;
+                    worksheet.Cells[row, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                    
+                    // Style the total row
+                    var totalRowRange = worksheet.Cells[row, 1, row, 11];
+                    totalRowRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    totalRowRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
+                    totalRowRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium, headerBackground);
+                    worksheet.Row(row).Height = 22; // Increase total row height
+                    
+                    // Add a footer with company info (2 rows after totals)
+                    row += 2;
+                    worksheet.Cells[row, 1, row, 11].Merge = true;
+                    worksheet.Cells[row, 1].Value = "© Ressential - Generated by Financial Management System";
+                    worksheet.Cells[row, 1].Style.Font.Size = 10;
+                    worksheet.Cells[row, 1].Style.Font.Italic = true;
+                    worksheet.Cells[row, 1].Style.Font.Color.SetColor(System.Drawing.Color.FromArgb(100, 100, 100));
+                    worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    // Apply professional print settings
+                    worksheet.PrinterSettings.FitToPage = true;
+                    worksheet.PrinterSettings.FitToWidth = 1;
+                    worksheet.PrinterSettings.FitToHeight = 0;
+                    worksheet.PrinterSettings.Orientation = eOrientation.Landscape;
+                    worksheet.PrinterSettings.RepeatRows = new OfficeOpenXml.ExcelAddress("7:7"); // Repeat header row on each page
+                    worksheet.PrinterSettings.PrintArea = worksheet.Cells[1, 1, row, 11];
+                    
+                    // Convert to bytes
+                    byte[] fileBytes = package.GetAsByteArray();
+                    string excelFileName = $"Vendor_Ledger_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx";
+                    
+                    // Return file
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating Excel: {ex.Message}";
+                return RedirectToAction("VendorLedger");
+            }
+        }
+
+        private List<VendorLedgerViewModel> GetVendorLedgerData(int vendorId, DateTime? fromDate, DateTime? toDate, int? accountId)
+        {
+            // Handle vendorId=0 (All Vendors)
+            var isAllVendors = vendorId == 0;
+            // Handle accountId=0 (All Accounts)
+            var isAllAccounts = !accountId.HasValue || accountId == 0;
+
+            // First, calculate the opening balance (all transactions BEFORE fromDate)
+            decimal openingBalance = 0;
+            if (fromDate.HasValue)
+            {
+                // Purchases before fromDate
+                var purchasesBefore = _db.Purchases
+                    .Where(p => (isAllVendors || p.VendorId == vendorId) &&
+                               p.PurchaseDate < fromDate)
+                    .Sum(p => (decimal?)p.PurchaseDetails.Sum(d => d.Quantity * d.UnitPrice)) ?? 0;
+
+                // Purchase Returns before fromDate
+                var purchaseReturnsBefore = _db.PurchaseReturns
+                    .Where(pr => (isAllVendors || pr.VendorID == vendorId) &&
+                                pr.PurchaseReturnDate < fromDate)
+                    .Sum(pr => (decimal?)pr.PurchaseReturnDetails.Sum(d => d.Quantity * d.UnitPrice)) ?? 0;
+
+                // Payment Vouchers before fromDate
+                var paymentVouchersBefore = _db.PaymentVouchers
+                    .Where(pv => (isAllVendors || pv.VendorId == vendorId) &&
+                               pv.PaymentVoucherDate < fromDate &&
+                               (isAllAccounts || pv.AccountId == accountId))
+                    .Sum(pv => (decimal?)pv.Amount) ?? 0;
+
+                // Receipt Vouchers before fromDate
+                var receiptVouchersBefore = _db.ReceiptVouchers
+                    .Where(rv => (isAllVendors || rv.VendorId == vendorId) &&
+                               rv.ReceiptVoucherDate < fromDate &&
+                               (isAllAccounts || rv.AccountId == accountId))
+                    .Sum(rv => (decimal?)rv.Amount) ?? 0;
+
+                // Calculate opening balance (Dr - Cr)
+                openingBalance = (purchasesBefore + receiptVouchersBefore) - (purchaseReturnsBefore + paymentVouchersBefore);
+            }
+
+            // Purchases - filter only if specific vendor selected
+            var purchases = _db.Purchases
+                .Where(p => (isAllVendors || p.VendorId == vendorId) &&
+                            (!fromDate.HasValue || p.PurchaseDate >= fromDate) &&
+                            (!toDate.HasValue || p.PurchaseDate <= toDate))
+                .Select(p => new VendorLedgerViewModel
+                {
+                    ReferenceNo = p.PurchaseNo,
+                    Date = p.PurchaseDate,
+                    VendorName = p.Vendor.Name,
+                    Memo = p.Memo,
+                    Account = null,
+                    InstrumentNo = null,
+                    InstrumentDate = null,
+                    Dr = p.PurchaseDetails.Sum(d => d.Quantity * d.UnitPrice),
+                    Cr = 0
+                }).ToList();
+
+            // Purchase Returns - filter only if specific vendor selected
+            var purchaseReturns = _db.PurchaseReturns
+                .Where(pr => (isAllVendors || pr.VendorID == vendorId) &&
+                             (!fromDate.HasValue || pr.PurchaseReturnDate >= fromDate) &&
+                             (!toDate.HasValue || pr.PurchaseReturnDate <= toDate))
+                .Select(pr => new VendorLedgerViewModel
+                {
+                    ReferenceNo = pr.PurchaseReturnNo,
+                    Date = pr.PurchaseReturnDate,
+                    VendorName = pr.Vendor.Name,
+                    Memo = pr.Memo,
+                    Account = null,
+                    InstrumentNo = null,
+                    InstrumentDate = null,
+                    Dr = 0,
+                    Cr = pr.PurchaseReturnDetails.Sum(d => d.Quantity * d.UnitPrice)
+                }).ToList();
+
+            // Payment Vouchers - filter by vendor and account (if specified)
+            var paymentVouchers = _db.PaymentVouchers
+                .Where(pv => (isAllVendors || pv.VendorId == vendorId) &&
+                             (!fromDate.HasValue || pv.PaymentVoucherDate >= fromDate) &&
+                             (!toDate.HasValue || pv.PaymentVoucherDate <= toDate) &&
+                           (isAllAccounts || pv.AccountId == accountId))
+                .Select(pv => new VendorLedgerViewModel
+                {
+                    ReferenceNo = pv.PaymentVoucherNo,
+                    Date = pv.PaymentVoucherDate,
+                    VendorName = pv.Vendor.Name,
+                    Memo = "",
+                    Account = pv.Account.AccountTitle,
+                    InstrumentNo = pv.InstrumentNo,
+                    InstrumentDate = pv.InstrumentDate,
+                    Dr = 0,
+                    Cr = pv.Amount
+                }).ToList();
+
+            // Receipt vouchers - filter by vendor and account (if specified)
+            var receiptVouchers = _db.ReceiptVouchers
+                .Where(rv => (isAllVendors || rv.VendorId == vendorId) &&
+                             (!fromDate.HasValue || rv.ReceiptVoucherDate >= fromDate) &&
+                             (!toDate.HasValue || rv.ReceiptVoucherDate <= toDate) &&
+                           (isAllAccounts || rv.AccountId == accountId))
+                .Select(rv => new VendorLedgerViewModel
+                {
+                    ReferenceNo = rv.ReceiptVoucherNo,
+                    Date = rv.ReceiptVoucherDate,
+                    VendorName = rv.Vendor.Name,
+                    Memo = "",
+                    Account = rv.Account.AccountTitle,
+                    InstrumentNo = rv.InstrumentNo,
+                    InstrumentDate = rv.InstrumentDate,
+                    Dr = rv.Amount,
+                    Cr = 0
+                }).ToList();
+
+            // Combine and order data
+            var vendorLedgerData = new List<VendorLedgerViewModel>();
+
+            // Add opening balance as first row if fromDate is specified
+            if (fromDate.HasValue)
+            {
+                vendorLedgerData.Add(new VendorLedgerViewModel
+                {
+                    ReferenceNo = "OPENING",
+                    Date = fromDate.Value.AddDays(-1),
+                    VendorName = isAllVendors ? "All Vendors" : _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name,
+                    Memo = "Opening Balance",
+                    Account = null,
+                    InstrumentNo = null,
+                    InstrumentDate = null,
+                    Dr = openingBalance > 0 ? openingBalance : 0,
+                    Cr = openingBalance < 0 ? Math.Abs(openingBalance) : 0,
+                    Balance = openingBalance
+                });
+            }
+
+            vendorLedgerData.AddRange(purchases);
+            vendorLedgerData.AddRange(purchaseReturns);
+            vendorLedgerData.AddRange(paymentVouchers);
+            vendorLedgerData.AddRange(receiptVouchers);
+            vendorLedgerData = vendorLedgerData.OrderBy(x => x.Date).ToList();
+
+            // Calculate running balance
+            decimal balance = fromDate.HasValue ? openingBalance : 0;
+            foreach (var entry in vendorLedgerData)
+            {
+                // Skip the opening balance row as its balance is already set
+                if (entry.ReferenceNo != "OPENING")
+            {
+                balance += entry.Dr - entry.Cr;
+                entry.Balance = balance;
+                }
+            }
+
+            return vendorLedgerData;
+        }
+        #endregion
+
+        #region Requisition Report
+
+        // Requisition Report Methods
+        
+        public ActionResult RequisitionReport()
+        {
+            // Populate branches for the dropdown
+            ViewBag.Branches = new SelectList(_db.Branches, "BranchId", "BranchName");
+            return View();
+        }
+        
+        [HttpGet]
+        public ActionResult GenerateRequisitionReport(int branchId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            // Set view bag data for the report
+            ViewBag.BranchId = branchId;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            ViewBag.Status = status;
+            ViewBag.ReportType = reportType ?? "summary";
+            ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            
+            // Get branch name
+            if (branchId > 0)
+            {
+                var branch = _db.Branches.Find(branchId);
+                ViewBag.BranchName = branch?.BranchName ?? "Unknown Branch";
+            }
+            else
+            {
+                ViewBag.BranchName = "All Branches";
+            }
+            ViewBag.StatusText = status;
+            // Get report data
+            var reportData = GetRequisitionReportData(branchId, fromDate, toDate, status, reportType);
+            
+            return View("RequisitionReportDisplay", reportData);
+        }
+        
+        [HttpGet]
+        public ActionResult ExportRequisitionReportToPDF(int branchId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                // Set branch name
+                string branchName = "All Branches";
+                string fileName = "All_Branches";
+
+                if (branchId > 0)
+                {
+                    var branch = _db.Branches.Find(branchId);
+                    if (branch == null)
+                    {
+                        TempData["ErrorMessage"] = "Branch not found.";
+                        return RedirectToAction("RequisitionReport");
+                    }
+                    branchName = branch.BranchName;
+                    fileName = branch.BranchName.Replace(" ", "_");
+                }
+
+                // Set ViewBag data
+                ViewBag.BranchName = branchName;
+                ViewBag.BranchId = branchId;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.Status = status;
+                ViewBag.ReportType = reportType ?? "summary";
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+
+                // Get report data
+                var reportData = GetRequisitionReportData(branchId, fromDate, toDate, status, reportType);
+
+                // Generate PDF
+                var pdfResult = new Rotativa.ViewAsPdf("RequisitionReportDisplay", reportData)
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    FileName = $"Requisition_Report_{fileName}_{DateTime.Now:yyyyMMdd}.pdf"
+                };
+
+                return pdfResult;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating PDF: {ex.Message}";
+                return RedirectToAction("RequisitionReport");
+            }
+        }
+
+
+        [HttpGet]
+        public ActionResult ExportRequisitionReportToExcel(int branchId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                // Get report data
+                var reportData = GetRequisitionReportData(branchId, fromDate, toDate, status, reportType);
+
+                // Set branch name
+                string branchName = "All Branches";
+                string fileName = "All_Branches";
+
+                if (branchId > 0)
+                {
+                    var branch = _db.Branches.Find(branchId);
+                    if (branch == null)
+                    {
+                        TempData["ErrorMessage"] = "Branch not found.";
+                        return RedirectToAction("RequisitionReport");
+                    }
+                    branchName = branch.BranchName;
+                    fileName = branch.BranchName.Replace(" ", "_");
+                }
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new ExcelPackage())
+                {
+                    // Add a worksheet
+                    var worksheet = package.Workbook.Worksheets.Add("Requisition Report");
+
+                    // Set document properties
+                    package.Workbook.Properties.Title = "Requisition Report";
+                    package.Workbook.Properties.Author = "Ressential";
+                    package.Workbook.Properties.Company = "Ressential";
+                    package.Workbook.Properties.Created = DateTime.Now;
+                    
+                    // Professional color scheme
+                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
+                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
+                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
+                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
+                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
+                    
+                    // Set column widths based on report type
+                    if (reportType == "summary")
+                    {
+                        // Summary report columns
+                        worksheet.Column(1).Width = 6;      // S.No
+                        worksheet.Column(2).Width = 18;     // Requisition No
+                        worksheet.Column(3).Width = 12;     // Date
+                        worksheet.Column(4).Width = 25;     // Branch Name
+                        worksheet.Column(5).Width = 40;     // Description
+                        worksheet.Column(6).Width = 15;     // Total Items
+                        worksheet.Column(7).Width = 15;     // Status
+                    }
+                    else
+                    {
+                        // Detailed report columns
+                        worksheet.Column(1).Width = 6;      // S.No
+                        worksheet.Column(2).Width = 18;     // Requisition No
+                        worksheet.Column(3).Width = 12;     // Date
+                        worksheet.Column(4).Width = 25;     // Branch Name
+                        worksheet.Column(5).Width = 25;     // Item Name
+                        worksheet.Column(6).Width = 10;     // Unit
+                        worksheet.Column(7).Width = 15;     // Requested Qty
+                        worksheet.Column(8).Width = 15;     // Issued Qty
+                        worksheet.Column(9).Width = 15;     // Remaining Qty
+                        worksheet.Column(10).Width = 15;    // Status
+                        worksheet.Column(11).Width = 25;    // Description
+                    }
+                    
+                    // Max columns for merging - depends on report type
+                    int maxCol = reportType == "summary" ? 7 : 11;
+                    
+                    // Add company logo placeholder and title (row 1)
+                    worksheet.Cells[1, 1, 1, maxCol].Merge = true;
+                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
+                    worksheet.Cells[1, 1].Style.Font.Size = 20;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
+                    worksheet.Row(1).Height = 30; // Increase row height
+                    
+                    // Add report title (row 2)
+                    worksheet.Cells[2, 1, 2, maxCol].Merge = true;
+                    worksheet.Cells[2, 1].Value = reportType == "summary" ? "Requisition Report (Summary)" : "Requisition Report (Detailed)";
+                    worksheet.Cells[2, 1].Style.Font.Size = 16;
+                    worksheet.Cells[2, 1].Style.Font.Bold = true;
+                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Row(2).Height = 25; // Increase row height
+                    
+                    // Empty row for spacing
+                    worksheet.Row(3).Height = 10;
+                    
+                    // Calculate box widths based on report type
+                    int box1End = reportType == "summary" ? 2 : 3;
+                    int box2Start = box1End + 1;
+                    int box2End = reportType == "summary" ? 5 : 8;
+                    int box3Start = box2End + 1;
+                    
+                    // Report information section with styled boxes (rows 4-5)
+                    // Branch info (left box)
+                    worksheet.Cells[4, 1, 4, box1End].Merge = true;
+                    worksheet.Cells[4, 1].Value = "BRANCH";
+                    worksheet.Cells[4, 1].Style.Font.Bold = true;
+                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 1, 5, box1End].Merge = true;
+                    worksheet.Cells[5, 1].Value = branchName;
+                    worksheet.Cells[5, 1].Style.Font.Size = 11;
+                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Date range (middle box)
+                    worksheet.Cells[4, box2Start, 4, box2End].Merge = true;
+                    worksheet.Cells[4, box2Start].Value = "DATE RANGE";
+                    worksheet.Cells[4, box2Start].Style.Font.Bold = true;
+                    worksheet.Cells[4, box2Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, box2Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, box2Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, box2Start, 5, box2End].Merge = true;
+                    worksheet.Cells[5, box2Start].Value = $"{(fromDate?.ToString("yyyy-MM-dd") ?? "All")} to {(toDate?.ToString("yyyy-MM-dd") ?? "All")}";
+                    worksheet.Cells[5, box2Start].Style.Font.Size = 11;
+                    worksheet.Cells[5, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, box2Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, box2Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Status info (right box)
+                    worksheet.Cells[4, box3Start, 4, maxCol].Merge = true;
+                    worksheet.Cells[4, box3Start].Value = "STATUS";
+                    worksheet.Cells[4, box3Start].Style.Font.Bold = true;
+                    worksheet.Cells[4, box3Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, box3Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, box3Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, box3Start, 5, maxCol].Merge = true;
+                    worksheet.Cells[5, box3Start].Value = status == "0" ? "All Status" : status;
+                    worksheet.Cells[5, box3Start].Style.Font.Size = 11;
+                    worksheet.Cells[5, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, box3Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, box3Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Space before data
+                    worksheet.Row(6).Height = 15;
+                    
+                    // Add table headers (row 7) based on report type
+                    string[] headers;
+                    if (reportType == "summary")
+                    {
+                        headers = new string[] { "S.No", "Requisition No", "Date", "Branch", "Description", "Total Items", "Status" };
+                    }
+                    else
+                    {
+                        headers = new string[] { 
+                            "S.No", "Requisition No", "Date", "Branch", "Item Name", "Unit", 
+                            "Requested Qty", "Issued Qty", "Remaining Qty", "Status", "Description" 
+                        };
+                    }
+                    
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        var cell = worksheet.Cells[7, i + 1];
+                        cell.Value = headers[i];
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
+                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                    }
+                    worksheet.Row(7).Height = 22; // Increase header row height
+                    
+                    // Freeze panes for better navigation (fix header row)
+                    worksheet.View.FreezePanes(8, 1);
+                    
+                    // Add data rows based on report type
+                    int currentRow = 8;
+                    int serialNo = 1;
+                    
+                    if (reportType == "summary")
+                    {
+                        // Summary report - one row per requisition
+                        foreach (var requisition in reportData)
+                        {
+                            // Apply alternating row background for better readability
+                            if (serialNo % 2 == 0)
+                            {
+                                var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
+                                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                            }
+                            
+                            // Total items - either count the items collection or use TotalItems property
+                            int totalItems = requisition.Items != null ? requisition.Items.Count : requisition.TotalItems;
+                            
+                            // Add row data - summary format
+                            worksheet.Cells[currentRow, 1].Value = serialNo++;
+                            worksheet.Cells[currentRow, 2].Value = requisition.RequisitionNo;
+                            worksheet.Cells[currentRow, 3].Value = requisition.Date.ToString("yyyy-MM-dd");
+                            worksheet.Cells[currentRow, 4].Value = requisition.BranchName;
+                            worksheet.Cells[currentRow, 5].Value = requisition.Description;
+                            worksheet.Cells[currentRow, 6].Value = totalItems;
+                            worksheet.Cells[currentRow, 7].Value = requisition.Status;
+                            
+                            // Format cells
+                            for (int i = 1; i <= maxCol; i++)
+                            {
+                                worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            }
+                            
+                            // Date format
+                            worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
+                            
+                            // Numeric format for total items
+                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0";
+                            
+                            currentRow++;
+                        }
+                        
+                        // Add summary row
+                        if (reportData.Any())
+                        {
+                            // Total row style
+                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
+                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
+                            totalRange.Style.Font.Bold = true;
+                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            
+                            // Total row content
+                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
+                            worksheet.Cells[currentRow, 1].Value = "Total Requisitions:";
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                            
+                            // Merge the last two cells
+                            worksheet.Cells[currentRow, 6, currentRow, 7].Merge = true;
+                            worksheet.Cells[currentRow, 6].Value = reportData.Count();
+                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0";
+                            worksheet.Cells[currentRow, 6].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            worksheet.Cells[currentRow, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                    }
+                    else
+                    {
+                        // Detailed report - multiple rows per requisition (one per item)
+                        foreach (var requisition in reportData)
+                        {
+                            if (requisition.Items != null && requisition.Items.Any())
+                            {
+                                foreach (var item in requisition.Items)
+                                {
+                                    // Apply alternating row background
+                                    if (serialNo % 2 == 0)
+                                    {
+                                        var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
+                                        range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                                    }
+                                    
+                                    // Add row data - detailed format
+                                    worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                    worksheet.Cells[currentRow, 2].Value = requisition.RequisitionNo;
+                                    worksheet.Cells[currentRow, 3].Value = requisition.Date.ToString("yyyy-MM-dd");
+                                    worksheet.Cells[currentRow, 4].Value = requisition.BranchName;
+                                    worksheet.Cells[currentRow, 5].Value = item.ItemName;
+                                    worksheet.Cells[currentRow, 6].Value = item.Unit;
+                                    worksheet.Cells[currentRow, 7].Value = item.RequestedQuantity;
+                                    worksheet.Cells[currentRow, 8].Value = item.IssuedQuantity;
+                                    worksheet.Cells[currentRow, 9].Value = item.RemainingQuantity;
+                                    worksheet.Cells[currentRow, 10].Value = requisition.Status;
+                                    worksheet.Cells[currentRow, 11].Value = requisition.Description;
+                                    
+                                    // Format cells
+                                    for (int i = 1; i <= maxCol; i++)
+                                    {
+                                        worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                                    }
+                                    
+                                    // Date format
+                                    worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
+                                    
+                                    // Numeric format
+                                    worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                                    
+                                    currentRow++;
+                                }
+                            }
+                            else
+                            {
+                                // Handle empty items list
+                                // Apply alternating row background
+                                if (serialNo % 2 == 0)
+                                {
+                                    var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
+                                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                    range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                                }
+                                
+                                // Add basic row data with empty item details
+                                worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                worksheet.Cells[currentRow, 2].Value = requisition.RequisitionNo;
+                                worksheet.Cells[currentRow, 3].Value = requisition.Date.ToString("yyyy-MM-dd");
+                                worksheet.Cells[currentRow, 4].Value = requisition.BranchName;
+                                worksheet.Cells[currentRow, 5].Value = "N/A";
+                                worksheet.Cells[currentRow, 6].Value = "N/A";
+                                worksheet.Cells[currentRow, 7].Value = 0;
+                                worksheet.Cells[currentRow, 8].Value = 0;
+                                worksheet.Cells[currentRow, 9].Value = 0;
+                                worksheet.Cells[currentRow, 10].Value = requisition.Status;
+                                worksheet.Cells[currentRow, 11].Value = requisition.Description;
+                                
+                                // Format cells
+                                for (int i = 1; i <= maxCol; i++)
+                                {
+                                    worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                                }
+                                
+                                // Date format
+                                worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
+                                
+                                // Numeric format
+                                worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                                worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                                worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                                
+                                currentRow++;
+                            }
+                        }
+                        
+                        // Add detailed report summary row
+                        if (reportData.Any())
+                        {
+                            // Total row style
+                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
+                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
+                            totalRange.Style.Font.Bold = true;
+                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            
+                            // Total row content
+                            worksheet.Cells[currentRow, 1, currentRow, 6].Merge = true;
+                            worksheet.Cells[currentRow, 1].Value = "TOTALS:";
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                            
+                            // Calculate totals for quantities
+                            decimal totalRequested = reportData.SelectMany(r => r.Items ?? new List<RequisitionItemViewModel>()).Sum(i => i.RequestedQuantity);
+                            decimal totalIssued = reportData.SelectMany(r => r.Items ?? new List<RequisitionItemViewModel>()).Sum(i => i.IssuedQuantity);
+                            decimal totalRemaining = reportData.SelectMany(r => r.Items ?? new List<RequisitionItemViewModel>()).Sum(i => i.RemainingQuantity);
+                            
+                            // Add total values
+                            worksheet.Cells[currentRow, 7].Value = totalRequested;
+                            worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                            worksheet.Cells[currentRow, 7].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            
+                            worksheet.Cells[currentRow, 8].Value = totalIssued;
+                            worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                            worksheet.Cells[currentRow, 8].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            
+                            worksheet.Cells[currentRow, 9].Value = totalRemaining;
+                            worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                            worksheet.Cells[currentRow, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                            
+                            // Total requisitions
+                            worksheet.Cells[currentRow, 10, currentRow, 11].Merge = true;
+                            worksheet.Cells[currentRow, 10].Value = $"Total Requisitions: {reportData.Count()}";
+                            worksheet.Cells[currentRow, 10].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                            worksheet.Cells[currentRow, 10].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        }
+                    }
+                    
+                    // Return the Excel file
+                    byte[] excelBytes = package.GetAsByteArray();
+                    return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"RequisitionReport_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating Excel: {ex.Message}";
+                return RedirectToAction("RequisitionReport");
+            }
+        }
+
+        private List<RequisitionReportViewModel> GetRequisitionReportData(int branchId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            // Start with base query
+            var query = _db.Requisitions
+                .Include(r => r.Branch)
+                .Include(r => r.RequisitionDetails.Select(rd => rd.Item))
+                .AsQueryable();
+
+            // Apply filters
+            if (branchId > 0)
+            {
+                query = query.Where(r => r.BranchId == branchId);
+            }
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(r => r.RequisitionDate >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(r => r.RequisitionDate <= toDate.Value);
+            }
+
+            if (status != "0")
+            {
+                query = query.Where(r => r.Status == status);
+            }
+
+            // Execute query and fetch data
+            var requisitions = query.ToList();
+
+            // Transform to view model
+            var result = requisitions.Select(r => new RequisitionReportViewModel
+            {
+                RequisitionId = r.RequisitionId,
+                RequisitionNo = r.RequisitionNo,
+                Date = r.RequisitionDate,
+                BranchName = r.Branch.BranchName,
+                BranchId = r.BranchId,
+                Description = r.Description,
+                Status = r.Status,
+                CreatedBy = _db.Users.Find(r.CreatedBy).UserName,
+                TotalItems = r.RequisitionDetails.Count,
+                Items = reportType == "detail"
+                    ? r.RequisitionDetails.Select(rd => new RequisitionItemViewModel
+                    {
+                        ItemId = rd.ItemId,
+                        ItemName = rd.Item.ItemName,
+                        Unit = rd.Item.UnitOfMeasure.Symbol,
+                        RequestedQuantity = rd.Quantity,
+                        // Calculate issued quantity from warehouse issues
+                        IssuedQuantity = _db.WarehouseIssueDetails
+                            .Where(wid => wid.WarehouseIssue.RequisitionId == r.RequisitionId && wid.ItemId == rd.ItemId)
+                            .Sum(wid => (decimal?)wid.Quantity) ?? 0,
+                        // Calculate remaining quantity
+                        RemainingQuantity = rd.Quantity - (_db.WarehouseIssueDetails
+                            .Where(wid => wid.WarehouseIssue.RequisitionId == r.RequisitionId && wid.ItemId == rd.ItemId)
+                            .Sum(wid => (decimal?)wid.Quantity) ?? 0),
+                        Status = r.Status
+                    }).ToList()
+                    : null
+            }).ToList();
+
+            return result;
+        }
+
+        #endregion
+
+        #region Item Stock Report
+
+        public ActionResult ItemStockReport()
+        {
+            // Populate categories for the dropdown
+            ViewBag.Categories = new SelectList(_db.ItemCategories, "ItemCategoryId", "ItemCategoryName");
+
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GenerateItemStockReport(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            // Set view bag data for the report
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Status = status ?? "all";
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.SortBy = sortBy ?? "name";
+            ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            
+            // Get category name
+            if (categoryId > 0)
+            {
+                var category = _db.ItemCategories.Find(categoryId);
+                ViewBag.CategoryName = category?.ItemCategoryName ?? "Unknown Category";
+            }
+            else
+            {
+                ViewBag.CategoryName = "All Categories";
+            }
+            
+            // Get report data
+            var reportData = GetItemStockReportData(categoryId, status, searchTerm, sortBy);
+            
+            return View("ItemStockReportDisplay", reportData);
+        }
+        
+        [HttpGet]
+        public ActionResult ExportItemStockReportToPDF(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                // Set category name
+                string categoryName = "All Categories";
+                string fileName = "All_Categories";
+
+                if (categoryId > 0)
+                {
+                    var category = _db.ItemCategories.Find(categoryId);
+                    if (category == null)
+                    {
+                        TempData["ErrorMessage"] = "Category not found.";
+                        return RedirectToAction("ItemStockReport");
+                    }
+                    categoryName = category.ItemCategoryName;
+                    fileName = category.ItemCategoryName.Replace(" ", "_");
+                }
+
+                // Set ViewBag data
+                ViewBag.CategoryName = categoryName;
+                ViewBag.CategoryId = categoryId;
+                ViewBag.Status = status ?? "all";
+                ViewBag.SearchTerm = searchTerm;
+                ViewBag.SortBy = sortBy ?? "name";
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+
+                // Get report data
+                var reportData = GetItemStockReportData(categoryId, status, searchTerm, sortBy);
+
+                // Generate PDF
+                var pdfResult = new Rotativa.ViewAsPdf("ItemStockReportDisplay", reportData)
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    FileName = $"Item_Stock_Report_{fileName}_{DateTime.Now:yyyyMMdd}.pdf"
+                };
+
+                return pdfResult;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating PDF: {ex.Message}";
+                return RedirectToAction("ItemStockReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportItemStockReportToExcel(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            try
+            {
+                // Get report data
+                var reportData = GetItemStockReportData(categoryId, status, searchTerm, sortBy);
+
+                // Set category name
+                string categoryName = "All Categories";
+                string fileName = "All_Categories";
+
+                if (categoryId > 0)
+                {
+                    var category = _db.ItemCategories.Find(categoryId);
+                    if (category == null)
+                    {
+                        TempData["ErrorMessage"] = "Category not found.";
+                        return RedirectToAction("ItemStockReport");
+                    }
+                    categoryName = category.ItemCategoryName;
+                    fileName = category.ItemCategoryName.Replace(" ", "_");
+                }
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new ExcelPackage())
+                {
+                    // Add a worksheet
+                    var worksheet = package.Workbook.Worksheets.Add("Item Stock Report");
+
+                    // Set document properties
+                    package.Workbook.Properties.Title = "Item Stock Report";
+                    package.Workbook.Properties.Author = "Ressential";
+                    package.Workbook.Properties.Company = "Ressential";
+                    package.Workbook.Properties.Created = DateTime.Now;
+                    
+                    // Professional color scheme
+                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
+                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
+                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
+                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
+                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
+                    
+                    // Set column widths
+                    worksheet.Column(1).Width = 6;      // S.No
+                    worksheet.Column(2).Width = 15;     // Item Code
+                    worksheet.Column(3).Width = 30;     // Item Name
+                    worksheet.Column(4).Width = 20;     // Category
+                    worksheet.Column(5).Width = 10;     // Unit
+                    worksheet.Column(6).Width = 15;     // Current Stock
+                    worksheet.Column(7).Width = 15;     // Min Stock
+                    worksheet.Column(8).Width = 15;     // Price
+                    worksheet.Column(9).Width = 15;     // Stock Value
+                    worksheet.Column(10).Width = 15;    // Stock Status
+                    worksheet.Column(11).Width = 15;    // Item Status
+                    
+                    // Add company logo placeholder and title (row 1)
+                    worksheet.Cells[1, 1, 1, 11].Merge = true;
+                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
+                    worksheet.Cells[1, 1].Style.Font.Size = 20;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
+                    worksheet.Row(1).Height = 30; // Increase row height
+                    
+                    // Add report title (row 2)
+                    worksheet.Cells[2, 1, 2, 11].Merge = true;
+                    worksheet.Cells[2, 1].Value = "Item Stock Report";
+                    worksheet.Cells[2, 1].Style.Font.Size = 16;
+                    worksheet.Cells[2, 1].Style.Font.Bold = true;
+                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Row(2).Height = 25; // Increase row height
+                    
+                    // Empty row for spacing
+                    worksheet.Row(3).Height = 10;
+                    
+                    // Report information section with styled boxes (rows 4-5)
+                    // Category info box
+                    worksheet.Cells[4, 1, 4, 2].Merge = true;
+                    worksheet.Cells[4, 1].Value = "CATEGORY";
+                    worksheet.Cells[4, 1].Style.Font.Bold = true;
+                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 1, 5, 2].Merge = true;
+                    worksheet.Cells[5, 1].Value = categoryName;
+                    worksheet.Cells[5, 1].Style.Font.Size = 11;
+                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Status Box
+                    worksheet.Cells[4, 3, 4, 4].Merge = true;
+                    worksheet.Cells[4, 3].Value = "STATUS";
+                    worksheet.Cells[4, 3].Style.Font.Bold = true;
+                    worksheet.Cells[4, 3].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 3].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 3].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 3, 5, 4].Merge = true;
+                    worksheet.Cells[5, 3].Value = status == "active" ? "Active" : (status == "inactive" ? "Inactive" : "All");
+                    worksheet.Cells[5, 3].Style.Font.Size = 11;
+                    worksheet.Cells[5, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 3].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 3].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Search term box
+                    worksheet.Cells[4, 5, 4, 7].Merge = true;
+                    worksheet.Cells[4, 5].Value = "SEARCH TERM";
+                    worksheet.Cells[4, 5].Style.Font.Bold = true;
+                    worksheet.Cells[4, 5].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 5].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 5].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 5].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 5, 5, 7].Merge = true;
+                    worksheet.Cells[5, 5].Value = string.IsNullOrEmpty(searchTerm) ? "None" : searchTerm;
+                    worksheet.Cells[5, 5].Style.Font.Size = 11;
+                    worksheet.Cells[5, 5].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 5].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 5].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Date generated box
+                    worksheet.Cells[4, 8, 4, 11].Merge = true;
+                    worksheet.Cells[4, 8].Value = "GENERATED ON";
+                    worksheet.Cells[4, 8].Style.Font.Bold = true;
+                    worksheet.Cells[4, 8].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    worksheet.Cells[4, 8].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    worksheet.Cells[4, 8].Style.Fill.BackgroundColor.SetColor(titleBackground);
+                    worksheet.Cells[4, 8].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    worksheet.Cells[5, 8, 5, 11].Merge = true;
+                    worksheet.Cells[5, 8].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    worksheet.Cells[5, 8].Style.Font.Size = 11;
+                    worksheet.Cells[5, 8].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[5, 8].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    worksheet.Cells[5, 8].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    
+                    // Space before data
+                    worksheet.Row(6).Height = 15;
+                    
+                    // Add table headers (row 7)
+                    string[] headers = new string[] { 
+                        "S.No", "Item Code", "Item Name", "Category", "Unit", 
+                        "Current Stock", "Reorder Level", "Cost Per Unit", "Stock Value", "Stock Status", "Item Status" 
+                    };
+                    
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        var cell = worksheet.Cells[7, i + 1];
+                        cell.Value = headers[i];
+                        cell.Style.Font.Bold = true;
+                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
+                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                    }
+                    worksheet.Row(7).Height = 22; // Increase header row height
+                    
+                    // Freeze panes for better navigation (fix header row)
+                    worksheet.View.FreezePanes(8, 1);
+                    
+                    // Add data rows
+                    int currentRow = 8;
+                    int serialNo = 1;
+                    decimal totalStockValue = 0;
+                    
+                    foreach (var item in reportData)
+                    {
+                        // Apply alternating row background for better readability
+                        if (serialNo % 2 == 0)
+                        {
+                            var range = worksheet.Cells[currentRow, 1, currentRow, 11];
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                        }
+                        
+                        // Calculate stock value
+                        decimal stockValue = item.Stock * item.Price;
+                        totalStockValue += stockValue;
+                        
+                        // Determine stock status
+                        string stockStatus = "";
+                        if (item.Stock <= 0)
+                        {
+                            stockStatus = "Out of Stock";
+                        }
+                        else if (item.Stock < item.MinStock)
+                        {
+                            stockStatus = "Low Stock";
+                        }
+                        else
+                        {
+                            stockStatus = "Good";
+                        }
+                        
+                        // Add row data
+                        worksheet.Cells[currentRow, 1].Value = serialNo++;
+                        worksheet.Cells[currentRow, 2].Value = item.ItemCode;
+                        worksheet.Cells[currentRow, 3].Value = item.ItemName;
+                        worksheet.Cells[currentRow, 4].Value = item.CategoryName;
+                        worksheet.Cells[currentRow, 5].Value = item.Unit;
+                        worksheet.Cells[currentRow, 6].Value = item.Stock;
+                        worksheet.Cells[currentRow, 7].Value = item.MinStock;
+                        worksheet.Cells[currentRow, 8].Value = item.Price;
+                        worksheet.Cells[currentRow, 9].Value = stockValue;
+                        worksheet.Cells[currentRow, 10].Value = stockStatus;
+                        worksheet.Cells[currentRow, 11].Value = item.IsActive ? "Active" : "Inactive";
+                        
+                        // Format cells
+                        for (int i = 1; i <= 11; i++)
+                        {
+                            worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        }
+                        
+                        // Numeric format for quantities and price
+                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                        
+                        currentRow++;
+                    }
+                    
+                    // Add summary row
+                    if (reportData.Any())
+                    {
+                        // Total row style
+                        var totalRange = worksheet.Cells[currentRow, 1, currentRow, 11];
+                        totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
+                        totalRange.Style.Font.Bold = true;
+                        totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        
+                        // Total row content
+                        worksheet.Cells[currentRow, 1, currentRow, 8].Merge = true;
+                        worksheet.Cells[currentRow, 1].Value = "TOTAL STOCK VALUE:";
+                        worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
+                        
+                        worksheet.Cells[currentRow, 9].Value = totalStockValue;
+                        worksheet.Cells[currentRow, 9].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 9].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        worksheet.Cells[currentRow, 10, currentRow, 11].Merge = true;
+                        
+                        // Add another row with item count
+                        currentRow++;
+                        var countRange = worksheet.Cells[currentRow, 1, currentRow, 11];
+                        countRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        countRange.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
+                        countRange.Style.Font.Bold = true;
+                        countRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
+                        
+                        worksheet.Cells[currentRow, 1, currentRow, 11].Merge = true;
+                        worksheet.Cells[currentRow, 1].Value = $"Total Items: {reportData.Count()}";
+                        worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    }
+                    
+                    // Return the Excel file
+                    byte[] excelBytes = package.GetAsByteArray();
+                    return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"ItemStockReport_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating Excel: {ex.Message}";
+                return RedirectToAction("ItemStockReport");
+            }
+        }
+
+        private List<ItemStockReportViewModel> GetItemStockReportData(int categoryId, string status, string searchTerm, string sortBy)
+        {
+            // Start with base query
+            var query = _db.Items
+                .Include(i => i.ItemCategory)
+                .AsQueryable();
+
+            // Apply category filter
+            if (categoryId > 0)
+            {
+                query = query.Where(i => i.ItemCategoryId == categoryId);
+            }
+
+            // Apply status filter
+            if (!string.IsNullOrEmpty(status) && status != "all")
+            {
+                bool isActive = status == "active";
+                query = query.Where(i => i.IsActive == isActive);
+            }
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(i => i.ItemName.Contains(searchTerm) || 
+                                         i.Sku.Contains(searchTerm) || 
+                                         i.ItemCategory.ItemCategoryName.Contains(searchTerm));
+            }
+
+            // Apply sorting
+            switch (sortBy)
+            {
+                case "name":
+                    query = query.OrderBy(i => i.ItemName);
+                    break;
+                case "code":
+                    query = query.OrderBy(i => i.Sku);
+                    break;
+                case "category":
+                    query = query.OrderBy(i => i.ItemCategory.ItemCategoryName);
+                    break;
+                case "stock":
+                    query = query.OrderByDescending(i => i.WarehouseItemStock.Quantity);
+                    break;
+                case "price":
+                    query = query.OrderByDescending(i => i.WarehouseItemStock.CostPerUnit);
+                    break;
+                default:
+                    query = query.OrderBy(i => i.ItemName);
+                    break;
+            }
+
+            // Execute query and fetch data
+            var items = query.ToList();
+
+            // Transform to view model
+            var result = items.Select(i => new ItemStockReportViewModel
+            {
+                ItemId = i.ItemId,
+                ItemCode = i.Sku,
+                ItemName = i.ItemName,
+                CategoryId = i.ItemCategoryId,
+                CategoryName = i.ItemCategory?.ItemCategoryName ?? "Unknown",
+                Unit = i.UnitOfMeasure.Symbol,
+                Stock = i.WarehouseItemStock.Quantity,
+                MinStock = i.MinimumStockLevel,
+                Price = i.WarehouseItemStock.CostPerUnit,
+                IsActive = i.IsActive
+            }).ToList();
+
+            return result;
+        }
+        #endregion
+
+        #region Purchase Report
+        public ActionResult PurchaseReport()
+        {
+            ViewBag.Vendors = new SelectList(_db.Vendors.ToList(), "VendorId", "Name");
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GeneratePurchaseReport(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Set ViewBag data for the report display
+                ViewBag.VendorName = vendorId > 0
+                    ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                    : "All Vendors";
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.Status = status;
+                ViewBag.ReportType = reportType;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.VendorId = vendorId;
+
+                return View("PurchaseReportDisplay", reportData);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error generating report: " + ex.Message;
+                return RedirectToAction("PurchaseReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportPurchaseReportToPDF(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                // Set vendor name
+                string vendorName = "All Vendors";
+                string fileName = "All_Vendors";
+
+                if (vendorId > 0)
+                {
+                    var vendor = _db.Vendors.Find(vendorId);
+                    if (vendor == null)
+                    {
+                        TempData["ErrorMessage"] = "Vendor not found.";
+                        return RedirectToAction("PurchaseReport");
+                    }
+                    vendorName = vendor.Name;
+                    fileName = vendor.Name.Replace(" ", "_");
+                }
+
+                // Set ViewBag data
+                ViewBag.VendorName = vendorName;
+                ViewBag.VendorId = vendorId;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.Status = status;
+                ViewBag.ReportType = reportType ?? "summary";
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+
+                // Get report data
+                var reportData = GetPurchaseReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Generate PDF
+                var pdfResult = new Rotativa.ViewAsPdf("PurchaseReportDisplay", reportData)
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    FileName = $"Purchase_Report_{fileName}_{DateTime.Now:yyyyMMdd}.pdf"
+                };
+
+                return pdfResult;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating PDF: {ex.Message}";
+                return RedirectToAction("PurchaseReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportPurchaseReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new OfficeOpenXml.ExcelPackage())
+                {
+                    // Add a new worksheet to the package
+                    var worksheet = package.Workbook.Worksheets.Add("Purchase Report");
+
+                    // Add header
+                    worksheet.Cells[1, 1].Value = "Purchase Report";
+                    worksheet.Cells[1, 1, 1, 9].Merge = true;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Size = 14;
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    // Add report criteria
+                    int currentRow = 2;
+                    worksheet.Cells[currentRow, 1].Value = "Vendor:";
+                    worksheet.Cells[currentRow, 2].Value = vendorId > 0
+                        ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                        : "All Vendors";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "From Date:";
+                    worksheet.Cells[currentRow, 2].Value = fromDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "To Date:";
+                    worksheet.Cells[currentRow, 2].Value = toDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Status:";
+                    worksheet.Cells[currentRow, 2].Value = status;
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Report Type:";
+                    worksheet.Cells[currentRow, 2].Value = reportType == "summary" ? "Summary" : "Detailed";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Generated On:";
+                    worksheet.Cells[currentRow, 2].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    currentRow += 2;
+
+                    // Add data based on report type
+                    if (reportType == "summary")
+                    {
+                        // Add column headers for summary report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Purchase No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Reference";
+                        worksheet.Cells[currentRow, 6].Value = "Total Amount";
+                        worksheet.Cells[currentRow, 7].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 7])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for summary report
+                        int serialNo = 1;
+                        decimal totalAmount = 0;
+
+                        foreach (var item in reportData)
+                        {
+                            worksheet.Cells[currentRow, 1].Value = serialNo++;
+                            worksheet.Cells[currentRow, 2].Value = item.PurchaseNo;
+                            worksheet.Cells[currentRow, 3].Value = item.Date.ToString("yyyy-MM-dd");
+                            worksheet.Cells[currentRow, 4].Value = item.VendorName;
+                            worksheet.Cells[currentRow, 5].Value = item.Reference;
+                            worksheet.Cells[currentRow, 6].Value = item.TotalAmount;
+                            worksheet.Cells[currentRow, 7].Value = item.Status;
+
+                            // Format numeric cells
+                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+
+                            totalAmount += item.TotalAmount;
+                            currentRow++;
+                        }
+
+                        // Add total row
+                        worksheet.Cells[currentRow, 5].Value = "Total Amount:";
+                        worksheet.Cells[currentRow, 6].Value = totalAmount;
+                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 5, currentRow, 6].Style.Font.Bold = true;
+
+                        currentRow++;
+                        worksheet.Cells[currentRow, 5].Value = "Total Purchases:";
+                        worksheet.Cells[currentRow, 6].Value = reportData.Count();
+                        worksheet.Cells[currentRow, 5, currentRow, 6].Style.Font.Bold = true;
+                    }
+                    else
+                    {
+                        // Add column headers for detailed report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Purchase No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Item";
+                        worksheet.Cells[currentRow, 6].Value = "Quantity";
+                        worksheet.Cells[currentRow, 7].Value = "Unit Price";
+                        worksheet.Cells[currentRow, 8].Value = "Total";
+                        worksheet.Cells[currentRow, 9].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 9])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for detailed report
+                        int serialNo = 1;
+                        decimal totalQuantity = 0;
+                        decimal totalValue = 0;
+
+                        foreach (var purchase in reportData)
+                        {
+                            if (purchase.Items != null && purchase.Items.Any())
+                            {
+                                foreach (var item in purchase.Items)
+                                {
+                                    decimal itemTotal = item.Quantity * item.UnitPrice;
+
+                                    worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                    worksheet.Cells[currentRow, 2].Value = purchase.PurchaseNo;
+                                    worksheet.Cells[currentRow, 3].Value = purchase.Date.ToString("yyyy-MM-dd");
+                                    worksheet.Cells[currentRow, 4].Value = purchase.VendorName;
+                                    worksheet.Cells[currentRow, 5].Value = item.ItemName;
+                                    worksheet.Cells[currentRow, 6].Value = item.Quantity;
+                                    worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
+                                    worksheet.Cells[currentRow, 8].Value = itemTotal;
+                                    worksheet.Cells[currentRow, 9].Value = purchase.Status;
+
+                                    // Format numeric cells
+                                    worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                                    worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+
+                                    totalQuantity += item.Quantity;
+                                    totalValue += itemTotal;
+                                    currentRow++;
+                                }
+                            }
+                        }
+
+                        // Add total row
+                        worksheet.Cells[currentRow, 5].Value = "Total:";
+                        worksheet.Cells[currentRow, 6].Value = totalQuantity;
+                        worksheet.Cells[currentRow, 8].Value = totalValue;
+                        worksheet.Cells[currentRow, 5, currentRow, 8].Style.Font.Bold = true;
+                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                    }
+
+                    // Auto-fit columns
+                    for (int col = 1; col <= 9; col++)
+                    {
+                        worksheet.Column(col).AutoFit();
+                    }
+
+                    // Return the Excel file
+                    string fileName = $"PurchaseReport_{DateTime.Now:yyyyMMdd}.xlsx";
+                    byte[] fileBytes = package.GetAsByteArray();
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
+                return RedirectToAction("PurchaseReport");
+            }
+        }
+
+        private List<PurchaseReportViewModel> GetPurchaseReportData(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            // Start with all purchases
+            var query = _db.Purchases.AsQueryable();
+
+            // Apply filters
+            if (vendorId > 0)
+            {
+                query = query.Where(p => p.VendorId == vendorId);
+            }
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(p => p.PurchaseDate >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(p => p.PurchaseDate <= toDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(status) && status != "0")
+            {
+                string statusFilter = status;
+                query = query.Where(p => p.Status == statusFilter);
+            }
+
+            // Get purchase data
+            var purchaseData = query
+                .Select(p => new PurchaseReportViewModel
+                {
+                    PurchaseId = p.PurchaseId,
+                    PurchaseNo = p.PurchaseNo,
+                    Date = p.PurchaseDate,
+                    VendorId = p.VendorId,
+                    VendorName = p.Vendor.Name,
+                    Reference = p.ReferenceNo,
+                    Status = p.Status,
+                    TotalAmount = p.PurchaseDetails
+                            .Sum(pd => (decimal?)pd.Quantity * pd.UnitPrice) ?? 0
+                })
+                .OrderByDescending(p => p.Date)
+                .ToList();
+
+            // If we need detailed data, load items
+            if (reportType == "detail")
+            {
+                foreach (var purchase in purchaseData)
+                {
+                    var items = _db.PurchaseDetails
+                        .Where(pd => pd.PurchaseId == purchase.PurchaseId)
+                        .Select(pd => new PurchaseItemDetail
+                        {
+                            ItemId = pd.ItemId,
+                            ItemName = pd.Item.ItemName,
+                            ItemCode = pd.Item.Sku,
+                            Quantity = pd.Quantity,
+                            Unit = pd.Item.UnitOfMeasure.Symbol,
+                            UnitPrice = pd.UnitPrice,
+                            TotalPrice = pd.Quantity * pd.UnitPrice
+                        })
+                        .ToList();
+
+                    purchase.Items = items;
+                }
+            }
+
+            return purchaseData;
+        }
+        #endregion
+
+        #region Purchase Return Report
+        public ActionResult PurchaseReturnReport()
+        {
+            ViewBag.Vendors = new SelectList(_db.Vendors.ToList(), "VendorId", "Name");
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GeneratePurchaseReturnReport(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReturnReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Set ViewBag data for the report display
+                ViewBag.VendorName = vendorId > 0
+                    ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                    : "All Vendors";
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.Status = status;
+                ViewBag.ReportType = reportType;
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.VendorId = vendorId;
+
+                return View("PurchaseReturnReportDisplay", reportData);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error generating report: " + ex.Message;
+                return RedirectToAction("PurchaseReturnReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportPurchaseReturnReportToPDF(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                // Set vendor name
+                string vendorName = "All Vendors";
+                string fileName = "All_Vendors";
+
+                if (vendorId > 0)
+                {
+                    var vendor = _db.Vendors.Find(vendorId);
+                    if (vendor == null)
+                    {
+                        TempData["ErrorMessage"] = "Vendor not found.";
+                        return RedirectToAction("PurchaseReturnReport");
+                    }
+                    vendorName = vendor.Name;
+                    fileName = vendor.Name.Replace(" ", "_");
+                }
+
+                // Set ViewBag data
+                ViewBag.VendorName = vendorName;
+                ViewBag.VendorId = vendorId;
+                ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+                ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+                ViewBag.Status = status;
+                ViewBag.ReportType = reportType ?? "summary";
+                ViewBag.GeneratedTimestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                ViewBag.IsPdfExport = true;
+
+                // Get report data
+                var reportData = GetPurchaseReturnReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Generate PDF
+                var pdfResult = new Rotativa.ViewAsPdf("PurchaseReturnReportDisplay", reportData)
+                {
+                    PageSize = Rotativa.Options.Size.A4,
+                    PageOrientation = Rotativa.Options.Orientation.Landscape,
+                    FileName = $"Purchase_Return_Report_{fileName}_{DateTime.Now:yyyyMMdd}.pdf"
+                };
+
+                return pdfResult;
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error generating PDF: {ex.Message}";
+                return RedirectToAction("PurchaseReturnReport");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ExportPurchaseReturnReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReturnReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new OfficeOpenXml.ExcelPackage())
+                {
+                    // Add a new worksheet to the package
+                    var worksheet = package.Workbook.Worksheets.Add("Purchase Return Report");
+
+                    // Add header
+                    worksheet.Cells[1, 1].Value = "Purchase Return Report";
+                    worksheet.Cells[1, 1, 1, 9].Merge = true;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Size = 14;
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    // Add report criteria
+                    int currentRow = 2;
+                    worksheet.Cells[currentRow, 1].Value = "Vendor:";
+                    worksheet.Cells[currentRow, 2].Value = vendorId > 0
+                        ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                        : "All Vendors";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "From Date:";
+                    worksheet.Cells[currentRow, 2].Value = fromDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "To Date:";
+                    worksheet.Cells[currentRow, 2].Value = toDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Status:";
+                    worksheet.Cells[currentRow, 2].Value = status;
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Report Type:";
+                    worksheet.Cells[currentRow, 2].Value = reportType == "summary" ? "Summary" : "Detailed";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Generated On:";
+                    worksheet.Cells[currentRow, 2].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    currentRow += 2;
+
+                    // Add data based on report type
+                    if (reportType == "summary")
+                    {
+                        // Add column headers for summary report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Return No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Reference";
+                        worksheet.Cells[currentRow, 6].Value = "Total Amount";
+                        worksheet.Cells[currentRow, 7].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 7])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for summary report
+                        if (reportData.Any())
+                        {
+                            int serialNo = 1;
+                            decimal totalAmount = 0;
+
+                            foreach (var item in reportData)
+                            {
+                                totalAmount += item.TotalAmount;
+
+                                worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                worksheet.Cells[currentRow, 2].Value = item.PurchaseReturnNo;
+                                worksheet.Cells[currentRow, 3].Value = item.Date.ToString("yyyy-MM-dd");
+                                worksheet.Cells[currentRow, 4].Value = item.VendorName;
+                                worksheet.Cells[currentRow, 5].Value = item.Reference;
+                                worksheet.Cells[currentRow, 6].Value = item.TotalAmount;
+                                worksheet.Cells[currentRow, 7].Value = item.Status;
+
+                                currentRow++;
+                            }
+
+                            // Add total row
+                            worksheet.Cells[currentRow, 5].Value = "Total Amount";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = totalAmount;
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                            currentRow++;
+
+                            worksheet.Cells[currentRow, 5].Value = "Total Returns";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = reportData.Count();
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                        }
+                        else
+                        {
+                            worksheet.Cells[currentRow, 1].Value = "No data available";
+                            worksheet.Cells[currentRow, 1, currentRow, 7].Merge = true;
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                    }
+                    else
+                    {
+                        // Add column headers for detailed report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Return No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Item";
+                        worksheet.Cells[currentRow, 6].Value = "Quantity";
+                        worksheet.Cells[currentRow, 7].Value = "Unit Price";
+                        worksheet.Cells[currentRow, 8].Value = "Total";
+                        worksheet.Cells[currentRow, 9].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 9])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for detailed report
+                        if (reportData.Any())
+                        {
+                            int serialNo = 1;
+                            decimal totalQuantity = 0;
+                            decimal totalValue = 0;
+
+                            foreach (var purchaseReturn in reportData)
+                            {
+                                if (purchaseReturn.Items != null && purchaseReturn.Items.Any())
+                                {
+                                    foreach (var item in purchaseReturn.Items)
+                                    {
+                                        totalQuantity += item.Quantity;
+                                        totalValue += item.Quantity * item.UnitPrice;
+
+                                        worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                        worksheet.Cells[currentRow, 2].Value = purchaseReturn.PurchaseReturnNo;
+                                        worksheet.Cells[currentRow, 3].Value = purchaseReturn.Date.ToString("yyyy-MM-dd");
+                                        worksheet.Cells[currentRow, 4].Value = purchaseReturn.VendorName;
+                                        worksheet.Cells[currentRow, 5].Value = item.ItemName;
+                                        worksheet.Cells[currentRow, 6].Value = item.Quantity;
+                                        worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
+                                        worksheet.Cells[currentRow, 8].Value = item.Quantity * item.UnitPrice;
+                                        worksheet.Cells[currentRow, 9].Value = purchaseReturn.Status;
+
+                                        currentRow++;
+                                    }
+                                }
+                            }
+
+                            // Add total row
+                            worksheet.Cells[currentRow, 5].Value = "Total";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = totalQuantity;
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 8].Value = totalValue;
+                            worksheet.Cells[currentRow, 8].Style.Font.Bold = true;
+                        }
+                        else
+                        {
+                            worksheet.Cells[currentRow, 1].Value = "No data available";
+                            worksheet.Cells[currentRow, 1, currentRow, 9].Merge = true;
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                    }
+
+                    // Format number columns
+                    if (reportType == "summary")
+                    {
+                        worksheet.Column(6).Style.Numberformat.Format = "#,##0.00";
+                    }
+                    else
+                    {
+                        worksheet.Column(6).Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Column(7).Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Column(8).Style.Numberformat.Format = "#,##0.00";
+                    }
+
+                    // Auto-fit all columns
+                    for (int col = 1; col <= (reportType == "detail" ? 9 : 7); col++)
+                    {
+                        worksheet.Column(col).AutoFit();
+                    }
+
+                    // Return the Excel file
+                    string fileName = $"PurchaseReturnReport_{DateTime.Now:yyyyMMdd}.xlsx";
+                    byte[] fileBytes = package.GetAsByteArray();
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
+                return RedirectToAction("PurchaseReturnReport");
+            }
+        }
+
+        private List<PurchaseReturnReportViewModel> GetPurchaseReturnReportData(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            // Start with all purchase returns
+            var query = _db.PurchaseReturns.AsQueryable();
+
+            // Apply filters
+            if (vendorId > 0)
+            {
+                query = query.Where(p => p.VendorID == vendorId);
+            }
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(p => p.PurchaseReturnDate >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(p => p.PurchaseReturnDate <= toDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(status) && status != "0")
+            {
+                string statusFilter = status;
+                query = query.Where(p => p.Status == statusFilter);
+            }
+
+            // Get purchase return data
+            var purchaseReturnData = query
+                .Select(p => new PurchaseReturnReportViewModel
+                {
+                    PurchaseReturnId = p.PurchaseReturnId,
+                    PurchaseReturnNo = p.PurchaseReturnNo,
+                    Date = p.PurchaseReturnDate,
+                    VendorId = p.VendorID,
+                    VendorName = p.Vendor.Name,
+                    Reference = p.ReferenceNo,
+                    Status = p.Status,
+                    TotalAmount = p.PurchaseReturnDetails
+                            .Sum(pd => (decimal?)pd.Quantity * pd.UnitPrice) ?? 0
+                })
+                .OrderByDescending(p => p.Date)
+                .ToList();
+
+            // If we need detailed data, load items
+            if (reportType == "detail")
+            {
+                foreach (var purchaseReturn in purchaseReturnData)
+                {
+                    var items = _db.PurchaseReturnDetails
+                        .Where(pd => pd.PurchaseReturnId == purchaseReturn.PurchaseReturnId)
+                        .Select(pd => new PurchaseReturnItemDetail
+                        {
+                            ItemId = pd.ItemId,
+                            ItemName = pd.Item.ItemName,
+                            ItemCode = pd.Item.Sku,
+                            Quantity = pd.Quantity,
+                            Unit = pd.Item.UnitOfMeasure.Symbol,
+                            UnitPrice = pd.UnitPrice,
+                            TotalPrice = pd.Quantity * pd.UnitPrice
+                        })
+                        .ToList();
+
+                    purchaseReturn.Items = items;
+                }
+            }
+
+            return purchaseReturnData;
+        }
+        #endregion
+
+        // Update the places where CheckStockLevel is called to send notifications via SignalR
+        private void SendStockLevelNotifications(List<Notification> notifications)
+        {
+            if (notifications != null && notifications.Any())
+            {
+                _db.Notifications.AddRange(notifications);
+                _db.SaveChanges();
+                
+                // Send real-time notifications via SignalR
+                var hubContext = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<Hub.RessentialHub>();
+                foreach (var notification in notifications)
+                {
+                    hubContext.Clients.Client(notification.User?.ConnectionId)
+                        .receiveStockAlert(notification.Title, notification.Message, notification.NotificationId, notification.RedirectUrl);
+                }
+            }
         }
     }
 }

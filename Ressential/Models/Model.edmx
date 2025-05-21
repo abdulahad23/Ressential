@@ -156,6 +156,22 @@
           <Property Name="OpeningStockDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="StockLevelState" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Notifications">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Message" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="RedirectUrl" Type="nvarchar" MaxLength="255" />
+          <Property Name="ReferenceId" Type="int" />
+          <Property Name="BranchId" Type="int" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DateTime" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="OnlineOrderDetails">
           <Key>
@@ -852,6 +868,20 @@
             </Principal>
             <Dependent Role="Items">
               <PropertyRef Name="UnitOfMeasureId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Notificat__UserI__1D7B6025">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1828,6 +1858,7 @@
           <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OnlineOrderDetails" EntityType="Self.OnlineOrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderReturnDetails" EntityType="Self.OrderReturnDetails" Schema="dbo" store:Type="Tables" />
@@ -1950,6 +1981,10 @@
           <AssociationSet Name="FK__Items__UnitOfMea__45F365D3" Association="Self.FK__Items__UnitOfMea__45F365D3">
             <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
             <End Role="Items" EntitySet="Items" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Notificat__UserI__1D7B6025" Association="Self.FK__Notificat__UserI__1D7B6025">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
           </AssociationSet>
           <AssociationSet Name="FK__OnlineOrd__Order__5224328E" Association="Self.FK__OnlineOrd__Order__5224328E">
             <End Role="Orders" EntitySet="Orders" />
@@ -2466,6 +2501,7 @@
           <NavigationProperty Name="WarehouseIssueDetails" Relationship="Self.FK__Warehouse__ItemI__02084FDA" FromRole="Items" ToRole="WarehouseIssueDetails" />
           <NavigationProperty Name="WarehouseItemStock" Relationship="Self.FK__Warehouse__ItemI__4AB81AF0" FromRole="Items" ToRole="WarehouseItemStock" />
           <NavigationProperty Name="WastageItemDetails" Relationship="Self.FK__WastageIt__ItemI__2DE6D218" FromRole="Items" ToRole="WastageItemDetails" />
+          <Property Name="StockLevelState" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="OnlineOrderDetail">
           <Key>
@@ -2937,6 +2973,7 @@
           <Property Name="IsChef" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Products2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="User" ToRole="Product" />
           <Property Name="ConnectionId" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Notifications" Relationship="DB_RessentialModel.FK__Notificat__UserI__1D7B6025" FromRole="User" ToRole="Notification" />
         </EntityType>
         <EntityType Name="Vendor">
           <Key>
@@ -4669,6 +4706,11 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Product" EntitySet="Products" />
           </AssociationSet>
+          <EntitySet Name="Notifications" EntityType="DB_RessentialModel.Notification" />
+          <AssociationSet Name="FK__Notificat__UserI__1D7B6025" Association="DB_RessentialModel.FK__Notificat__UserI__1D7B6025">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Notification" EntitySet="Notifications" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK__Roles__BranchId__11158940">
           <End Type="DB_RessentialModel.Branch" Role="Branch" Multiplicity="0..1" />
@@ -4714,6 +4756,36 @@
             </Principal>
             <Dependent Role="Product">
               <PropertyRef Name="ChefID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Message" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="RedirectUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceId" Type="Int32" />
+          <Property Name="BranchId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="DB_RessentialModel.FK__Notificat__UserI__1D7B6025" FromRole="Notification" ToRole="User" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK__Notificat__UserI__1D7B6025">
+          <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DB_RessentialModel.Notification" Role="Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notification">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4870,6 +4942,7 @@
           <EntitySetMapping Name="Items">
             <EntityTypeMapping TypeName="DB_RessentialModel.Item">
               <MappingFragment StoreEntitySet="Items">
+                <ScalarProperty Name="StockLevelState" ColumnName="StockLevelState" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="ItemName" ColumnName="ItemName" />
                 <ScalarProperty Name="Sku" ColumnName="Sku" />
@@ -5351,6 +5424,22 @@
                 <ScalarProperty Name="BranchId" ColumnName="BranchId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserBranchPermissionsId" ColumnName="UserBranchPermissionsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="DB_RessentialModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="ReferenceId" ColumnName="ReferenceId" />
+                <ScalarProperty Name="RedirectUrl" ColumnName="RedirectUrl" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="DateTime" ColumnName="DateTime" />
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

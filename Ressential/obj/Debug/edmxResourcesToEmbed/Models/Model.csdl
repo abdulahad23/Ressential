@@ -202,6 +202,7 @@
     <NavigationProperty Name="WarehouseIssueDetails" Relationship="Self.FK__Warehouse__ItemI__02084FDA" FromRole="Items" ToRole="WarehouseIssueDetails" />
     <NavigationProperty Name="WarehouseItemStock" Relationship="Self.FK__Warehouse__ItemI__4AB81AF0" FromRole="Items" ToRole="WarehouseItemStock" />
     <NavigationProperty Name="WastageItemDetails" Relationship="Self.FK__WastageIt__ItemI__2DE6D218" FromRole="Items" ToRole="WastageItemDetails" />
+    <Property Name="StockLevelState" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="OnlineOrderDetail">
     <Key>
@@ -673,6 +674,7 @@
     <Property Name="IsChef" Type="Boolean" Nullable="false" />
     <NavigationProperty Name="Products2" Relationship="DB_RessentialModel.FK_Products_Chef" FromRole="User" ToRole="Product" />
     <Property Name="ConnectionId" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Notifications" Relationship="DB_RessentialModel.FK__Notificat__UserI__1D7B6025" FromRole="User" ToRole="Notification" />
   </EntityType>
   <EntityType Name="Vendor">
     <Key>
@@ -2405,6 +2407,11 @@
       <End Role="User" EntitySet="Users" />
       <End Role="Product" EntitySet="Products" />
     </AssociationSet>
+    <EntitySet Name="Notifications" EntityType="DB_RessentialModel.Notification" />
+    <AssociationSet Name="FK__Notificat__UserI__1D7B6025" Association="DB_RessentialModel.FK__Notificat__UserI__1D7B6025">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Notification" EntitySet="Notifications" />
+    </AssociationSet>
   </EntityContainer>
   <Association Name="FK__Roles__BranchId__11158940">
     <End Type="DB_RessentialModel.Branch" Role="Branch" Multiplicity="0..1" />
@@ -2450,6 +2457,36 @@
       </Principal>
       <Dependent Role="Product">
         <PropertyRef Name="ChefID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Notification">
+    <Key>
+      <PropertyRef Name="NotificationId" />
+    </Key>
+    <Property Name="NotificationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DateTime" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="Message" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsRead" Type="Boolean" Nullable="false" />
+    <Property Name="RedirectUrl" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="ReferenceId" Type="Int32" />
+    <Property Name="BranchId" Type="Int32" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="User" Relationship="DB_RessentialModel.FK__Notificat__UserI__1D7B6025" FromRole="Notification" ToRole="User" />
+    <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <Association Name="FK__Notificat__UserI__1D7B6025">
+    <End Type="DB_RessentialModel.User" Role="User" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="DB_RessentialModel.Notification" Role="Notification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Notification">
+        <PropertyRef Name="UserId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

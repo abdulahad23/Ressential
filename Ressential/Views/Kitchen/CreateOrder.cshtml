@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.OrderDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Order Date", @type = "date" })
+                                @Html.TextBoxFor(model => model.OrderDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Order Date", @type = "date", @readonly = "readonly" })
                                 <label for="floatingInput">Order Date</label>
                                 @Html.ValidationMessageFor(model => model.OrderDate, "", new { @class = "text-danger" })
                             </div>
@@ -129,13 +129,15 @@
                                 </div>
                             </div>
                             <div class="row mt-5">
-                                <div class=" row">
-                                    <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-8">
                                         <div class="form-group">
-                                            <div class="col-sm-9">
-                                                <button id ="btnSignalR" type="submit"
-                                                        class="btn btn-secondary mr-2 ps-4 pe-4 btn-save">
+                                            <div class="col-sm-12">
+                                                <button id="btnSignalR" type="submit" class="btn btn-secondary mr-2 ps-4 pe-4 btn-save">
                                                     Save
+                                                </button>
+                                                <button type="button" id="btnSaveAndPrint" class="btn btn-success mr-2 ps-4 pe-4">
+                                                    <i class="fa fa-save"></i> Save & Print
                                                 </button>
                                                 <a class="btn btn-light ms-1 ps-4 pe-4" href="@Url.Action("OrderList","Kitchen")">Cancel</a>
                                             </div>
@@ -144,15 +146,80 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
 }
+
+<!-- Hidden Receipt Template for Printing -->
+<div id="receipt-template" style="display: none;">
+    <div id="receipt" style="width: 70mm; font-family: 'Arial', sans-serif; margin: 0 auto; padding: 10px 20px 30px 20px;">
+        <div style="text-align: center; margin-bottom: 10px;">
+            <img src="~/Content/assets/images/logo/ressential-logo-small.png" alt="Ressential Logo" style="max-width: 60%; height: auto; filter: contrast(150%) brightness(100%);" />
+            <h2 style="margin: 10px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">RESSENTIAL</h2>
+        </div>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <p style="margin: 0; font-size: 14px;"><span id="receipt-branch-name"></span></p>
+            <p style="margin: 0; font-size: 12px;"><span id="receipt-branch-address"></span></p>
+            <p style="margin: 0; font-size: 12px;">Contact: <span id="receipt-branch-phone"></span></p>
+        </div>
+        <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; padding: 8px 0; margin-bottom: 10px;">
+            <table style="width: 100%; font-size: 12px;">
+                <tr>
+                    <td style="width: 50%;">Order #: <span id="receipt-order-no" style="font-weight: bold;"></span></td>
+                    <td style="width: 50%; text-align: right;">Date: <span id="receipt-date"></span></td>
+                </tr>
+                <tr>
+                    <td>Type: <span id="receipt-order-type"></span></td>
+                    <td style="text-align: right;">Time: <span id="receipt-time"></span></td>
+                </tr>
+                <tr>
+                    <td>Staff: <span id="receipt-staff-name"></span></td>
+                    <td style="text-align: right;" id="receipt-table-container">Table #: <span id="receipt-table-no"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div style="margin-bottom: 10px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <thead>
+                    <tr style="border-bottom: 1px dashed black;">
+                        <th style="text-align: left; padding-bottom: 5px; font-weight: bold;">Item</th>
+                        <th style="text-align: center; padding-bottom: 5px; font-weight: bold;">Qty</th>
+                        <th style="text-align: right; padding-bottom: 5px; font-weight: bold;">Price</th>
+                        <th style="text-align: right; padding-bottom: 5px; font-weight: bold;">Total</th>
+                    </tr>
+                </thead>
+                <tbody id="receipt-items">
+                    <!-- Items will be added dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div style="border-top: 1px dashed black; padding-top: 8px; margin-bottom: 10px;">
+            <table style="width: 100%; font-size: 12px;">
+                <tr>
+                    <td style="width: 60%; text-align: right;">Subtotal:</td>
+                    <td style="width: 40%; text-align: right;"><span id="receipt-subtotal"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right; font-weight: bold;">Grand Total:</td>
+                    <td style="text-align: right; font-weight: bold;"><span id="receipt-grand-total"></span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">Payment Method:</td>
+                    <td style="text-align: right;"><span id="receipt-payment-method"></span></td>
+                </tr>
+            </table>
+        </div>
+        <div style="text-align: center; margin-top: 45px; margin-bottom: 30px; font-size: 12px;">
+            <img src="~/Content/assets/images/qr-code.png" alt="Ressential Logo" style="max-width: 30%; margin: 0px 0px 10px 0px;" />
+            <p style="margin: 0;">Thank you for your order!</p>
+            <p style="margin: 5px 0;">Please visit us again</p>
+            <p style="margin: 25px 0;">.</p>
+        </div>
+    </div>
+</div>
 
 <script>
     let rowIndex = 1;
@@ -329,6 +396,205 @@
                 $(this).find('.total').attr('name', `OrderDetails[${index}].ProductTotal`);
             });
         }
+
+        // Receipt functions
+        function generateReceiptData() {
+            const orderType = $('#OrderType').val();
+            const tableNo = $('#TableNo').val();
+            const paymentMethod = $('#PaymentMethod').val();
+            const grandTotal = parseFloat($('#totalAmount').val()) || 0;
+            const branchName = '';
+            const branchAddress = '';
+            const branchPhone = '';
+            const staffName = '@User.Identity.Name';
+            const items = [];
+            $('#itemsTableBody .item-row').each(function() {
+                const productName = $(this).find('.product-select option:selected').text();
+                const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                const price = parseFloat($(this).find('.price').val()) || 0;
+                const total = parseFloat($(this).find('.total').val()) || 0;
+                if (productName && quantity > 0) {
+                    items.push({
+                        name: productName,
+                        quantity: quantity,
+                        price: price,
+                        total: total
+                    });
+                }
+            });
+            return {
+                orderNo: '',
+                orderDate: '',
+                orderType: orderType,
+                tableNo: tableNo,
+                paymentMethod: paymentMethod,
+                items: items,
+                grandTotal: grandTotal,
+                branchInfo: {
+                    name: branchName,
+                    address: branchAddress,
+                    phone: branchPhone
+                },
+                staffName: staffName
+            };
+        }
+
+        function fillReceiptTemplate(receiptData) {
+            $('#receipt-branch-name').text(receiptData.branchInfo.name || '');
+            $('#receipt-branch-address').text(receiptData.branchInfo.address || '');
+            $('#receipt-branch-phone').text(receiptData.branchInfo.phone || '');
+            $('#receipt-order-no').text(receiptData.orderNo || '');
+            $('#receipt-date').text(receiptData.orderDate || '');
+            $('#receipt-time').text(new Date().toLocaleTimeString());
+            $('#receipt-order-type').text(receiptData.orderType);
+            $('#receipt-table-container').show();
+            $('#receipt-table-no').text(receiptData.tableNo);
+            $('#receipt-staff-name').text(receiptData.staffName || '');
+            
+            const itemsContainer = $('#receipt-items');
+            itemsContainer.empty();
+            let subtotal = 0;
+            receiptData.items.forEach(item => {
+                subtotal += item.total;
+                itemsContainer.append(`
+                    <tr style="padding: 4px 0;">
+                        <td style="text-align: left; padding: 3px 0;">${item.name}</td>
+                        <td style="text-align: center; padding: 3px 0;">${item.quantity}</td>
+                        <td style="text-align: right; padding: 3px 0;">Rs ${item.price.toFixed(2)}</td>
+                        <td style="text-align: right; padding: 3px 0;">Rs ${item.total.toFixed(2)}</td>
+                    </tr>
+                `);
+            });
+            $('#receipt-subtotal').text('Rs ' + subtotal.toFixed(2));
+            $('#receipt-grand-total').text('Rs ' + receiptData.grandTotal.toFixed(2));
+            $('#receipt-payment-method').text(receiptData.paymentMethod);
+            $('#receipt-datetime').text('Printed: ' + new Date().toLocaleString());
+        }
+
+        function printReceipt(receiptData) {
+            fillReceiptTemplate(receiptData);
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Receipt</title>
+                    <style>
+                        @@media print {
+                            body {
+                                margin: 0;
+                                padding: 0;
+                                width: 80mm;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            @@page {
+                                size: 80mm auto;
+                                margin: 0;
+                            }
+                            * {
+                                font-family: 'Arial', sans-serif !important;
+                                color: black !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            td, th {
+                                padding: 2px 0;
+                            }
+                            img {
+                                -webkit-filter: contrast(150%) brightness(100%);
+                                filter: contrast(150%) brightness(100%);
+                            }
+                            .bold {
+                                font-weight: bold !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${document.getElementById('receipt').outerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.onload = function() {
+                printWindow.focus();
+                setTimeout(function() {
+                    printWindow.print();
+                    setTimeout(function() {
+                        printWindow.close();
+                    }, 1000);
+                }, 500);
+            };
+        }
+
+        $('#btnSaveAndPrint').click(function(e) {
+            e.preventDefault();
+            if (validateProducts()) {
+                var form = $('form');
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            const receiptData = generateReceiptData();
+                            // Overwrite with server data
+                            Object.assign(receiptData, {
+                                orderNo: response.orderNo,
+                                orderDate: response.orderDate,
+                                branchInfo: {
+                                    name: response.branchName,
+                                    address: response.branchAddress,
+                                    phone: response.branchPhone || ''
+                                }
+                            });
+                            printReceipt(receiptData);
+                            // Reload the form after printing
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1500); // Wait for 1.5 seconds to ensure printing is complete
+                        } else {
+                            alert(response.message || "Order creation failed.");
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred while saving the order.");
+                    }
+                });
+            } else {
+                alert("Please complete the order form before saving and printing.");
+            }
+        });
+
+        // Add form submission handler for the Save button
+        $('form').on('submit', function(e) {
+            e.preventDefault();
+            if (validateProducts()) {
+                var form = $(this);
+                var formData = form.serialize();
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            // Reload the form after successful submission
+                            window.location.reload();
+                        } else {
+                            alert(response.message || "Order creation failed.");
+                        }
+                    },
+                    error: function() {
+                        alert("An error occurred while saving the order.");
+                    }
+                });
+            }
+        });
     });
 </script>
 

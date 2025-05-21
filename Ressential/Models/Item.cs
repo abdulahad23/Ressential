@@ -42,6 +42,7 @@ namespace Ressential.Models
         public System.DateTime OpeningStockDate { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
+        public string StockLevelState { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<BranchItem> BranchItems { get; set; }

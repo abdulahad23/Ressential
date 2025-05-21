@@ -1,0 +1,453 @@
+@model IEnumerable<Ressential.Models.PurchaseReportViewModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .report-header {
+            position: relative;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-left: 100px; /* Make space for the logo */
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            max-height: 100px;
+            object-fit: contain;
+        }
+
+        .header-text {
+            text-align: center;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .header-text p {
+            margin: 5px 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .date-range-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .date-range {
+            background-color: #f5f7fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            text-align: left;
+        }
+
+        .date-range p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .date-range span {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .report-details {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 500;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table tfoot td {
+            font-weight: bold;
+            background-color: #eaecef;
+            color: #2c3e50;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+            padding: 20px;
+        }
+
+        .timestamp {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background-color: #219653;
+        }
+
+        .btn-pdf {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background-color: #c0392b;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-partially-paid {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .status-paid {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .status-unpaid {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .detail-table {
+            margin-top: 5px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        .detail-table th, .detail-table td {
+            border: 1px solid #e0e0e0;
+            padding: 6px;
+            text-align: left;
+        }
+        
+        .detail-table th {
+            background-color: #34495e;
+            color: white;
+        }
+        
+        .detail-section {
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-header {
+            background-color: #f5f7fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="report-header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Ressential Logo" />
+                </div>
+                <div class="header-text">
+                    <h1>Purchase Report</h1>
+                    <p>@(ViewBag.ReportType == "summary" ? "Summary Report" : "Detailed Report")</p>
+                    <p>Vendor: @ViewBag.VendorName</p>
+                    <p class="timestamp">Generated On: @ViewBag.GeneratedTimestamp</p>
+                </div>
+            </div>
+            
+            <div class="date-range-container">
+                <div class="date-range">
+                    <p><span>From Date:</span> @(ViewBag.FromDate != null ? ViewBag.FromDate : "All")</p>
+                    <p><span>To Date:</span> @(ViewBag.ToDate != null ? ViewBag.ToDate : "All")</p>
+                    @if (ViewBag.Status != null && ViewBag.Status != "0")
+                    {
+                        <p><span>Status:</span> @ViewBag.Status</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            @{
+                var isPdfExport = ViewBag.IsPdfExport == true;
+            }
+            @if (!isPdfExport)
+            {
+                <button class="btn btn-export" onclick="exportToExcel()">Export</button>
+                <button class="btn btn-pdf" onclick="exportToPDF()">PDF</button>
+            }
+        </div>
+
+        @if (ViewBag.ReportType == "summary")
+        {
+            <!-- Summary Report View -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Purchase No</th>
+                        <th>Date</th>
+                        <th>Vendor</th>
+                        <th>Reference</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int serialNo = 1;
+                        decimal totalAmount = 0;
+                        
+                        foreach (var item in Model)
+                        {
+                            totalAmount += item.TotalAmount;
+                            <tr>
+                                <td>@serialNo</td>
+                                <td>
+                                    <a href="@Url.Action("EditPurchase", "Warehouse", new { purchaseId = item.PurchaseId })" 
+                                       target="_blank" class="text-primary font-weight-bold text-decoration-underline">
+                                        @item.PurchaseNo
+                                    </a>
+                                </td>
+                                <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                <td>@item.VendorName</td>
+                                <td>@item.Reference</td>
+                                <td class="text-right">@item.TotalAmount.ToString("N2")</td>
+                                <td>
+                                    @{
+                                        string statusClass = "status-partially-paid";
+                                        if (item.Status == "Paid") { statusClass = "status-paid"; }
+                                        else if (item.Status == "Not Paid") { statusClass = "status-unpaid"; }
+                                    }
+                                    <span class="status-badge @statusClass">@item.Status</span>
+                                </td>
+                            </tr>
+                            serialNo++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="no-data">No data available</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    @if (Model != null && Model.Any())
+                    {
+                        decimal totalAmount = Model.Sum(r => r.TotalAmount);
+                        <tr>
+                            <td colspan="5" style="text-align: right;"><strong>Total Amount</strong></td>
+                            <td class="text-right">@totalAmount.ToString("N2")</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" style="text-align: right;"><strong>Total Purchases</strong></td>
+                            <td>@Model.Count()</td>
+                        </tr>
+                    }
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            <!-- Detailed Report View in Tabular Format -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Purchase No</th>
+                        <th>Date</th>
+                        <th>Vendor</th>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        int serialNo = 1;
+                        foreach (var purchase in Model)
+                        {
+                            if (purchase.Items != null && purchase.Items.Any())
+                            {
+                                foreach (var item in purchase.Items)
+                                {
+                                    <tr>
+                                        <td>@(serialNo++)</td>
+                                        <td>
+                                            <a href="@Url.Action("EditPurchase", "Warehouse", new { purchaseId = purchase.PurchaseId })" 
+                                               target="_blank" class="text-primary font-weight-bold text-decoration-underline">
+                                                @purchase.PurchaseNo
+                                            </a>
+                                        </td>
+                                        <td>@purchase.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@purchase.VendorName</td>
+                                        <td>@item.ItemName</td>
+                                        <td class="text-right">@item.Quantity.ToString("N2")</td>
+                                        <td class="text-right">@item.UnitPrice.ToString("N2")</td>
+                                        <td class="text-right">@((item.Quantity * item.UnitPrice).ToString("N2"))</td>
+                                        <td>
+                                            @{
+                                                string statusClass = "status-partially-paid";
+                                                if (purchase.Status == "Paid") { statusClass = "status-paid"; }
+                                                else if (purchase.Status == "Not Paid") { statusClass = "status-unpaid"; }
+                                            }
+                                            <span class="status-badge @statusClass">@purchase.Status</span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="no-data">No data available</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    @if (Model != null && Model.Any())
+                    {
+                        decimal totalQuantity = Model.Where(p => p.Items != null).SelectMany(p => p.Items).Sum(i => i.Quantity);
+                        decimal totalValue = Model.Where(p => p.Items != null).SelectMany(p => p.Items).Sum(i => i.Quantity * i.UnitPrice);
+                        
+                        <tr>
+                            <td colspan="5" style="text-align: right;"><strong>Total</strong></td>
+                            <td class="text-right">@totalQuantity.ToString("N2")</td>
+                            <td></td>
+                            <td class="text-right">@totalValue.ToString("N2")</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tfoot>
+            </table>
+        }
+
+    </div>
+
+    <script>
+        function exportToExcel() {
+            var vendorId = '@ViewBag.VendorId';
+            var fromDate = '@ViewBag.FromDate';
+            var toDate = '@ViewBag.ToDate';
+            var status = '@ViewBag.Status';
+            var reportType = '@ViewBag.ReportType';
+            
+            var url = '@Url.Action("ExportPurchaseReportToExcel", "Warehouse")' +
+                '?vendorId=' + encodeURIComponent(vendorId) +
+                '&fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate) +
+                '&status=' + encodeURIComponent(status) +
+                '&reportType=' + encodeURIComponent(reportType);
+                
+            window.location.href = url;
+        }
+
+        function exportToPDF() {
+            var vendorId = '@ViewBag.VendorId';
+            var fromDate = '@ViewBag.FromDate';
+            var toDate = '@ViewBag.ToDate';
+            var status = '@ViewBag.Status';
+            var reportType = '@ViewBag.ReportType';
+            
+            var url = '@Url.Action("ExportPurchaseReportToPDF", "Warehouse")' +
+                '?vendorId=' + encodeURIComponent(vendorId) +
+                '&fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate) +
+                '&status=' + encodeURIComponent(status) +
+                '&reportType=' + encodeURIComponent(reportType);
+                
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html> 

@@ -24,6 +24,19 @@ namespace Ressential.Hub
             Clients.All.ReceiveProductUpdate();
         }
 
+        // Method to send stock alert notifications to a specific user
+        public void SendStockAlert(int userId, string title, string message, int notificationId)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.UserId == userId);
+            if (user != null && !string.IsNullOrEmpty(user.ConnectionId))
+            {
+                // Add a small delay to ensure database changes are saved
+                Task.Delay(100).ContinueWith(_ =>
+                {
+                    Clients.Client(user.ConnectionId).receiveStockAlert(title, message, notificationId);
+                });
+            }
+        }
 
         public override Task OnConnected()
         {
@@ -41,7 +54,5 @@ namespace Ressential.Hub
                 _db.SaveChanges();
             }
         }
-
-
     }
 }

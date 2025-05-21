@@ -151,6 +151,22 @@
     <Property Name="OpeningStockDate" Type="datetime2" Precision="7" Nullable="false" />
     <Property Name="ModifiedBy" Type="int" />
     <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+    <Property Name="StockLevelState" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="Notifications">
+    <Key>
+      <PropertyRef Name="NotificationId" />
+    </Key>
+    <Property Name="NotificationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Message" Type="nvarchar" MaxLength="500" Nullable="false" />
+    <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="IsRead" Type="bit" Nullable="false" />
+    <Property Name="RedirectUrl" Type="nvarchar" MaxLength="255" />
+    <Property Name="ReferenceId" Type="int" />
+    <Property Name="BranchId" Type="int" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="DateTime" Type="datetime2" Precision="7" Nullable="false" />
   </EntityType>
   <EntityType Name="OnlineOrderDetails">
     <Key>
@@ -847,6 +863,20 @@
       </Principal>
       <Dependent Role="Items">
         <PropertyRef Name="UnitOfMeasureId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Notificat__UserI__1D7B6025">
+    <End Role="Users" Type="Self.Users" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Notifications" Type="Self.Notifications" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Notifications">
+        <PropertyRef Name="UserId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -1823,6 +1853,7 @@
     <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ItemCategory" EntityType="Self.ItemCategory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Notifications" EntityType="Self.Notifications" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OnlineOrderDetails" EntityType="Self.OnlineOrderDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderDetails" EntityType="Self.OrderDetails" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="OrderReturnDetails" EntityType="Self.OrderReturnDetails" Schema="dbo" store:Type="Tables" />
@@ -1945,6 +1976,10 @@
     <AssociationSet Name="FK__Items__UnitOfMea__45F365D3" Association="Self.FK__Items__UnitOfMea__45F365D3">
       <End Role="UnitOfMeasure" EntitySet="UnitOfMeasure" />
       <End Role="Items" EntitySet="Items" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Notificat__UserI__1D7B6025" Association="Self.FK__Notificat__UserI__1D7B6025">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Notifications" EntitySet="Notifications" />
     </AssociationSet>
     <AssociationSet Name="FK__OnlineOrd__Order__5224328E" Association="Self.FK__OnlineOrd__Order__5224328E">
       <End Role="Orders" EntitySet="Orders" />

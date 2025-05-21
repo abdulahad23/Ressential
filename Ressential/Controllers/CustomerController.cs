@@ -301,6 +301,21 @@ namespace Ressential.Controllers
                     OrderTotalCost = 0,
                 };
 
+                var customer = _db.Customers.Find(customerId);
+                var onlineOrderDetail = new OnlineOrderDetail
+                {
+                    OrderId = orderItem.OrderId,
+                    CustomerId = customerId,
+                    Address = streetAddress,
+                    City = city,
+                    Country = customer.Country,
+                    ContactNo = customer.ContactNo,
+                    DeliveryCharges = (int) deliveryCharges
+
+                };
+
+                orderItem.OnlineOrderDetails.Add(onlineOrderDetail);
+
                 foreach (var cartItem in cartList)
                 {
                     orderItem.OrderDetails.Add(
@@ -318,7 +333,6 @@ namespace Ressential.Controllers
                 if (saveDetails)
                 {
                     // Update the customer's details in the database
-                    var customer = _db.Customers.Find(customerId);
                     if (customer != null)
                     {
                         customer.Address = streetAddress;

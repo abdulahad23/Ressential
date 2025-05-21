@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Ressential.Models.Notification>
+@using Ressential.Utilities
+
+@foreach (var notification in Model)
+{
+    <div class="list-group-item list-group-item-action notification-item">
+        <div class="d-flex">
+            <div class="flex-shrink-0">
+                <a href="@notification.RedirectUrl" class="user-avtar bg-light-success notification-link" data-id="@notification.NotificationId"><i class="ti ti-bell"></i></a>
+            </div>
+            <div class="flex-grow-1 ms-1">
+                <span class="float-end text-muted">@notification.DateTime.ToRelativeTime()</span>
+                <h5><a href="@notification.RedirectUrl" class="notification-link" data-id="@notification.NotificationId">@notification.Title</a></h5>
+                <p class="text-body fs-6">@notification.Message</p>
+                <button class="badge rounded-pill bg-light-danger border-0 mark-as-read" data-id="@notification.NotificationId">Unread</button>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        $('.notification-link').click(function (event) {
+            var link = $(this);
+            var notificationId = link.data('id');
+
+            $.ajax({
+                url: '@Url.Action("MarkAsRead", "Warehouse")',
+                type: 'POST',
+                data: { notificationId: notificationId },
+                success: function (response) {
+                    if (response.success) {
+                        updateNotificationCount();
+                    } else {
+                        alert('Failed to mark as read.');
+                    }
+                }
+            });
+        });
+
+        $('.mark-as-read').click(function (event) {
+            event.stopPropagation(); // Prevent the dropdown from closing
+            var button = $(this);
+            var notificationId = button.data('id');
+
+            $.ajax({
+                url: '@Url.Action("MarkAsRead", "Warehouse")',
+                type: 'POST',
+                data: { notificationId: notificationId },
+                success: function (response) {
+                    if (response.success) {
+                        button.closest('.notification-item').fadeOut('slow', function () {
+                            $(this).remove();
+                            updateNotificationCount();
+                        });
+                    } else {
+                        alert('Failed to mark as read.');
+                    }
+                }
+            });
+        });
+
+        function updateNotificationCount() {
+            $.ajax({
+                url: '@Url.Action("GetUnreadNotificationCount", "Warehouse")',
+                type: 'GET',
+                success: function (response) {
+                    $('#notificationCount').text(response.count);
+                    if (response.count > 0) {
+                        $('#notificationIndicator').show();
+                    } else {
+                        $('#notificationIndicator').hide();
+                    }
+                }
+            });
+        }
+    });
+</script>
