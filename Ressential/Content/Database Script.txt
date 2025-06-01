@@ -113,7 +113,7 @@ CREATE TABLE Items (
     ItemCategoryId INT NOT NULL,
     UnitOfMeasureId INT NOT NULL,
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
-    Status NVARCHAR(50) NOT NULL,
+    StockLevelState NVARCHAR(50) NOT NULL,
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -761,7 +761,6 @@ VALUES
 
 INSERT INTO PermissionsCategory (PermissionModule, PermissionCategoryName)
 VALUES 
-('Warehouse','Role'),
 ('Warehouse', 'Item Category'),
 ('Warehouse', 'Item'),
 ('Warehouse', 'Vendor'),
@@ -774,7 +773,8 @@ VALUES
 ('Warehouse', 'Bank And Cash'),
 ('Warehouse', 'Payment Voucher'),
 ('Warehouse', 'Receipt Voucher'),
-('Warehouse', 'User');
+('Warehouse', 'User'),
+('Warehouse', 'Role');
 
 
 

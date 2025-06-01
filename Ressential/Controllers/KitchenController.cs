@@ -3199,8 +3199,14 @@ public ActionResult GetUnreadNotifications()
                 }
             }
             _db.SaveChanges();
+
+            // Get the branch ID for the order
+            var branchId = orderDetail.Order.BranchId;
+
+            // Notify both views about the status update
             var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
             hubContext.Clients.All.updateChefView();
+            hubContext.Clients.All.updateOrderView();
 
             return Json(new { success = true, message = "Order status updated successfully" });
         }

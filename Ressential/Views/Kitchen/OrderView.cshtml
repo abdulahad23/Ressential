@@ -75,7 +75,7 @@
             // Start the SignalR connection
             $.connection.hub.start().done(function () {
                 ressentialHub.server.saveUserConnection();
-                console.log('SignalR Connected');
+                console.log('Connected to SignalR hub');
             });
 
             // Initialize select2 for both dropdowns

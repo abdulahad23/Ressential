@@ -7,18 +7,37 @@
 
 @using (Html.BeginForm("CreateItem", "Warehouse", FormMethod.Post))
 {
+    @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
                     <h2 class="text-secondary"><b>Create Item</b></h2>
+
+                    @if (TempData["DuplicateWarning"] != null)
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            @TempData["DuplicateWarning"]
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-warning" name="confirmDuplicate" value="true">Yes, Create Anyway</button>
+                                <a href="@Url.Action("ItemList","Warehouse")" class="btn btn-light">No, Cancel</a>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(""))
+                    {
+                        <div class="alert alert-danger">
+                            @Html.ValidationSummary(true)
+                        </div>
+                    }
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.ItemName, "", new { @class = "form-control", @placeholder = "Item Name" })
                                 <label for="floatingInput">Item Name</label>
                                 @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -26,7 +45,6 @@
                                 @Html.TextBoxFor(model => model.Sku, "", new { @class = "form-control", @placeholder = "SKU" })
                                 <label for="floatingInput">SKU</label>
                                 @Html.ValidationMessageFor(model => model.Sku, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -34,7 +52,6 @@
                                 @Html.DropDownListFor(m => m.UnitOfMeasureId, new SelectList(ViewBag.Units, "UnitOfMeasureId", "Name"), "Select Item Unit", new { @class = "form-control" })
                                 <label for="floatingInput">Item Unit</label>
                                 @Html.ValidationMessageFor(model => model.UnitOfMeasureId, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -42,24 +59,20 @@
                                 @Html.DropDownListFor(m => m.ItemCategoryId, new SelectList(ViewBag.Categories, "ItemCategoryId", "ItemCategoryName"), "Select Category", new { @class = "form-control" })
                                 <label for="ItemCategoryId">Item Category</label>
                                 @Html.ValidationMessageFor(model => model.ItemCategoryId, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number" })
+                                @Html.TextBoxFor(m => m.OpeningStockQuantity, new { @class = "form-control", placeholder = "Quantity In Hand", type = "number", min = "0", step = "0.01" })
                                 <label for="floatingInput">Quantity In Hand</label>
                                 @Html.ValidationMessageFor(model => model.OpeningStockQuantity, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number" })
+                                @Html.TextBoxFor(m => m.OpeningStockValue, new { @class = "form-control", placeholder = "Stock Value", type = "number", min = "0", step = "0.01" })
                                 <label for="floatingInput">Stock Value</label>
                                 @Html.ValidationMessageFor(model => model.OpeningStockValue, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -67,15 +80,13 @@
                                 @Html.TextBoxFor(m => m.OpeningStockDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Opening Stock Date", @type = "date" })
                                 <label for="floatingInput">Opening Stock Date</label>
                                 @Html.ValidationMessageFor(model => model.OpeningStockDate, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number" })
+                                @Html.TextBoxFor(m => m.MinimumStockLevel, new { @class = "form-control", placeholder = "Minimum Stock Level", type = "number", min = "0", step = "0.01" })
                                 <label for="floatingInput">Minimum Stock Level</label>
                                 @Html.ValidationMessageFor(model => model.MinimumStockLevel, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -86,26 +97,52 @@
                                 }, "Value", "Text"), new { @class = "form-control" })
                                 <label for="floatingInput">Item Status</label>
                                 @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
-
                             </div>
                         </div>
                         <div class="row mt-3">
-                            <div class=" row">
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="col-sm-9">
-                                            <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
-                                            <a href="@Url.Action("ItemList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            @if (TempData["DuplicateWarning"] == null)
+                                            {
+                                                <button type="submit" class="btn btn-secondary mr-2 ps-4 pe-4">Save</button>
+                                                <a href="@Url.Action("ItemList","Warehouse")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('form').validate();
+            
+            @if (TempData["PendingItem"] != null)
+            {
+                <text>
+                // Parse the JSON data and restore form values
+                var pendingData = JSON.parse('@Html.Raw(TempData["PendingItem"])');
+                $("#ItemName").val(pendingData.ItemName);
+                $("#Sku").val(pendingData.Sku);
+                $("#UnitOfMeasureId").val(pendingData.UnitOfMeasureId);
+                $("#ItemCategoryId").val(pendingData.ItemCategoryId);
+                $("#OpeningStockQuantity").val(pendingData.OpeningStockQuantity);
+                $("#OpeningStockValue").val(pendingData.OpeningStockValue);
+                $("#OpeningStockDate").val(pendingData.OpeningStockDate);
+                $("#MinimumStockLevel").val(pendingData.MinimumStockLevel);
+                $("#IsActive").val(pendingData.IsActive.toString());
+                </text>
+            }
+        });
+    </script>
 }

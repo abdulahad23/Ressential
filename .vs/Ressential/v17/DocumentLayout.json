@@ -7,12 +7,24 @@
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\warehousecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|c:\\users\\abdul\\desktop\\desktop data\\fyp project\\ressential\\ressential\\views\\warehouse\\edititemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\edititemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\controllers\\kitchencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\kitchencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\warehouse\\createitemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\createitemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\chefview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\chefview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\shared\\_kitchenlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\shared\\_warehouselayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -25,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\controllers\\customercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\chefview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\kitchen\\chefview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\kitchen\\orderview.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -435,10 +443,6 @@
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\models\\branch.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\warehouse\\createitemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\createitemcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\ressential\\views\\warehouse\\createvendor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{5D841667-F73F-465C-8376-90342F233290}|Ressential\\Ressential.csproj|solutionrelative:ressential\\views\\warehouse\\createvendor.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -628,7 +632,7 @@
               "RelativeDocumentMoniker": "Ressential\\Controllers\\WarehouseController.cs",
               "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\WarehouseController.cs",
               "RelativeToolTip": "Ressential\\Controllers\\WarehouseController.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAiwDUAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAANMFAAAAAAAAAAAwwOwFAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-30T10:07:34.765Z",
               "IsPinned": true,
@@ -642,7 +646,7 @@
               "RelativeDocumentMoniker": "Ressential\\Controllers\\KitchenController.cs",
               "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\KitchenController.cs",
               "RelativeToolTip": "Ressential\\Controllers\\KitchenController.cs",
-              "ViewState": "AgIAAEIJAAAAAAAAAAAWwFMJAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAEcIAAAAAAAAAAAvwFMJAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-16T12:52:43.253Z",
               "IsPinned": true,
@@ -650,13 +654,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "ChefView.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ChefView.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ChefView.cshtml",
               "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ChefView.cshtml",
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ChefView.cshtml",
-              "ViewState": "AgIAADIAAAAAAAAAAAAwwE8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-03-10T11:30:20.692Z",
               "IsPinned": true,
@@ -664,7 +668,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "OrderView.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\OrderView.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\OrderView.cshtml",
@@ -678,7 +682,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "PurchaseReturnReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseReturnReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseReturnReportDisplay.cshtml",
@@ -687,49 +691,25 @@
               "ViewState": "AgIAABoBAAAAAAAAAAAAACwBAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-04-27T07:59:39.196Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Login.cshtml",
-              "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Login.cshtml",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Login.cshtml",
-              "RelativeToolTip": "Ressential\\Views\\Customer\\Login.cshtml",
-              "ViewState": "AgIAAO8AAAAAAAAAAAAqwO4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-14T12:18:20.182Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RessentialHub.cs",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Hub\\RessentialHub.cs",
-              "RelativeDocumentMoniker": "Ressential\\Hub\\RessentialHub.cs",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Hub\\RessentialHub.cs",
-              "RelativeToolTip": "Ressential\\Hub\\RessentialHub.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAQwDMAAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T04:19:26.687Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "_WarehouseLayout.cshtml",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
-              "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
-              "RelativeToolTip": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAAACMAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T02:34:48.86Z",
+              "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "EditItemCategory.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditItemCategory.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditItemCategory.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditItemCategory.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditItemCategory.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-06-01T15:07:46.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "_KitchenLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_KitchenLayout.cshtml",
@@ -742,7 +722,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 3,
+              "Title": "CreateItemCategory.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAwwFoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-31T07:57:04.961Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_WarehouseLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Shared\\_WarehouseLayout.cshtml",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAACMAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-22T02:34:48.86Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "RessentialHub.cs",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Hub\\RessentialHub.cs",
+              "RelativeDocumentMoniker": "Ressential\\Hub\\RessentialHub.cs",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Hub\\RessentialHub.cs",
+              "RelativeToolTip": "Ressential\\Hub\\RessentialHub.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAQwDMAAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T04:19:26.687Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Login.cshtml",
+              "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Login.cshtml",
+              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Login.cshtml",
+              "RelativeToolTip": "Ressential\\Views\\Customer\\Login.cshtml",
+              "ViewState": "AgIAAO8AAAAAAAAAAAAqwO4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-12-14T12:18:20.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
               "Title": "CustomerLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\CustomerLayout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\CustomerLayout.cshtml",
@@ -750,11 +782,12 @@
               "RelativeToolTip": "Ressential\\Views\\Shared\\CustomerLayout.cshtml",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T04:43:50.248Z"
+              "WhenOpened": "2025-01-22T04:43:50.248Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "CustomerController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\CustomerController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\CustomerController.cs",
@@ -767,7 +800,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "Register.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Register.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Register.cshtml",
@@ -775,11 +808,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\Register.cshtml",
               "ViewState": "AgIAAPIAAAAAAAAAAAAqwAoBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-29T11:36:54.332Z"
+              "WhenOpened": "2025-05-29T11:36:54.332Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "_MasterLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_MasterLayout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_MasterLayout.cshtml",
@@ -787,11 +821,12 @@
               "RelativeToolTip": "Ressential\\Views\\Shared\\_MasterLayout.cshtml",
               "ViewState": "AgIAAJsAAAAAAAAAAAAAALgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-28T07:03:49.483Z"
+              "WhenOpened": "2025-04-28T07:03:49.483Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "FilterConfig.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\App_Start\\FilterConfig.cs",
               "RelativeDocumentMoniker": "Ressential\\App_Start\\FilterConfig.cs",
@@ -799,11 +834,12 @@
               "RelativeToolTip": "Ressential\\App_Start\\FilterConfig.cs",
               "ViewState": "AgIAAB0AAAAAAAAAAAAcwDsAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-29T11:28:47.631Z"
+              "WhenOpened": "2025-05-29T11:28:47.631Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "PaymentVoucherList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PaymentVoucherList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PaymentVoucherList.cshtml",
@@ -811,11 +847,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PaymentVoucherList.cshtml",
               "ViewState": "AgIAAGwAAAAAAAAAAAAAAHMAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-21T22:10:03.876Z"
+              "WhenOpened": "2025-01-21T22:10:03.876Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "ReceiptVoucherPDF.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReceiptVoucherPDF.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ReceiptVoucherPDF.cshtml",
@@ -823,11 +860,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ReceiptVoucherPDF.cshtml",
               "ViewState": "AgIAAMAAAAAAAAAAAAAAANsAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T04:51:24.59Z"
+              "WhenOpened": "2025-01-22T04:51:24.59Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "PurchaseReturnListViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PurchaseReturnListViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PurchaseReturnListViewModel.cs",
@@ -835,11 +873,12 @@
               "RelativeToolTip": "Ressential\\Models\\PurchaseReturnListViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-18T09:32:47.785Z"
+              "WhenOpened": "2024-11-18T09:32:47.785Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "ReceiptVoucherList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReceiptVoucherList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ReceiptVoucherList.cshtml",
@@ -847,11 +886,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ReceiptVoucherList.cshtml",
               "ViewState": "AgIAAFMAAAAAAAAAAAAAAG4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-21T22:10:20.316Z"
+              "WhenOpened": "2025-01-21T22:10:20.316Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "Purchase.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\Purchase.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\Purchase.cs",
@@ -859,11 +899,12 @@
               "RelativeToolTip": "Ressential\\Models\\Purchase.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAA5wA8AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T15:14:20.829Z"
+              "WhenOpened": "2025-05-26T15:14:20.829Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "OrderList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\OrderList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\OrderList.cshtml",
@@ -871,11 +912,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\OrderList.cshtml",
               "ViewState": "AgIAADsBAAAAAAAAAAAuwEcBAABoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-16T12:00:11.202Z"
+              "WhenOpened": "2024-12-16T12:00:11.202Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "ConsumeItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ConsumeItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ConsumeItemList.cshtml",
@@ -883,11 +925,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ConsumeItemList.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T11:01:28.475Z"
+              "WhenOpened": "2025-03-01T11:01:28.475Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\Index.cshtml",
@@ -895,11 +938,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAPgAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-25T18:06:40.919Z"
+              "WhenOpened": "2024-12-25T18:06:40.919Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "CreatePurchase.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePurchase.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePurchase.cshtml",
@@ -907,11 +951,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreatePurchase.cshtml",
               "ViewState": "AgIAAOQAAAAAAAAAAAAAAAwBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-02T20:16:44.095Z"
+              "WhenOpened": "2024-11-02T20:16:44.095Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "AccountSetting.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\AccountSetting.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\AccountSetting.cshtml",
@@ -919,11 +964,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\AccountSetting.cshtml",
               "ViewState": "AgIAABgAAAAAAAAAAAAAACIAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-25T17:56:32.7Z"
+              "WhenOpened": "2024-12-25T17:56:32.7Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\Dashboard.cshtml",
@@ -931,11 +977,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\Dashboard.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T14:10:14.2Z"
+              "WhenOpened": "2025-05-26T14:10:14.2Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 28,
               "Title": "PermissionsController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\PermissionsController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\PermissionsController.cs",
@@ -943,11 +990,12 @@
               "RelativeToolTip": "Ressential\\Controllers\\PermissionsController.cs",
               "ViewState": "AgIAAAIAAAAAAAAAAAAAwBQAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-24T08:24:14.107Z"
+              "WhenOpened": "2025-02-24T08:24:14.107Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 27,
               "Title": "ProfitLossReportViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\ProfitLossReportViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\ProfitLossReportViewModel.cs",
@@ -955,11 +1003,12 @@
               "RelativeToolTip": "Ressential\\Models\\ProfitLossReportViewModel.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T11:08:36.38Z"
+              "WhenOpened": "2025-05-26T11:08:36.38Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 29,
               "Title": "HasPermissionAttribute.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\HasPermissionAttribute.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\HasPermissionAttribute.cs",
@@ -967,11 +1016,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\HasPermissionAttribute.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAqwBQAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-01T02:17:34.046Z"
+              "WhenOpened": "2025-03-01T02:17:34.046Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 30,
               "Title": "Helper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\Helper.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\Helper.cs",
@@ -979,11 +1029,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\Helper.cs",
               "ViewState": "AgIAABoAAAAAAAAAAAAYwCsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-22T20:45:04.642Z"
+              "WhenOpened": "2024-12-22T20:45:04.642Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 31,
               "Title": "CreateOrder.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateOrder.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateOrder.cshtml",
@@ -991,11 +1042,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateOrder.cshtml",
               "ViewState": "AgIAAM8AAAAAAAAAAAAAAN0AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-29T22:48:27.707Z"
+              "WhenOpened": "2024-12-29T22:48:27.707Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 34,
               "Title": "ProfitLossReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ProfitLossReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ProfitLossReportDisplay.cshtml",
@@ -1003,11 +1055,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ProfitLossReportDisplay.cshtml",
               "ViewState": "AgIAAN0AAAAAAAAAAAAAAEwBAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T11:26:30.762Z"
+              "WhenOpened": "2025-05-26T11:26:30.762Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 32,
               "Title": "EditVendor.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditVendor.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditVendor.cshtml",
@@ -1015,11 +1068,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditVendor.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T12:09:13.096Z"
+              "WhenOpened": "2025-05-26T12:09:13.096Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 33,
               "Title": "DashboardViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\ViewModels\\DashboardViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\ViewModels\\DashboardViewModel.cs",
@@ -1027,11 +1081,12 @@
               "RelativeToolTip": "Ressential\\ViewModels\\DashboardViewModel.cs",
               "ViewState": "AgIAABkAAAAAAAAAAIAxwC0AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-26T11:52:31.352Z"
+              "WhenOpened": "2025-05-26T11:52:31.352Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 35,
               "Title": "CostReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CostReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CostReportDisplay.cshtml",
@@ -1039,11 +1094,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CostReportDisplay.cshtml",
               "ViewState": "AgIAAAsBAAAAAAAAAAAAAOIAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-26T08:20:22.603Z"
+              "WhenOpened": "2025-05-26T08:20:22.603Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 36,
               "Title": "SalesReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\SalesReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\SalesReportDisplay.cshtml",
@@ -1051,11 +1107,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\SalesReportDisplay.cshtml",
               "ViewState": "AgIAAAgBAAAAAAAAAAAqwBQBAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-21T06:48:48.811Z"
+              "WhenOpened": "2025-05-21T06:48:48.811Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 37,
               "Title": "SalesReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\SalesReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\SalesReport.cshtml",
@@ -1063,11 +1120,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\SalesReport.cshtml",
               "ViewState": "AgIAABsAAAAAAAAAAAAAACgAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-05-21T07:30:19.011Z"
+              "WhenOpened": "2025-05-21T07:30:19.011Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 38,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\AccountController.cs",
@@ -1075,11 +1133,12 @@
               "RelativeToolTip": "Ressential\\Controllers\\AccountController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-29T10:43:25.754Z"
+              "WhenOpened": "2024-12-29T10:43:25.754Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 39,
               "Title": "BaseController.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Controllers\\BaseController.cs",
               "RelativeDocumentMoniker": "Ressential\\Controllers\\BaseController.cs",
@@ -1087,11 +1146,12 @@
               "RelativeToolTip": "Ressential\\Controllers\\BaseController.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAACcAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-14T14:31:50.649Z"
+              "WhenOpened": "2024-12-14T14:31:50.649Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 40,
               "Title": "CreatePurchaseReturn.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePurchaseReturn.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePurchaseReturn.cshtml",
@@ -1099,11 +1159,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreatePurchaseReturn.cshtml",
               "ViewState": "AgIAACsAAAAAAAAAAAAqwEAAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-18T08:56:48.979Z"
+              "WhenOpened": "2024-11-18T08:56:48.979Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 42,
               "Title": "ItemStockReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ItemStockReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ItemStockReport.cshtml",
@@ -1111,11 +1172,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ItemStockReport.cshtml",
               "ViewState": "AgIAAA4BAAAAAAAAAAAAAFMAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T10:13:27.22Z"
+              "WhenOpened": "2025-04-27T10:13:27.22Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 43,
               "Title": "BranchItemStockReportViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\BranchItemStockReportViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\BranchItemStockReportViewModel.cs",
@@ -1123,11 +1185,12 @@
               "RelativeToolTip": "Ressential\\Models\\BranchItemStockReportViewModel.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAD4vw8AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-27T10:01:15.685Z"
+              "WhenOpened": "2025-04-27T10:01:15.685Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 41,
               "Title": "BranchItemStockReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\BranchItemStockReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\BranchItemStockReportDisplay.cshtml",
@@ -1135,11 +1198,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\BranchItemStockReportDisplay.cshtml",
               "ViewState": "AgIAACoBAAAAAAAAAAAAAEABAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T10:11:43.089Z"
+              "WhenOpened": "2025-04-27T10:11:43.089Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 44,
               "Title": "PurchaseReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseReportDisplay.cshtml",
@@ -1147,11 +1211,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PurchaseReportDisplay.cshtml",
               "ViewState": "AgIAAKUAAAAAAAAAAAAAALIBAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T05:21:05.464Z"
+              "WhenOpened": "2025-04-27T05:21:05.464Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 45,
               "Title": "PurchaseReturnReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseReturnReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseReturnReport.cshtml",
@@ -1159,11 +1224,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PurchaseReturnReport.cshtml",
               "ViewState": "AgIAAEUAAAAAAAAAAAAAAFYAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T09:05:36.622Z"
+              "WhenOpened": "2025-04-27T09:05:36.622Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 46,
               "Title": "PurchaseReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseReport.cshtml",
@@ -1171,11 +1237,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PurchaseReport.cshtml",
               "ViewState": "AgIAAFoAAAAAAAAAAAAmwGoAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-27T05:21:00.82Z"
+              "WhenOpened": "2025-04-27T05:21:00.82Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 48,
               "Title": "RequisitionReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\RequisitionReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\RequisitionReport.cshtml",
@@ -1183,11 +1250,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\RequisitionReport.cshtml",
               "ViewState": "AgIAAEAAAAAAAAAAAAAawFMAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-21T10:53:08.43Z"
+              "WhenOpened": "2025-04-21T10:53:08.43Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 47,
               "Title": "RequisitionReportDisplay.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\RequisitionReportDisplay.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\RequisitionReportDisplay.cshtml",
@@ -1195,11 +1263,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\RequisitionReportDisplay.cshtml",
               "ViewState": "AgIAAKgAAAAAAAAAAAAAALMAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-21T10:53:25.361Z"
+              "WhenOpened": "2025-04-21T10:53:25.361Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 49,
               "Title": "PurchaseReportViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PurchaseReportViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PurchaseReportViewModel.cs",
@@ -1207,11 +1276,12 @@
               "RelativeToolTip": "Ressential\\Models\\PurchaseReportViewModel.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAgwBsAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-27T05:18:00.011Z"
+              "WhenOpened": "2025-04-27T05:18:00.011Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 50,
               "Title": "RequisitionReportViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\RequisitionReportViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\RequisitionReportViewModel.cs",
@@ -1219,11 +1289,12 @@
               "RelativeToolTip": "Ressential\\Models\\RequisitionReportViewModel.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAQwBAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-21T10:45:06.585Z"
+              "WhenOpened": "2025-04-21T10:45:06.585Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 51,
               "Title": "VendorLedger.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\VendorLedger.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\VendorLedger.cshtml",
@@ -1231,11 +1302,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\VendorLedger.cshtml",
               "ViewState": "AgIAANsAAAAAAAAAAAAAAOQAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-20T08:20:12.189Z"
+              "WhenOpened": "2025-04-20T08:20:12.189Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 53,
               "Title": "RoleViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\RoleViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\RoleViewModel.cs",
@@ -1243,11 +1315,12 @@
               "RelativeToolTip": "Ressential\\Models\\RoleViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T14:35:26.824Z"
+              "WhenOpened": "2025-02-20T14:35:26.824Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 52,
               "Title": "VendorLedgerReport.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\VendorLedgerReport.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\VendorLedgerReport.cshtml",
@@ -1255,11 +1328,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\VendorLedgerReport.cshtml",
               "ViewState": "AgIAAEYAAAAAAAAAAAAAAIUAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-20T08:23:04.475Z"
+              "WhenOpened": "2025-04-20T08:23:04.475Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 54,
               "Title": "ReceiptVoucher.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\ReceiptVoucher.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\ReceiptVoucher.cs",
@@ -1267,11 +1341,12 @@
               "RelativeToolTip": "Ressential\\Models\\ReceiptVoucher.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T07:57:30.841Z"
+              "WhenOpened": "2025-04-20T07:57:30.841Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 55,
               "Title": "PurchaseReturn.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PurchaseReturn.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PurchaseReturn.cs",
@@ -1279,11 +1354,12 @@
               "RelativeToolTip": "Ressential\\Models\\PurchaseReturn.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-20T07:56:22.892Z"
+              "WhenOpened": "2025-04-20T07:56:22.892Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 56,
               "Title": "_NotificationsPartial.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_NotificationsPartial.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_NotificationsPartial.cshtml",
@@ -1291,11 +1367,12 @@
               "RelativeToolTip": "Ressential\\Views\\Shared\\_NotificationsPartial.cshtml",
               "ViewState": "AgIAACsAAAAAAAAAAAAmwDoAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-07T10:54:06.968Z"
+              "WhenOpened": "2025-04-07T10:54:06.968Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 58,
               "Title": "DateTimeExtensions.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\DateTimeExtensions.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\DateTimeExtensions.cs",
@@ -1303,11 +1380,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\DateTimeExtensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T11:13:11.504Z"
+              "WhenOpened": "2025-04-07T11:13:11.504Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 57,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\User.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\User.cs",
@@ -1315,11 +1393,12 @@
               "RelativeToolTip": "Ressential\\Models\\User.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-07T13:01:45.675Z"
+              "WhenOpened": "2025-04-07T13:01:45.675Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 60,
               "Title": "PartialUser.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialUser.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialUser.cs",
@@ -1327,11 +1406,12 @@
               "RelativeToolTip": "Ressential\\Models\\PartialUser.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABUAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-09T06:49:57.372Z"
+              "WhenOpened": "2025-01-09T06:49:57.372Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 61,
               "Title": "EditUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditUser.cshtml",
@@ -1339,11 +1419,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditUser.cshtml",
               "ViewState": "AgIAAC4AAAAAAAAAAAAAAEIAAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-30T10:11:23.622Z"
+              "WhenOpened": "2024-10-30T10:11:23.622Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 59,
               "Title": "CreateCategory.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateCategory.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateCategory.cshtml",
@@ -1351,11 +1432,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateCategory.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:39:18.814Z"
+              "WhenOpened": "2024-12-02T14:39:18.814Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 64,
               "Title": "style.css",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Content\\assets\\css\\style.css",
               "RelativeDocumentMoniker": "Ressential\\Content\\assets\\css\\style.css",
@@ -1363,11 +1445,12 @@
               "RelativeToolTip": "Ressential\\Content\\assets\\css\\style.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-03-22T08:12:56.697Z"
+              "WhenOpened": "2025-03-22T08:12:56.697Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 63,
               "Title": "myStyle.css",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Content\\assets\\css\\myStyle.css",
               "RelativeDocumentMoniker": "Ressential\\Content\\assets\\css\\myStyle.css",
@@ -1375,11 +1458,12 @@
               "RelativeToolTip": "Ressential\\Content\\assets\\css\\myStyle.css",
               "ViewState": "AgIAACsAAAAAAAAAAAAAAE0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-03-22T08:13:26.351Z"
+              "WhenOpened": "2025-03-22T08:13:26.351Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 62,
               "Title": "CreateRole.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateRole.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateRole.cshtml",
@@ -1387,11 +1471,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateRole.cshtml",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAABwAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-20T14:25:36.238Z"
+              "WhenOpened": "2025-02-20T14:25:36.238Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 69,
+              "DocumentIndex": 71,
               "Title": "EditRole.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditRole.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditRole.cshtml",
@@ -1399,11 +1484,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditRole.cshtml",
               "ViewState": "AgIAACsAAAAAAAAAAAAuwI4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T05:19:16.357Z"
+              "WhenOpened": "2025-03-01T05:19:16.357Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 70,
               "Title": "BranchList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\BranchList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\BranchList.cshtml",
@@ -1411,11 +1497,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\BranchList.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T07:04:00.518Z"
+              "WhenOpened": "2025-03-01T07:04:00.518Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 65,
               "Title": "PartialOrder.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialOrder.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialOrder.cs",
@@ -1423,11 +1510,12 @@
               "RelativeToolTip": "Ressential\\Models\\PartialOrder.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAwBwAAAAsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-09T07:58:33.923Z"
+              "WhenOpened": "2025-01-09T07:58:33.923Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 66,
               "Title": "OnlineOrder.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\OnlineOrder.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\OnlineOrder.cs",
@@ -1435,11 +1523,12 @@
               "RelativeToolTip": "Ressential\\Models\\OnlineOrder.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-16T09:05:11.762Z"
+              "WhenOpened": "2024-12-16T09:05:11.762Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 67,
               "Title": "PaginationConstraints.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\PaginationConstraints.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\PaginationConstraints.cs",
@@ -1447,11 +1536,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\PaginationConstraints.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-13T07:05:16.792Z"
+              "WhenOpened": "2024-12-13T07:05:16.792Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 68,
               "Title": "Startup.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\App_Start\\Startup.cs",
               "RelativeDocumentMoniker": "Ressential\\App_Start\\Startup.cs",
@@ -1459,11 +1549,12 @@
               "RelativeToolTip": "Ressential\\App_Start\\Startup.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-01T02:59:41.733Z"
+              "WhenOpened": "2025-03-01T02:59:41.733Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 71,
+              "DocumentIndex": 73,
               "Title": "PartialOrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialOrderDetail.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialOrderDetail.cs",
@@ -1471,11 +1562,12 @@
               "RelativeToolTip": "Ressential\\Models\\PartialOrderDetail.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-09T08:02:20.813Z"
+              "WhenOpened": "2025-01-09T08:02:20.813Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 69,
               "Title": "CategoryList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CategoryList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CategoryList.cshtml",
@@ -1483,11 +1575,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CategoryList.cshtml",
               "ViewState": "AgIAAD8AAAAAAAAAAAAAAEwAAABcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:39:16.425Z"
+              "WhenOpened": "2024-12-02T14:39:16.425Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 70,
+              "DocumentIndex": 72,
               "Title": "OrderDetail.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\OrderDetail.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\OrderDetail.cs",
@@ -1495,11 +1588,12 @@
               "RelativeToolTip": "Ressential\\Models\\OrderDetail.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-19T06:55:32.032Z"
+              "WhenOpened": "2025-03-19T06:55:32.032Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 72,
+              "DocumentIndex": 74,
               "Title": "CreateProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateProduct.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateProduct.cshtml",
@@ -1507,11 +1601,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateProduct.cshtml",
               "ViewState": "AgIAAOgAAAAAAAAAAAAwwO0AAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:00:53.314Z"
+              "WhenOpened": "2024-12-02T14:00:53.314Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 74,
+              "DocumentIndex": 76,
               "Title": "EditUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditUser.cshtml",
@@ -1519,11 +1614,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditUser.cshtml",
               "ViewState": "AgIAAEIAAAAAAAAAAAAAAFYAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T07:52:35.673Z"
+              "WhenOpened": "2025-03-01T07:52:35.673Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 75,
+              "DocumentIndex": 77,
               "Title": "CreateUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateUser.cshtml",
@@ -1531,11 +1627,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateUser.cshtml",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAFIAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-30T11:59:59.987Z"
+              "WhenOpened": "2024-12-30T11:59:59.987Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 76,
+              "DocumentIndex": 78,
               "Title": "CreateUser.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateUser.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateUser.cshtml",
@@ -1543,11 +1640,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateUser.cshtml",
               "ViewState": "AgIAADoAAAAAAAAAAAAAAE0AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-30T10:19:04.667Z"
+              "WhenOpened": "2024-10-30T10:19:04.667Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 73,
+              "DocumentIndex": 75,
               "Title": "EditProduct.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditProduct.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditProduct.cshtml",
@@ -1555,11 +1653,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditProduct.cshtml",
               "ViewState": "AgIAAOEAAAAAAAAAAAAkwPIAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:05:36.755Z"
+              "WhenOpened": "2024-12-02T14:05:36.755Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 77,
+              "DocumentIndex": 79,
               "Title": "HasBranchAccessAttribute.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\HasBranchAccessAttribute.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\HasBranchAccessAttribute.cs",
@@ -1567,11 +1666,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\HasBranchAccessAttribute.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-28T23:28:51.385Z"
+              "WhenOpened": "2025-02-28T23:28:51.385Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 81,
+              "DocumentIndex": 83,
               "Title": "StockReturnList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\StockReturnList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\StockReturnList.cshtml",
@@ -1579,11 +1679,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\StockReturnList.cshtml",
               "ViewState": "AgIAAFoAAAAAAAAAAAAAAG4AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T05:23:16.897Z"
+              "WhenOpened": "2025-01-22T05:23:16.897Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 78,
+              "DocumentIndex": 80,
               "Title": "WastageItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\WastageItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\WastageItemList.cshtml",
@@ -1591,11 +1692,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\WastageItemList.cshtml",
               "ViewState": "AgIAAEsAAAAAAAAAAAAAAFgAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T21:07:52.02Z"
+              "WhenOpened": "2024-12-01T21:07:52.02Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 79,
+              "DocumentIndex": 81,
               "Title": "ViewIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ViewIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ViewIssue.cshtml",
@@ -1603,11 +1705,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ViewIssue.cshtml",
               "ViewState": "AgIAADwAAAAAAAAAAAAAAAEAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T05:51:59.962Z"
+              "WhenOpened": "2025-01-16T05:51:59.962Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 80,
+              "DocumentIndex": 82,
               "Title": "UserList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\UserList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\UserList.cshtml",
@@ -1615,11 +1718,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\UserList.cshtml",
               "ViewState": "AgIAAE4AAAAAAAAAAAAAAFgAAABYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-30T12:02:22.757Z"
+              "WhenOpened": "2024-12-30T12:02:22.757Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 82,
+              "DocumentIndex": 84,
               "Title": "RoleList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\RoleList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\RoleList.cshtml",
@@ -1627,11 +1731,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\RoleList.cshtml",
               "ViewState": "AgIAADMAAAAAAAAAAAAAAE0AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T08:13:40.246Z"
+              "WhenOpened": "2025-03-01T08:13:40.246Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 83,
+              "DocumentIndex": 85,
               "Title": "RequisitionList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\RequisitionList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\RequisitionList.cshtml",
@@ -1639,11 +1744,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\RequisitionList.cshtml",
               "ViewState": "AgIAAGMAAAAAAAAAAAAAAHoAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T08:40:44.925Z"
+              "WhenOpened": "2024-12-01T08:40:44.925Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 84,
+              "DocumentIndex": 86,
               "Title": "ReceiveStockList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ReceiveStockList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ReceiveStockList.cshtml",
@@ -1651,11 +1757,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ReceiveStockList.cshtml",
               "ViewState": "AgIAAEsAAAAAAAAAAAAAAGwAAABYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T05:08:19.704Z"
+              "WhenOpened": "2025-01-16T05:08:19.704Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 85,
+              "DocumentIndex": 87,
               "Title": "ProductList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ProductList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ProductList.cshtml",
@@ -1663,11 +1770,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ProductList.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-13T09:44:32.18Z"
+              "WhenOpened": "2024-12-13T09:44:32.18Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 86,
+              "DocumentIndex": 88,
               "Title": "ItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\ItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\ItemList.cshtml",
@@ -1675,11 +1783,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\ItemList.cshtml",
               "ViewState": "AgIAAHgAAAAAAAAAAAAAAHgAAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-14T13:15:10.614Z"
+              "WhenOpened": "2024-12-14T13:15:10.614Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 87,
+              "DocumentIndex": 89,
               "Title": "CreateRole.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateRole.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateRole.cshtml",
@@ -1687,11 +1796,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateRole.cshtml",
               "ViewState": "AgIAAEsAAAAAAAAAAAAAAFAAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T08:15:06.227Z"
+              "WhenOpened": "2025-03-01T08:15:06.227Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 88,
+              "DocumentIndex": 90,
               "Title": "RequisitionList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\RequisitionList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\RequisitionList.cshtml",
@@ -1699,11 +1809,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\RequisitionList.cshtml",
               "ViewState": "AgIAAGkAAAAAAAAAAAAAAH0AAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T21:27:34.844Z"
+              "WhenOpened": "2024-12-01T21:27:34.844Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 89,
+              "DocumentIndex": 91,
               "Title": "VendorList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\VendorList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\VendorList.cshtml",
@@ -1711,11 +1822,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\VendorList.cshtml",
               "ViewState": "AgIAAF0AAAAAAAAAAAAAAHYAAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-01T13:57:08.372Z"
+              "WhenOpened": "2024-11-01T13:57:08.372Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 90,
+              "DocumentIndex": 92,
               "Title": "UserList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\UserList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\UserList.cshtml",
@@ -1723,11 +1835,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\UserList.cshtml",
               "ViewState": "AgIAAFEAAAAAAAAAAAAAAFgAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-30T10:15:28.03Z"
+              "WhenOpened": "2024-10-30T10:15:28.03Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 91,
+              "DocumentIndex": 93,
               "Title": "RoleList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\RoleList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\RoleList.cshtml",
@@ -1735,11 +1848,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\RoleList.cshtml",
               "ViewState": "AgIAADMAAAAAAAAAAAAAAEwAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-20T14:25:05.262Z"
+              "WhenOpened": "2025-02-20T14:25:05.262Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 92,
+              "DocumentIndex": 94,
               "Title": "ReturnStockList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
@@ -1747,11 +1861,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ReturnStockList.cshtml",
               "ViewState": "AgIAAFQAAAAAAAAAAAAAAHMAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T05:47:47.139Z"
+              "WhenOpened": "2025-01-16T05:47:47.139Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 93,
+              "DocumentIndex": 95,
               "Title": "ItemCategoryList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ItemCategoryList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ItemCategoryList.cshtml",
@@ -1759,11 +1874,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ItemCategoryList.cshtml",
               "ViewState": "AgIAAHUAAAAAAAAAAAAAAC8AAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-31T07:51:14.374Z"
+              "WhenOpened": "2024-10-31T07:51:14.374Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 94,
+              "DocumentIndex": 96,
               "Title": "PurchaseReturnList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseReturnList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseReturnList.cshtml",
@@ -1771,11 +1887,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PurchaseReturnList.cshtml",
               "ViewState": "AgIAAF0AAAAAAAAAAAAAAGIAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-18T09:36:06.484Z"
+              "WhenOpened": "2024-11-18T09:36:06.484Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 95,
+              "DocumentIndex": 97,
               "Title": "PurchaseList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\PurchaseList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\PurchaseList.cshtml",
@@ -1783,11 +1900,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\PurchaseList.cshtml",
               "ViewState": "AgIAAFcAAAAAAAAAAAAAAGkAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-03T11:58:05.918Z"
+              "WhenOpened": "2024-11-03T11:58:05.918Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 96,
+              "DocumentIndex": 98,
               "Title": "ItemList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ItemList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ItemList.cshtml",
@@ -1795,11 +1913,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ItemList.cshtml",
               "ViewState": "AgIAAGAAAAAAAAAAAAAAAHMAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-31T09:17:09.495Z"
+              "WhenOpened": "2024-10-31T09:17:09.495Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 97,
+              "DocumentIndex": 99,
               "Title": "IssueList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\IssueList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\IssueList.cshtml",
@@ -1807,11 +1926,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\IssueList.cshtml",
               "ViewState": "AgIAAF0AAAAAAAAAAAAAAHAAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-27T19:53:45.812Z"
+              "WhenOpened": "2024-12-27T19:53:45.812Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 99,
+              "DocumentIndex": 101,
               "Title": "HtmlHelperExtensions.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\HtmlHelperExtensions.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\HtmlHelperExtensions.cs",
@@ -1819,11 +1939,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\HtmlHelperExtensions.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-20T13:16:30.752Z"
+              "WhenOpened": "2025-02-20T13:16:30.752Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 98,
+              "DocumentIndex": 100,
               "Title": "BankAndCashList.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\BankAndCashList.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\BankAndCashList.cshtml",
@@ -1831,11 +1952,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\BankAndCashList.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-04T13:32:58.21Z"
+              "WhenOpened": "2024-11-04T13:32:58.21Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 100,
+              "DocumentIndex": 102,
               "Title": "_RedirectToIndex.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Shared\\_RedirectToIndex.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Shared\\_RedirectToIndex.cshtml",
@@ -1843,11 +1965,12 @@
               "RelativeToolTip": "Ressential\\Views\\Shared\\_RedirectToIndex.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-01T02:49:07.935Z"
+              "WhenOpened": "2025-03-01T02:49:07.935Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 101,
+              "DocumentIndex": 103,
               "Title": "RouteConfig.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\App_Start\\RouteConfig.cs",
               "RelativeDocumentMoniker": "Ressential\\App_Start\\RouteConfig.cs",
@@ -1855,11 +1978,12 @@
               "RelativeToolTip": "Ressential\\App_Start\\RouteConfig.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T07:17:23.068Z"
+              "WhenOpened": "2024-10-31T07:17:23.068Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 102,
+              "DocumentIndex": 104,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Web.config",
               "RelativeDocumentMoniker": "Ressential\\Views\\Web.config",
@@ -1867,11 +1991,12 @@
               "RelativeToolTip": "Ressential\\Views\\Web.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-03-01T02:59:01.51Z"
+              "WhenOpened": "2025-03-01T02:59:01.51Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 103,
+              "DocumentIndex": 105,
               "Title": "Global.asax.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Global.asax.cs",
               "RelativeDocumentMoniker": "Ressential\\Global.asax.cs",
@@ -1879,11 +2004,12 @@
               "RelativeToolTip": "Ressential\\Global.asax.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-01T02:59:03.461Z"
+              "WhenOpened": "2025-03-01T02:59:03.461Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 104,
+              "DocumentIndex": 106,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Web.config",
               "RelativeDocumentMoniker": "Ressential\\Web.config",
@@ -1896,7 +2022,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 105,
+              "DocumentIndex": 107,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\Index.cshtml",
@@ -1904,11 +2030,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-25T18:07:24.684Z"
+              "WhenOpened": "2024-12-25T18:07:24.684Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 106,
+              "DocumentIndex": 108,
               "Title": "UserDetails.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\UserDetails.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\UserDetails.cs",
@@ -1916,11 +2043,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\UserDetails.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwBIAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-31T06:49:42.53Z"
+              "WhenOpened": "2024-10-31T06:49:42.53Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 107,
+              "DocumentIndex": 109,
               "Title": "Branch.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\Branch.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\Branch.cs",
@@ -1928,23 +2056,12 @@
               "RelativeToolTip": "Ressential\\Models\\Branch.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-28T22:44:58.729Z"
+              "WhenOpened": "2025-02-28T22:44:58.729Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 108,
-              "Title": "CreateItemCategory.cshtml",
-              "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
-              "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
-              "ToolTip": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
-              "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateItemCategory.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-31T07:57:04.961Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 109,
+              "DocumentIndex": 110,
               "Title": "CreateVendor.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
@@ -1952,11 +2069,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateVendor.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-20T14:27:16.648Z"
+              "WhenOpened": "2025-02-20T14:27:16.648Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 110,
+              "DocumentIndex": 111,
               "Title": "Unauthorized.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Account\\Unauthorized.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Account\\Unauthorized.cshtml",
@@ -1964,11 +2082,12 @@
               "RelativeToolTip": "Ressential\\Views\\Account\\Unauthorized.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-20T13:10:58.544Z"
+              "WhenOpened": "2025-02-20T13:10:58.544Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 111,
+              "DocumentIndex": 112,
               "Title": "EditPurchase.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditPurchase.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditPurchase.cshtml",
@@ -1976,11 +2095,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditPurchase.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAABQAAABiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-19T11:30:55.516Z"
+              "WhenOpened": "2025-01-19T11:30:55.516Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 112,
+              "DocumentIndex": 113,
               "Title": "CreateBankAndCash.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateBankAndCash.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateBankAndCash.cshtml",
@@ -1988,11 +2108,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateBankAndCash.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T05:14:13.54Z"
+              "WhenOpened": "2025-01-22T05:14:13.54Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 113,
+              "DocumentIndex": 114,
               "Title": "AccountSetting.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\AccountSetting.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\AccountSetting.cshtml",
@@ -2000,11 +2121,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\AccountSetting.cshtml",
               "ViewState": "AgIAAD8AAAAAAAAAAAAAADIAAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-22T04:42:57.52Z"
+              "WhenOpened": "2025-01-22T04:42:57.52Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 114,
+              "DocumentIndex": 115,
               "Title": "PartialPurchaseDetail.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\PartialPurchaseDetail.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\PartialPurchaseDetail.cs",
@@ -2012,11 +2134,12 @@
               "RelativeToolTip": "Ressential\\Models\\PartialPurchaseDetail.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-22T00:23:31.061Z"
+              "WhenOpened": "2025-01-22T00:23:31.061Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 115,
+              "DocumentIndex": 116,
               "Title": "CreateItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateItem.cshtml",
@@ -2024,11 +2147,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateItem.cshtml",
               "ViewState": "AgIAABkAAAAAAAAAAAAAADoAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:33:09.654Z"
+              "WhenOpened": "2024-12-02T14:33:09.654Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 116,
+              "DocumentIndex": 117,
               "Title": "CreateReceiptVoucher.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateReceiptVoucher.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateReceiptVoucher.cshtml",
@@ -2036,11 +2160,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateReceiptVoucher.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADMAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-21T22:36:39.202Z"
+              "WhenOpened": "2025-01-21T22:36:39.202Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 118,
+              "DocumentIndex": 119,
               "Title": "EditPaymentVoucher.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditPaymentVoucher.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditPaymentVoucher.cshtml",
@@ -2048,11 +2173,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditPaymentVoucher.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAACEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-21T22:42:41.185Z"
+              "WhenOpened": "2025-01-21T22:42:41.185Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 117,
+              "DocumentIndex": 118,
               "Title": "EditReceiptVoucher.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditReceiptVoucher.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditReceiptVoucher.cshtml",
@@ -2060,11 +2186,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditReceiptVoucher.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-21T23:19:24.874Z"
+              "WhenOpened": "2025-01-21T23:19:24.874Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 119,
+              "DocumentIndex": 120,
               "Title": "CreatePaymentVoucher.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreatePaymentVoucher.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreatePaymentVoucher.cshtml",
@@ -2072,11 +2199,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreatePaymentVoucher.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAAADIAAAByAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-04T13:39:19.978Z"
+              "WhenOpened": "2024-11-04T13:39:19.978Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 120,
+              "DocumentIndex": 121,
               "Title": "ViewReturnStock.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\ViewReturnStock.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\ViewReturnStock.cshtml",
@@ -2084,11 +2212,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\ViewReturnStock.cshtml",
               "ViewState": "AgIAAD8AAAAAAAAAAAAAAEkAAABNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T10:00:06.247Z"
+              "WhenOpened": "2025-01-16T10:00:06.247Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 121,
+              "DocumentIndex": 122,
               "Title": "EditReturnStock.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditReturnStock.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditReturnStock.cshtml",
@@ -2096,11 +2225,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditReturnStock.cshtml",
               "ViewState": "AgIAAMYAAAAAAAAAAAAAANkAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:35:01.569Z"
+              "WhenOpened": "2024-12-02T14:35:01.569Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 122,
+              "DocumentIndex": 123,
               "Title": "CreateIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateIssue.cshtml",
@@ -2108,11 +2238,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateIssue.cshtml",
               "ViewState": "AgIAALcAAAAAAAAAAAAAANAAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T11:16:35.274Z"
+              "WhenOpened": "2024-12-02T11:16:35.274Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 123,
+              "DocumentIndex": 124,
               "Title": "CreateStockReturn.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateStockReturn.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateStockReturn.cshtml",
@@ -2120,11 +2251,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateStockReturn.cshtml",
               "ViewState": "AgIAALsAAAAAAAAAAAAAANAAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:34:13.454Z"
+              "WhenOpened": "2024-12-02T14:34:13.454Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 124,
+              "DocumentIndex": 125,
               "Title": "Checkout.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Checkout.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Checkout.cshtml",
@@ -2132,11 +2264,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\Checkout.cshtml",
               "ViewState": "AgIAAFEAAAAAAAAAAAAAAGQAAABtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-16T07:58:15.084Z"
+              "WhenOpened": "2024-12-16T07:58:15.084Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 125,
+              "DocumentIndex": 126,
               "Title": "Cart.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Cart.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Cart.cshtml",
@@ -2144,11 +2277,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\Cart.cshtml",
               "ViewState": "AgIAAC0AAAAAAAAAAAAAAN0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-13T07:38:03.313Z"
+              "WhenOpened": "2024-12-13T07:38:03.313Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 127,
+              "DocumentIndex": 128,
               "Title": "CreateWastageItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
@@ -2156,11 +2290,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateWastageItem.cshtml",
               "ViewState": "AgIAAKsAAAAAAAAAAAAAALwAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T21:08:49.619Z"
+              "WhenOpened": "2024-12-01T21:08:49.619Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 126,
+              "DocumentIndex": 127,
               "Title": "EditConsumeItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditConsumeItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditConsumeItem.cshtml",
@@ -2168,11 +2303,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditConsumeItem.cshtml",
               "ViewState": "AgIAALEAAAAAAAAAAAAAAMcAAABUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T20:50:32.613Z"
+              "WhenOpened": "2024-12-01T20:50:32.613Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 130,
+              "DocumentIndex": 131,
               "Title": "EditItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditItem.cshtml",
@@ -2180,11 +2316,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditItem.cshtml",
               "ViewState": "AgIAABgAAAAAAAAAAAAAACYAAACqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:40:49.973Z"
+              "WhenOpened": "2024-12-02T14:40:49.973Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 129,
+              "DocumentIndex": 130,
               "Title": "EditItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditItem.cshtml",
@@ -2192,11 +2329,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditItem.cshtml",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAD4AAADfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-01T20:54:05.195Z"
+              "WhenOpened": "2024-11-01T20:54:05.195Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 128,
+              "DocumentIndex": 129,
               "Title": "CreateItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateItem.cshtml",
@@ -2204,11 +2342,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateItem.cshtml",
               "ViewState": "AgIAADYAAAAAAAAAAAAAAEMAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-31T07:57:04.168Z"
+              "WhenOpened": "2024-10-31T07:57:04.168Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 131,
+              "DocumentIndex": 132,
               "Title": "CreateBranch.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateBranch.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateBranch.cshtml",
@@ -2216,11 +2355,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateBranch.cshtml",
               "ViewState": "AgIAAEgAAAAAAAAAAAAAAFAAAAB7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T06:00:38.203Z"
+              "WhenOpened": "2025-01-16T06:00:38.203Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 132,
+              "DocumentIndex": 133,
               "Title": "EditBranch.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditBranch.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditBranch.cshtml",
@@ -2228,11 +2368,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditBranch.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-16T06:02:59.679Z"
+              "WhenOpened": "2025-01-16T06:02:59.679Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 133,
+              "DocumentIndex": 134,
               "Title": "WarehouseIssueDetailsHelper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\WarehouseIssueDetailsHelper.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\WarehouseIssueDetailsHelper.cs",
@@ -2240,11 +2381,12 @@
               "RelativeToolTip": "Ressential\\Models\\WarehouseIssueDetailsHelper.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-27T21:59:58.18Z"
+              "WhenOpened": "2024-12-27T21:59:58.18Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 134,
+              "DocumentIndex": 135,
               "Title": "EditAccount.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\EditAccount.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\EditAccount.cshtml",
@@ -2252,11 +2394,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\EditAccount.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-16T15:12:39.539Z"
+              "WhenOpened": "2024-12-16T15:12:39.539Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 135,
+              "DocumentIndex": 136,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Account\\Login.cshtml",
@@ -2264,11 +2407,12 @@
               "RelativeToolTip": "Ressential\\Views\\Account\\Login.cshtml",
               "ViewState": "AgIAADEAAAAAAAAAAAAQwEQAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-22T11:34:21.937Z"
+              "WhenOpened": "2024-12-22T11:34:21.937Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 136,
+              "DocumentIndex": 137,
               "Title": "IssueListViewModel.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\IssueListViewModel.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\IssueListViewModel.cs",
@@ -2276,11 +2420,12 @@
               "RelativeToolTip": "Ressential\\Models\\IssueListViewModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-27T23:35:26.324Z"
+              "WhenOpened": "2024-12-27T23:35:26.324Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 139,
+              "DocumentIndex": 140,
               "Title": "EditIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditIssue.cshtml",
@@ -2288,11 +2433,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditIssue.cshtml",
               "ViewState": "AgIAAHcAAAAAAAAAAAAgwH4AAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-28T09:59:02.817Z"
+              "WhenOpened": "2024-12-28T09:59:02.817Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 137,
+              "DocumentIndex": 138,
               "Title": "Cart.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\Cart.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\Cart.cs",
@@ -2300,11 +2446,12 @@
               "RelativeToolTip": "Ressential\\Models\\Cart.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-13T07:00:07.091Z"
+              "WhenOpened": "2024-12-13T07:00:07.091Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 138,
+              "DocumentIndex": 139,
               "Title": "Shop.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Shop.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Shop.cshtml",
@@ -2312,11 +2459,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\Shop.cshtml",
               "ViewState": "AgIAAJMAAAAAAAAAAAAgwKYAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-26T20:10:43.216Z"
+              "WhenOpened": "2024-12-26T20:10:43.216Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 140,
+              "DocumentIndex": 141,
               "Title": "CreateRequisitionIssue.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\CreateRequisitionIssue.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\CreateRequisitionIssue.cshtml",
@@ -2324,11 +2472,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\CreateRequisitionIssue.cshtml",
               "ViewState": "AgIAAC4AAAAAAAAAAAAgwHUAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-29T08:16:15.601Z"
+              "WhenOpened": "2024-12-29T08:16:15.601Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 141,
+              "DocumentIndex": 142,
               "Title": "EditPurchaseReturn.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Warehouse\\EditPurchaseReturn.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Warehouse\\EditPurchaseReturn.cshtml",
@@ -2336,11 +2485,12 @@
               "RelativeToolTip": "Ressential\\Views\\Warehouse\\EditPurchaseReturn.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-18T12:42:27.78Z"
+              "WhenOpened": "2024-11-18T12:42:27.78Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 142,
+              "DocumentIndex": 143,
               "Title": "WarehouseIssueHelper.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Models\\WarehouseIssueHelper.cs",
               "RelativeDocumentMoniker": "Ressential\\Models\\WarehouseIssueHelper.cs",
@@ -2348,11 +2498,12 @@
               "RelativeToolTip": "Ressential\\Models\\WarehouseIssueHelper.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAuwAsAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-02T11:57:09.834Z"
+              "WhenOpened": "2024-12-02T11:57:09.834Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 143,
+              "DocumentIndex": 144,
               "Title": "TextConstraints.cs",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Utilities\\TextConstraints.cs",
               "RelativeDocumentMoniker": "Ressential\\Utilities\\TextConstraints.cs",
@@ -2360,11 +2511,12 @@
               "RelativeToolTip": "Ressential\\Utilities\\TextConstraints.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-22T09:11:18.182Z"
+              "WhenOpened": "2024-12-22T09:11:18.182Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 144,
+              "DocumentIndex": 145,
               "Title": "ThankYou.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\ThankYou.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\ThankYou.cshtml",
@@ -2372,11 +2524,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\ThankYou.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACMAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-16T14:56:19.279Z"
+              "WhenOpened": "2024-12-16T14:56:19.279Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 145,
+              "DocumentIndex": 146,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\Index.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\Index.cshtml",
@@ -2384,11 +2537,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\Index.cshtml",
               "ViewState": "AgIAABIAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-13T07:40:29.728Z"
+              "WhenOpened": "2024-12-13T07:40:29.728Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 146,
+              "DocumentIndex": 147,
               "Title": "About.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Customer\\About.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Customer\\About.cshtml",
@@ -2396,11 +2550,12 @@
               "RelativeToolTip": "Ressential\\Views\\Customer\\About.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-13T07:38:01.06Z"
+              "WhenOpened": "2024-12-13T07:38:01.06Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 151,
+              "DocumentIndex": 152,
               "Title": "EditCategory.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditCategory.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditCategory.cshtml",
@@ -2408,11 +2563,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditCategory.cshtml",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAACgAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-02T14:39:29.654Z"
+              "WhenOpened": "2024-12-02T14:39:29.654Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 147,
+              "DocumentIndex": 148,
               "Title": "CreateConsumeItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateConsumeItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateConsumeItem.cshtml",
@@ -2420,11 +2576,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateConsumeItem.cshtml",
               "ViewState": "AgIAAEsAAAAAAAAAAAAAAGUAAACDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T20:43:52.971Z"
+              "WhenOpened": "2024-12-01T20:43:52.971Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 148,
+              "DocumentIndex": 149,
               "Title": "EditWastageItem.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditWastageItem.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditWastageItem.cshtml",
@@ -2432,11 +2589,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditWastageItem.cshtml",
               "ViewState": "AgIAAFQAAAAAAAAAAAAAAGUAAABdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T21:09:46.104Z"
+              "WhenOpened": "2024-12-01T21:09:46.104Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 149,
+              "DocumentIndex": 150,
               "Title": "CreateRequisition.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\CreateRequisition.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\CreateRequisition.cshtml",
@@ -2444,11 +2602,12 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\CreateRequisition.cshtml",
               "ViewState": "AgIAAIoAAAAAAAAAAAAAAJoAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T07:20:10.391Z"
+              "WhenOpened": "2024-12-01T07:20:10.391Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 150,
+              "DocumentIndex": 151,
               "Title": "EditRequisition.cshtml",
               "DocumentMoniker": "C:\\Users\\abdul\\Desktop\\Desktop Data\\FYP Project\\Ressential\\Ressential\\Views\\Kitchen\\EditRequisition.cshtml",
               "RelativeDocumentMoniker": "Ressential\\Views\\Kitchen\\EditRequisition.cshtml",
@@ -2456,7 +2615,8 @@
               "RelativeToolTip": "Ressential\\Views\\Kitchen\\EditRequisition.cshtml",
               "ViewState": "AgIAAJEAAAAAAAAAAAAAAJ0AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-12-01T10:58:10.795Z"
+              "WhenOpened": "2024-12-01T10:58:10.795Z",
+              "EditorCaption": ""
             }
           ]
         },

@@ -26,6 +26,9 @@ namespace Ressential.Models
         [StringLength(255)]
         public string Memo { get; set; }
 
+        [NotMapped]
+        public bool ConfirmDuplicate { get; set; }
+
 
     }
 }
