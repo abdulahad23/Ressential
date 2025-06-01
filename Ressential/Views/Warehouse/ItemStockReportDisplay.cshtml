@@ -90,6 +90,36 @@
             border-collapse: collapse;
             margin-top: 20px;
             font-size: 14px;
+            page-break-inside: auto;
+        }
+
+        .table thead {
+            display: table-header-group;
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        .table tfoot {
+            /* Prevent footer from being a table-footer-group so it doesn't repeat on every page */
+            display: table-row-group;
+            page-break-inside: avoid;
+            page-break-before: avoid;
+        }
+        
+        .table .total-footer {
+            /* Ensure totals are at the end and only on the last page */
+            break-inside: avoid;
+            break-before: auto;
+            break-after: auto;
+        }
+        
+        .table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        .table tbody {
+            page-break-inside: auto;
         }
 
         .table th, .table td {
@@ -193,6 +223,24 @@
         
         .table-container {
             overflow-x: auto;
+        }
+        
+        /* PDF specific styles */
+        @@media print {
+            .report-header {
+                position: static;
+            }
+            
+            .table {
+                margin-top: 30px;
+            }
+            
+            .table thead tr th {
+                background-color: #2c3e50 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -308,7 +356,7 @@
                         </tr>
                     }
                 </tbody>
-                <tfoot>
+                <tfoot class="total-footer">
                     @if (Model != null && Model.Any())
                     {
                         decimal totalStockValue = Model.Sum(i => i.Stock * i.Price);

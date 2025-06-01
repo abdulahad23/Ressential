@@ -11,6 +11,7 @@ namespace Ressential.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
     
     public partial class Purchase
     {
@@ -40,5 +41,8 @@ namespace Ressential.Models
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         public virtual Vendor Vendor { get; set; }
+
+        [NotMapped]
+        public bool ConfirmDuplicate { get; set; }
     }
 }

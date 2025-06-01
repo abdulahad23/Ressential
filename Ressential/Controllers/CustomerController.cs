@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Web.Services.Description;
 
 namespace Ressential.Controllers
@@ -19,6 +20,7 @@ namespace Ressential.Controllers
         DB_RessentialEntities _db = new DB_RessentialEntities();
         private static string otpCode;
         private static string emailAddress;
+        private static Customer tempCustomer; // Added to store temporary customer data during registration
         public ActionResult Index()
         {
             
@@ -401,9 +403,15 @@ namespace Ressential.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(string email, string password)
+        [CustomAntiForgery]
+        public ActionResult Login(Customer model)
         {
-            var customer = _db.Customers.FirstOrDefault(c => c.Email == email && c.Password == password);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var customer = _db.Customers.FirstOrDefault(c => c.Email == model.Email && c.Password == model.Password);
 
             if (customer != null)
             {
@@ -412,6 +420,9 @@ namespace Ressential.Controllers
                 Session["CustomerId"] = customer.CustomerId;
                 Session["CustomerName"] = customer.CustomerName;
 
+                // Set FormsAuthentication ticket
+                System.Web.Security.FormsAuthentication.SetAuthCookie(customer.Email, false);
+
                 // Redirect to the desired page
                 return RedirectToAction("Index", "Customer");
             }
@@ -419,46 +430,112 @@ namespace Ressential.Controllers
             {
                 TempData["ErrorMessage"] = "Invalid email or password!";
             }
-            return View();
+            return View(model);
         }
         public ActionResult Register()
         {
             return View();
         }
         [HttpPost]
+        [CustomAntiForgery]
         public ActionResult Register(Customer customer)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return View(customer);
+                }
+
                 // Check if a customer with the same email already exists
                 var existingCustomer = _db.Customers.FirstOrDefault(c => c.Email == customer.Email);
                 if (existingCustomer != null)
                 {
                     TempData["ErrorMessage"] = "An account with this email already exists.";
-                    return View(customer); // Return the view with the data to allow corrections
+                    return View(customer);
                 }
 
-                // Set the current time for the CreatedAt field
-                customer.CreatedAt = DateTime.Now;
+                // Store the customer data temporarily
+                tempCustomer = customer;
+                emailAddress = customer.Email;
 
-                // Add the customer to the database
-                _db.Customers.Add(customer);
-                _db.SaveChanges();
+                // Generate OTP
+                Random random = new Random();
+                otpCode = random.Next(100000, 999999).ToString();
 
-                // Set session variables and redirect to the customer dashboard
-                Session["IsAuthenticated"] = true;
-                Session["CustomerId"] = customer.CustomerId;
-                Session["CustomerName"] = customer.CustomerName;
+                // Send OTP to the user's email
+                try
+                {
+                    SendOtpEmail(customer.Email, otpCode, "Registration");
+                    TempData["Message"] = "OTP has been sent to your email.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "Error sending OTP: " + ex.Message;
+                    return View(customer);
+                }
 
-                return RedirectToAction("Index", "Customer");
+                return RedirectToAction("VerifyRegistrationOtp");
             }
             catch (Exception ex)
             {
-                // Log the exception (optional: integrate logging)
-                TempData["ErrorMessage"] = "An error occurred while creating your account. Please try again.";
-                return View(customer); // Return the view with data so the user doesn't lose their input
+                TempData["ErrorMessage"] = "An error occurred while processing your registration. Please try again.";
+                return View(customer);
             }
         }
+
+        public ActionResult VerifyRegistrationOtp()
+        {
+            if (tempCustomer == null)
+            {
+                return RedirectToAction("Register");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult VerifyRegistrationOtp(string otp)
+        {
+            if (tempCustomer == null)
+            {
+                return RedirectToAction("Register");
+            }
+
+            if (otp == otpCode)
+            {
+                try
+                {
+                    // Set the current time for the CreatedAt field
+                    tempCustomer.CreatedAt = DateTime.Now;
+
+                    // Add the customer to the database
+                    _db.Customers.Add(tempCustomer);
+                    _db.SaveChanges();
+
+                    // Set session variables
+                    Session["IsAuthenticated"] = true;
+                    Session["CustomerId"] = tempCustomer.CustomerId;
+                    Session["CustomerName"] = tempCustomer.CustomerName;
+
+                    // Clear temporary data
+                    tempCustomer = null;
+                    otpCode = null;
+                    emailAddress = null;
+
+                    TempData["SuccessMessage"] = "Registration successful! Welcome to Ressential.";
+                    return RedirectToAction("Index", "Customer");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = "An error occurred while creating your account. Please try again.";
+                    return View();
+                }
+            }
+
+            TempData["ErrorMessage"] = "Invalid OTP. Please try again.";
+            return View();
+        }
+
         public ActionResult EditAccount()
         {
             try
@@ -549,7 +626,7 @@ namespace Ressential.Controllers
             // Send OTP to the user's email
             try
             {
-                SendOtpEmail(email, otpCode);
+                SendOtpEmail(email, otpCode, "Password Reset");
                 TempData["Message"] = "OTP has been sent to your email.";
             }
             catch (Exception ex)
@@ -599,13 +676,13 @@ namespace Ressential.Controllers
             return RedirectToAction("Login");
         }
 
-        private void SendOtpEmail(string email, string otp)
+        private void SendOtpEmail(string email, string otp, string purpose = "Password Reset")
         {
             var fromAddress = new MailAddress("myressential@gmail.com", "Restaurant Portal");
             var toAddress = new MailAddress(email);
             const string fromPassword = "fgio azrf ibzt ccly"; // Gmail app password or generated token
-            const string subject = "Your OTP for Password Reset";
-            string body = $"Your OTP for password reset is: {otp}. This OTP is valid for 10 minutes.";
+            string subject = $"Your OTP for {purpose}";
+            string body = $"Your OTP for {purpose.ToLower()} is: {otp}. This OTP is valid for 10 minutes.";
 
             var smtp = new SmtpClient
             {

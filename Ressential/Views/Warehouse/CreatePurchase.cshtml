@@ -245,6 +245,28 @@
                             } else if (response == "1") {
                                 window.location.href = '@Url.Action("Index","Error")'
                             }
+                            else if (response.status == "warning") {
+                                if (confirm(response.message)) {
+                                    // User clicked OK, proceed with the purchase
+                                    purchase.confirmDuplicate = true;
+                                    $.ajax({
+                                        url: '@Url.Action("CreatePurchase", "WareHouse")',
+                                        method: 'POST',
+                                        data: JSON.stringify(purchase),
+                                        contentType: 'application/json',
+                                        success: function (response) {
+                                            if (response == "0") {
+                                                window.location.href = '@Url.Action("PurchaseList","Warehouse")'
+                                            } else if (response == "1") {
+                                                window.location.href = '@Url.Action("Index","Error")'
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            else if (response.status == "error") {
+                                alert(response.message);
+                            }
                         }
                     });
                 } else {

@@ -26,6 +26,14 @@
                         <h2 class="text-secondary border-bottom border-3 "><b>Warehouse</b></h2>
                         <i class="ti ti-dashboard"></i>
                     </li>
+                    <li class="pc-item">
+                        <a href="@Url.Action("Index", "Warehouse")" class="pc-link">
+                            <span class="pc-micon">
+                                <i class="fas fa-tachometer-alt"></i>
+                            </span>
+                            <span class="pc-mtext">Dashboard</span>
+                        </a>
+                    </li>
                     @if (Html.HasPermission("Item Category List") || Html.HasPermission("Item Category Create"))
                     {
                         <li class="pc-item pc-hasmenu">

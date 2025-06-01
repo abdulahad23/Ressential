@@ -1,4 +1,7 @@
-﻿@{ Layout = null; }
+﻿@model Ressential.Models.Customer
+@{
+    Layout = null;
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,79 +11,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
 
     <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/Content/CustomerAssets/css/style.css">
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/style2.css">
 
     <!-- Custom Styles -->
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f8f9fa;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
         }
 
         .auth-card {
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #82ae46;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .logo-container img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h4 {
+            color: #2d3436;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text p {
+            color: #636e72;
+            font-size: 0.95rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.25rem;
         }
 
         .form-floating input {
-            height: 50px;
-        }
-
-            .form-floating input::placeholder {
-                text-align: center; /* Center align the placeholder text */
-            }
-
-        .form-floating {
-            margin-bottom: 1rem; /* Consistent spacing between fields */
-        }
-
-        .btn {
-            padding: 0.75rem;
+            height: 55px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 1rem 0.75rem;
             font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating input:focus {
+            border-color: #82ae46;
+            box-shadow: 0 0 0 0.2rem rgba(130, 174, 70, 0.25);
+        }
+
+        .form-floating label {
+            padding: 1rem 0.75rem;
+        }
+
+        .btn-register {
+            height: 55px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #82ae46;
+            border: none;
+            color: white;
+            box-shadow: 0 4px 15px rgba(130, 174, 70, 0.35);
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-register:hover {
+            background: #218838;
+            box-shadow: 0 6px 20px rgba(130, 174, 70, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .signin-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #636e72;
+        }
+
+        .signin-link a {
+            color: #82ae46;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .signin-link a:hover {
+            color: #218838;
+        }
+
+        .field-validation-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .input-validation-error {
+            border-color: #dc3545 !important;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .alert-danger {
+            background-color: #ffe5e5;
+            color: #dc3545;
+        }
+
+        .row {
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
 <body>
     <div class="auth-card">
         <div class="card-body">
+            <div class="logo-container">
+                <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Restaurant Logo">
+            </div>
+
+            <div class="welcome-text">
+                <h4>Create Account</h4>
+                <p>Please fill in your information to create an account</p>
+            </div>
+
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger">
-                    <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                <div class="alert alert-danger mb-4">
+                    <i class="fas fa-exclamation-circle me-2"></i>
                     @TempData["ErrorMessage"]
                 </div>
             }
-            <div class="text-center mb-4">
-                <a href="#">
-                    <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Restaurant Logo" width="150">
-                </a>
-            </div>
 
-            <form method="post" action="/Customer/Register">
-                <!-- Two Fields Per Row -->
+            @using (Html.BeginForm("Register", "Customer", FormMethod.Post, new { @id = "registerForm" }))
+            {
+                @Html.AntiForgeryToken()
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="customerName" name="CustomerName" placeholder="Full Name" required>
-                            <label for="customerName">Full Name</label>
+                            @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", placeholder = "Full Name" })
+                            @Html.LabelFor(m => m.CustomerName, "Full Name")
+                            @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="contactNo" name="ContactNo" placeholder="Contact Number" required>
-                            <label for="contactNo">Contact Number</label>
+                            @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control", placeholder = "Contact Number" })
+                            @Html.LabelFor(m => m.ContactNo, "Contact Number")
+                            @Html.ValidationMessageFor(m => m.ContactNo, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                 </div>
@@ -88,49 +206,85 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="email" class="form-control" id="email" name="Email" placeholder="Email Address" required>
-                            <label for="email">Email Address</label>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email Address" })
+                            @Html.LabelFor(m => m.Email, "Email Address")
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="password" name="Password" placeholder="Password" required>
-                            <label for="password">Password</label>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                            @Html.LabelFor(m => m.Password, "Password")
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                 </div>
+
                 <div class="row g-3">
                     <div class="col-md-12">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="address" name="Address" placeholder="Address">
-                            <label for="address">Address</label>
+                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Address" })
+                            @Html.LabelFor(m => m.Address, "Address")
+                            @Html.ValidationMessageFor(m => m.Address, "", new { @class = "field-validation-error" })
                         </div>
-
                     </div>
                 </div>
+
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="country" name="Country" placeholder="Country">
-                            <label for="country">Country</label>
+                            @Html.TextBoxFor(m => m.Country, new { @class = "form-control", placeholder = "Country" })
+                            @Html.LabelFor(m => m.Country, "Country")
+                            @Html.ValidationMessageFor(m => m.Country, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="city" name="City" placeholder="City">
-                            <label for="city">City</label>
+                            @Html.TextBoxFor(m => m.City, new { @class = "form-control", placeholder = "City" })
+                            @Html.LabelFor(m => m.City, "City")
+                            @Html.ValidationMessageFor(m => m.City, "", new { @class = "field-validation-error" })
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-secondary w-100">Sign Up</button>
-            </form>
-            <hr class="my-4">
-            <p class="text-center">
-                Already have an account?
-                <a href="/Customer/Login" class="text-secondary">Sign in</a>
-            </p>
+                <button type="submit" class="btn btn-register w-100">Create Account</button>
+            }
+            <div class="signin-link">
+                Already have an account? <a href="/Customer/Login">Sign in</a>
+            </div>
         </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Content/assets/js/plugins/bootstrap.min.js"></script>
+    <script src="~/Content/assets/js/plugins/popper.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $.validator.addMethod(
+                "passwordRequirements",
+                function (value, element) {
+                    return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@@\$!%*?&])[A-Za-z\d@@\$!%*?&]{8,}$/.test(value);
+                },
+                "Password must be at least 8 characters long and include a letter, a number, and a special character."
+            );
+
+            $("#registerForm").validate({
+                rules: {
+                    Password: {
+                        required: true,
+                        passwordRequirements: true
+                    },
+                    Email: {
+                        required: true,
+                        email: true
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

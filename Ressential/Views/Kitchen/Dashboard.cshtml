@@ -1,0 +1,376 @@
+﻿@model Ressential.ViewModels.KitchenDashboardViewModel
+@{
+    ViewBag.Title = "Kitchen Dashboard";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+}
+
+<!-- [ Main Content ] start -->
+<div class="row">
+    <!-- [ Summary Cards ] start -->
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-utensils f-22 text-primary me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Total Products</h5>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Active menu items</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h2 class="mb-0 text-primary fw-bold">@Model.TotalProducts</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-shopping-cart f-22 text-success me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Total Orders</h5>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">All orders</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h2 class="mb-0 text-success fw-bold">@Model.TotalOrders</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-box f-22 text-warning me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Total Items</h5>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Inventory items</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h2 class="mb-0 text-warning fw-bold">@Model.TotalItems</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-users f-22 text-danger me-3"></i>
+                                <div>
+                                    <h5 class="mb-1">Total Users</h5>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">Kitchen staff</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <h2 class="mb-0 text-danger fw-bold">@Model.TotalUsers</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Summary Cards ] end -->
+
+    <!-- [ Navigation Shortcuts ] start -->
+    <div class="col-sm-12 mb-4">
+        <div class="card">
+            <div class="card-header pb-0">
+                <h5 class="mb-3">
+                    <i class="fas fa-bolt text-warning me-2"></i>
+                    Quick Actions
+                </h5>
+                <p class="text-muted mb-3" style="font-size: 0.9rem;">Frequently used actions for quick access</p>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="@Url.Action("CreateOrder", "Kitchen")" class="text-decoration-none">
+                            <div class="card action-card bg-light-primary border-0 h-100" style="transition: transform 0.2s ease;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-xl bg-primary bg-opacity-25 mb-0">
+                                            <i class="fas fa-plus-circle f-22 text-primary"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-1 text-primary">New Order</h5>
+                                            <p class="text-muted mb-0" style="font-size: 0.9rem;">Create customer order</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-footer bg-primary bg-opacity-10 py-2 px-4">
+                                    <small class="text-primary">
+                                        <i class="fas fa-arrow-right me-1"></i>
+                                        Create New Order
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="@Url.Action("CreateProduct", "Kitchen")" class="text-decoration-none">
+                            <div class="card action-card bg-light-success border-0 h-100" style="transition: transform 0.2s ease;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-xl bg-success bg-opacity-25 mb-0">
+                                            <i class="fas fa-utensils f-22 text-success"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-1 text-success">Add Product</h5>
+                                            <p class="text-muted mb-0" style="font-size: 0.9rem;">Create menu item</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-footer bg-success bg-opacity-10 py-2 px-4">
+                                    <small class="text-success">
+                                        <i class="fas fa-arrow-right me-1"></i>
+                                        Add New Product
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="@Url.Action("CreateWastageItem", "Kitchen")" class="text-decoration-none">
+                            <div class="card action-card bg-light-warning border-0 h-100" style="transition: transform 0.2s ease;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-xl bg-warning bg-opacity-25 mb-0">
+                                            <i class="fas fa-trash-alt f-22 text-warning"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-1 text-warning">Record Wastage</h5>
+                                            <p class="text-muted mb-0" style="font-size: 0.9rem;">Log wastage items</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-footer bg-warning bg-opacity-10 py-2 px-4">
+                                    <small class="text-warning">
+                                        <i class="fas fa-arrow-right me-1"></i>
+                                        Record New Wastage
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="@Url.Action("ChefView", "Kitchen")" class="text-decoration-none">
+                            <div class="card action-card bg-light-danger border-0 h-100" style="transition: transform 0.2s ease;">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar avatar-xl bg-danger bg-opacity-25 mb-0">
+                                            <i class="fas fa-tasks f-22 text-danger"></i>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-1 text-danger">Chef View</h5>
+                                            <p class="text-muted mb-0" style="font-size: 0.9rem;">Manage orders</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-footer bg-danger bg-opacity-10 py-2 px-4">
+                                    <small class="text-danger">
+                                        <i class="fas fa-arrow-right me-1"></i>
+                                        Go to Chef View
+                                    </small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Navigation Shortcuts ] end -->
+
+    <!-- [ Analytics & Activities ] start -->
+    <div class="col-sm-12">
+        <div class="row">
+            <!-- Analytics Overview -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Analytics Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="bg-light-primary rounded p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock f-24 text-primary"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-1">Pending Orders</h6>
+                                            <h4 class="mb-0">@Model.PendingOrders</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light-danger rounded p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-exclamation-triangle f-24 text-danger"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-1">Low Stock</h6>
+                                            <h4 class="mb-0">@Model.LowStockItems</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light-success rounded p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-check-circle f-24 text-success"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-1">Completed</h6>
+                                            <h4 class="mb-0">@Model.CompletedOrders</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light-warning rounded p-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-trash-alt f-24 text-warning"></i>
+                                        <div class="ms-3">
+                                            <h6 class="mb-1">Wastage</h6>
+                                            <h4 class="mb-0">@Model.WastageItems</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Recent Activities</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var activity in Model.RecentActivities)
+                            {
+                                <li class="list-group-item px-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avtar avtar-s bg-light-@(activity.ActivityType == "Order" ? "primary" : 
+                                                                                activity.ActivityType == "Wastage" ? "warning" : 
+                                                                                "info")">
+                                                <i class="fas @(activity.ActivityType == "Order" ? "fa-shopping-cart" : 
+                                                              activity.ActivityType == "Wastage" ? "fa-trash-alt" : 
+                                                              "fa-utensils") f-20"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <p class="mb-1">@activity.Description</p>
+                                            <p class="text-muted mb-0" style="font-size: 0.85rem;">
+                                                @activity.Timestamp.ToString("MMM dd, yyyy HH:mm")
+                                                <span class="badge bg-@(activity.Status == "Completed" ? "success" : 
+                                                                      activity.Status == "Pending" ? "warning" : 
+                                                                      "info") ms-2">@activity.Status</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Products -->
+            <div class="col-md-6 col-xl-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Top Products</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th class="text-center">Orders</th>
+                                        <th class="text-end">Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model.TopProducts)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avtar avtar-xs bg-light-primary me-2">
+                                                        <i class="fas fa-utensils f-16"></i>
+                                                    </div>
+                                                    @product.ProductName
+                                                </div>
+                                            </td>
+                                            <td class="text-center">@product.OrderCount</td>
+                                            <td class="text-end">@product.Revenue.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Analytics & Activities ] end -->
+</div>
+<!-- [ Main Content ] end -->
+
+<style>
+    .action-card {
+        box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    }
+    .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    }
+    .avatar {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    .avatar-xl {
+        width: 55px;
+        height: 55px;
+    }
+    .avatar-xs {
+        width: 30px;
+        height: 30px;
+    }
+    .f-16 {
+        font-size: 16px;
+    }
+    .f-20 {
+        font-size: 20px;
+    }
+    .f-22 {
+        font-size: 22px;
+    }
+    .f-24 {
+        font-size: 24px;
+    }
+</style>

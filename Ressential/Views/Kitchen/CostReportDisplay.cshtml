@@ -1,9 +1,13 @@
-@model IEnumerable<Ressential.Models.PurchaseReturnReportViewModel>
+@model IEnumerable<Ressential.Models.CostReportViewModel>
+@{
+    Layout = null;
+}
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Purchase Return Report</title>
+    <meta name="viewport" content="width=device-width" />
+    <title>Cost Report</title>
     <style>
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -85,6 +89,7 @@
             font-size: 14px;
         }
 
+        /* PDF pagination improvements */
         .table {
             width: 100%;
             border-collapse: collapse;
@@ -100,14 +105,12 @@
         }
         
         .table tfoot {
-            /* Prevent footer from being a table-footer-group so it doesn't repeat on every page */
             display: table-row-group;
             page-break-inside: avoid;
             page-break-before: avoid;
         }
         
         .table .total-footer {
-            /* Ensure totals are at the end and only on the last page */
             break-inside: avoid;
             break-before: auto;
             break-after: auto;
@@ -156,7 +159,7 @@
             color: #6c757d;
             margin-top: 5px;
         }
-        
+
         .action-buttons {
             display: flex;
             justify-content: flex-end;
@@ -192,8 +195,8 @@
         .btn-pdf:hover {
             background-color: #c0392b;
         }
-        
-        .status-badge {
+
+        .type-badge {
             display: inline-block;
             padding: 4px 8px;
             border-radius: 4px;
@@ -201,57 +204,26 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-        
-        .status-partially-received {
-            background-color: #f39c12;
+
+        .type-sales {
+            background-color: #3498db;
             color: white;
         }
-        
-        .status-received {
-            background-color: #2ecc71;
+
+        .type-consume {
+            background-color: #e67e22;
             color: white;
         }
-        
-        .status-not-received {
+
+        .type-wastage {
             background-color: #e74c3c;
             color: white;
         }
-        
-        .detail-table {
-            margin-top: 5px;
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-        
-        .detail-table th, .detail-table td {
-            border: 1px solid #e0e0e0;
-            padding: 6px;
-            text-align: left;
-        }
-        
-        .detail-table th {
-            background-color: #34495e;
-            color: white;
-        }
-        
-        .detail-section {
-            margin-top: 10px;
-            margin-bottom: 30px;
-        }
-        
-        .detail-header {
-            background-color: #f5f7fa;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            border-left: 4px solid #3498db;
-        }
-        
+
         .text-right {
             text-align: right;
         }
-        
+
         /* PDF specific styles */
         @@media print {
             .report-header {
@@ -279,27 +251,30 @@
                     <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Ressential Logo" />
                 </div>
                 <div class="header-text">
-                    <h1>Purchase Return Report</h1>
+                    <h1>Cost Report</h1>
                     <p>@(ViewBag.ReportType == "summary" ? "Summary Report" : "Detailed Report")</p>
-                    <p>Vendor: @ViewBag.VendorName</p>
-                    <p class="timestamp">Generated On: @ViewBag.GeneratedTimestamp</p>
+                    <p class="timestamp">Generated On: @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</p>
                 </div>
             </div>
             
             <div class="date-range-container">
                 <div class="date-range">
+                    @if (!string.IsNullOrEmpty(ViewBag.Search))
+                    {
+                        <p><span>Search:</span> @ViewBag.Search</p>
+                    }
                     <p><span>From Date:</span> @(ViewBag.FromDate != null ? ViewBag.FromDate : "All")</p>
                     <p><span>To Date:</span> @(ViewBag.ToDate != null ? ViewBag.ToDate : "All")</p>
-                    @if (ViewBag.Status != null && ViewBag.Status != "0")
-                    {
-                        <p><span>Status:</span> @ViewBag.Status</p>
-                    }
+                    <p><span>Report Type:</span> @(ViewBag.ReportType == "detail" ? "Detailed" : "Summary")</p>
                 </div>
             </div>
         </div>
 
         <div class="action-buttons">
-            @if (ViewBag.IsPdfExport != true)
+            @{
+                var isPdfExport = ViewBag.IsPdfExport == true;
+            }
+            @if (!isPdfExport)
             {
                 <button class="btn btn-export" onclick="exportToExcel()">Export</button>
                 <button class="btn btn-pdf" onclick="exportToPDF()">PDF</button>
@@ -313,43 +288,29 @@
                 <thead>
                     <tr>
                         <th>S.No</th>
-                        <th>Return No</th>
+                        <th>Reference No</th>
                         <th>Date</th>
-                        <th>Vendor</th>
-                        <th>Reference</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
                         int serialNo = 1;
-                        decimal totalAmount = 0;
-                        
                         foreach (var item in Model)
                         {
-                            totalAmount += item.TotalAmount;
                             <tr>
                                 <td>@serialNo</td>
-                                <td>
-                                    <a href="@Url.Action("EditPurchaseReturn", "Warehouse", new { purchaseReturnId = item.PurchaseReturnId })" 
-                                       target="_blank" class="text-primary font-weight-bold text-decoration-underline">
-                                        @item.PurchaseReturnNo
-                                    </a>
-                                </td>
+                                <td>@item.ReferenceNo</td>
                                 <td>@item.Date.ToString("yyyy-MM-dd")</td>
-                                <td>@item.VendorName</td>
-                                <td>@item.Reference</td>
-                                <td class="text-right">@item.TotalAmount.ToString("N2")</td>
                                 <td>
                                     @{
-                                    string statusClass = "status-partially-received";
-                                    if (item.Status == "Received") { statusClass = "status-received"; }
-                                    else if (item.Status == "Not Received") { statusClass = "status-not-received"; }
+                                        string typeClass = "type-" + item.Type.ToLower();
                                     }
-                                    <span class="status-badge @statusClass">@item.Status</span>
+                                    <span class="type-badge @typeClass">@item.Type</span>
                                 </td>
+                                <td class="text-right">@item.TotalCost.ToString("N2")</td>
                             </tr>
                             serialNo++;
                         }
@@ -357,25 +318,32 @@
                     else
                     {
                         <tr>
-                            <td colspan="7" class="no-data">No data available</td>
+                            <td colspan="5" class="no-data">No data available</td>
                         </tr>
                     }
                 </tbody>
-                <tfoot>
-                    @if (Model != null && Model.Any())
-                    {
-                        decimal totalAmount = Model.Sum(r => r.TotalAmount);
+                @if (Model != null && Model.Any())
+                {
+                    var salesTotal = Model.Where(x => x.Type == "Sales").Sum(x => x.TotalCost);
+                    var consumeTotal = Model.Where(x => x.Type == "Consume").Sum(x => x.TotalCost);
+                    var wastageTotal = Model.Where(x => x.Type == "Wastage").Sum(x => x.TotalCost);
+                    var grandTotal = salesTotal + consumeTotal + wastageTotal;
+
+                    <tfoot class="total-footer">
                         <tr>
-                            <td colspan="5" style="text-align: right;"><strong>Total Amount</strong></td>
-                            <td class="text-right">@totalAmount.ToString("N2")</td>
-                            <td></td>
+                            <td colspan="4" style="text-align: right;"><strong>Total by Type</strong></td>
+                            <td class="text-right">
+                                <div>Sales: @salesTotal.ToString("N2")</div>
+                                <div>Consume: @consumeTotal.ToString("N2")</div>
+                                <div>Wastage: @wastageTotal.ToString("N2")</div>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="6" style="text-align: right;"><strong>Total Returns</strong></td>
-                            <td>@Model.Count()</td>
+                            <td colspan="4" style="text-align: right;"><strong>Grand Total</strong></td>
+                            <td class="text-right">@grandTotal.ToString("N2")</td>
                         </tr>
-                    }
-                </tfoot>
+                    </tfoot>
+                }
             </table>
         }
         else
@@ -385,114 +353,89 @@
                 <thead>
                     <tr>
                         <th>S.No</th>
-                        <th>Return No</th>
+                        <th>Reference No</th>
                         <th>Date</th>
-                        <th>Vendor</th>
-                        <th>Item</th>
+                        <th>Type</th>
+                        <th>Item Name</th>
                         <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                        <th>Status</th>
+                        <th>Cost Per Unit</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
                         int serialNo = 1;
-                        foreach (var returnItem in Model)
+                        foreach (var item in Model)
                         {
-                            if (returnItem.Items != null && returnItem.Items.Any())
-                            {
-                                foreach (var item in returnItem.Items)
-                                {
-                                    <tr>
-                                        <td>@(serialNo++)</td>
-                                        <td>
-                                            <a href="@Url.Action("EditPurchaseReturn", "Warehouse", new { purchaseReturnId = returnItem.PurchaseReturnId })" 
-                                               target="_blank" class="text-primary font-weight-bold text-decoration-underline">
-                                                @returnItem.PurchaseReturnNo
-                                            </a>
-                                        </td>
-                                        <td>@returnItem.Date.ToString("yyyy-MM-dd")</td>
-                                        <td>@returnItem.VendorName</td>
-                                        <td>@item.ItemName</td>
-                                        <td class="text-right">@item.Quantity.ToString("N2")</td>
-                                        <td class="text-right">@item.UnitPrice.ToString("N2")</td>
-                                        <td class="text-right">@((item.Quantity * item.UnitPrice).ToString("N2"))</td>
-                                        <td>
-                                            @{
-                                            string statusClass = "status-partially-received";
-                                            if (returnItem.Status == "Received") { statusClass = "status-received"; }
-                                            else if(returnItem.Status == "Not Received") { statusClass = "status-not-received";}
-                                            }
-                                            <span class="status-badge @statusClass">@returnItem.Status</span>
-                                        </td>
-                                    </tr>
-                                }
-                            }
+                            <tr>
+                                <td>@serialNo</td>
+                                <td>@item.ReferenceNo</td>
+                                <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    @{
+                                        string typeClass = "type-" + item.Type.ToLower();
+                                    }
+                                    <span class="type-badge @typeClass">@item.Type</span>
+                                </td>
+                                <td>@item.ItemName</td>
+                                <td class="text-right">@item.Quantity.ToString("N2")</td>
+                                <td class="text-right">@item.CostPerUnit.ToString("N2")</td>
+                                <td class="text-right">@item.TotalCost.ToString("N2")</td>
+                            </tr>
+                            serialNo++;
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="9" class="no-data">No data available</td>
+                            <td colspan="8" class="no-data">No data available</td>
                         </tr>
                     }
                 </tbody>
-                <tfoot class="total-footer">
-                    @if (Model != null && Model.Any())
-                    {
-                        decimal totalQuantity = Model.Where(p => p.Items != null).SelectMany(p => p.Items).Sum(i => i.Quantity);
-                        decimal totalValue = Model.Where(p => p.Items != null).SelectMany(p => p.Items).Sum(i => i.Quantity * i.UnitPrice);
-                        
+                @if (Model != null && Model.Any())
+                {
+                    <tfoot class="total-footer">
                         <tr>
-                            <td colspan="5" style="text-align: right;"><strong>Total</strong></td>
-                            <td class="text-right">@totalQuantity.ToString("N2")</td>
-                            <td></td>
-                            <td class="text-right">@totalValue.ToString("N2")</td>
-                            <td></td>
+                            <td colspan="7" style="text-align: right;"><strong>Total Cost</strong></td>
+                            <td class="text-right">@Model.Sum(x => x.TotalCost).ToString("N2")</td>
                         </tr>
-                    }
-                </tfoot>
+                    </tfoot>
+                }
             </table>
         }
-
     </div>
 
     <script>
         function exportToExcel() {
-            var vendorId = '@ViewBag.VendorId';
+            var search = '@ViewBag.Search';
             var fromDate = '@ViewBag.FromDate';
             var toDate = '@ViewBag.ToDate';
-            var status = '@ViewBag.Status';
             var reportType = '@ViewBag.ReportType';
             
-            var url = '@Url.Action("ExportPurchaseReturnReportToExcel", "Warehouse")' +
-                '?vendorId=' + encodeURIComponent(vendorId) +
+            var url = '@Url.Action("ExportCostReportToExcel", "Kitchen")' +
+                '?search=' + encodeURIComponent(search) +
                 '&fromDate=' + encodeURIComponent(fromDate) +
                 '&toDate=' + encodeURIComponent(toDate) +
-                '&status=' + encodeURIComponent(status) +
                 '&reportType=' + encodeURIComponent(reportType);
                 
             window.location.href = url;
         }
 
         function exportToPDF() {
-            var vendorId = '@ViewBag.VendorId';
+            var search = '@ViewBag.Search';
             var fromDate = '@ViewBag.FromDate';
             var toDate = '@ViewBag.ToDate';
-            var status = '@ViewBag.Status';
             var reportType = '@ViewBag.ReportType';
             
-            var url = '@Url.Action("ExportPurchaseReturnReportToPDF", "Warehouse")' +
-                '?vendorId=' + encodeURIComponent(vendorId) +
+            var url = '@Url.Action("ExportCostReportToPDF", "Kitchen")' +
+                '?search=' + encodeURIComponent(search) +
                 '&fromDate=' + encodeURIComponent(fromDate) +
                 '&toDate=' + encodeURIComponent(toDate) +
-                '&status=' + encodeURIComponent(status) +
                 '&reportType=' + encodeURIComponent(reportType);
                 
             window.location.href = url;
         }
     </script>
 </body>
-</html>
+</html> 

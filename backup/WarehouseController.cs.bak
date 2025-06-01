@@ -22,7 +22,6 @@ using OfficeOpenXml;
 using System.ComponentModel;
 using Microsoft.AspNet.SignalR;
 using AuthorizeAttribute = System.Web.Mvc.AuthorizeAttribute;
-using Ressential.ViewModels;
 
 namespace Ressential.Controllers
 {
@@ -34,90 +33,7 @@ namespace Ressential.Controllers
 
         public ActionResult Index()
         {
-            var dashboard = new DashboardViewModel();
-
-            // Get total counts
-            dashboard.TotalItems = _db.Items.Count();
-            dashboard.TotalVendors = _db.Vendors.Count();
-            dashboard.TotalBranches = _db.Branches.Count();
-            dashboard.TotalUsers = _db.Users.Count();
-
-            // Get analytics
-            dashboard.UnfulfilledRequisitions = _db.Requisitions.Count(r => r.Status == "Pending" || r.Status == "Partially Settled");
-            dashboard.LowStockItems = _db.WarehouseItemStocks.Count(i => i.Quantity <= i.Item.MinimumStockLevel);
-            dashboard.CompletedIssues = _db.WarehouseIssues.Count(i => i.Status == "Settled");
-            dashboard.ReturnedStocks = _db.ReturnStocks.Count(r => r.Status == "Pending");
-
-            // Calculate total stock value
-            dashboard.TotalStockValue = _db.WarehouseItemStocks.Sum(i => (i.Quantity) * (i.CostPerUnit));
-
-            // Get top 5 items by value
-            dashboard.TopItems = _db.WarehouseItemStocks
-                .OrderByDescending(i => i.Quantity * i.CostPerUnit)
-                .Take(5)
-                .Select(i => new TopItemViewModel
-                {
-                    ItemName = i.Item.ItemName,
-                    Quantity = i.Quantity,
-                    Value = (i.Quantity) * (i.CostPerUnit)
-                })
-                .ToList();
-
-            // Get recent activities
-            var recentActivities = new List<RecentActivityViewModel>();
-
-            // Add recent purchases
-
-            var recentPurchases = _db.Purchases
-                .OrderByDescending(p => p.PurchaseDate)
-                .Take(3)
-                .AsEnumerable() // Forces in-memory evaluation  
-                .Select(p => new RecentActivityViewModel
-                {
-                    ActivityType = "Purchase",
-                    Description = $"Purchase from {p.Vendor.Name} - {p.PurchaseNo}",
-                    Timestamp = p.PurchaseDate,
-                    Status = p.Status
-                });
-
-            recentActivities.AddRange(recentPurchases);
-
-            // Add recent requisitions
-            var recentRequisitions = _db.Requisitions
-                .OrderByDescending(r => r.RequisitionDate)
-                .Take(3)
-                .AsEnumerable() // Forces in-memory evaluation  
-                .Select(r => new RecentActivityViewModel
-                {
-                    ActivityType = "Requisition",
-                    Description = $"Requisition from {r.Branch.BranchName} - {r.RequisitionNo}",
-                    Timestamp = r.RequisitionDate,
-                    Status = r.Status
-                });
-
-            recentActivities.AddRange(recentRequisitions);
-
-            // Add recent issues
-            var recentIssues = _db.WarehouseIssues
-                .OrderByDescending(i => i.IssueDate)
-                .Take(3)
-                .AsEnumerable()
-                .Select(i => new RecentActivityViewModel
-                {
-                    ActivityType = "Issue",
-                    Description = $"Issue to {i.Branch.BranchName} - {i.IssueNo}",
-                    Timestamp = i.IssueDate,
-                    Status = i.Status
-                });
-            recentActivities.AddRange(recentIssues);
-
-            dashboard.RecentActivities = recentActivities
-                .OrderByDescending(a => a.Timestamp)
-                .Take(7)
-                .AsEnumerable()
-                .ToList();
-
-            return View(dashboard);
+            return View();
         }
         public ActionResult GetUnreadNotifications()
         {
@@ -1377,7 +1293,7 @@ namespace Ressential.Controllers
                         }
                     }
 
-                    _db.ReceiptVouchers.RemoveRange(itemsToDelete);
+                    _db.ReceiptVoucherAttachments.RemoveRange(itemsToDelete);
                     _db.SaveChanges();
                     TempData["SuccessMessage"] = "Receipt Voucher deleted successfully.";
                 }
@@ -1526,16 +1442,6 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // Check if reference number already exists
-                    if (!string.IsNullOrEmpty(purchase.ReferenceNo) && !purchase.ConfirmDuplicate)
-                    {
-                        var existingPurchase = _db.Purchases.FirstOrDefault(p => p.ReferenceNo.Equals(purchase.ReferenceNo, StringComparison.OrdinalIgnoreCase));
-                        if (existingPurchase != null)
-                        {
-                            return Json(new { status = "warning", message = "This reference number already exists. Do you want to continue?" }, JsonRequestBehavior.AllowGet);
-                        }
-                    }
-
                     string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextPurchaseNumber = 1;
 
@@ -4438,6 +4344,13 @@ namespace Ressential.Controllers
                     fileName = branch.BranchName.Replace(" ", "_");
                 }
 
+                // Define colors for report styling
+                var headerBackground = System.Drawing.ColorTranslator.FromHtml("#2c3e50");
+                var subHeaderBackground = System.Drawing.ColorTranslator.FromHtml("#34495e");
+                var alternateRowColor = System.Drawing.ColorTranslator.FromHtml("#f8f9fa");
+                var borderColor = System.Drawing.ColorTranslator.FromHtml("#e0e0e0");
+                var totalRowColor = System.Drawing.ColorTranslator.FromHtml("#eaecef");
+
                 // Create Excel package
                 ExcelPackage.License.SetNonCommercialOrganization("Ressential");
                 using (var package = new ExcelPackage())
@@ -5360,367 +5273,6 @@ namespace Ressential.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportPurchaseReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
-        {
-            try
-            {
-                // Get report data
-                var reportData = GetPurchaseReportData(vendorId, fromDate, toDate, status, reportType);
-
-                // Set vendor name
-                string vendorName = "All Vendors";
-                string fileName = "All_Vendors";
-
-                if (vendorId > 0)
-                {
-                    var vendor = _db.Vendors.Find(vendorId);
-                    if (vendor == null)
-                    {
-                        TempData["ErrorMessage"] = "Vendor not found.";
-                        return RedirectToAction("PurchaseReport");
-                    }
-                    vendorName = vendor.Name;
-                    fileName = vendor.Name.Replace(" ", "_");
-                }
-
-                // Create Excel package
-                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
-                using (var package = new ExcelPackage())
-                {
-                    // Add a worksheet
-                    var worksheet = package.Workbook.Worksheets.Add("Purchase Report");
-
-                    // Set document properties
-                    package.Workbook.Properties.Title = "Purchase Report";
-                    package.Workbook.Properties.Author = "Ressential";
-                    package.Workbook.Properties.Company = "Ressential";
-                    package.Workbook.Properties.Created = DateTime.Now;
-
-                    // Professional color scheme
-                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
-                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
-                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
-                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
-                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
-
-                    // Set column widths based on report type
-                    if (reportType == "summary")
-                    {
-                        // Summary report columns
-                        worksheet.Column(1).Width = 6;      // S.No
-                        worksheet.Column(2).Width = 18;     // Purchase No
-                        worksheet.Column(3).Width = 12;     // Date
-                        worksheet.Column(4).Width = 25;     // Vendor Name
-                        worksheet.Column(5).Width = 18;     // Reference
-                        worksheet.Column(6).Width = 18;     // Total Amount
-                        worksheet.Column(7).Width = 15;     // Status
-                    }
-                    else
-                    {
-                        // Detailed report columns
-                        worksheet.Column(1).Width = 6;      // S.No
-                        worksheet.Column(2).Width = 18;     // Purchase No
-                        worksheet.Column(3).Width = 12;     // Date
-                        worksheet.Column(4).Width = 25;     // Vendor Name
-                        worksheet.Column(5).Width = 25;     // Item Name
-                        worksheet.Column(6).Width = 15;     // Quantity
-                        worksheet.Column(7).Width = 15;     // Unit Price
-                        worksheet.Column(8).Width = 15;     // Total
-                        worksheet.Column(9).Width = 15;     // Status
-                    }
-
-                    // Max columns for merging - depends on report type
-                    int maxCol = reportType == "summary" ? 7 : 9;
-
-                    // Add company logo placeholder and title (row 1)
-                    worksheet.Cells[1, 1, 1, maxCol].Merge = true;
-                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
-                    worksheet.Cells[1, 1].Style.Font.Size = 20;
-                    worksheet.Cells[1, 1].Style.Font.Bold = true;
-                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
-                    worksheet.Row(1).Height = 30; // Increase row height
-
-                    // Add report title (row 2)
-                    worksheet.Cells[2, 1, 2, maxCol].Merge = true;
-                    worksheet.Cells[2, 1].Value = reportType == "summary" ? "Purchase Report (Summary)" : "Purchase Report (Detailed)";
-                    worksheet.Cells[2, 1].Style.Font.Size = 16;
-                    worksheet.Cells[2, 1].Style.Font.Bold = true;
-                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Row(2).Height = 25; // Increase row height
-
-                    // Empty row for spacing
-                    worksheet.Row(3).Height = 10;
-
-                    // Calculate box widths based on report type
-                    int box1End = reportType == "summary" ? 2 : 3;
-                    int box2Start = box1End + 1;
-                    int box2End = reportType == "summary" ? 5 : 5;
-                    int box3Start = box2End + 1;
-
-                    // Report information section with styled boxes (rows 4-5)
-                    // Vendor info (left box)
-                    worksheet.Cells[4, 1, 4, box1End].Merge = true;
-                    worksheet.Cells[4, 1].Value = "VENDOR";
-                    worksheet.Cells[4, 1].Style.Font.Bold = true;
-                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, 1, 5, box1End].Merge = true;
-                    worksheet.Cells[5, 1].Value = vendorName;
-                    worksheet.Cells[5, 1].Style.Font.Size = 11;
-                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Date range (middle box)
-                    worksheet.Cells[4, box2Start, 4, box2End].Merge = true;
-                    worksheet.Cells[4, box2Start].Value = "DATE RANGE";
-                    worksheet.Cells[4, box2Start].Style.Font.Bold = true;
-                    worksheet.Cells[4, box2Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, box2Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, box2Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, box2Start, 5, box2End].Merge = true;
-                    worksheet.Cells[5, box2Start].Value = $"{(fromDate?.ToString("yyyy-MM-dd") ?? "All")} to {(toDate?.ToString("yyyy-MM-dd") ?? "All")}";
-                    worksheet.Cells[5, box2Start].Style.Font.Size = 11;
-                    worksheet.Cells[5, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, box2Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, box2Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Status info (right box)
-                    worksheet.Cells[4, box3Start, 4, maxCol].Merge = true;
-                    worksheet.Cells[4, box3Start].Value = "STATUS";
-                    worksheet.Cells[4, box3Start].Style.Font.Bold = true;
-                    worksheet.Cells[4, box3Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, box3Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, box3Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, box3Start, 5, maxCol].Merge = true;
-                    worksheet.Cells[5, box3Start].Value = status == "0" ? "All Status" : status;
-                    worksheet.Cells[5, box3Start].Style.Font.Size = 11;
-                    worksheet.Cells[5, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, box3Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, box3Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Space before data
-                    worksheet.Row(6).Height = 15;
-
-                    // Add table headers (row 7) based on report type
-                    string[] headers;
-                    if (reportType == "summary")
-                    {
-                        headers = new string[] { "S.No", "Purchase No", "Date", "Vendor", "Reference", "Total Amount", "Status" };
-                    }
-                    else
-                    {
-                        headers = new string[] {
-                            "S.No", "Purchase No", "Date", "Vendor", "Item", "Quantity",
-                            "Unit Price", "Total", "Status"
-                        };
-                    }
-
-                    for (int i = 0; i < headers.Length; i++)
-                    {
-                        var cell = worksheet.Cells[7, i + 1];
-                        cell.Value = headers[i];
-                        cell.Style.Font.Bold = true;
-                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
-                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                    }
-                    worksheet.Row(7).Height = 22; // Increase header row height
-
-                    // Freeze panes for better navigation (fix header row)
-                    worksheet.View.FreezePanes(8, 1);
-
-                    // Add data rows based on report type
-                    int currentRow = 8;
-                    int serialNo = 1;
-
-                    if (reportType == "summary")
-                    {
-                        // Summary report - one row per purchase
-                        decimal totalAmount = 0;
-                        foreach (var purchase in reportData)
-                        {
-                            // Apply alternating row background for better readability
-                            if (serialNo % 2 == 0)
-                            {
-                                var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                                range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
-                            }
-
-                            // Add row data - summary format
-                            worksheet.Cells[currentRow, 1].Value = serialNo++;
-                            worksheet.Cells[currentRow, 2].Value = purchase.PurchaseNo;
-                            worksheet.Cells[currentRow, 3].Value = purchase.Date.ToString("yyyy-MM-dd");
-                            worksheet.Cells[currentRow, 4].Value = purchase.VendorName;
-                            worksheet.Cells[currentRow, 5].Value = purchase.Reference;
-                            worksheet.Cells[currentRow, 6].Value = purchase.TotalAmount;
-                            worksheet.Cells[currentRow, 7].Value = purchase.Status;
-
-                            // Format cells
-                            for (int i = 1; i <= maxCol; i++)
-                            {
-                                worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                            }
-
-                            // Date format
-                            worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
-
-                            // Numeric format for total amount
-                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-
-                            totalAmount += purchase.TotalAmount;
-                            currentRow++;
-                        }
-
-                        // Add summary row
-                        if (reportData.Any())
-                        {
-                            // Total row style
-                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            totalRange.Style.Font.Bold = true;
-                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Total row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Total Amount:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = totalAmount;
-                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-
-                            currentRow++;
-
-                            // Count row style
-                            var countRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            countRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            countRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            countRange.Style.Font.Bold = true;
-                            countRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Count row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Total Purchases:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = reportData.Count();
-                        }
-                    }
-                    else
-                    {
-                        // Detailed report - one row per purchase item
-                        decimal totalQuantity = 0;
-                        decimal totalValue = 0;
-
-                        foreach (var purchase in reportData)
-                        {
-                            if (purchase.Items != null && purchase.Items.Any())
-                            {
-                                foreach (var item in purchase.Items)
-                                {
-                                    decimal itemTotal = item.Quantity * item.UnitPrice;
-
-                                    // Apply alternating row background for better readability
-                                    if (serialNo % 2 == 0)
-                                    {
-                                        var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                                        range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                        range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
-                                    }
-
-                                    // Add row data - detailed format
-                                    worksheet.Cells[currentRow, 1].Value = serialNo++;
-                                    worksheet.Cells[currentRow, 2].Value = purchase.PurchaseNo;
-                                    worksheet.Cells[currentRow, 3].Value = purchase.Date.ToString("yyyy-MM-dd");
-                                    worksheet.Cells[currentRow, 4].Value = purchase.VendorName;
-                                    worksheet.Cells[currentRow, 5].Value = item.ItemName;
-                                    worksheet.Cells[currentRow, 6].Value = item.Quantity;
-                                    worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
-                                    worksheet.Cells[currentRow, 8].Value = itemTotal;
-                                    worksheet.Cells[currentRow, 9].Value = purchase.Status;
-
-                                    // Format cells
-                                    for (int i = 1; i <= maxCol; i++)
-                                    {
-                                        worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                                    }
-
-                                    // Date format
-                                    worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
-
-                                    // Numeric formats
-                                    worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
-                                    worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
-
-                                    totalQuantity += item.Quantity;
-                                    totalValue += itemTotal;
-                                    currentRow++;
-                                }
-                            }
-                        }
-
-                        // Add summary row
-                        if (reportData.Any())
-                        {
-                            // Total row style
-                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            totalRange.Style.Font.Bold = true;
-                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Total row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Grand Total:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = totalQuantity;
-                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-                            worksheet.Cells[currentRow, 8].Value = totalValue;
-                            worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
-                        }
-                    }
-
-                    // Add footer note (optional)
-                    currentRow += 2;
-                    worksheet.Cells[currentRow, 1, currentRow, maxCol].Merge = true;
-                    worksheet.Cells[currentRow, 1].Value = $"Report generated on {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-                    worksheet.Cells[currentRow, 1].Style.Font.Italic = true;
-                    worksheet.Cells[currentRow, 1].Style.Font.Size = 9;
-                    worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    // Return the Excel file
-                    string excelFileName = $"PurchaseReport_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx";
-                    byte[] fileBytes = package.GetAsByteArray();
-                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
-                return RedirectToAction("PurchaseReport");
-            }
-        }
-
-        [HttpGet]
         public ActionResult ExportPurchaseReportToPDF(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
         {
             try
@@ -5771,7 +5323,194 @@ namespace Ressential.Controllers
             }
         }
 
-        
+        [HttpGet]
+        public ActionResult ExportPurchaseReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new OfficeOpenXml.ExcelPackage())
+                {
+                    // Add a new worksheet to the package
+                    var worksheet = package.Workbook.Worksheets.Add("Purchase Report");
+                    
+                    // Add header
+                    worksheet.Cells[1, 1].Value = "Purchase Report";
+                    worksheet.Cells[1, 1, 1, 9].Merge = true;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Size = 14;
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    // Add report criteria
+                    int currentRow = 2;
+                    worksheet.Cells[currentRow, 1].Value = "Vendor:";
+                    worksheet.Cells[currentRow, 2].Value = vendorId > 0
+                        ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                        : "All Vendors";
+                    currentRow++;
+                    
+                    worksheet.Cells[currentRow, 1].Value = "From Date:";
+                    worksheet.Cells[currentRow, 2].Value = fromDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+                    
+                    worksheet.Cells[currentRow, 1].Value = "To Date:";
+                    worksheet.Cells[currentRow, 2].Value = toDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+                    
+                    worksheet.Cells[currentRow, 1].Value = "Status:";
+                    worksheet.Cells[currentRow, 2].Value = status;
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Report Type:";
+                    worksheet.Cells[currentRow, 2].Value = reportType == "summary" ? "Summary" : "Detailed";
+                    currentRow++;
+                    
+                    worksheet.Cells[currentRow, 1].Value = "Generated On:";
+                    worksheet.Cells[currentRow, 2].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    currentRow += 2;
+
+                    // Add data based on report type
+                    if (reportType == "summary")
+                    {
+                        // Add column headers for summary report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Purchase No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Reference";
+                        worksheet.Cells[currentRow, 6].Value = "Total Amount";
+                        worksheet.Cells[currentRow, 7].Value = "Status";
+                        
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 7])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+                        
+                        currentRow++;
+                        
+                        // Add data rows for summary report
+                        int serialNo = 1;
+                        decimal totalAmount = 0;
+                        
+                            foreach (var item in reportData)
+                            {
+                                worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                worksheet.Cells[currentRow, 2].Value = item.PurchaseNo;
+                                worksheet.Cells[currentRow, 3].Value = item.Date.ToString("yyyy-MM-dd");
+                                worksheet.Cells[currentRow, 4].Value = item.VendorName;
+                                worksheet.Cells[currentRow, 5].Value = item.Reference;
+                                worksheet.Cells[currentRow, 6].Value = item.TotalAmount;
+                                worksheet.Cells[currentRow, 7].Value = item.Status;
+                                
+                            // Format numeric cells
+                                worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                                
+                                totalAmount += item.TotalAmount;
+                                currentRow++;
+                            }
+                            
+                            // Add total row
+                        worksheet.Cells[currentRow, 5].Value = "Total Amount:";
+                            worksheet.Cells[currentRow, 6].Value = totalAmount;
+                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Cells[currentRow, 5, currentRow, 6].Style.Font.Bold = true;
+
+                        currentRow++;
+                        worksheet.Cells[currentRow, 5].Value = "Total Purchases:";
+                        worksheet.Cells[currentRow, 6].Value = reportData.Count();
+                        worksheet.Cells[currentRow, 5, currentRow, 6].Style.Font.Bold = true;
+                    }
+                    else
+                    {
+                        // Add column headers for detailed report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Purchase No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Item";
+                        worksheet.Cells[currentRow, 6].Value = "Quantity";
+                        worksheet.Cells[currentRow, 7].Value = "Unit Price";
+                        worksheet.Cells[currentRow, 8].Value = "Total";
+                        worksheet.Cells[currentRow, 9].Value = "Status";
+                        
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 9])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+                        
+                        currentRow++;
+                        
+                        // Add data rows for detailed report
+                        int serialNo = 1;
+                        decimal totalQuantity = 0;
+                        decimal totalValue = 0;
+                        
+                            foreach (var purchase in reportData)
+                            {
+                                if (purchase.Items != null && purchase.Items.Any())
+                                {
+                                    foreach (var item in purchase.Items)
+                                    {
+                                        decimal itemTotal = item.Quantity * item.UnitPrice;
+                                        
+                                        worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                        worksheet.Cells[currentRow, 2].Value = purchase.PurchaseNo;
+                                        worksheet.Cells[currentRow, 3].Value = purchase.Date.ToString("yyyy-MM-dd");
+                                        worksheet.Cells[currentRow, 4].Value = purchase.VendorName;
+                                        worksheet.Cells[currentRow, 5].Value = item.ItemName;
+                                        worksheet.Cells[currentRow, 6].Value = item.Quantity;
+                                        worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
+                                        worksheet.Cells[currentRow, 8].Value = itemTotal;
+                                        worksheet.Cells[currentRow, 9].Value = purchase.Status;
+                                        
+                                    // Format numeric cells
+                                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                                        worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
+                                        worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                                        
+                                        totalQuantity += item.Quantity;
+                                        totalValue += itemTotal;
+                                        currentRow++;
+                                    }
+                                }
+                            }
+                            
+                            // Add total row
+                        worksheet.Cells[currentRow, 5].Value = "Total:";
+                            worksheet.Cells[currentRow, 6].Value = totalQuantity;
+                        worksheet.Cells[currentRow, 8].Value = totalValue;
+                        worksheet.Cells[currentRow, 5, currentRow, 8].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
+                            worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
+                    }
+
+                    // Auto-fit columns
+                    for (int col = 1; col <= 9; col++)
+                    {
+                        worksheet.Column(col).AutoFit();
+                    }
+                    
+                    // Return the Excel file
+                    string fileName = $"PurchaseReport_{DateTime.Now:yyyyMMdd}.xlsx";
+                    byte[] fileBytes = package.GetAsByteArray();
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
+                return RedirectToAction("PurchaseReport");
+            }
+        }
 
         private List<PurchaseReportViewModel> GetPurchaseReportData(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
         {
@@ -5879,386 +5618,6 @@ namespace Ressential.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportPurchaseReturnReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
-        {
-            try
-            {
-                // Get report data
-                var reportData = GetPurchaseReturnReportData(vendorId, fromDate, toDate, status, reportType);
-
-                // Set vendor name
-                string vendorName = "All Vendors";
-                string fileName = "All_Vendors";
-
-                if (vendorId > 0)
-                {
-                    var vendor = _db.Vendors.Find(vendorId);
-                    if (vendor == null)
-                    {
-                        TempData["ErrorMessage"] = "Vendor not found.";
-                        return RedirectToAction("PurchaseReturnReport");
-                    }
-                    vendorName = vendor.Name;
-                    fileName = vendor.Name.Replace(" ", "_");
-                }
-
-                // Create Excel package
-                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
-                using (var package = new ExcelPackage())
-                {
-                    // Add a worksheet
-                    var worksheet = package.Workbook.Worksheets.Add("Purchase Return Report");
-
-                    // Set document properties
-                    package.Workbook.Properties.Title = "Purchase Return Report";
-                    package.Workbook.Properties.Author = "Ressential";
-                    package.Workbook.Properties.Company = "Ressential";
-                    package.Workbook.Properties.Created = DateTime.Now;
-
-                    // Professional color scheme
-                    var headerBackground = System.Drawing.Color.FromArgb(31, 78, 120);   // Dark blue
-                    var titleBackground = System.Drawing.Color.FromArgb(55, 125, 185);   // Medium blue
-                    var alternateRowColor = System.Drawing.Color.FromArgb(240, 244, 248); // Very light blue
-                    var totalRowColor = System.Drawing.Color.FromArgb(217, 225, 242);    // Light blue-gray
-                    var borderColor = System.Drawing.Color.FromArgb(180, 199, 231);      // Light blue for borders
-
-                    // Set column widths based on report type
-                    if (reportType == "summary")
-                    {
-                        // Summary report columns
-                        worksheet.Column(1).Width = 6;      // S.No
-                        worksheet.Column(2).Width = 18;     // Return No
-                        worksheet.Column(3).Width = 12;     // Date
-                        worksheet.Column(4).Width = 25;     // Vendor Name
-                        worksheet.Column(5).Width = 18;     // Reference
-                        worksheet.Column(6).Width = 18;     // Total Amount
-                        worksheet.Column(7).Width = 15;     // Status
-                    }
-                    else
-                    {
-                        // Detailed report columns
-                        worksheet.Column(1).Width = 6;      // S.No
-                        worksheet.Column(2).Width = 18;     // Return No
-                        worksheet.Column(3).Width = 12;     // Date
-                        worksheet.Column(4).Width = 25;     // Vendor Name
-                        worksheet.Column(5).Width = 25;     // Item Name
-                        worksheet.Column(6).Width = 15;     // Quantity
-                        worksheet.Column(7).Width = 15;     // Unit Price
-                        worksheet.Column(8).Width = 15;     // Total
-                        worksheet.Column(9).Width = 15;     // Status
-                    }
-
-                    // Max columns for merging - depends on report type
-                    int maxCol = reportType == "summary" ? 7 : 9;
-
-                    // Add company logo placeholder and title (row 1)
-                    worksheet.Cells[1, 1, 1, maxCol].Merge = true;
-                    worksheet.Cells[1, 1].Value = "RESSENTIAL";
-                    worksheet.Cells[1, 1].Style.Font.Size = 20;
-                    worksheet.Cells[1, 1].Style.Font.Bold = true;
-                    worksheet.Cells[1, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    worksheet.Cells[1, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[1, 1].Style.Fill.BackgroundColor.SetColor(headerBackground);
-                    worksheet.Row(1).Height = 30; // Increase row height
-
-                    // Add report title (row 2)
-                    worksheet.Cells[2, 1, 2, maxCol].Merge = true;
-                    worksheet.Cells[2, 1].Value = reportType == "summary" ? "Purchase Return Report (Summary)" : "Purchase Return Report (Detailed)";
-                    worksheet.Cells[2, 1].Style.Font.Size = 16;
-                    worksheet.Cells[2, 1].Style.Font.Bold = true;
-                    worksheet.Cells[2, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                    worksheet.Cells[2, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[2, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Row(2).Height = 25; // Increase row height
-
-                    // Empty row for spacing
-                    worksheet.Row(3).Height = 10;
-
-                    // Calculate box widths based on report type
-                    int box1End = reportType == "summary" ? 2 : 3;
-                    int box2Start = box1End + 1;
-                    int box2End = reportType == "summary" ? 5 : 5;
-                    int box3Start = box2End + 1;
-
-                    // Report information section with styled boxes (rows 4-5)
-                    // Vendor info (left box)
-                    worksheet.Cells[4, 1, 4, box1End].Merge = true;
-                    worksheet.Cells[4, 1].Value = "VENDOR";
-                    worksheet.Cells[4, 1].Style.Font.Bold = true;
-                    worksheet.Cells[4, 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, 1].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, 1].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, 1, 5, box1End].Merge = true;
-                    worksheet.Cells[5, 1].Value = vendorName;
-                    worksheet.Cells[5, 1].Style.Font.Size = 11;
-                    worksheet.Cells[5, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, 1].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Date range (middle box)
-                    worksheet.Cells[4, box2Start, 4, box2End].Merge = true;
-                    worksheet.Cells[4, box2Start].Value = "DATE RANGE";
-                    worksheet.Cells[4, box2Start].Style.Font.Bold = true;
-                    worksheet.Cells[4, box2Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, box2Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, box2Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, box2Start, 5, box2End].Merge = true;
-                    worksheet.Cells[5, box2Start].Value = $"{(fromDate?.ToString("yyyy-MM-dd") ?? "All")} to {(toDate?.ToString("yyyy-MM-dd") ?? "All")}";
-                    worksheet.Cells[5, box2Start].Style.Font.Size = 11;
-                    worksheet.Cells[5, box2Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, box2Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, box2Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Status info (right box)
-                    worksheet.Cells[4, box3Start, 4, maxCol].Merge = true;
-                    worksheet.Cells[4, box3Start].Value = "STATUS";
-                    worksheet.Cells[4, box3Start].Style.Font.Bold = true;
-                    worksheet.Cells[4, box3Start].Style.Font.Color.SetColor(System.Drawing.Color.White);
-                    worksheet.Cells[4, box3Start].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                    worksheet.Cells[4, box3Start].Style.Fill.BackgroundColor.SetColor(titleBackground);
-                    worksheet.Cells[4, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    worksheet.Cells[5, box3Start, 5, maxCol].Merge = true;
-                    worksheet.Cells[5, box3Start].Value = status == "0" ? "All Status" : status;
-                    worksheet.Cells[5, box3Start].Style.Font.Size = 11;
-                    worksheet.Cells[5, box3Start].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    worksheet.Cells[5, box3Start].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                    worksheet.Cells[5, box3Start].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-
-                    // Space before data
-                    worksheet.Row(6).Height = 15;
-
-                    // Add table headers (row 7) based on report type
-                    string[] headers;
-                    if (reportType == "summary")
-                    {
-                        headers = new string[] { "S.No", "Return No", "Date", "Vendor", "Reference", "Total Amount", "Status" };
-                    }
-                    else
-                    {
-                        headers = new string[] {
-                            "S.No", "Return No", "Date", "Vendor", "Item", "Quantity",
-                            "Unit Price", "Total", "Status"
-                        };
-                    }
-
-                    for (int i = 0; i < headers.Length; i++)
-                    {
-                        var cell = worksheet.Cells[7, i + 1];
-                        cell.Value = headers[i];
-                        cell.Style.Font.Bold = true;
-                        cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                        cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                        cell.Style.Fill.BackgroundColor.SetColor(headerBackground);
-                        cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        cell.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                        cell.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                    }
-                    worksheet.Row(7).Height = 22; // Increase header row height
-
-                    // Freeze panes for better navigation (fix header row)
-                    worksheet.View.FreezePanes(8, 1);
-
-                    // Add data rows based on report type
-                    int currentRow = 8;
-                    int serialNo = 1;
-
-                    if (reportType == "summary")
-                    {
-                        // Summary report - one row per purchase return
-                        decimal totalAmount = 0;
-
-                        if (reportData.Any())
-                        {
-                            foreach (var purchaseReturn in reportData)
-                            {
-                                // Apply alternating row background for better readability
-                                if (serialNo % 2 == 0)
-                                {
-                                    var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
-                                }
-
-                                // Add row data - summary format
-                                worksheet.Cells[currentRow, 1].Value = serialNo++;
-                                worksheet.Cells[currentRow, 2].Value = purchaseReturn.PurchaseReturnNo;
-                                worksheet.Cells[currentRow, 3].Value = purchaseReturn.Date.ToString("yyyy-MM-dd");
-                                worksheet.Cells[currentRow, 4].Value = purchaseReturn.VendorName;
-                                worksheet.Cells[currentRow, 5].Value = purchaseReturn.Reference;
-                                worksheet.Cells[currentRow, 6].Value = purchaseReturn.TotalAmount;
-                                worksheet.Cells[currentRow, 7].Value = purchaseReturn.Status;
-
-                                // Format cells
-                                for (int i = 1; i <= maxCol; i++)
-                                {
-                                    worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                                }
-
-                                // Date format
-                                worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
-
-                                // Numeric format for total amount
-                                worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-
-                                totalAmount += purchaseReturn.TotalAmount;
-                                currentRow++;
-                            }
-
-                            // Add summary row
-                            // Total row style
-                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            totalRange.Style.Font.Bold = true;
-                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Total row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Total Amount:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = totalAmount;
-                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-
-                            currentRow++;
-
-                            // Count row style
-                            var countRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            countRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            countRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            countRange.Style.Font.Bold = true;
-                            countRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Count row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Total Returns:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = reportData.Count();
-                        }
-                        else
-                        {
-                            // No data row
-                            worksheet.Cells[currentRow, 1, currentRow, maxCol].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "No data available";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                            worksheet.Cells[currentRow, 1].Style.Font.Italic = true;
-                            worksheet.Cells[currentRow, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                        }
-                    }
-                    else
-                    {
-                        // Detailed report - one row per purchase return item
-                        decimal totalQuantity = 0;
-                        decimal totalValue = 0;
-
-                        if (reportData.Any())
-                        {
-                            foreach (var purchaseReturn in reportData)
-                            {
-                                if (purchaseReturn.Items != null && purchaseReturn.Items.Any())
-                                {
-                                    foreach (var item in purchaseReturn.Items)
-                                    {
-                                        decimal itemTotal = item.Quantity * item.UnitPrice;
-
-                                        // Apply alternating row background for better readability
-                                        if (serialNo % 2 == 0)
-                                        {
-                                            var range = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                            range.Style.Fill.BackgroundColor.SetColor(alternateRowColor);
-                                        }
-
-                                        // Add row data - detailed format
-                                        worksheet.Cells[currentRow, 1].Value = serialNo++;
-                                        worksheet.Cells[currentRow, 2].Value = purchaseReturn.PurchaseReturnNo;
-                                        worksheet.Cells[currentRow, 3].Value = purchaseReturn.Date.ToString("yyyy-MM-dd");
-                                        worksheet.Cells[currentRow, 4].Value = purchaseReturn.VendorName;
-                                        worksheet.Cells[currentRow, 5].Value = item.ItemName;
-                                        worksheet.Cells[currentRow, 6].Value = item.Quantity;
-                                        worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
-                                        worksheet.Cells[currentRow, 8].Value = itemTotal;
-                                        worksheet.Cells[currentRow, 9].Value = purchaseReturn.Status;
-
-                                        // Format cells
-                                        for (int i = 1; i <= maxCol; i++)
-                                        {
-                                            worksheet.Cells[currentRow, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                                        }
-
-                                        // Date format
-                                        worksheet.Cells[currentRow, 3].Style.Numberformat.Format = "yyyy-mm-dd";
-
-                                        // Numeric formats
-                                        worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-                                        worksheet.Cells[currentRow, 7].Style.Numberformat.Format = "#,##0.00";
-                                        worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
-
-                                        totalQuantity += item.Quantity;
-                                        totalValue += itemTotal;
-                                        currentRow++;
-                                    }
-                                }
-                            }
-
-                            // Add summary row
-                            // Total row style
-                            var totalRange = worksheet.Cells[currentRow, 1, currentRow, maxCol];
-                            totalRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            totalRange.Style.Fill.BackgroundColor.SetColor(totalRowColor);
-                            totalRange.Style.Font.Bold = true;
-                            totalRange.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-
-                            // Total row content
-                            worksheet.Cells[currentRow, 1, currentRow, 5].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "Grand Total:";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Right;
-                            worksheet.Cells[currentRow, 6].Value = totalQuantity;
-                            worksheet.Cells[currentRow, 6].Style.Numberformat.Format = "#,##0.00";
-                            worksheet.Cells[currentRow, 8].Value = totalValue;
-                            worksheet.Cells[currentRow, 8].Style.Numberformat.Format = "#,##0.00";
-                        }
-                        else
-                        {
-                            // No data row
-                            worksheet.Cells[currentRow, 1, currentRow, maxCol].Merge = true;
-                            worksheet.Cells[currentRow, 1].Value = "No data available";
-                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                            worksheet.Cells[currentRow, 1].Style.Font.Italic = true;
-                            worksheet.Cells[currentRow, 1].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin, borderColor);
-                        }
-                    }
-
-                    // Add footer note (optional)
-                    currentRow += 2;
-                    worksheet.Cells[currentRow, 1, currentRow, maxCol].Merge = true;
-                    worksheet.Cells[currentRow, 1].Value = $"Report generated on {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-                    worksheet.Cells[currentRow, 1].Style.Font.Italic = true;
-                    worksheet.Cells[currentRow, 1].Style.Font.Size = 9;
-                    worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                    // Return the Excel file
-                    string excelFileName = $"PurchaseReturnReport_{fileName}_{DateTime.Now:yyyyMMdd}.xlsx";
-                    byte[] fileBytes = package.GetAsByteArray();
-                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelFileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
-                return RedirectToAction("PurchaseReturnReport");
-            }
-        }
-
-        [HttpGet]
         public ActionResult ExportPurchaseReturnReportToPDF(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
         {
             try
@@ -6309,6 +5668,217 @@ namespace Ressential.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ExportPurchaseReturnReportToExcel(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
+        {
+            try
+            {
+                var reportData = GetPurchaseReturnReportData(vendorId, fromDate, toDate, status, reportType);
+
+                // Create Excel package
+                ExcelPackage.License.SetNonCommercialOrganization("Ressential");
+                using (var package = new OfficeOpenXml.ExcelPackage())
+                {
+                    // Add a new worksheet to the package
+                    var worksheet = package.Workbook.Worksheets.Add("Purchase Return Report");
+
+                    // Add header
+                    worksheet.Cells[1, 1].Value = "Purchase Return Report";
+                    worksheet.Cells[1, 1, 1, 9].Merge = true;
+                    worksheet.Cells[1, 1].Style.Font.Bold = true;
+                    worksheet.Cells[1, 1].Style.Font.Size = 14;
+                    worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    // Add report criteria
+                    int currentRow = 2;
+                    worksheet.Cells[currentRow, 1].Value = "Vendor:";
+                    worksheet.Cells[currentRow, 2].Value = vendorId > 0
+                        ? _db.Vendors.FirstOrDefault(v => v.VendorId == vendorId)?.Name ?? "All Vendors"
+                        : "All Vendors";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "From Date:";
+                    worksheet.Cells[currentRow, 2].Value = fromDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "To Date:";
+                    worksheet.Cells[currentRow, 2].Value = toDate?.ToString("yyyy-MM-dd") ?? "All";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Status:";
+                    worksheet.Cells[currentRow, 2].Value = status;
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Report Type:";
+                    worksheet.Cells[currentRow, 2].Value = reportType == "summary" ? "Summary" : "Detailed";
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, 1].Value = "Generated On:";
+                    worksheet.Cells[currentRow, 2].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    currentRow += 2;
+
+                    // Add data based on report type
+                    if (reportType == "summary")
+                    {
+                        // Add column headers for summary report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Return No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Reference";
+                        worksheet.Cells[currentRow, 6].Value = "Total Amount";
+                        worksheet.Cells[currentRow, 7].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 7])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for summary report
+                        if (reportData.Any())
+                        {
+                            int serialNo = 1;
+                            decimal totalAmount = 0;
+
+                            foreach (var item in reportData)
+                            {
+                                totalAmount += item.TotalAmount;
+
+                                worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                worksheet.Cells[currentRow, 2].Value = item.PurchaseReturnNo;
+                                worksheet.Cells[currentRow, 3].Value = item.Date.ToString("yyyy-MM-dd");
+                                worksheet.Cells[currentRow, 4].Value = item.VendorName;
+                                worksheet.Cells[currentRow, 5].Value = item.Reference;
+                                worksheet.Cells[currentRow, 6].Value = item.TotalAmount;
+                                worksheet.Cells[currentRow, 7].Value = item.Status;
+
+                                currentRow++;
+                            }
+
+                            // Add total row
+                            worksheet.Cells[currentRow, 5].Value = "Total Amount";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = totalAmount;
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                            currentRow++;
+
+                            worksheet.Cells[currentRow, 5].Value = "Total Returns";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = reportData.Count();
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                        }
+                        else
+                        {
+                            worksheet.Cells[currentRow, 1].Value = "No data available";
+                            worksheet.Cells[currentRow, 1, currentRow, 7].Merge = true;
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                    }
+                    else
+                    {
+                        // Add column headers for detailed report
+                        worksheet.Cells[currentRow, 1].Value = "S.No";
+                        worksheet.Cells[currentRow, 2].Value = "Return No";
+                        worksheet.Cells[currentRow, 3].Value = "Date";
+                        worksheet.Cells[currentRow, 4].Value = "Vendor";
+                        worksheet.Cells[currentRow, 5].Value = "Item";
+                        worksheet.Cells[currentRow, 6].Value = "Quantity";
+                        worksheet.Cells[currentRow, 7].Value = "Unit Price";
+                        worksheet.Cells[currentRow, 8].Value = "Total";
+                        worksheet.Cells[currentRow, 9].Value = "Status";
+
+                        // Style the header row
+                        using (var range = worksheet.Cells[currentRow, 1, currentRow, 9])
+                        {
+                            range.Style.Font.Bold = true;
+                            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        }
+
+                        currentRow++;
+
+                        // Add data rows for detailed report
+                        if (reportData.Any())
+                        {
+                            int serialNo = 1;
+                            decimal totalQuantity = 0;
+                            decimal totalValue = 0;
+
+                            foreach (var purchaseReturn in reportData)
+                            {
+                                if (purchaseReturn.Items != null && purchaseReturn.Items.Any())
+                                {
+                                    foreach (var item in purchaseReturn.Items)
+                                    {
+                                        totalQuantity += item.Quantity;
+                                        totalValue += item.Quantity * item.UnitPrice;
+
+                                        worksheet.Cells[currentRow, 1].Value = serialNo++;
+                                        worksheet.Cells[currentRow, 2].Value = purchaseReturn.PurchaseReturnNo;
+                                        worksheet.Cells[currentRow, 3].Value = purchaseReturn.Date.ToString("yyyy-MM-dd");
+                                        worksheet.Cells[currentRow, 4].Value = purchaseReturn.VendorName;
+                                        worksheet.Cells[currentRow, 5].Value = item.ItemName;
+                                        worksheet.Cells[currentRow, 6].Value = item.Quantity;
+                                        worksheet.Cells[currentRow, 7].Value = item.UnitPrice;
+                                        worksheet.Cells[currentRow, 8].Value = item.Quantity * item.UnitPrice;
+                                        worksheet.Cells[currentRow, 9].Value = purchaseReturn.Status;
+
+                                        currentRow++;
+                                    }
+                                }
+                            }
+
+                            // Add total row
+                            worksheet.Cells[currentRow, 5].Value = "Total";
+                            worksheet.Cells[currentRow, 5].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 6].Value = totalQuantity;
+                            worksheet.Cells[currentRow, 6].Style.Font.Bold = true;
+                            worksheet.Cells[currentRow, 8].Value = totalValue;
+                            worksheet.Cells[currentRow, 8].Style.Font.Bold = true;
+                        }
+                        else
+                        {
+                            worksheet.Cells[currentRow, 1].Value = "No data available";
+                            worksheet.Cells[currentRow, 1, currentRow, 9].Merge = true;
+                            worksheet.Cells[currentRow, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        }
+                    }
+
+                    // Format number columns
+                    if (reportType == "summary")
+                    {
+                        worksheet.Column(6).Style.Numberformat.Format = "#,##0.00";
+                    }
+                    else
+                    {
+                        worksheet.Column(6).Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Column(7).Style.Numberformat.Format = "#,##0.00";
+                        worksheet.Column(8).Style.Numberformat.Format = "#,##0.00";
+                    }
+
+                    // Auto-fit all columns
+                    for (int col = 1; col <= (reportType == "detail" ? 9 : 7); col++)
+                    {
+                        worksheet.Column(col).AutoFit();
+                    }
+
+                    // Return the Excel file
+                    string fileName = $"PurchaseReturnReport_{DateTime.Now:yyyyMMdd}.xlsx";
+                    byte[] fileBytes = package.GetAsByteArray();
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error exporting report to Excel: " + ex.Message;
+                return RedirectToAction("PurchaseReturnReport");
+            }
+        }
 
         private List<PurchaseReturnReportViewModel> GetPurchaseReturnReportData(int vendorId, DateTime? fromDate, DateTime? toDate, string status, string reportType)
         {

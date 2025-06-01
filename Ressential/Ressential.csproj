@@ -231,6 +231,7 @@
     <Compile Include="Models\ConsumeItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CostReportViewModel.cs" />
     <Compile Include="Models\Country.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -244,6 +245,7 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ItemStockReportViewModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -335,6 +337,7 @@
     <Compile Include="Models\ProductItemDetail.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProfitLossReportViewModel.cs" />
     <Compile Include="Models\Purchase.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -378,6 +381,7 @@
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\SalesReportViewModel.cs" />
     <Compile Include="Models\UnitOfMeasure.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -420,6 +424,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\Helper.cs" />
     <Compile Include="Utilities\UserDetails.cs" />
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\KitchenDashboardViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\errorStyle.css" />
@@ -970,6 +976,12 @@
     <Content Include="Views\Kitchen\ItemStockReport.cshtml" />
     <Content Include="Views\Kitchen\SalesReport.cshtml" />
     <Content Include="Views\Kitchen\SalesReportDisplay.cshtml" />
+    <Content Include="Views\Kitchen\CostReport.cshtml" />
+    <Content Include="Views\Kitchen\CostReportDisplay.cshtml" />
+    <Content Include="Views\Kitchen\ProfitLossReport.cshtml" />
+    <Content Include="Views\Kitchen\ProfitLossReportDisplay.cshtml" />
+    <Content Include="Views\Kitchen\Dashboard.cshtml" />
+    <Content Include="Views\Customer\VerifyRegistrationOtp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

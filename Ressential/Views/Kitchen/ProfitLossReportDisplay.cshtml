@@ -1,0 +1,372 @@
+@model Ressential.Models.ProfitLossReportViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profit & Loss Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #ffffff;
+        }
+
+        .report-header {
+            position: relative;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 15px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding-left: 100px;
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            max-height: 100px;
+            object-fit: contain;
+        }
+
+        .header-text {
+            text-align: center;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .header-text p {
+            margin: 5px 0;
+            font-size: 15px;
+            color: #555;
+        }
+
+        .date-range-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .date-range {
+            background-color: #f5f7fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            text-align: left;
+        }
+
+        .date-range p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .date-range span {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .pl-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .pl-table tr.section {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: 600;
+        }
+
+        .pl-table tr.subsection {
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .pl-table tr.total {
+            background-color: #eaecef;
+            font-weight: 600;
+        }
+
+        .pl-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pl-table td:first-child {
+            width: 70%;
+        }
+
+        .pl-table td:last-child {
+            width: 30%;
+            text-align: right;
+        }
+
+        .text-success {
+            color: #27ae60;
+        }
+
+        .text-danger {
+            color: #e74c3c;
+        }
+
+        .metrics {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #2c3e50;
+        }
+
+        .metrics h3 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .metric-item {
+            padding: 15px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .metric-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .metric-item .value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+
+        .timestamp {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-export {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background-color: #219653;
+        }
+
+        .btn-pdf {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background-color: #c0392b;
+        }
+
+        @@media print {
+            .action-buttons {
+                display: none;
+            }
+
+            .report-header {
+                position: static;
+            }
+            
+            .pl-table {
+                margin-top: 30px;
+            }
+            
+            .pl-table tr.section {
+                background-color: #2c3e50 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="report-header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Ressential Logo" />
+                </div>
+                <div class="header-text">
+                    <h1>Profit & Loss Statement</h1>
+                    <p class="timestamp">Generated On: @ViewBag.GeneratedTimestamp</p>
+                </div>
+            </div>
+            
+            <div class="date-range-container">
+                <div class="date-range">
+                    <p><span>From Date:</span> @(ViewBag.FromDate != null ? ViewBag.FromDate : "All")</p>
+                    <p><span>To Date:</span> @(ViewBag.ToDate != null ? ViewBag.ToDate : "All")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            @{
+                var isPdfExport = ViewBag.IsPdfExport == true;
+            }
+            @if (!isPdfExport)
+            {
+                <button class="btn btn-export" onclick="exportToExcel()">Export</button>
+                <button class="btn btn-pdf" onclick="exportToPDF()">PDF</button>
+            }
+        </div>
+
+        <table class="pl-table">
+            <!-- Revenue Section -->
+            <tr class="section">
+                <td colspan="2">Revenue</td>
+            </tr>
+            <tr>
+                <td>Sales Revenue</td>
+                <td>@Model.TotalSalesRevenue.ToString("N2")</td>
+            </tr>
+            <tr>
+                <td>Other Revenue</td>
+                <td>@Model.OtherRevenue.ToString("N2")</td>
+            </tr>
+            <tr class="total">
+                <td>Total Revenue</td>
+                <td>@Model.TotalRevenue.ToString("N2")</td>
+            </tr>
+
+            <!-- Cost of Sales Section -->
+            <tr class="section">
+                <td colspan="2">Cost of Sales</td>
+            </tr>
+            <tr>
+                <td>Total Cost of Sales</td>
+                <td>(@Model.TotalSalesCost.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>Gross Profit</td>
+                <td class="@(Model.GrossProfit >= 0 ? "text-success" : "text-danger")">
+                    @Model.GrossProfit.ToString("N2")
+                </td>
+            </tr>
+
+            <!-- Other Cost Section -->
+            <tr class="section">
+                <td colspan="2">Other Cost</td>
+            </tr>
+            <tr>
+                <td>Consume Cost</td>
+                <td>(@Model.ConsumeCost.ToString("N2"))</td>
+            </tr>
+            <tr>
+                <td>Wastage Cost</td>
+                <td>(@Model.WastageCost.ToString("N2"))</td>
+            </tr>
+            <tr class="total">
+                <td>Total Other Cost</td>
+                <td>(@Model.TotalOtherCost.ToString("N2"))</td>
+            </tr>
+
+            <!-- Profit Section -->
+            <tr class="section">
+                <td colspan="2">Profit</td>
+            </tr>
+            <tr>
+                <td>Operating Profit</td>
+                <td class="@(Model.OperatingProfit >= 0 ? "text-success" : "text-danger")">
+                    @Model.OperatingProfit.ToString("N2")
+                </td>
+            </tr>
+            <tr class="total">
+                <td>Net Profit</td>
+                <td class="@(Model.NetProfit >= 0 ? "text-success" : "text-danger")">
+                    @Model.NetProfit.ToString("N2")
+                </td>
+            </tr>
+        </table>
+
+        <!-- Metrics Section -->
+        <div class="metrics">
+            <h3>Financial Metrics</h3>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <p>Gross Profit Margin</p>
+                    <div class="value">@((Model.GrossProfitMargin * 100).ToString("N2"))%</div>
+                </div>
+                <div class="metric-item">
+                    <p>Net Profit Margin</p>
+                    <div class="value">@((Model.NetProfitMargin * 100).ToString("N2"))%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function exportToExcel() {
+            var fromDate = '@ViewBag.FromDate';
+            var toDate = '@ViewBag.ToDate';
+            
+            var url = '@Url.Action("ExportProfitLossReportToExcel", "Kitchen")' +
+                '?fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate);
+                
+            window.location.href = url;
+        }
+
+        function exportToPDF() {
+            var fromDate = '@ViewBag.FromDate';
+            var toDate = '@ViewBag.ToDate';
+            
+            var url = '@Url.Action("ExportProfitLossReportToPDF", "Kitchen")' +
+                '?fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate);
+                
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html> 
