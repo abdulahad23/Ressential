@@ -2389,29 +2389,19 @@ public ActionResult GetUnreadNotifications()
                     order.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
                     order.OrderDate = DateTime.Now;
                     order.CreatedAt = DateTime.Now;
-                    order.Status = "Pending";
+                    order.Status = "Preparing";
 
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-
-
-                    //var branch = _db.Branches.Find(order.BranchId);
-
-
-                    //     List<string> Connections = _db.Users.Select(u => u.ConnectionId).ToList();
-                    //var context = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
-                    //foreach (var connection in Connections)
-                    //{
-                    //    context.Clients.Client(connection).UpdateChefView();
-                    //}
-
-                    //TempData["SuccessMessage"] = "Order placed successfully.";
-                    //return RedirectToAction("CreateOrder", "Kitchen");
-                    //}
-
                     var branch = _db.Branches.Find(order.BranchId);
                     var user = _db.Users.Find(order.CreatedBy);
+
+                    // Notify ChefView about the new order
+                    var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                    hubContext.Clients.All.updateOrderView();
+                    hubContext.Clients.All.updateChefView();
+                    
 
                     string formattedPhone = FormatPhoneNumber(branch.BranchContact);
                     return Json(new {
@@ -2634,7 +2624,9 @@ public ActionResult GetUnreadNotifications()
                 }
                 order.Status = "Preparing";
                 _db.SaveChanges();
-                TempData["SuccessMessage"] = "Order confirmed successfully.";
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                hubContext.Clients.All.updateChefView();
+                //TempData["SuccessMessage"] = "Order confirmed successfully.";
             }
             catch (Exception ex)
             {
@@ -2723,7 +2715,7 @@ public ActionResult GetUnreadNotifications()
                 }
                 else if (order.Status == "Preparing" || order.Status == "Ready")
                 {
-                    order.Status = "Out For Delivery";
+                    order.Status = "Out for Delivery";
                     TempData["SuccessMessage"] = "Order marked as Out for Delivery.";
                 }
                 else if (order.Status == "Completed")
@@ -2903,27 +2895,41 @@ public ActionResult GetUnreadNotifications()
         }
 
         [HttpGet]
-        public ActionResult GetOrders()
+        public ActionResult GetOrders(string[] statuses = null, string[] orderTypes = null)
         {
             var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
             var orders = _db.Orders
-                            .Where(o => o.BranchId == selectedBranchId)
-                            .Select(o => new
-                            {
-                                o.OrderId,
-                                o.OrderNo,
-                                o.OrderType,
-                                o.TableNo,
-                                o.Status,
-                                OrderDetails = o.OrderDetails.Select(od => new
-                                {
-                                    od.Product.ProductName,
-                                    od.ProductQuantity,
-                                    od.ProductStatus
-                                }).ToList()
-                            }).ToList();
+                .Include(o => o.OrderDetails)
+                .Include("OrderDetails.Product")
+                .Where(o => o.BranchId == selectedBranchId)
+                .OrderByDescending(o => o.OrderId);
 
-            return Json(new { orders }, JsonRequestBehavior.AllowGet);
+            if (statuses != null && statuses.Length > 0)
+            {
+                orders = (IOrderedQueryable<Order>)orders.Where(o => statuses.Contains(o.Status));
+            }
+
+            if (orderTypes != null && orderTypes.Length > 0)
+            {
+                orders = (IOrderedQueryable<Order>)orders.Where(o => orderTypes.Contains(o.OrderType));
+            }
+
+            var ordersViewModel = orders.ToList().Select(o => new
+            {
+                OrderId = o.OrderId,
+                OrderNo = o.OrderNo,
+                OrderType = o.OrderType,
+                TableNo = o.TableNo,
+                Status = o.Status,
+                OrderDetails = o.OrderDetails.Select(od => new
+                {
+                    ProductName = od.Product.ProductName,
+                    ProductQuantity = od.ProductQuantity,
+                    ProductStatus = od.ProductStatus
+                })
+            });
+
+            return Json(new { orders = ordersViewModel }, JsonRequestBehavior.AllowGet);
         }
 
         [HasPermission("Chef View View")]
@@ -2955,7 +2961,7 @@ public ActionResult GetUnreadNotifications()
 
             var productsQuery = _db.OrderDetails.Include(od => od.Product)
                                                 .Include(od => od.Order)
-                                                .Where(od => od.Order.BranchId == selectedBranchId)
+                                                .Where(od => od.Order.BranchId == selectedBranchId && od.Order.Status != "Pending")
                                                 .AsQueryable();
 
             if (chefId.HasValue)
@@ -2991,22 +2997,210 @@ public ActionResult GetUnreadNotifications()
         [HasPermission("Order Status Update")]
         public ActionResult UpdateOrderStatus(int orderId, string status)
         {
-            if (status == "Confirm")
+            try
             {
-                ConfirmOrder(orderId);
-            }
+                var order = _db.Orders.Find(orderId);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return Json(new { success = false });
+                }
 
+                switch (status.ToLower())
+                {
+                    case "confirm":
+                        return ConfirmOrder(orderId);
+
+                    case "cancelled":
+                        if (order.Status == "Cancelled")
+                        {
+                            TempData["ErrorMessage"] = "Order is already cancelled.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Returned")
+                        {
+                            TempData["ErrorMessage"] = "Returned Order cannot be cancelled.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Completed")
+                        {
+                            TempData["ErrorMessage"] = "Completed order can not be cancelled.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Pending" || order.Status == "Preparing" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
+                        {
+                            if (order.Status != "Pending")
+                            {
+                                // Revert the stock for non-pending orders
+                                foreach (var orderDetail in order.OrderDetails)
+                                {
+                                    orderDetail.ProductStatus = "Cancelled";
+                                    foreach (var item in orderDetail.Product.ProductItemDetails)
+                                    {
+                                        var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
+                                        var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                                        if (branchItem != null)
+                                        {
+                                            branchItem.Quantity += itemQuantityToAdd;
+                                            _db.Entry(branchItem).State = EntityState.Modified;
+                                        }
+                                    }
+                                }
+                            }
+                            order.Status = "Cancelled";
+                            //TempData["SuccessMessage"] = "Order cancelled successfully.";
+                        }
+                        break;
+
+                    case "completed":
+                        if (order.Status == "Cancelled")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Returned")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for returned order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Pending")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for Pending order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Completed")
+                        {
+                            TempData["ErrorMessage"] = "The order is already completed.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Preparing" || order.Status == "Ready" || order.Status == "Out for Delivery")
+                        {
+                            order.Status = "Completed";
+                            foreach (var item in order.OrderDetails)
+                            {
+                                item.ProductStatus = "Completed";
+                            }
+                            //TempData["SuccessMessage"] = "Order completed successfully.";
+                        }
+                        break;
+
+                    case "out for delivery":
+                        if (order.Status == "Cancelled")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for cancelled order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Returned")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for returned order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Pending")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for Pending order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Completed")
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the status for completed order.";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Preparing" || order.Status == "Ready")
+                        {
+                            order.Status = "Out for Delivery";
+                            foreach (var item in order.OrderDetails)
+                            {
+                                item.ProductStatus = "Ready";
+                            }
+                            //TempData["SuccessMessage"] = "Order marked as Out for Delivery.";
+                        }
+                        break;
+
+                    case "returned":
+                        if (order.Status == "Preparing" || order.Status == "Cancelled" || order.Status == "Pending" || order.Status == "Ready" || order.Status == "Out for Delivery" || order.Status == "Confirmed")
+                        {
+                            TempData["ErrorMessage"] = "Order can be returned only for Completed orders";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Returned")
+                        {
+                            TempData["ErrorMessage"] = "Order status is already Returned";
+                            return Json(new { success = false });
+                        }
+                        else if (order.Status == "Completed")
+                        {
+                            foreach (var orderDetail in order.OrderDetails)
+                            {
+                                orderDetail.ProductStatus = "Cancelled";
+                                foreach (var item in orderDetail.Product.ProductItemDetails)
+                                {
+                                    var itemQuantityToAdd = item.ItemQuantity * orderDetail.ProductQuantity;
+                                    var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == order.BranchId).FirstOrDefault();
+                                    if (branchItem != null)
+                                    {
+                                        branchItem.Quantity += itemQuantityToAdd;
+                                        _db.Entry(branchItem).State = EntityState.Modified;
+                                    }
+                                }
+                            }
+                            order.Status = "Returned";
+                            //TempData["SuccessMessage"] = "Order returned successfully.";
+                        }
+                        break;
+
+                    default:
+                        return Json(new { success = false, message = "Invalid status update requested." });
+                }
+
+                _db.SaveChanges();
+
+                // Notify ChefView about the status update
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                hubContext.Clients.All.updateChefView();
+                hubContext.Clients.All.updateOrderView();
+
+                return Json(new { success = true, message = "Order status updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the order status.";
+                Console.WriteLine($"Error updating order status: {ex.Message}");
+                return Json(new { success = false });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult UpdateOrderProductStatus(int orderId, string status)
+        {
             var orderDetail = _db.OrderDetails.Find(orderId);
             if (orderDetail == null)
             {
                 return Json(new { success = false, message = "Order not found" });
             }
-            if (status == "Preparing")
+            else if (status == "Preparing")
             {
+                orderDetail.ProductStatus = "Preparing";
                 orderDetail.Order.Status = "Preparing";
             }
-            orderDetail.ProductStatus = status;
+            else if (status == "Ready")
+            {
+                orderDetail.ProductStatus = status;
+                bool isReady = true;
+                foreach (var item in orderDetail.Order.OrderDetails)
+                {
+                    if (item.ProductStatus != "Ready")
+                    {
+                        isReady = false;
+                    }
+                }
+                if (isReady)
+                {
+                    orderDetail.Order.Status = "Ready";
+                }
+            }
             _db.SaveChanges();
+            var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+            hubContext.Clients.All.updateChefView();
 
             return Json(new { success = true, message = "Order status updated successfully" });
         }

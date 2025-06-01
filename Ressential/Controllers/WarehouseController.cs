@@ -49,7 +49,10 @@ namespace Ressential.Controllers
             dashboard.ReturnedStocks = _db.ReturnStocks.Count(r => r.Status == "Pending");
 
             // Calculate total stock value
-            dashboard.TotalStockValue = _db.WarehouseItemStocks.Sum(i => (i.Quantity) * (i.CostPerUnit));
+            dashboard.TotalStockValue = _db.WarehouseItemStocks
+    .Select(i => (decimal?)(i.Quantity * i.CostPerUnit))
+    .Sum() ?? 0;
+
 
             // Get top 5 items by value
             dashboard.TopItems = _db.WarehouseItemStocks

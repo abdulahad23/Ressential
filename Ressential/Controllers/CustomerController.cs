@@ -1,4 +1,6 @@
-﻿using Ressential.Models;
+﻿using Microsoft.AspNet.SignalR;
+using Ressential.Hub;
+using Ressential.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
@@ -346,6 +348,11 @@ namespace Ressential.Controllers
                 _db.Orders.Add(orderItem);
                 _db.SaveChanges();
 
+                // Notify about the new order
+                var hubContext = GlobalHost.ConnectionManager.GetHubContext<RessentialHub>();
+                hubContext.Clients.All.updateChefView();
+                hubContext.Clients.All.updateOrderView();
+
                 // Clear the session cart after order is placed
                 //Session["Cart"] = null;
 
@@ -404,7 +411,7 @@ namespace Ressential.Controllers
 
         [HttpPost]
         [CustomAntiForgery]
-        public ActionResult Login(Customer model)
+        public ActionResult Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
             {

@@ -20,6 +20,32 @@
                     </div>
                 }
                 <h2 class="text-center text-5xl text-secondary">Orders View</h2>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="statusSelect">Select Status</label>
+                            <select id="statusSelect" class="form-control" multiple="multiple">
+                                <option value="Pending">Pending</option>
+                                <option value="Preparing">Preparing</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Out for Delivery">Out for Delivery</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Returned">Returned</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="orderTypeSelect">Select Order Type</label>
+                            <select id="orderTypeSelect" class="form-control" multiple="multiple">
+                                <option value="DineIn">Dine In</option>
+                                <option value="TakeAway">Take Away</option>
+                                <option value="Online">Online</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div id="orderCards" class="row border-2" style="background-color: #e0e0e0; padding: 20px;">
                     <!-- Order cards will be appended here -->
                 </div>
@@ -29,21 +55,67 @@
 </div>
 
 @section Scripts {
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
     <script>
+        var ressentialHub;
+
         $(document).ready(function () {
+            // Initialize SignalR
+            ressentialHub = $.connection.ressentialHub;
+            
+            // Define the updateOrderView callback
+            ressentialHub.client.updateOrderView = function () {
+                loadOrders();
+            };
+
+            // Start the SignalR connection
+            $.connection.hub.start().done(function () {
+                ressentialHub.server.saveUserConnection();
+                console.log('SignalR Connected');
+            });
+
+            // Initialize select2 for both dropdowns
+            $('#statusSelect, #orderTypeSelect').select2({
+                width: '100%',
+                placeholder: 'Select options'
+            });
+
+            // Set default selected statuses
+            $('#statusSelect').val(['Pending', 'Preparing', 'Ready', 'Out for Delivery']).trigger('change');
+
+            // Add change event handler for both dropdowns
+            $('#statusSelect, #orderTypeSelect').on('change', function() {
+                loadOrders();
+            });
+
             loadOrders();
-
-
-
         });
+
         function loadOrders() {
+            var selectedStatuses = $('#statusSelect').val() || [];
+            var selectedOrderTypes = $('#orderTypeSelect').val() || [];
+            
             $.ajax({
                 url: '@Url.Action("GetOrders", "Kitchen")',
                 type: 'GET',
+                traditional: true,
+                data: { 
+                    statuses: selectedStatuses,
+                    orderTypes: selectedOrderTypes
+                },
                 success: function (data) {
                     $('#orderCards').empty();
-                    $.each(data.orders, function (index, order) {
+                    var filteredOrders = data.orders;
+                    
+                    if (selectedOrderTypes.length > 0) {
+                        filteredOrders = filteredOrders.filter(order => selectedOrderTypes.includes(order.OrderType));
+                    }
+
+                    $.each(filteredOrders, function (index, order) {
                         var orderStatusBadge = '';
                         if (order.Status === 'Pending') {
                             orderStatusBadge = `<span class="badge badge-primary badge-status">Pending</span>`;
@@ -72,6 +144,8 @@
                                 productStatusBadge = `<span class="badge badge-success badge-status">Ready</span>`;
                             } else if (product.ProductStatus === 'Cancelled') {
                                 productStatusBadge = `<span class="badge badge-danger badge-status">Cancelled</span>`;
+                            } else if (product.ProductStatus === 'Completed') {
+                                productStatusBadge = `<span class="badge badge-info badge-status">Completed</span>`;
                             }
 
                             productsList += `
@@ -104,6 +178,10 @@
                             actionButtons = `
                                 <button class="btn btn-danger btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Cancelled')"><i class="fas fa-times-circle"></i> Cancel</button>
                                 <button class="btn btn-success btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Completed')"><i class="fas fa-check-circle"></i> Completed</button>`;
+                        }
+                        if (order.Status === 'Completed') {
+                            actionButtons = `
+                                <button class="btn btn-warning btn-sm action-btn" onclick="updateOrderStatus(${order.OrderId}, 'Returned')"><i class="fas fa-undo"></i> Return</button>`;
                         }
 
                         var card = `
@@ -143,17 +221,6 @@
                     else {
                         alert(@TempData["ErrorMessage"])
                     }   
-                }
-            });
-        }
-        function ConfirmOrder(orderId) {
-            $.ajax({
-                url: '@Url.Action("ConfirmOrder", "Kitchen")',
-                type: 'POST',
-                data: { orderId: orderId},
-                success: function (response) {
-                    debugger
-                    loadOrders();
                 }
             });
         }
@@ -217,5 +284,22 @@
             margin: 0 5px;
         }
 
+        /* Select2 Basic Styling */
+        .select2-container .select2-selection--multiple {
+            min-height: 38px;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            padding: 0 8px;
+        }
+
+        .select2-container--default .select2-search--inline .select2-search__field {
+            margin-top: 7px;
+        }
     </style>
 }

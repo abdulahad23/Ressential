@@ -29,6 +29,7 @@
                                 <option value="Preparing">Preparing</option>
                                 <option value="Ready">Ready</option>
                                 <option value="Cancelled">Cancelled</option>
+                                <option value="Completed">Completed</option>
                             </select>
                         </div>
                     </div>
@@ -49,83 +50,32 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
 
     <script>
+        var currentPage = 1;
         var maxVisiblePages = @ViewBag.MaxPage;
+        var ressentialHub;
+
         $(document).ready(function () {
+            // Initialize SignalR
+            ressentialHub = $.connection.ressentialHub;
+            
+            // Define the updateChefView callback
+            ressentialHub.client.updateChefView = function () {
+                loadProducts(currentPage);
+            };
+
+            // Start the SignalR connection
+            $.connection.hub.start().done(function () {
+                ressentialHub.server.saveUserConnection();
+                console.log('SignalR Connected');
+            });
+
             $('#statusSelect').select2({
                 width: '100%' // Ensure the select2 dropdown takes the full width of its container
             });
-
-            var currentPage = 1;
-            var maxVisiblePages = @ViewBag.MaxPage; // Maximum number of visible page links
-
-
-
-            function loadProducts(page) {
-
-                currentPage = page;
-                var chefId = $('#chefSelect').val();
-                var statuses = $('#statusSelect').val();
-                $.ajax({
-                    url: '@Url.Action("GetChefProducts", "Kitchen")',
-                    type: 'POST',
-                    data: { chefId: chefId, statuses: statuses, page: page },
-                    success: function (data) {
-
-                        $('#productCards').empty();
-                        $.each(data.products, function (index, product) {
-                            var statusBadge = '';
-                            if (product.ProductStatus === 'Pending') {
-                                statusBadge = `<span class="badge badge-primary badge-status"><span class="status-dot"></span> Pending</span>`;
-                            } else if (product.ProductStatus === 'Preparing') {
-                                statusBadge = `<span class="badge badge-warning badge-status"><span class="status-dot"></span> Preparing</span>`;
-                            } else if (product.ProductStatus === 'Ready') {
-                                statusBadge = `<span class="badge badge-success badge-status"><span class="status-dot"></span> Ready</span>`;
-                            } else if (product.ProductStatus === 'Cancelled') {
-                                statusBadge = `<span class="badge badge-danger badge-status"><span class="status-dot"></span> Cancelled</span>`;
-                            }
-
-                            var actionButton = '';
-                            if (product.ProductStatus === 'Pending') {
-                                actionButton = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Preparing')"><i class="fas fa-hourglass-start"></i> Prepare</button>`;
-                            } else if (product.ProductStatus === 'Preparing') {
-                                actionButton = `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Ready')"><i class="fas fa-check"></i> Ready</button>`;
-                            } else if (product.ProductStatus === 'Ready') {
-                                actionButton = `<span class="badge badge-success custom-badge"><i class="fas fa-check-circle"></i> Completed</span>`;
-                            } else if (product.ProductStatus === 'Cancelled') {
-                                actionButton = `<span class="badge badge-danger custom-badge"><i class="fas fa-times-circle"></i> Cancelled</span>`;
-                            }
-
-                            var card = `
-                                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
-                                    <div class="card mb-4 shadow" style="background-color: white; padding: 15px;">
-                                        <div class="row no-gutters">
-                                            <div class="col-12 text-center position-relative">
-                                                <img class="card-img" src="/Uploads/ProductImages/${product.ProductImage}" alt="${product.ProductName}" style="width: 100%; height: 100%; object-fit: contain;">
-                                                <div class="position-absolute top-0 start-0 m-2">
-                                                    ${statusBadge}
-                                                </div>
-                                            </div>
-                                            <div class="col-12">
-                                                <div class="card-body text-center">
-                                                    <h5 class="card-title h3">${product.ProductName}</h5>
-                                                    <p class="card-text">Order No: ${product.OrderNo}</p>
-                                                    <p class="card-text">Quantity: ${product.ProductQuantity}</p>
-                                                    ${actionButton}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                            $('#productCards').append(card);
-                        });
-
-                        // Update pagination
-                        updatePagination(data.totalProducts, page);
-                    }
-                });
-            }
 
             $('#chefSelect, #statusSelect').change(function () {
                 currentPage = 1;
@@ -134,12 +84,76 @@
 
             // Set default selected statuses and trigger change event to load products initially
             $('#statusSelect').val(['Pending', 'Preparing']).trigger('change');
-
         });
 
-        function updateOrderStatus(orderId, status) {
+        function loadProducts(page) {
+            currentPage = page;
+            var chefId = $('#chefSelect').val();
+            var statuses = $('#statusSelect').val();
             $.ajax({
-                url: '@Url.Action("UpdateOrderStatus", "Kitchen")',
+                url: '@Url.Action("GetChefProducts", "Kitchen")',
+                type: 'POST',
+                data: { chefId: chefId, statuses: statuses, page: page },
+                success: function (data) {
+                    $('#productCards').empty();
+                    $.each(data.products, function (index, product) {
+                        var statusBadge = '';
+                        if (product.ProductStatus === 'Pending') {
+                            statusBadge = `<span class="badge badge-primary badge-status"><span class="status-dot"></span> Pending</span>`;
+                        } else if (product.ProductStatus === 'Preparing') {
+                            statusBadge = `<span class="badge badge-warning badge-status"><span class="status-dot"></span> Preparing</span>`;
+                        } else if (product.ProductStatus === 'Ready') {
+                            statusBadge = `<span class="badge badge-success badge-status"><span class="status-dot"></span> Ready</span>`;
+                        } else if (product.ProductStatus === 'Cancelled') {
+                            statusBadge = `<span class="badge badge-danger badge-status"><span class="status-dot"></span> Cancelled</span>`;
+                        } else if (product.ProductStatus === 'Completed') {
+                            statusBadge = `<span class="badge badge-info badge-status"><span class="status-dot"></span> Completed</span>`;
+                        }
+
+                        var actionButton = '';
+                        if (product.ProductStatus === 'Pending') {
+                            actionButton = `<button class="btn btn-primary btn-sm" onclick="updateOrderProductStatus(${product.OrderDetailId}, 'Preparing')"><i class="fas fa-hourglass-start"></i> Prepare</button>`;
+                        } else if (product.ProductStatus === 'Preparing') {
+                            actionButton = `<button class="btn btn-success btn-sm" onclick="updateOrderProductStatus(${product.OrderDetailId}, 'Ready')"><i class="fas fa-check"></i> Ready</button>`;
+                        } else if (product.ProductStatus === 'Ready') {
+                            actionButton = `<span class="badge badge-success custom-badge"><i class="fas fa-check-circle"></i> Completed</span>`;
+                        } else if (product.ProductStatus === 'Cancelled') {
+                            actionButton = `<span class="badge badge-danger custom-badge"><i class="fas fa-times-circle"></i> Cancelled</span>`;
+                        }
+
+                        var card = `
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+                                <div class="card mb-4 shadow" style="background-color: white; padding: 15px;">
+                                    <div class="row no-gutters">
+                                        <div class="col-12 text-center position-relative">
+                                            <img class="card-img" src="/Uploads/ProductImages/${product.ProductImage}" alt="${product.ProductName}" style="width: 100%; height: 100%; object-fit: contain;">
+                                            <div class="position-absolute top-0 start-0 m-2">
+                                                ${statusBadge}
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title h3">${product.ProductName}</h5>
+                                                <p class="card-text">Order No: ${product.OrderNo}</p>
+                                                <p class="card-text">Quantity: ${product.ProductQuantity}</p>
+                                                ${actionButton}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        $('#productCards').append(card);
+                    });
+
+                    // Update pagination
+                    updatePagination(data.totalProducts, page);
+                }
+            });
+        }
+
+        function updateOrderProductStatus(orderId, status) {
+            $.ajax({
+                url: '@Url.Action("UpdateOrderProductStatus", "Kitchen")',
                 type: 'POST',
                 data: { orderId: orderId, status: status },
                 success: function (response) {
@@ -196,73 +210,6 @@
                 }
             });
         }
-
-        function loadProducts(page) {
-
-            currentPage = page;
-            var chefId = $('#chefSelect').val();
-            var statuses = $('#statusSelect').val();
-            $.ajax({
-                url: '@Url.Action("GetChefProducts", "Kitchen")',
-                type: 'POST',
-                data: { chefId: chefId, statuses: statuses, page: page },
-                success: function (data) {
-
-                    debugger;
-
-                    $('#productCards').empty();
-                    $.each(data.products, function (index, product) {
-                        var statusBadge = '';
-                        if (product.ProductStatus === 'Pending') {
-                            statusBadge = `<span class="badge badge-primary badge-status"><span class="status-dot"></span> Pending</span>`;
-                        } else if (product.ProductStatus === 'Preparing') {
-                            statusBadge = `<span class="badge badge-warning badge-status"><span class="status-dot"></span> Preparing</span>`;
-                        } else if (product.ProductStatus === 'Ready') {
-                            statusBadge = `<span class="badge badge-success badge-status"><span class="status-dot"></span> Ready</span>`;
-                        } else if (product.ProductStatus === 'Cancelled') {
-                            statusBadge = `<span class="badge badge-danger badge-status"><span class="status-dot"></span> Cancelled</span>`;
-                        }
-
-                        var actionButton = '';
-                        if (product.ProductStatus === 'Pending') {
-                            actionButton = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Preparing')"><i class="fas fa-hourglass-start"></i> Prepare</button>`;
-                        } else if (product.ProductStatus === 'Preparing') {
-                            actionButton = `<button class="btn btn-success btn-sm" onclick="updateOrderStatus(${product.OrderDetailId}, 'Ready')"><i class="fas fa-check"></i> Ready</button>`;
-                        } else if (product.ProductStatus === 'Ready') {
-                            actionButton = `<span class="badge badge-success custom-badge"><i class="fas fa-check-circle"></i> Completed</span>`;
-                        } else if (product.ProductStatus === 'Cancelled') {
-                            actionButton = `<span class="badge badge-danger custom-badge"><i class="fas fa-times-circle"></i> Cancelled</span>`;
-                        }
-
-                        var card = `
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
-                                <div class="card mb-4 shadow" style="background-color: white; padding: 15px;">
-                                    <div class="row no-gutters">
-                                        <div class="col-12 text-center position-relative">
-                                            <img class="card-img" src="/Uploads/ProductImages/${product.ProductImage}" alt="${product.ProductName}" style="width: 100%; height: 100%; object-fit: contain;">
-                                            <div class="position-absolute top-0 start-0 m-2">
-                                                ${statusBadge}
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="card-body text-center">
-                                                <h5 class="card-title h3">${product.ProductName}</h5>
-                                                <p class="card-text">Order No: ${product.OrderNo}</p>
-                                                <p class="card-text">Quantity: ${product.ProductQuantity}</p>
-                                                ${actionButton}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>`;
-                        $('#productCards').append(card);
-                    });
-
-                    // Update pagination
-                    updatePagination(data.totalProducts, page);
-                }
-            });
-        }
     </script>
     <style>
         .custom-badge {
@@ -277,7 +224,10 @@
 
         .badge-danger {
             background-color: #dc3545;
-            color: white;
+        }
+
+        .badge-info {
+            background-color: #17a2b8;
         }
 
         .badge-status {
@@ -292,14 +242,6 @@
 
         .badge-warning {
             background-color: #ffc107;
-        }
-
-        .badge-success {
-            background-color: #28a745;
-        }
-
-        .badge-danger {
-            background-color: #dc3545;
         }
 
         .card {
