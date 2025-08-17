@@ -1,13 +1,12 @@
 ﻿@model Ressential.Models.ItemCategory
 
 @{
-    ViewBag.Title = "EditItemCategory";
+    ViewBag.Title = "CreateItemCategory";
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
 @using (Html.BeginForm("EditItemCategory", "Warehouse", FormMethod.Post))
 {
-    @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-12 grid-margin">
             <div class="card">
@@ -20,13 +19,15 @@
                                 @Html.TextBoxFor(model => model.ItemCategoryName, new { @class = "form-control" })
                                 <label for="floatingInput">Category Name</label>
                                 @Html.ValidationMessageFor(model => model.ItemCategoryName, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="form-floating mb-3 mt-3">
-                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", maxlength = "500" })
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control" })
                                 <label for="floatingInput">Description</label>
                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
                             </div>
                         </div>
 
@@ -42,18 +43,15 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
+                    
                 </div>
             </div>
+
         </div>
     </div>
-}
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    <script>
-        $(document).ready(function () {
-            $('form').validate();
-        });
-    </script>
+
+
 }

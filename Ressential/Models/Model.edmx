@@ -75,6 +75,7 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="StockLevelState" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -355,6 +356,7 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="ConfirmDuplicate" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="PurchaseReturnDetails">
           <Key>
@@ -382,6 +384,7 @@
           <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ModifiedBy" Type="int" />
           <Property Name="ModifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="ConfirmDuplicate" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ReceiptApply">
           <Key>
@@ -2395,6 +2398,7 @@
           <NavigationProperty Name="User" Relationship="Self.FK__BranchIte__Creat__5DCAEF64" FromRole="BranchItems" ToRole="Users" />
           <NavigationProperty Name="Item" Relationship="Self.FK__BranchIte__ItemI__5BE2A6F2" FromRole="BranchItems" ToRole="Items" />
           <NavigationProperty Name="User1" Relationship="Self.FK__BranchIte__Modif__5EBF139D" FromRole="BranchItems" ToRole="Users" />
+          <Property Name="StockLevelState" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="City">
           <Key>
@@ -2731,6 +2735,7 @@
           <NavigationProperty Name="PurchaseReturnDetails" Relationship="Self.FK__PurchaseR__Purch__0C85DE4D" FromRole="PurchaseReturn" ToRole="PurchaseReturnDetails" />
           <NavigationProperty Name="Vendor" Relationship="Self.FK__PurchaseR__Vendo__07C12930" FromRole="PurchaseReturn" ToRole="Vendors" />
           <NavigationProperty Name="ReceiptApplies" Relationship="Self.FK__ReceiptAp__Purch__7C1A6C5A" FromRole="PurchaseReturn" ToRole="ReceiptApply" />
+          <Property Name="ConfirmDuplicate" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="PurchaseReturnDetail">
           <Key>
@@ -2765,6 +2770,7 @@
           <NavigationProperty Name="User" Relationship="Self.FK__Purchases__Creat__656C112C" FromRole="Purchases" ToRole="Users" />
           <NavigationProperty Name="User1" Relationship="Self.FK__Purchases__Modif__66603565" FromRole="Purchases" ToRole="Users" />
           <NavigationProperty Name="Vendor" Relationship="Self.FK__Purchases__Vendo__6477ECF3" FromRole="Purchases" ToRole="Vendors" />
+          <Property Name="ConfirmDuplicate" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="ReceiptApply">
           <Key>
@@ -4854,6 +4860,7 @@
           <EntitySetMapping Name="BranchItems">
             <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
               <MappingFragment StoreEntitySet="BranchItems">
+                <ScalarProperty Name="StockLevelState" ColumnName="StockLevelState" />
                 <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="BranchId" ColumnName="BranchId" />
@@ -5144,6 +5151,7 @@
           <EntitySetMapping Name="PurchaseReturns">
             <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseReturn">
               <MappingFragment StoreEntitySet="PurchaseReturn">
+                <ScalarProperty Name="ConfirmDuplicate" ColumnName="ConfirmDuplicate" />
                 <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
                 <ScalarProperty Name="PurchaseReturnDate" ColumnName="PurchaseReturnDate" />
                 <ScalarProperty Name="PurchaseReturnNo" ColumnName="PurchaseReturnNo" />
@@ -5173,6 +5181,7 @@
           <EntitySetMapping Name="Purchases">
             <EntityTypeMapping TypeName="DB_RessentialModel.Purchase">
               <MappingFragment StoreEntitySet="Purchases">
+                <ScalarProperty Name="ConfirmDuplicate" ColumnName="ConfirmDuplicate" />
                 <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
                 <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
                 <ScalarProperty Name="PurchaseNo" ColumnName="PurchaseNo" />

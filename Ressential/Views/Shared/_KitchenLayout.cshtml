@@ -288,7 +288,7 @@
                         </li>
                     }
 
-                    @if (true)
+                    @if (Html.HasPermission("Report Branch Item Stock Report") || Html.HasPermission("Report Sales Report") || Html.HasPermission("Report Cost Report") || Html.HasPermission("Report Profit/Loss Report"))
                     {
                         <li class="pc-item pc-hasmenu">
                             <a class="pc-link">
@@ -297,10 +297,22 @@
                                 </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
                             </a>
                             <ul class="pc-submenu">
-                                <li class="pc-item"><a href="/Kitchen/ItemStockReport" class="pc-link">Item Stock Report</a></li>
-                                <li class="pc-item"><a href="/Kitchen/SalesReport" class="pc-link">Sales Report</a></li>
-                                <li class="pc-item"><a href="/Kitchen/CostReport" class="pc-link">Cost Report</a></li>
-                                <li class="pc-item"><a href="/Kitchen/ProfitLossReport" class="pc-link">Profit/Loss Report</a></li>
+                                @if (Html.HasPermission("Report Branch Item Stock Report"))
+                                {
+                                    <li class="pc-item"><a href="/Kitchen/ItemStockReport" class="pc-link">Item Stock Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Sales Report"))
+                                {
+                                    <li class="pc-item"><a href="/Kitchen/SalesReport" class="pc-link">Sales Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Cost Report"))
+                                {
+                                    <li class="pc-item"><a href="/Kitchen/CostReport" class="pc-link">Cost Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Profit/Loss Report"))
+                                {
+                                    <li class="pc-item"><a href="/Kitchen/ProfitLossReport" class="pc-link">Profit/Loss Report</a></li>
+                                }
                             </ul>
                         </li>
                     }

@@ -17,10 +17,10 @@ namespace Ressential.Models
         [Required(ErrorMessage = "Receipt Voucher Date is required")]
         public DateTime ReceiptVoucherDate { get; set; }
 
-        [Required(ErrorMessage = "Vendor ID is required")]
+        [Required(ErrorMessage = "Vendor is required")]
         public int VendorId { get; set; }
 
-        [Required(ErrorMessage = "Account ID is required")]
+        [Required(ErrorMessage = "Account is required")]
         public int AccountId { get; set; }
 
         [StringLength(50, ErrorMessage = "Instrument Number cannot exceed 50 characters")]

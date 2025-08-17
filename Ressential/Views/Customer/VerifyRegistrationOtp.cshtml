@@ -17,14 +17,25 @@
 
     <!-- Custom Styles -->
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
+        body {
+            background: linear-gradient(135deg, rgba(248, 249, 250, 0.7) 0%, rgba(233, 236, 239, 0.7) 100%), url('/Content/CustomerAssets/images/BG1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f8f9fa;
             font-family: 'Roboto', sans-serif;
+            padding: 20px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .auth-card {
@@ -55,42 +66,44 @@
     </style>
 </head>
 <body>
-    <div class="auth-card">
-        <div class="card-body">
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-danger">
-                    <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
-                    @TempData["ErrorMessage"]
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+                @if (TempData["Message"] != null)
+                {
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle pe-3" aria-hidden="true"></i>
+                        @TempData["Message"]
+                    </div>
+                }
+                <div class="text-center mb-4">
+                    <a href="#">
+                        <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Restaurant Logo" width="150">
+                    </a>
+                    <h4 class="mt-3">Verify Your Email</h4>
+                    <p class="text-muted">Please enter the OTP sent to your email address</p>
                 </div>
-            }
-            @if (TempData["Message"] != null)
-            {
-                <div class="alert alert-info">
-                    <i class="fa fa-info-circle pe-3" aria-hidden="true"></i>
-                    @TempData["Message"]
-                </div>
-            }
-            <div class="text-center mb-4">
-                <a href="#">
-                    <img src="~/Content/assets/images/logo/ressential-logo.png" alt="Restaurant Logo" width="150">
-                </a>
-                <h4 class="mt-3">Verify Your Email</h4>
-                <p class="text-muted">Please enter the OTP sent to your email address</p>
-            </div>
 
-            <form method="post" action="/Customer/VerifyRegistrationOtp">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
-                    <label for="otp">Enter OTP</label>
-                </div>
-                <button type="submit" class="btn btn-secondary w-100">Verify OTP</button>
-            </form>
-            <hr class="my-4">
-            <p class="text-center">
-                Didn't receive the OTP?
-                <a href="/Customer/Register" class="text-secondary">Try Again</a>
-            </p>
+                <form method="post" action="/Customer/VerifyRegistrationOtp">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+                        <label for="otp">Enter OTP</label>
+                    </div>
+                    <button type="submit" class="btn btn-secondary w-100">Verify OTP</button>
+                </form>
+                <hr class="my-4">
+                <p class="text-center">
+                    Didn't receive the OTP?
+                    <a href="/Customer/Register" class="text-secondary">Try Again</a>
+                </p>
+            </div>
         </div>
     </div>
 

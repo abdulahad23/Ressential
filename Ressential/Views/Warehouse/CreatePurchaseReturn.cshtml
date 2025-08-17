@@ -5,161 +5,117 @@
     Layout = "~/Views/Shared/_WarehouseLayout.cshtml";
 }
 
-@using (Html.BeginForm("CreatePurchaseReturn", "Warehouse", FormMethod.Post))
+@using (Html.BeginForm("CreatePurchaseReturn", "Warehouse", FormMethod.Post, new { id = "createPurchaseReturnForm" }))
 {
     <div class="row">
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="text-secondary"><b>Create Purchase</b></h2>
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    <h2 class="text-secondary"><b>Create Purchase Return</b></h2>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.PurchaseReturnDate, @DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Purchase Return Date", @type = "date" })
                                 <label for="floatingInput">Purchase Return Date</label>
+                                @Html.ValidationMessageFor(model => model.PurchaseReturnDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.ReferenceNo, "", new { @class = "form-control", @placeholder = "Reference No" })
-
                                 <label for="floatingInput">Reference No</label>
+                                @Html.ValidationMessageFor(model => model.ReferenceNo, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(model => model.VendorID, new SelectList(ViewBag.Vendors, "VendorID", "Name"), "Select Vendor", new { @class = "form-control" })
                                 <label for="floatingInput">Vendor</label>
+                                @Html.ValidationMessageFor(model => model.VendorID, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Memo, "", new { @class = "form-control", @placeholder = "Memo" })
                                 <label for="floatingInput">Memo</label>
+                                @Html.ValidationMessageFor(model => model.Memo, "", new { @class = "text-danger" })
                             </div>
                         </div>
-
                     </div>
 
                     <h2 class="text-secondary pt-3"><b>Items</b></h2>
                     <div class="row">
                         <div class="container">
+                            <span class="text-danger " id="itemsError"></span>
                             <div class="table-responsive tab-content">
                                 <table id="itemsTable" class="table table-hover">
-                                    @*<table id="itemsTable" class="table items-table-price table-hover">*@
                                     <tbody id="itemsTableBody">
-
                                         @foreach (var item in Model.PurchaseReturnDetails)
                                         {
                                             <tr class="item-row">
                                                 <td class="tbl-min-width-6 col-3 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        <select class="form-control">
+                                                        <select class="form-control" name="PurchaseReturnDetails[@item.ItemId].ItemId">
                                                             <option value="0">Select Item</option>
                                                             @foreach (var i in ViewBag.Items)
                                                             {
-
-                                                                if (i.ItemId == item.ItemId)
-                                                                {
-                                                                    <option selected value="@i.ItemId">@i.ItemName</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@i.ItemId">@i.ItemName</option>
-                                                                }
+                                                                <option value="@i.ItemId" @(i.ItemId == item.ItemId ? "selected" : "")>@i.ItemName</option>
                                                             }
                                                         </select>
-                                                        @*@Html.DropDownListFor(m => item.ItemId, new SelectList(ViewBag.Items, "ItemId", "ItemName"), "Select Item", new { @class = "form-control", @id = $"{item.ItemId},ItemId" })*@
-                                                        @*@Html.DropDownListFor(m => item.ItemId, (SelectList)ViewBag.Items, "Select Item", new { @class = "form-control" })*@
                                                         <label>Item</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-6 col-3 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
+                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", @name = $"PurchaseReturnDetails[{item.ItemId}].Description" })
                                                         <label>Description</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
+                                                        @Html.TextBoxFor(m => item.Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = $"PurchaseReturnDetails[{item.ItemId}].Quantity" })
                                                         <label>Quantity</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-4 col-2 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.UnitPrice, new { @class = "form-control unitPrice", @placeholder = "Unit Price", @name = "unitPrice[]" })
+                                                        @Html.TextBoxFor(m => item.UnitPrice, new { @class = "form-control unitPrice", @placeholder = "Unit Price", @name = $"PurchaseReturnDetails[{item.ItemId}].UnitPrice" })
                                                         <label>Unit Price</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-5 col-2 mb-3 mt-3">
                                                     <div class="form-floating">
-                                                        <input type="number" class="form-control total"
-                                                               placeholder="Total" name="total[]">
+                                                        <input type="number" class="form-control total" placeholder="Total" name="total[]" readonly>
                                                         <label>Total</label>
                                                     </div>
                                                 </td>
                                                 <td class="tbl-min-width-1">
-                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                            type="button" data-toggle="tooltip" data-placement="top"
-                                                            title="Remove">
+                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn" type="button" data-toggle="tooltip" data-placement="top" title="Remove">
                                                         <i class="fa fa-times"></i>
                                                     </button>
                                                 </td>
                                             </tr>
                                         }
-
-                                        @*@for (int i = 0; i < Model.PurchaseDetails.Count; i++)
-                                            {
-                                                <tr class="item-row">
-                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.DropDownListFor(m => m.PurchaseDetails.ElementAt(i).ItemId, (SelectList)ViewBag.Items[i], "Select Item", new { @class = "form-control" })
-                                                            <label>Item</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Description, new { @class = "form-control" })
-                                                            <label>Description</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                            <label>Quantity</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            @Html.TextBoxFor(m => m.PurchaseDetails.ElementAt(i).UnitPrice, new { @class = "form-control unitPrice", @placeholder = "Unit Price", @name = "unitPrice[]" })
-                                                            <label>Unit Price</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-5 col-2 mb-3 mt-3">
-                                                        <div class="form-floating">
-                                                            <input type="number" class="form-control total"
-                                                                   placeholder="Total" name="total[]">
-                                                            <label>Total</label>
-                                                        </div>
-                                                    </td>
-                                                    <td class="tbl-min-width-1">
-                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                                type="button" data-toggle="tooltip" data-placement="top"
-                                                                title="Remove">
-                                                            <i class="fa fa-times"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            }*@
-
                                     </tbody>
                                 </table>
                             </div>
 
                             <!-- Add Row Button -->
-                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
-                                    type="button">
+                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn" type="button">
                                 <i class="fa fa-plus-square d-flex p-1">
                                     <span class="ps-2 m-0">Add More</span>
                                 </i>
@@ -179,8 +135,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="col-sm-9">
-                                            <button id="CreatePurchaseReturn" type="button"
-                                                    class="btn btn-secondary mr-2 ps-4 pe-4 btn-save">
+                                            <button id="CreatePurchaseReturn" type="button" class="btn btn-secondary mr-2 ps-4 pe-4 btn-save">
                                                 Save
                                             </button>
                                             <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
@@ -196,92 +151,154 @@
     </div>
 }
 
-
 <script>
     $(document).ready(function () {
-            // Add row when clicking "Add More"
-            $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
+        // Add row when clicking "Add More"
+        $('#addRowBtn').click(function () {
+            let newRow = $('#itemsTableBody .item-row').last().clone();
+            newRow.find("input").val(""); // Clear input values
+            newRow.find("select").val("0"); // Clear dropdowns
 
-                // Increment row index for the new row to avoid conflicts
-                let index = $('#itemsTableBody .item-row').length;
+            // Increment row index for the new row to avoid conflicts
+            let index = $('#itemsTableBody .item-row').length;
 
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="PurchaseReturnDetails"]').attr("name", `PurchaseReturnDetails[${index}].ItemId`);
-                newRow.find('input[name^="PurchaseReturnDetails"][name*=".Description"]').attr("name", `PurchaseReturnDetails[${index}].Description`);
-                newRow.find('input[name^="PurchaseReturnDetails"][name*=".Quantity"]').attr("name", `PurchaseReturnDetails[${index}].Quantity`);
-                newRow.find('input[name^="PurchaseReturnDetails"][name*=".UnitPrice"]').attr("name", `PurchaseReturnDetails[${index}].UnitPrice`);
+            // Update name attributes to match the model binding format
+            newRow.find('select[name^="PurchaseReturnDetails"]').attr("name", `PurchaseReturnDetails[${index}].ItemId`);
+            newRow.find('input[name^="PurchaseReturnDetails"][name*=".Description"]').attr("name", `PurchaseReturnDetails[${index}].Description`);
+            newRow.find('input[name^="PurchaseReturnDetails"][name*=".Quantity"]').attr("name", `PurchaseReturnDetails[${index}].Quantity`);
+            newRow.find('input[name^="PurchaseReturnDetails"][name*=".UnitPrice"]').attr("name", `PurchaseReturnDetails[${index}].UnitPrice`);
 
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
+            $('#itemsTableBody').append(newRow); // Append the new row to the table body
+        });
+
+        // Remove row when clicking the remove button
+        $(document).on('click', '.removeRowBtn', function () {
+            if ($('#itemsTableBody .item-row').length > 1) {
+                $(this).tooltip('dispose');
+                $(this).closest('.item-row').remove();
+            } else {
+                alert("At least one item is required.");
+            }
+        });
+
+        // Calculate total when quantity or unit price changes
+        $(document).on('input', '.quantity, .unitPrice', function() {
+            let row = $(this).closest('tr');
+            let quantity = parseFloat(row.find('.quantity').val()) || 0;
+            let unitPrice = parseFloat(row.find('.unitPrice').val()) || 0;
+            let total = quantity * unitPrice;
+            row.find('.total').val(total.toFixed(2));
+            
+            // Calculate grand total
+            let grandTotal = 0;
+            $('.total').each(function() {
+                grandTotal += parseFloat($(this).val()) || 0;
             });
+            $('#totalAmount').val(grandTotal.toFixed(2));
+        });
 
-            // Remove row when clicking the remove button
-            $(document).on('click', '.removeRowBtn', function () {
-                if ($('#itemsTableBody .item-row').length > 1) {
-                    $(this).closest('.item-row').remove();
+        // Validate and submit form
+        $('#CreatePurchaseReturn').on('click', function (e) {
+            e.preventDefault();
+
+            // Validate the form using jQuery Validate
+            var form = $('#createPurchaseReturnForm');
+
+            if (form.valid()) {
+                let isValid = true;
+                let errorMessage = "";
+
+                // Initialize an object to hold all data
+                let purchaseReturn = {
+                    PurchaseReturnDetails: [],
+                    PurchaseReturnDate: $('#PurchaseReturnDate').val(),
+                    ReferenceNo: $('#ReferenceNo').val(),
+                    VendorID: $('#VendorID').val(),
+                    Memo: $('#Memo').val()
+                };
+
+                // Find all rows in the tbody
+                $('#itemsTableBody .item-row').each(function () {
+                    // Initialize an object to hold the values for each row
+                    let rowData = {};
+
+                    // Get the selected item from the dropdown
+                    rowData.ItemId = $(this).find('select').val();
+
+                    if (rowData.ItemId == "0") {
+                        isValid = false;
+                        errorMessage = "Please select an item for each row.";
+                    }
+
+                    // Get the description
+                    rowData.Description = $(this).find('input[name$=".Description"]').val();
+
+                    // Get the quantity
+                    rowData.Quantity = $(this).find('input[name$=".Quantity"]').val();
+                    if (!rowData.Quantity || parseFloat(rowData.Quantity) <= 0) {
+                        isValid = false;
+                        errorMessage = "Quantity must be greater than 0.";
+                    }
+
+                    // Get the unit price
+                    rowData.UnitPrice = $(this).find('input[name$=".UnitPrice"]').val();
+                    if (!rowData.UnitPrice || parseFloat(rowData.UnitPrice) <= 0) {
+                        isValid = false;
+                        errorMessage = "Unit price must be greater than 0.";
+                    }
+
+                    // Add the row data to the purchaseReturn.items array
+                    purchaseReturn.PurchaseReturnDetails.push(rowData);
+                });
+
+                if (isValid) {
+                    // Send data to server
+                    $.ajax({
+                        url: '@Url.Action("CreatePurchaseReturn", "WareHouse")',
+                        method: 'POST',
+                        data: JSON.stringify(purchaseReturn),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            if (response == "0") {
+                                window.location.href = '@Url.Action("PurchaseReturnList","Warehouse")'
+                            }
+                            else if (response == "1") {
+                                window.location.href = '@Url.Action("Index","Error")'
+                            }
+                            else if (response.status == "warning") {
+                                if (confirm(response.message)) {
+                                    // User clicked OK, proceed with the purchase return
+                                    purchaseReturn.confirmDuplicate = true;
+                                    $.ajax({
+                                        url: '@Url.Action("CreatePurchaseReturn", "WareHouse")',
+                                        method: 'POST',
+                                        data: JSON.stringify(purchaseReturn),
+                                        contentType: 'application/json',
+                                        success: function (response) {
+                                            if (response == "0") {
+                                                window.location.href = '@Url.Action("PurchaseReturnList","Warehouse")'
+                                            } else if (response == "1") {
+                                                window.location.href = '@Url.Action("Index","Error")'
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            else if (response.status == "error") {
+                                alert(response.message);
+                            }
+                        }
+                    });
                 } else {
-                    alert("At least one item is required.");
+                    // Form is invalid, show error messages
+                    $('#itemsError').text(errorMessage);
+                    console.log('Form validation failed.');
                 }
-            });
+            } else {
+                // Form is invalid, show error messages
+                $('#itemsError').text("Each item must be selected, and quantity and unit price must be greater than 0.");
+                console.log('Form validation failed.');
+            }
         });
-
-    $('#CreatePurchaseReturn').on('click', function () {
-
-        debugger;
-
-        // Initialize an object to hold all data
-         let purchasesReturn = {
-            PurchaseReturnDetails: [],
-            purchaseReturnDate: $('#PurchaseReturnDate').val(),
-            referenceNo: $('#ReferenceNo').val(),
-            vendorID: $('#VendorID').val(),
-            memo: $('#Memo').val()
-        };
-
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
-
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
-
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
-
-            // Get the quantity
-            rowData.Quantity = $(this).find('input[name="item.Quantity"]').val();
-
-            // Get the unit price
-            rowData.UnitPrice = $(this).find('input[name="item.UnitPrice"]').val();
-
-            // Get the total
-            rowData.total = $(this).find('input[name="total[]"]').val();
-
-            // Add the row data to the purchaseData.items array
-            purchasesReturn.PurchaseReturnDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-        console.log(purchasesReturn);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreatePurchaseReturn", "WareHouse")',
-             method: 'POST',
-             data: JSON.stringify(purchasesReturn),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("PurchaseReturnList","Warehouse")'
-                }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
-                }
-             }
-         });
-     });
+    });
 </script>

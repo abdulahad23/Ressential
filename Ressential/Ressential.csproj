@@ -288,6 +288,7 @@
     <Compile Include="Models\PartialConsumeItemDetail.cs" />
     <Compile Include="Models\PartialCustomer.cs" />
     <Compile Include="Models\PartialItem.cs" />
+    <Compile Include="Models\PartiaIRole.cs" />
     <Compile Include="Models\PartialItemCategory.cs" />
     <Compile Include="Models\PartialOnlineOrderDetail.cs" />
     <Compile Include="Models\PartialOrder.cs" />

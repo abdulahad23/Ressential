@@ -16,6 +16,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.ReceiptVoucherDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Receipt Voucher Date", @type = "date" })
                                 <label for="floatingVoucherDate">Voucher Date</label>
+                                @Html.ValidationMessageFor(model => model.ReceiptVoucherDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -23,6 +24,7 @@
 
                                 @Html.DropDownListFor(model => model.VendorId, new SelectList(ViewBag.Vendors, "VendorId", "Name"), "Select Vendor", new { @class = "form-control" })
                                 <label for="floatingInput">Vendor ID</label>
+                                @Html.ValidationMessageFor(model => model.VendorId, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -38,12 +40,14 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.DropDownListFor(model => model.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountTitle"), "Select Account", new { @class = "form-control", id = "floatingAccountId" })
                                 <label for="floatingInput">Account</label>
+                                @Html.ValidationMessageFor(model => model.AccountId, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.InstrumentNo, new { @class = "form-control", id = "floatingInstrumentNo", @placeholder = "Instrument No" })
                                 <label for="floatingInstrumentNo">Instrument No</label>
+                                @Html.ValidationMessageFor(model => model.InstrumentNo, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -51,6 +55,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.InstrumentDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", id = "floatingInstrumentDate", @placeholder = "Instrument Date", @type = "date" })
                                 <label for="floatingInstrumentDate">Instrument Date</label>
+                                @Html.ValidationMessageFor(model => model.InstrumentDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
@@ -58,6 +63,7 @@
                             <div class="form-floating mb-3 mt-3">
                                 @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @type = "number", @placeholder = "Amount" })
                                 <label for="floatingAmount">Amount</label>
+                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
                             </div>
                         </div>
 

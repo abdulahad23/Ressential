@@ -32,6 +32,7 @@ namespace Ressential.Models
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
+        public bool ConfirmDuplicate { get; set; }
     
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }

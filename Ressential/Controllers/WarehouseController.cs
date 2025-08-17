@@ -23,7 +23,6 @@ using System.ComponentModel;
 using Microsoft.AspNet.SignalR;
 using AuthorizeAttribute = System.Web.Mvc.AuthorizeAttribute;
 using Ressential.ViewModels;
-using Newtonsoft.Json;
 
 namespace Ressential.Controllers
 {
@@ -181,47 +180,19 @@ namespace Ressential.Controllers
 
         [HttpPost]
         [HasPermission("Item Category Create")]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateItemCategory(ItemCategory itemCategory, bool? confirmDuplicate)
+        public ActionResult CreateItemCategory(ItemCategory itemCategory)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    // Check for existing category with same name
-                    var existingCategory = _db.ItemCategories.FirstOrDefault(x => x.ItemCategoryName.ToLower() == itemCategory.ItemCategoryName.ToLower());
-                    
-                    if (existingCategory != null && confirmDuplicate != true)
-                    {
-                        // Store the current data in TempData using JSON serialization
-                        TempData["PendingItemCategory"] = Newtonsoft.Json.JsonConvert.SerializeObject(new
-                        {
-                            itemCategory.ItemCategoryName,
-                            itemCategory.Description
-                        });
-                        
-                        TempData["DuplicateWarning"] = $"An item category with the name '{itemCategory.ItemCategoryName}' already exists. Do you want to create it anyway?";
-                        return View(itemCategory);
-                    }
-
-                    _db.ItemCategories.Add(itemCategory);
-                    _db.SaveChanges();
-                    TempData["Success"] = "Item Category created successfully!";
-                    return RedirectToAction("ItemCategoryList");
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while saving the item category.");
-                }
+                _db.ItemCategories.Add(itemCategory);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item Category created successfully.";
             }
-            return View(itemCategory);
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Item Category.";
+            }
+            return RedirectToAction("ItemCategoryList");
         }
         [HasPermission("Item Category List")]
         public ActionResult ItemCategoryList(string search)
@@ -246,51 +217,20 @@ namespace Ressential.Controllers
         }
         [HttpPost]
         [HasPermission("Item Category Edit")]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditItemCategory(ItemCategory itemCategory)
+        public ActionResult EditItemEditItemCategory(ItemCategory itemCategory)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    var existingCategory = _db.ItemCategories.Find(itemCategory.ItemCategoryId);
-                    if (existingCategory == null)
-                    {
-                        return HttpNotFound();
-                    }
-
-                    // Check if name is changed and if new name already exists
-                    var duplicateCategory = _db.ItemCategories
-                        .FirstOrDefault(x => x.ItemCategoryId != itemCategory.ItemCategoryId && 
-                                           x.ItemCategoryName.ToLower() == itemCategory.ItemCategoryName.ToLower());
-                    
-                    if (duplicateCategory != null)
-                    {
-                        ModelState.AddModelError("ItemCategoryName", "An item category with this name already exists.");
-                        return View(itemCategory);
-                    }
-
-                    existingCategory.ItemCategoryName = itemCategory.ItemCategoryName;
-                    existingCategory.Description = itemCategory.Description;
-                    
-                    _db.Entry(existingCategory).State = EntityState.Modified;
-                    _db.SaveChanges();
-                    TempData["Success"] = "Item Category updated successfully!";
-                    return RedirectToAction("ItemCategoryList");
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while updating the item category.");
-                }
+                _db.Entry(itemCategory).State = EntityState.Modified;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item Category updated successfully.";
             }
-            return View(itemCategory);
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while updating the Item Category.";
+            }
+
+            return RedirectToAction("ItemCategoryList");
         }
         [HttpPost]
         [HasPermission("Item Category Delete")]
@@ -366,70 +306,45 @@ namespace Ressential.Controllers
         }
         [HttpPost]
         [HasPermission("Item Create")]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateItem(Item item, bool? confirmDuplicate)
+        public ActionResult CreateItem(Item item)
         {
-            if (ModelState.IsValid)
-            {
-                try
+            try {
+                if (ModelState.IsValid)
                 {
-                    // Check for existing item with same name
-                    var existingItem = _db.Items.FirstOrDefault(x => x.ItemName.ToLower() == item.ItemName.ToLower());
-                    
-                    if (existingItem != null && confirmDuplicate != true)
-                    {
-                        // Store the current data in TempData using JSON serialization
-                        TempData["PendingItem"] = JsonConvert.SerializeObject(new
-                        {
-                            item.ItemName,
-                            item.Sku,
-                            item.UnitOfMeasureId,
-                            item.ItemCategoryId,
-                            item.OpeningStockQuantity,
-                            item.OpeningStockValue,
-                            item.OpeningStockDate,
-                            item.MinimumStockLevel,
-                            item.IsActive
-                        });
-                        
-                        TempData["DuplicateWarning"] = $"An item with the name '{item.ItemName}' already exists. Do you want to create it anyway?";
-                        
-                        // Repopulate dropdown data
-                        ViewBag.Units = _db.UnitOfMeasures.ToList();
-                        ViewBag.Categories = _db.ItemCategories.ToList();
-                        return View(item);
-                    }
-
+                    item.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    item.CreatedAt = DateTime.Now;
                     _db.Items.Add(item);
                     _db.SaveChanges();
 
-                    // Check stock level and create notifications if needed
-                    var notifications = CheckStockLevel(item.ItemId);
-                    if (notifications.Any())
+                    var warehouseItemStock = new WarehouseItemStock
                     {
-                        SendStockLevelNotifications(notifications);
-                    }
+                        ItemId = item.ItemId,
+                        Quantity = item.OpeningStockQuantity,
+                        CostPerUnit = item.OpeningStockValue/item.OpeningStockQuantity
+                    };
+                    //var warehouseItemTransaction = new WarehouseItemTransaction
+                    //{
+                    //    TransactionDate = openingDate,
+                    //    ItemId = item.ItemId,
+                    //    TransactionType = "Opening",
+                    //    TransactionTypeId = item.ItemId,
+                    //    Quantity = quantity,
+                    //    CostPerUnit = cost/quantity
+                    //};
+                    _db.WarehouseItemStocks.Add(warehouseItemStock);
+                    //_db.WarehouseItemTransactions.Add(warehouseItemTransaction);
+                    _db.SaveChanges();
 
-                    TempData["Success"] = "Item created successfully!";
                     return RedirectToAction("ItemList");
                 }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while saving the item.");
-                }
+                ViewBag.Units = _db.UnitOfMeasures.ToList();
+                ViewBag.Categories = _db.ItemCategories.ToList();
+                return View(item);
             }
-
-            // Repopulate dropdown data on error
-            ViewBag.Units = _db.UnitOfMeasures.ToList();
-            ViewBag.Categories = _db.ItemCategories.ToList();
-            return View(item);
+            catch {
+                return RedirectToAction("Index","Error");
+            }
+            
         }
         [HasPermission("Item List")]
         public ActionResult ItemList(string search)
@@ -465,73 +380,78 @@ namespace Ressential.Controllers
         }
         [HttpPost]
         [HasPermission("Item Edit")]
-        [ValidateAntiForgeryToken]
         public ActionResult EditItem(Item item)
         {
-            if (ModelState.IsValid)
+            decimal perUnitCost = 0;
+            if (item.OpeningStockQuantity == 0)
             {
-                try
-                {
-                    var existingItem = _db.Items.Find(item.ItemId);
-                    if (existingItem == null)
-                    {
-                        return HttpNotFound();
-                    }
-
-                    // Check if name is changed and if new name already exists
-                    var duplicateItem = _db.Items
-                        .FirstOrDefault(x => x.ItemId != item.ItemId && 
-                                           x.ItemName.ToLower() == item.ItemName.ToLower());
-                    
-                    if (duplicateItem != null)
-                    {
-                        ModelState.AddModelError("ItemName", "An item with this name already exists.");
-                        ViewBag.Units = _db.UnitOfMeasures.ToList();
-                        ViewBag.Categories = _db.ItemCategories.ToList();
-                        return View(item);
-                    }
-
-                    // Update existing item properties
-                    existingItem.ItemName = item.ItemName;
-                    existingItem.Sku = item.Sku;
-                    existingItem.UnitOfMeasureId = item.UnitOfMeasureId;
-                    existingItem.ItemCategoryId = item.ItemCategoryId;
-                    existingItem.OpeningStockQuantity = item.OpeningStockQuantity;
-                    existingItem.OpeningStockValue = item.OpeningStockValue;
-                    existingItem.OpeningStockDate = item.OpeningStockDate;
-                    existingItem.MinimumStockLevel = item.MinimumStockLevel;
-                    existingItem.IsActive = item.IsActive;
-                    
-                    _db.Entry(existingItem).State = EntityState.Modified;
-                    _db.SaveChanges();
-
-                    // Check stock level and create notifications if needed
-                    var notifications = CheckStockLevel(item.ItemId);
-                    if (notifications.Any())
-                    {
-                        SendStockLevelNotifications(notifications);
-                    }
-
-                    TempData["Success"] = "Item updated successfully!";
-                    return RedirectToAction("ItemList");
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while updating the item.");
-                }
+                item.OpeningStockValue = 0;
             }
+            else
+            {
+                perUnitCost = item.OpeningStockValue / item.OpeningStockQuantity;
+            }
+            try
+            {
+                var existingItem = _db.Items.Find(item.ItemId);
+                if (existingItem == null)
+                {
+                    return HttpNotFound();
+                }
+                var warehouseItemStock = _db.WarehouseItemStocks.Find(item.ItemId);
+                
+                decimal oldTotalCost = warehouseItemStock.Quantity * warehouseItemStock.CostPerUnit;
+                decimal oldTransactionCost = item.OpeningStockQuantity * perUnitCost;
 
-            // Repopulate dropdown data on error
-            ViewBag.Units = _db.UnitOfMeasures.ToList();
-            ViewBag.Categories = _db.ItemCategories.ToList();
-            return View(item);
+                decimal newTotalCost = oldTotalCost - oldTransactionCost;
+                decimal newQuantity = warehouseItemStock.Quantity - item.OpeningStockQuantity;
+
+                decimal previousAverageCost;
+                if (newQuantity == 0)
+                {
+                    previousAverageCost = 0;
+                }
+                else
+                {
+                    previousAverageCost = newTotalCost /  newQuantity;
+                }
+                decimal updatedQuantity = newQuantity + item.OpeningStockQuantity;
+
+                warehouseItemStock.Quantity = updatedQuantity;
+                if (updatedQuantity == 0)
+                {
+                    warehouseItemStock.CostPerUnit = 0;
+                }
+                else
+                {
+                    warehouseItemStock.CostPerUnit = ((newQuantity * previousAverageCost) + (item.OpeningStockQuantity * item.OpeningStockValue)) / updatedQuantity;
+                }
+
+                item.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                item.ModifiedAt = DateTime.Now;
+                _db.Entry(existingItem).CurrentValues.SetValues(item);
+                _db.Entry(existingItem).State = EntityState.Modified;
+                _db.Entry(existingItem).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingItem).Property(x => x.CreatedAt).IsModified = false;
+                
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Item updated successfully.";
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Log validation errors
+                foreach (var validationError in ex.EntityValidationErrors)
+                {
+                    foreach (var error in validationError.ValidationErrors)
+                    {
+                        // Log property name and error message
+                        System.Diagnostics.Debug.WriteLine($"Entity: {validationError.Entry.Entity.GetType().Name}, Property: {error.PropertyName}, Error: {error.ErrorMessage}");
+                    }
+                }
+
+                TempData["ErrorMessage"] = "An error occurred while updating the Item. Please check the logs for details.";
+            }
+            return RedirectToAction("ItemList");
         }
         [HttpPost]
         [HasPermission("Item Delete")]
@@ -606,53 +526,29 @@ namespace Ressential.Controllers
         }
         [HttpPost]
         [HasPermission("Vendor Create")]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateVendor(Vendor vendor, bool? confirmDuplicate)
+        public ActionResult CreateVendor(Vendor vendor)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    // Check for existing vendor with same name
-                    var existingVendor = _db.Vendors.FirstOrDefault(x => x.Name.ToLower() == vendor.Name.ToLower());
-                    
-                    if (existingVendor != null && confirmDuplicate != true)
-                    {
-                        // Store the current data in TempData using JSON serialization
-                        TempData["PendingVendor"] = JsonConvert.SerializeObject(new
-                        {
-                            vendor.Name,
-                            vendor.CompanyName,
-                            vendor.Email,
-                            vendor.Contact,
-                            vendor.Address,
-                            vendor.City,
-                            vendor.Country,
-                            vendor.PostalCode
-                        });
-                        
-                        TempData["DuplicateWarning"] = $"A vendor with the name '{vendor.Name}' already exists. Do you want to create it anyway?";
-                        return View(vendor);
-                    }
-
-                    _db.Vendors.Add(vendor);
-                    _db.SaveChanges();
-                    TempData["Success"] = "Vendor created successfully!";
-                    return RedirectToAction("VendorList");
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while saving the vendor.");
-                }
+                // If validation fails, return the same view with the current model to show errors
+                return View(vendor);
             }
-            return View(vendor);
+            try
+            {
+                vendor.CreatedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                vendor.CreatedAt = DateTime.Now;
+
+                _db.Vendors.Add(vendor);
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Vendor created successfully.";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while creating the Vendor.";
+                return RedirectToAction("Index", "Error");
+
+            }
+            return RedirectToAction("VendorList");
         }
         [HasPermission("Vendor List")]
         public ActionResult VendorList(string search)
@@ -678,58 +574,28 @@ namespace Ressential.Controllers
         }
         [HttpPost]
         [HasPermission("Vendor Edit")]
-        [ValidateAntiForgeryToken]
         public ActionResult EditVendor(Vendor vendor)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var existingVendor = _db.Vendors.Find(vendor.VendorId);
+                if (existingVendor == null)
                 {
-                    var existingVendor = _db.Vendors.Find(vendor.VendorId);
-                    if (existingVendor == null)
-                    {
-                        return HttpNotFound();
-                    }
-
-                    // Check if name is changed and if new name already exists
-                    var duplicateVendor = _db.Vendors
-                        .FirstOrDefault(x => x.VendorId != vendor.VendorId && 
-                                           x.Name.ToLower() == vendor.Name.ToLower());
-                    
-                    if (duplicateVendor != null)
-                    {
-                        ModelState.AddModelError("Name", "A vendor with this name already exists.");
-                        return View(vendor);
-                    }
-
-                    // Update existing vendor properties
-                    existingVendor.Name = vendor.Name;
-                    existingVendor.CompanyName = vendor.CompanyName;
-                    existingVendor.Email = vendor.Email;
-                    existingVendor.Contact = vendor.Contact;
-                    existingVendor.Address = vendor.Address;
-                    existingVendor.City = vendor.City;
-                    existingVendor.Country = vendor.Country;
-                    existingVendor.PostalCode = vendor.PostalCode;
-                    
-                    _db.Entry(existingVendor).State = EntityState.Modified;
-                    _db.SaveChanges();
-                    TempData["Success"] = "Vendor updated successfully!";
-                    return RedirectToAction("VendorList");
+                    return HttpNotFound();
                 }
-                catch (DbEntityValidationException ex)
-                {
-                    foreach (var error in ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors))
-                    {
-                        ModelState.AddModelError("", error.ErrorMessage);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "An error occurred while updating the vendor.");
-                }
+                vendor.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                vendor.ModifiedAt = DateTime.Now;
+                _db.Entry(existingVendor).CurrentValues.SetValues(vendor);
+                _db.Entry(existingVendor).State = EntityState.Modified;
+                _db.Entry(existingVendor).Property(x => x.CreatedBy).IsModified = false;
+                _db.Entry(existingVendor).Property(x => x.CreatedAt).IsModified = false;
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Vendor updated successfully.";
             }
-            return View(vendor);
+            catch {
+                TempData["ErrorMessage"] = "An error occurred while updating the Vendor.";
+            }
+            return RedirectToAction("VendorList");
         }
         [HttpPost]
         [HasPermission("Vendor Delete")]
@@ -2056,6 +1922,16 @@ namespace Ressential.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    // Check if reference number already exists
+                    if (!string.IsNullOrEmpty(purchaseReturn.ReferenceNo) && !purchaseReturn.ConfirmDuplicate)
+                    {
+                        var existingPurchaseReturn = _db.PurchaseReturns.FirstOrDefault(p => p.ReferenceNo.Equals(purchaseReturn.ReferenceNo, StringComparison.OrdinalIgnoreCase));
+                        if (existingPurchaseReturn != null)
+                        {
+                            return Json(new { status = "warning", message = "This reference number already exists. Do you want to continue?" }, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+
                     string datePart = DateTime.Now.ToString("yyyyMM");
                     int nextPurchaseNumber = 1;
 
@@ -2094,7 +1970,7 @@ namespace Ressential.Controllers
                         SendStockLevelNotifications(Notifications);
                     }
                     _db.SaveChanges();
-
+                    TempData["SuccessMessage"] = "Purchase return created successfully.";
                     return Json("0", JsonRequestBehavior.AllowGet);
                 }
                 ViewBag.Vendors = _db.Vendors.Select(v => new { v.VendorId, v.Name }).ToList();
@@ -2104,7 +1980,7 @@ namespace Ressential.Controllers
             catch (Exception ex)
             {
                 // Log the exception if needed
-                Console.WriteLine($"Error creating purchase: {ex.Message}");
+                Console.WriteLine($"Error creating purchase return: {ex.Message}");
                 return RedirectToAction("Index", "Error");
             }
         }
@@ -3513,16 +3389,21 @@ namespace Ressential.Controllers
                 _db.Roles.Add(model.Role);
                 _db.SaveChanges();
 
-                foreach (var permissionId in model.SelectedPermissions)
+
+                if (model.SelectedPermissions != null)
                 {
-                    var rolePermission = new RolePermission
+                    foreach (var permissionId in model.SelectedPermissions)
                     {
-                        RoleId = model.Role.RoleId,
-                        PermissionId = permissionId
-                    };
-                    _db.RolePermissions.Add(rolePermission);
+                        var rolePermission = new RolePermission
+                        {
+                            RoleId = model.Role.RoleId,
+                            PermissionId = permissionId
+                        };
+                        _db.RolePermissions.Add(rolePermission);
+                    }
+
+                    _db.SaveChanges();
                 }
-                _db.SaveChanges();
 
                 TempData["SuccessMessage"] = "Role created successfully.";
                 return RedirectToAction("RoleList");

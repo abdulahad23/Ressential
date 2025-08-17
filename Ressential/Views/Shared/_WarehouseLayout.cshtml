@@ -306,26 +306,43 @@
                             </ul>
                         </li>
                     }
-
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#!" class="pc-link">
-                            <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
-                                Report
-                            </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
-                        </a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item"><a href="/Warehouse/VendorLedger" class="pc-link">Vendor Ledger</a></li>
-                            <li class="pc-item"><a href="/Warehouse/RequisitionReport" class="pc-link">Requisition Report</a></li>
-                            <li class="pc-item"><a href="/Warehouse/ItemStockReport" class="pc-link">Item Stock Report</a></li>
-                            <li class="pc-item"><a href="/Warehouse/PurchaseReport" class="pc-link">Purchase Report</a></li>
-                            <li class="pc-item"><a href="/Warehouse/PurchaseReturnReport" class="pc-link">Purchase Return Report</a></li>
-                        </ul>
-                    </li>
+                    @if (Html.HasPermission("Report Vendor Ledger") || Html.HasPermission("Report Requisition Report") || Html.HasPermission("Report Item Stock Report") || Html.HasPermission("Report Purchase Report") || Html.HasPermission("Report Purchase Return Report"))
+                    {
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#!" class="pc-link">
+                                <span class="pc-micon"><i class="fas fa-file-alt"></i></span><span class="pc-mtext">
+                                    Report
+                                </span><span class="pc-arrow"><i data-feather="chevron-right"></i></span>
+                            </a>
+                            <ul class="pc-submenu">
+                                @if (Html.HasPermission("Report Vendor Ledger"))
+                                {
+                                    <li class="pc-item"><a href="/Warehouse/VendorLedger" class="pc-link">Vendor Ledger</a></li>
+                                }
+                                @if (Html.HasPermission("Report Requisition Report"))
+                                {
+                                    <li class="pc-item"><a href="/Warehouse/RequisitionReport" class="pc-link">Requisition Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Item Stock Report"))
+                                {
+                                    <li class="pc-item"><a href="/Warehouse/ItemStockReport" class="pc-link">Item Stock Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Purchase Report"))
+                                {
+                                    <li class="pc-item"><a href="/Warehouse/PurchaseReport" class="pc-link">Purchase Report</a></li>
+                                }
+                                @if (Html.HasPermission("Report Purchase Return Report"))
+                                {
+                                    <li class="pc-item"><a href="/Warehouse/PurchaseReturnReport" class="pc-link">Purchase Return Report</a></li>
+                                }
+                            </ul>
+                        </li>
+                    }
                     <div style="height:100px">
 
                     </div>
 
-                </ul>
+                    </ul>
             </div>
         </div>
     </nav>

@@ -62,7 +62,7 @@ ADD CONSTRAINT FK_Users_Role FOREIGN KEY (RoleId) REFERENCES Roles(RoleId);
 CREATE TABLE PermissionsCategory (
     PermissionCategoryId INT PRIMARY KEY IDENTITY(1,1),
     PermissionModule NVARCHAR(100) NOT NULL CHECK (PermissionModule IN ('Warehouse', 'Kitchen')),
-    PermissionCategoryName NVARCHAR(100) NOT NULL UNIQUE,
+    PermissionCategoryName NVARCHAR(100) NOT NULL,
 );
 
 
@@ -113,7 +113,7 @@ CREATE TABLE Items (
     ItemCategoryId INT NOT NULL,
     UnitOfMeasureId INT NOT NULL,
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
-    StockLevelState NVARCHAR(50) NOT NULL,
+    StockLevelState NVARCHAR(50) NULL,
     IsActive BIT NOT NULL DEFAULT 1,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -162,6 +162,7 @@ CREATE TABLE BranchItems(
     ItemId INT NOT NULL,
     BranchId INT NOT NULL,
     MinimumStockLevel DECIMAL(18,2) NOT NULL DEFAULT 0,
+    StockLevelState NVARCHAR(50) NULL,
     Quantity DECIMAL(18,2) NOT NULL,
     CostPerUnit DECIMAL(18,2) NOT NULL,
     OpeningStockQuantity DECIMAL(18,2) NOT NULL,
@@ -187,6 +188,7 @@ CREATE TABLE Purchases (
     VendorId INT NOT NULL,
     Memo NVARCHAR(255) NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Paid', 'Not Paid', 'Partially Paid')),
+    ConfirmDuplicate BIT NOT NULL DEFAULT 0,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
@@ -277,6 +279,7 @@ CREATE TABLE PurchaseReturn (
     VendorID INT NOT NULL,
     Memo NVARCHAR(255) NULL,
     Status NVARCHAR(20) NOT NULL CHECK (Status IN ('Received', 'Not Received', 'Partially Received')),
+    ConfirmDuplicate BIT NOT NULL DEFAULT 0,
     CreatedBy INT NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
     ModifiedBy INT NULL,
@@ -812,6 +815,7 @@ VALUES
 ('Delete', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Purchase Return')),
 
 ('Status Update', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Requisition')),
+('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Requisition')),
 
 ('List', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
 ('Create', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionCategoryName = 'Issue')),
@@ -945,3 +949,16 @@ SET HasWarehousePermission = 1;
 
 INSERT INTO Notifications (Message, Title, Type,IsRead, RedirectUrl, ReferenceId, BranchId, UserId)
 VALUES ('Requisition received from Korangi Branch', 'Received Requisition', 'Requisition', 0, 'https://example.com/update', NULL, 0, 1);
+
+-- Add new PermissionCategory for Kitchen Reports
+INSERT INTO PermissionsCategory (PermissionModule, PermissionCategoryName)
+VALUES ('Kitchen', 'Report');
+
+-- Add Permissions for Kitchen -> Report
+INSERT INTO Permissions (PermissionName, PermissionCategoryId)
+VALUES 
+('Branch Item Stock Report', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionModule = 'Kitchen' AND PermissionCategoryName = 'Report')),
+('Sales Report', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionModule = 'Kitchen' AND PermissionCategoryName = 'Report')),
+('Cost Report', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionModule = 'Kitchen' AND PermissionCategoryName = 'Report')),
+('Profit/Loss Report', (SELECT PermissionCategoryId FROM PermissionsCategory WHERE PermissionModule = 'Kitchen' AND PermissionCategoryName = 'Report'));
+

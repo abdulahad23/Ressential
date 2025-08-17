@@ -432,8 +432,8 @@ public ActionResult GetUnreadNotifications()
                     //    _db.WarehouseItemTransactions.Add(warehouseItemTransaction);
                     //}
                     //_db.SaveChanges();
-
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Requisition created successfully.";
+                    return RedirectToAction("RequisitionList", "Kitchen");
                 }
                 
                 ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
@@ -577,8 +577,8 @@ public ActionResult GetUnreadNotifications()
                     _db.SaveChanges();
                     transaction.Commit();
 
-                    TempData["SuccessMessage"] = "Item updated successfully.";
-                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Requisition updated successfully.";
+                    return RedirectToAction("RequisitionList", "Kitchen");
                 }
                 catch (DbEntityValidationException ex)
                 {
@@ -881,7 +881,8 @@ public ActionResult GetUnreadNotifications()
                         var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
                         if (item.ItemQuantity > branchItem.Quantity)
                         {
-                            return Json(new { success = false, errorMessage = $"Insufficient stock for {item.Item.ItemName}. The available quantity is {branchItem.Quantity}" });
+                            TempData["ErrorMessage"] = $"Insufficient stock for {branchItem.Item.ItemName}. The available quantity is {branchItem.Quantity}";
+                            return RedirectToAction("StockReturnList");
                         }
 
                         item.CostPerUnit = branchItem.CostPerUnit;
@@ -908,16 +909,16 @@ public ActionResult GetUnreadNotifications()
                     _db.ReturnStocks.Add(returnStock);
                     _db.SaveChanges();
                     TempData["SuccessMessage"] = "Stock return record created successfully!";
-                    return Json(new { success = true });
+                    return RedirectToAction("StockReturnList");
                 }
 
-                return Json(new { success = false, redirect = Url.Action("Index", "Error") });
+                return RedirectToAction("Index","Error");
             }
             catch (Exception)
             {
                 // Log the exception if needed
                 TempData["ErrorMessage"] = "An error occurred while creating the return stock.";
-                return Json(new { success = false, redirect = Url.Action("StockReturnList", "Kitchen") });
+                return RedirectToAction("StockReturnList");
             }
         }
         [HasPermission("Branch Stock Return List")]
@@ -1071,10 +1072,14 @@ public ActionResult GetUnreadNotifications()
                 {
                     var selectedBranchId = Convert.ToInt32(Helper.GetUserInfo("branchId"));
 
-                    var existingReturnStock = _db.ReturnStocks.Include(p => p.ReturnStockDetails).FirstOrDefault(p => p.ReturnStockId == returnStock.ReturnStockId);
+                    var existingReturnStock = _db.ReturnStocks
+                        .Include(p => p.ReturnStockDetails)
+                        .FirstOrDefault(p => p.ReturnStockId == returnStock.ReturnStockId);
+
                     if (existingReturnStock == null)
                     {
-                        return Json(new { status = "error", message = "Stock return record not found" }, JsonRequestBehavior.AllowGet);
+                        TempData["ErrorMessage"] = "Stock return record not found";
+                        return RedirectToAction("StockReturnList");
                     }
                     if (existingReturnStock.Status == "Settled")
                     {
@@ -1082,29 +1087,26 @@ public ActionResult GetUnreadNotifications()
                         return RedirectToAction("StockReturnList");
                     }
 
-                    // Update purchase metadata
-                    returnStock.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-                    returnStock.ModifiedAt = DateTime.Now;
+                    // Update return stock metadata
+                    existingReturnStock.ReturnDate = returnStock.ReturnDate;
+                    existingReturnStock.ReferenceNo = returnStock.ReferenceNo;
+                    existingReturnStock.Description = returnStock.Description;
+                    existingReturnStock.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    existingReturnStock.ModifiedAt = DateTime.Now;
 
-                    // Update existing purchase values
-                    _db.Entry(existingReturnStock).CurrentValues.SetValues(returnStock);
-                    _db.Entry(existingReturnStock).Property(x => x.CreatedBy).IsModified = false;
-                    _db.Entry(existingReturnStock).Property(x => x.CreatedAt).IsModified = false;
-                    _db.Entry(existingReturnStock).Property(x => x.BranchId).IsModified = false;
-                    _db.Entry(existingReturnStock).Property(x => x.Status).IsModified = false;
-
-                    // Update PurchaseDetails
+                    // Get existing details for comparison
                     var existingDetails = existingReturnStock.ReturnStockDetails.ToList();
-                    var newDetails = returnStock.ReturnStockDetails;
+                    var newDetails = returnStock.ReturnStockDetails.ToList();
 
                     // Update or Add new details
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.ReturnStockDetailId == newDetail.ReturnStockDetailId);
                         var branchItem = _db.BranchItems.Where(b => b.ItemId == newDetail.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                        
                         if (existingDetail != null)
                         {
-                            // Revert stock to previous state before applying new changes
+                            // Update existing detail
                             var revertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
                             var revertedTotalCost = (branchItem.Quantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit);
                             var revertedPerUnitCost = revertedTotalCost / revertedQuantity;
@@ -1114,6 +1116,7 @@ public ActionResult GetUnreadNotifications()
 
                             branchItem.Quantity -= newDetail.ItemQuantity;
                             var newTotalCost = newDetail.ItemQuantity * newDetail.CostPerUnit;
+                            
                             if (branchItem.Quantity == 0)
                             {
                                 branchItem.CostPerUnit = 0;
@@ -1121,22 +1124,26 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
-                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
+                                return RedirectToAction("StockReturnList");
                             }
                             else
                             {
                                 branchItem.CostPerUnit = ((revertedTotalCost - newTotalCost) / branchItem.Quantity);
                             }
 
-                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
-                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                            existingDetail.ItemId = newDetail.ItemId;
+                            existingDetail.Description = newDetail.Description;
+                            existingDetail.ItemQuantity = newDetail.ItemQuantity;
+                            existingDetail.CostPerUnit = newDetail.CostPerUnit;
+
+                            _db.Entry(existingDetail).State = EntityState.Modified;
+                            existingDetails.Remove(existingDetail);
                         }
                         else
                         {
-                            // For new details, update stock directly
+                            // Add new detail
                             var totalCostBeforeChange = (branchItem.Quantity * branchItem.CostPerUnit);
-
-                            branchItem.Quantity -= newDetail.ItemQuantity; // Subtract new quantity
+                            branchItem.Quantity -= newDetail.ItemQuantity;
 
                             if (branchItem.Quantity == 0)
                             {
@@ -1145,7 +1152,7 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
-                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
+                                return RedirectToAction("StockReturnList");
                             }
                             else
                             {
@@ -1153,49 +1160,64 @@ public ActionResult GetUnreadNotifications()
                                 branchItem.CostPerUnit = totalCostAfterChange / branchItem.Quantity;
                             }
 
-                            existingReturnStock.ReturnStockDetails.Add(newDetail); // Add new detail
+                            var newDetailEntity = new ReturnStockDetail
+                            {
+                                ReturnStockId = existingReturnStock.ReturnStockId,
+                                ItemId = newDetail.ItemId,
+                                Description = newDetail.Description,
+                                ItemQuantity = newDetail.ItemQuantity,
+                                CostPerUnit = newDetail.CostPerUnit
+                            };
+                            _db.ReturnStockDetails.Add(newDetailEntity);
                         }
+
+                        _db.Entry(branchItem).State = EntityState.Modified;
                     }
 
                     // Delete unmatched details
-                    if (existingDetails != null)
+                    foreach (var detail in existingDetails)
                     {
-                        foreach (var item in existingDetails)
-                        {
-                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
-                            decimal currentQuantity = branchItem.Quantity;
-                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
-                            if (branchItem.Quantity == 0)
-                            {
-                                branchItem.CostPerUnit = 0;
-                            }
-                            else if (branchItem.Quantity < 0)
-                            {
-                                TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
-                                return Json(new { success = false, message = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0." });
-                            }
-                            else
-                            {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
-                            }
-                        }
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == detail.ItemId && b.BranchId == selectedBranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + detail.ItemQuantity;
                         
-                        _db.ReturnStockDetails.RemoveRange(existingDetails);
-                    }
+                        if (branchItem.Quantity == 0)
+                        {
+                            branchItem.CostPerUnit = 0;
+                        }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Unable to update the stock return record. Quantity of " + branchItem.Item.ItemName + " cannot be < 0.";
+                            return RedirectToAction("StockReturnList");
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (detail.ItemQuantity * detail.CostPerUnit)) / branchItem.Quantity;
+                        }
 
+                        _db.Entry(branchItem).State = EntityState.Modified;
+                        _db.ReturnStockDetails.Remove(detail);
+                    }
 
                     // Save changes
                     _db.SaveChanges();
                     transaction.Commit();
 
                     TempData["SuccessMessage"] = "Stock return record updated successfully!";
-                    return Json(new { success = true });
+                    return RedirectToAction("StockReturnList");
                 }
-                catch (DbEntityValidationException)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
+                    // Log the error
+                    System.Diagnostics.Debug.WriteLine($"Error in EditReturnStock: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                    }
+
                     TempData["ErrorMessage"] = "An error occurred while updating the return stock record.";
-                    return Json(new { success = false, redirect = Url.Action("StockReturnList", "Kitchen") });
+                    return RedirectToAction("StockReturnList");
                 }
             }
         }
@@ -1269,7 +1291,7 @@ public ActionResult GetUnreadNotifications()
                             else
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of "+ branchItem.Item.ItemName +" to create consumption";
-                                return Json("0", JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("ConsumeItemList");
                             }
 
                         }
@@ -1278,7 +1300,8 @@ public ActionResult GetUnreadNotifications()
                     _db.ConsumeItems.Add(consumeItem);
                     _db.SaveChanges();
 
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    TempData["SuccessMessage"] = "Consume item record created successfully.";
+                    return RedirectToAction("ConsumeItemList");
                 }
 
                 ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
@@ -1307,42 +1330,43 @@ public ActionResult GetUnreadNotifications()
             {
                 try
                 {
-                    var existingConsumeItem = _db.ConsumeItems.Include(p => p.ConsumeItemDetails).FirstOrDefault(p => p.ConsumeItemId == consumeItem.ConsumeItemId);
+                    var existingConsumeItem = _db.ConsumeItems
+                        .Include(p => p.ConsumeItemDetails)
+                        .FirstOrDefault(p => p.ConsumeItemId == consumeItem.ConsumeItemId);
+
                     if (existingConsumeItem == null)
                     {
                         TempData["ErrorMessage"] = "Record not found";
-                        return Json(new { status = "error", message = "Record not found" }, JsonRequestBehavior.AllowGet);
+                        return RedirectToAction("ConsumeItemList");
                     }
 
-                    // Update purchase metadata
-                    consumeItem.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-                    consumeItem.ModifiedAt = DateTime.Now;
+                    // Update consume item metadata
+                    existingConsumeItem.ConsumeItemDate = consumeItem.ConsumeItemDate;
+                    existingConsumeItem.Description = consumeItem.Description;
+                    existingConsumeItem.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    existingConsumeItem.ModifiedAt = DateTime.Now;
 
-                    // Update existing purchase values
-                    _db.Entry(existingConsumeItem).CurrentValues.SetValues(consumeItem);
-                    _db.Entry(existingConsumeItem).Property(x => x.CreatedBy).IsModified = false;
-                    _db.Entry(existingConsumeItem).Property(x => x.CreatedAt).IsModified = false;
-                    _db.Entry(existingConsumeItem).Property(x => x.BranchId).IsModified = false;
-
-                    // Update PurchaseDetails
+                    // Get existing details for comparison
                     var existingDetails = existingConsumeItem.ConsumeItemDetails.ToList();
-                    var newDetails = consumeItem.ConsumeItemDetails;
+                    var newDetails = consumeItem.ConsumeItemDetails.ToList();
 
                     // Update or Add new details
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.ConsumeItemDetailId == newDetail.ConsumeItemDetailId);
-                        var branchItem = _db.BranchItems.Where(b => b.ItemId == existingDetail.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == newDetail.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
+                        
                         if (existingDetail != null)
                         {
+                            // Update existing detail
                             decimal RevertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
                             decimal currentQuantity = branchItem.Quantity;
 
-                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity; //Updated Quantity
+                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity;
                             if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("ConsumeItemList");
                             }
                             else if (branchItem.Quantity == 0)
                             {
@@ -1350,16 +1374,23 @@ public ActionResult GetUnreadNotifications()
                             }
                             else
                             {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity;
                             }
 
-                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
-                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                            existingDetail.ItemId = newDetail.ItemId;
+                            existingDetail.Description = newDetail.Description;
+                            existingDetail.ItemQuantity = newDetail.ItemQuantity;
+                            existingDetail.CostPerUnit = newDetail.CostPerUnit;
+
+                            _db.Entry(existingDetail).State = EntityState.Modified;
+                            existingDetails.Remove(existingDetail);
                         }
                         else
                         {
+                            // Add new detail
                             decimal currentQuantity = branchItem.Quantity;
-                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity; //Updated Quantity
+                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity;
+                            
                             if (branchItem.Quantity == 0)
                             {
                                 branchItem.CostPerUnit = 0;
@@ -1367,65 +1398,71 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("ConsumeItemList");
                             }
                             else
                             {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity;
                             }
-                            existingConsumeItem.ConsumeItemDetails.Add(newDetail); // Add new detail
+
+                            var newDetailEntity = new ConsumeItemDetail
+                            {
+                                ConsumeItemId = existingConsumeItem.ConsumeItemId,
+                                ItemId = newDetail.ItemId,
+                                Description = newDetail.Description,
+                                ItemQuantity = newDetail.ItemQuantity,
+                                CostPerUnit = newDetail.CostPerUnit
+                            };
+                            _db.ConsumeItemDetails.Add(newDetailEntity);
                         }
+
+                        _db.Entry(branchItem).State = EntityState.Modified;
                     }
 
                     // Delete unmatched details
-                    if (existingDetails != null)
+                    foreach (var detail in existingDetails)
                     {
-                        foreach (var item in existingDetails)
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == detail.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + detail.ItemQuantity;
+                        
+                        if (branchItem.Quantity == 0)
                         {
-                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == consumeItem.BranchId).FirstOrDefault();
-                            decimal currentQuantity = branchItem.Quantity;
-                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
-                            if (branchItem.Quantity == 0)
-                            {
-                                branchItem.CostPerUnit = 0;
-                            }
-                            else if (branchItem.Quantity < 0)
-                            {
-                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
-                            }
-                            else
-                            {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
-                            }
+                            branchItem.CostPerUnit = 0;
                         }
-                        _db.ConsumeItemDetails.RemoveRange(existingDetails);
-                    }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                            return RedirectToAction("ConsumeItemList");
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (detail.ItemQuantity * detail.CostPerUnit)) / branchItem.Quantity;
+                        }
 
+                        _db.Entry(branchItem).State = EntityState.Modified;
+                        _db.ConsumeItemDetails.Remove(detail);
+                    }
 
                     // Save changes
                     _db.SaveChanges();
                     transaction.Commit();
 
                     TempData["SuccessMessage"] = "Consume record updated successfully.";
-                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                    return RedirectToAction("ConsumeItemList");
                 }
-                catch (DbEntityValidationException ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
-
-                    // Log the validation errors for debugging
-                    foreach (var validationError in ex.EntityValidationErrors)
+                    // Log the error
+                    System.Diagnostics.Debug.WriteLine($"Error in EditConsumeItem: {ex.Message}");
+                    if (ex.InnerException != null)
                     {
-                        foreach (var error in validationError.ValidationErrors)
-                        {
-                            // Log property name and error message
-                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-                        }
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                     }
 
                     TempData["ErrorMessage"] = "An error occurred while updating the consume record.";
-                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
+                    return RedirectToAction("ConsumeItemList");
                 }
             }
         }
@@ -1457,7 +1494,7 @@ public ActionResult GetUnreadNotifications()
                         else if (branchItem.Quantity < 0)
                         {
                             TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
-                            return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            return RedirectToAction("ConsumeItemList");
                         }
                         else
                         {
@@ -1509,7 +1546,7 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("ConsumeItemList");
                             }
                             else
                             {
@@ -1608,7 +1645,7 @@ public ActionResult GetUnreadNotifications()
                             else
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to create wastage record";
-                                return Json("0", JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("WastageItemList");
                             }
                             
                         }
@@ -1617,7 +1654,7 @@ public ActionResult GetUnreadNotifications()
                     _db.WastageItems.Add(wastageItem);
                     _db.SaveChanges();
                     TempData["SuccessMessage"] = "Wastage item record created successfully.";
-                    return Json("0", JsonRequestBehavior.AllowGet);
+                    return RedirectToAction("WastageItemList");
                 }
 
                 ViewBag.Items = _db.BranchItems.Where(i => i.IsActive == true && i.BranchId == selectedBranchId).ToList();
@@ -1646,42 +1683,43 @@ public ActionResult GetUnreadNotifications()
             {
                 try
                 {
-                    var existingWastageItem = _db.WastageItems.Include(p => p.WastageItemDetails).FirstOrDefault(p => p.WastageItemId == wastageItem.WastageItemId);
+                    var existingWastageItem = _db.WastageItems
+                        .Include(p => p.WastageItemDetails)
+                        .FirstOrDefault(p => p.WastageItemId == wastageItem.WastageItemId);
+
                     if (existingWastageItem == null)
                     {
                         TempData["ErrorMessage"] = "Record not found";
-                        return Json(new { status = "error", message = "Record not found" }, JsonRequestBehavior.AllowGet);
+                        return RedirectToAction("WastageItemList");
                     }
 
-                    // Update purchase metadata
-                    wastageItem.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
-                    wastageItem.ModifiedAt = DateTime.Now;
+                    // Update wastage item metadata
+                    existingWastageItem.WastageItemDate = wastageItem.WastageItemDate;
+                    existingWastageItem.Description = wastageItem.Description;
+                    existingWastageItem.ModifiedBy = Convert.ToInt32(Helper.GetUserInfo("userId"));
+                    existingWastageItem.ModifiedAt = DateTime.Now;
 
-                    // Update existing purchase values
-                    _db.Entry(existingWastageItem).CurrentValues.SetValues(wastageItem);
-                    _db.Entry(existingWastageItem).Property(x => x.CreatedBy).IsModified = false;
-                    _db.Entry(existingWastageItem).Property(x => x.CreatedAt).IsModified = false;
-                    _db.Entry(existingWastageItem).Property(x => x.BranchId).IsModified = false;
-
-                    // Update PurchaseDetails
+                    // Get existing details for comparison
                     var existingDetails = existingWastageItem.WastageItemDetails.ToList();
-                    var newDetails = wastageItem.WastageItemDetails;
+                    var newDetails = wastageItem.WastageItemDetails.ToList();
 
                     // Update or Add new details
                     foreach (var newDetail in newDetails)
                     {
                         var existingDetail = existingDetails.FirstOrDefault(d => d.WastageItemDetailId == newDetail.WastageItemDetailId);
-                        var branchItem = _db.BranchItems.Where(b => b.ItemId == existingDetail.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == newDetail.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
+                        
                         if (existingDetail != null)
                         {
+                            // Update existing detail
                             decimal RevertedQuantity = branchItem.Quantity + existingDetail.ItemQuantity;
                             decimal currentQuantity = branchItem.Quantity;
 
-                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity; //Updated Quantity
+                            branchItem.Quantity = RevertedQuantity - newDetail.ItemQuantity;
                             if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("WastageItemList");
                             }
                             else if (branchItem.Quantity == 0)
                             {
@@ -1689,16 +1727,23 @@ public ActionResult GetUnreadNotifications()
                             }
                             else
                             {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (existingDetail.ItemQuantity * existingDetail.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity;
                             }
 
-                            _db.Entry(existingDetail).CurrentValues.SetValues(newDetail);
-                            existingDetails.Remove(existingDetail); // Remove from existing list once matched
+                            existingDetail.ItemId = newDetail.ItemId;
+                            existingDetail.Description = newDetail.Description;
+                            existingDetail.ItemQuantity = newDetail.ItemQuantity;
+                            existingDetail.CostPerUnit = newDetail.CostPerUnit;
+
+                            _db.Entry(existingDetail).State = EntityState.Modified;
+                            existingDetails.Remove(existingDetail);
                         }
                         else
                         {
+                            // Add new detail
                             decimal currentQuantity = branchItem.Quantity;
-                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity; //Updated Quantity
+                            branchItem.Quantity = branchItem.Quantity - newDetail.ItemQuantity;
+                            
                             if (branchItem.Quantity == 0)
                             {
                                 branchItem.CostPerUnit = 0;
@@ -1706,65 +1751,71 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("WastageItemList");
                             }
                             else
                             {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity; //Updated Per Unit Cost
+                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) - (newDetail.ItemQuantity * newDetail.CostPerUnit)) / branchItem.Quantity;
                             }
-                            existingWastageItem.WastageItemDetails.Add(newDetail); // Add new detail
+
+                            var newDetailEntity = new WastageItemDetail
+                            {
+                                WastageItemId = existingWastageItem.WastageItemId,
+                                ItemId = newDetail.ItemId,
+                                Description = newDetail.Description,
+                                ItemQuantity = newDetail.ItemQuantity,
+                                CostPerUnit = newDetail.CostPerUnit
+                            };
+                            _db.WastageItemDetails.Add(newDetailEntity);
                         }
+
+                        _db.Entry(branchItem).State = EntityState.Modified;
                     }
 
                     // Delete unmatched details
-                    if (existingDetails != null)
+                    foreach (var detail in existingDetails)
                     {
-                        foreach (var item in existingDetails)
+                        var branchItem = _db.BranchItems.Where(b => b.ItemId == detail.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
+                        decimal currentQuantity = branchItem.Quantity;
+                        branchItem.Quantity = branchItem.Quantity + detail.ItemQuantity;
+                        
+                        if (branchItem.Quantity == 0)
                         {
-                            var branchItem = _db.BranchItems.Where(b => b.ItemId == item.ItemId && b.BranchId == wastageItem.BranchId).FirstOrDefault();
-                            decimal currentQuantity = branchItem.Quantity;
-                            branchItem.Quantity = branchItem.Quantity + item.ItemQuantity;
-                            if (branchItem.Quantity == 0)
-                            {
-                                branchItem.CostPerUnit = 0;
-                            }
-                            else if (branchItem.Quantity < 0)
-                            {
-                                TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
-                            }
-                            else
-                            {
-                                branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (item.ItemQuantity * item.CostPerUnit)) / branchItem.Quantity;
-                            }
+                            branchItem.CostPerUnit = 0;
                         }
-                        _db.WastageItemDetails.RemoveRange(existingDetails);
-                    }
+                        else if (branchItem.Quantity < 0)
+                        {
+                            TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to update the record.";
+                            return RedirectToAction("WastageItemList");
+                        }
+                        else
+                        {
+                            branchItem.CostPerUnit = ((currentQuantity * branchItem.CostPerUnit) + (detail.ItemQuantity * detail.CostPerUnit)) / branchItem.Quantity;
+                        }
 
+                        _db.Entry(branchItem).State = EntityState.Modified;
+                        _db.WastageItemDetails.Remove(detail);
+                    }
 
                     // Save changes
                     _db.SaveChanges();
                     transaction.Commit();
 
                     TempData["SuccessMessage"] = "Wastage record updated successfully.";
-                    return Json(new { status = "success" }, JsonRequestBehavior.AllowGet);
+                    return RedirectToAction("WastageItemList");
                 }
-                catch (DbEntityValidationException ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
-
-                    // Log the validation errors for debugging
-                    foreach (var validationError in ex.EntityValidationErrors)
+                    // Log the error
+                    System.Diagnostics.Debug.WriteLine($"Error in EditWastageItem: {ex.Message}");
+                    if (ex.InnerException != null)
                     {
-                        foreach (var error in validationError.ValidationErrors)
-                        {
-                            // Log property name and error message
-                            System.Diagnostics.Debug.WriteLine($"Property: {error.PropertyName}, Error: {error.ErrorMessage}");
-                        }
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
                     }
 
                     TempData["ErrorMessage"] = "An error occurred while updating the wastage record.";
-                    return Json(new { status = "error", message = "Validation error occurred. Check logs for details." }, JsonRequestBehavior.AllowGet);
+                    return RedirectToAction("WastageItemList");
                 }
             }
         }
@@ -1796,7 +1847,7 @@ public ActionResult GetUnreadNotifications()
                         else if (branchItem.Quantity < 0)
                         {
                             TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
-                            return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                            return RedirectToAction("WastageItemList");
                         }
                         else
                         {
@@ -1848,7 +1899,7 @@ public ActionResult GetUnreadNotifications()
                             else if (branchItem.Quantity < 0)
                             {
                                 TempData["ErrorMessage"] = "Insufficient quantity of " + branchItem.Item.ItemName + " to delete the record.";
-                                return Json(new { status = "error", message = "Insufficient quantity" }, JsonRequestBehavior.AllowGet);
+                                return RedirectToAction("WastageItemList");
                             }
                             else
                             {
@@ -3513,16 +3564,19 @@ public ActionResult GetUnreadNotifications()
                 _db.Roles.Add(model.Role);
                 _db.SaveChanges();
 
-                foreach (var permissionId in model.SelectedPermissions)
+                if (model.SelectedPermissions != null)
                 {
-                    var rolePermission = new RolePermission
+                    foreach (var permissionId in model.SelectedPermissions)
                     {
-                        RoleId = model.Role.RoleId,
-                        PermissionId = permissionId
-                    };
-                    _db.RolePermissions.Add(rolePermission);
+                        var rolePermission = new RolePermission
+                        {
+                            RoleId = model.Role.RoleId,
+                            PermissionId = permissionId
+                        };
+                        _db.RolePermissions.Add(rolePermission);
+                    }
+                    _db.SaveChanges();
                 }
-                _db.SaveChanges();
 
                 TempData["SuccessMessage"] = "Role created successfully.";
                 return RedirectToAction("RoleList");
@@ -5539,6 +5593,92 @@ public ActionResult GetUnreadNotifications()
             result.NetProfitMargin = result.TotalRevenue != 0 ? result.NetProfit / result.TotalRevenue : 0;
 
             return result;
+        }
+
+        public List<Notification> CheckStockLevel(int itemId, int branchId)
+        {
+            var notifications = new List<Notification>();
+            var item = _db.Items.Find(itemId);
+            if (item != null)
+            {
+                var branchItem = _db.BranchItems.FirstOrDefault(b => b.ItemId == itemId && b.BranchId == branchId);
+                if (branchItem != null)
+                {
+                    // Define notification type and message based on stock level
+                    string notificationType = null;
+                    string title = null;
+                    string message = null;
+                    string newStockLevelState = null;
+
+                    if (branchItem.Quantity == 0)
+                    {
+                        notificationType = "Out of Stock";
+                        title = "Out of Stock";
+                        message = item.Sku + " - " + item.ItemName + " is out of stock in your branch.";
+                        newStockLevelState = "OutOfStock";
+                    }
+                    else if (branchItem.Quantity < branchItem.MinimumStockLevel)
+                    {
+                        notificationType = "Low Stock";
+                        title = "Low Stock";
+                        message = item.Sku + " - " + item.ItemName + " is low in stock in your branch.";
+                        newStockLevelState = "LowStock";
+                    }
+                    else
+                    {
+                        newStockLevelState = "Normal";
+                    }
+
+                    // Only create notifications if the stock level state has changed
+                    if (notificationType != null && branchItem.StockLevelState != newStockLevelState)
+                    {
+                        // Create a notification for each user with branch permission
+                        var usersWithBranchPermission = _db.UserBranchPermissions
+                            .Where(ubp => ubp.BranchId == branchId)
+                            .Select(ubp => ubp.UserId)
+                            .ToList();
+
+                        foreach (var userId in usersWithBranchPermission)
+                        {
+                            var userNotification = new Notification
+                            {
+                                DateTime = DateTime.Now,
+                                Title = title,
+                                Message = message,
+                                RedirectUrl = "/Kitchen/ItemList?search=" + item.Sku,
+                                Type = "Stock Level Alert",
+                                IsRead = false,
+                                BranchId = branchId,
+                                UserId = userId,
+                                ReferenceId = itemId
+                            };
+                            notifications.Add(userNotification);
+                        }
+
+                        // Update the branch item's stock level state
+                        branchItem.StockLevelState = newStockLevelState;
+                        _db.Entry(branchItem).State = EntityState.Modified;
+                    }
+                }
+            }
+            return notifications;
+        }
+
+        private void SendStockLevelNotifications(List<Notification> notifications)
+        {
+            if (notifications != null && notifications.Any())
+            {
+                _db.Notifications.AddRange(notifications);
+                _db.SaveChanges();
+
+                // Send real-time notifications via SignalR
+                var hubContext = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<Hub.RessentialHub>();
+                foreach (var notification in notifications)
+                {
+                    hubContext.Clients.Client(notification.User?.ConnectionId)
+                        .receiveStockAlert(notification.Title, notification.Message, notification.NotificationId, notification.RedirectUrl);
+                }
+            }
         }
     }
 }

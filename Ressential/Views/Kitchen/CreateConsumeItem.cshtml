@@ -3,197 +3,273 @@
 @{
     ViewBag.Title = "CreateConsumeItem";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+    var consumeItemDetails = Model.ConsumeItemDetails.ToList();
 }
 
-
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-secondary"><b>Create Consume Item</b></h2>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.ConsumeItemDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "ConsumeItem Date", @type = "date" })
-                            <label for="floatingInput">ConsumeItem Date</label>
+@using (Html.BeginForm("CreateConsumeItem", "Kitchen", FormMethod.Post, new { id = "consumeItemForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                            @TempData["ErrorMessage"]
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
-                            <label for="floatingInput">Description</label>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                            @TempData["SuccessMessage"]
                         </div>
-                    </div>
-
-
-                    <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                    }
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <h2 class="text-secondary"><b>Create Consume Item</b></h2>
                     <div class="row">
-                        <div class="container">
-                            <div class="table-responsive tab-content">
-                                <table id="itemsTable" class="table table-hover">
-                                    @*<table id="itemsTable" class="table items-table-without-price table-hover">*@
-                                    <tbody id="itemsTableBody">
-
-                                        @foreach (var item in Model.ConsumeItemDetails)
-                                        {
-                                            <tr class="item-row">
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        <select class="form-control">
-                                                            <option value="0">Select Item</option>
-                                                            @foreach (var i in ViewBag.Items)
-                                                            {
-
-                                                                if (i.ItemId == item.ItemId)
-                                                                {
-                                                                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@i.ItemId">@i.Item.ItemName</option>
-                                                                }
-                                                            }
-                                                        </select>
-                                                        <label>Item</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
-                                                        <label>Description</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                        <label>Quantity</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-1">
-                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                            type="button" data-toggle="tooltip" data-placement="top"
-                                                            title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.ConsumeItemDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Consume Date", @type = "date" })
+                                <label for="ConsumeDate">Consume Date</label>
+                                @Html.ValidationMessageFor(model => model.ConsumeItemDate, "", new { @class = "text-danger" })
                             </div>
-
-                            <!-- Add Row Button -->
-                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
-                                    type="button">
-                                <i class="fa fa-plus-square d-flex p-1">
-                                    <span class="ps-2 m-0">Add More</span>
-                                </i>
-                            </button>
                         </div>
-                        <div class="row mt-5">
-                            <div class=" row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <div class="col-sm-9">
-                                            <button id="CreateConsumeItem" type="button"
-                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Save
-                                            </button>
-                                            <a class="btn btn-light ms-1 ps-4 pe-4" href="@Url.Action("ConsumeItemList","Kitchen")">Cancel</a>
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
+                                <label for="Description">Description</label>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                        <div class="row">
+                            <div class="container">
+                                <span class="text-danger" id="itemsError"></span>
+                                <div class="table-responsive tab-content">
+                                    <table id="itemsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Description</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="itemsTableBody">
+                                            @for (int i = 0; i < consumeItemDetails.Count; i++)
+                                            {
+                                                <tr class="item-row">
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.DropDownListFor(m => consumeItemDetails[i].ItemId,
+                                                                new SelectList(ViewBag.Items, "ItemId", "Item.ItemName", consumeItemDetails[i].ItemId),
+                                                                "Select Item", new { @class = "form-control item-select", @name = $"ConsumeItemDetails[{i}].ItemId" })
+                                                            <label>Item</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => consumeItemDetails[i].Description, new { @class = "form-control", @placeholder = "Description", @name = $"ConsumeItemDetails[{i}].Description" })
+                                                            <label>Description</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => consumeItemDetails[i].ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @type = "number", @min = "1", @name = $"ConsumeItemDetails[{i}].ItemQuantity" })
+                                                            <label>Quantity</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-1">
+                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                                type="button" data-toggle="tooltip" data-placement="top"
+                                                                title="Remove">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add Row Button -->
+                                <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
+                                        type="button">
+                                    <i class="fa fa-plus-square d-flex p-1">
+                                        <span class="ps-2 m-0">Add More</span>
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-sm-9">
+                                                <button id="CreateConsumeItem" type="submit"
+                                                        class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                    Save
+                                                </button>
+                                                <a href="@Url.Action("ConsumeItemList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+}
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        $(document).ready(function () {
+            // Enable client-side validation
+            $.validator.unobtrusive.parse("#consumeItemForm");
 
-
-<script>
-    $(document).ready(function () {
             // Add row when clicking "Add More"
             $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
-
-                // Increment row index for the new row to avoid conflicts
                 let index = $('#itemsTableBody .item-row').length;
+                let newRow = $('#itemsTableBody .item-row').first().clone();
+                
+                // Clear input values and update indices
+                newRow.find("input, select").val("").each(function() {
+                    let name = $(this).attr('name');
+                    if (name) {
+                        name = name.replace(/\[\d+\]/, '[' + index + ']');
+                        $(this).attr('name', name).attr('id', name);
+                    }
+                });
 
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="ConsumeItemDetails"]').attr("name", `ConsumeItemDetails[${index}].ItemId`);
-                newRow.find('input[name^="ConsumeItemDetails"][name*=".Description"]').attr("name", `ConsumeItemDetails[${index}].Description`);
-                newRow.find('input[name^="ConsumeItemDetails"][name*=".ItemQuantity"]').attr("name", `ConsumeItemDetails[${index}].ItemQuantity`);
+                // Clear validation messages
+                newRow.find('.text-danger').remove();
+                newRow.find('.input-validation-error').removeClass('input-validation-error');
 
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
+                $('#itemsTableBody').append(newRow);
+                
+                // Re-parse validation for the new row
+                $.validator.unobtrusive.parse("#consumeItemForm");
             });
 
             // Remove row when clicking the remove button
-        $(document).on('click', '.removeRowBtn', function () {
+            $(document).on('click', '.removeRowBtn', function () {
                 if ($('#itemsTableBody .item-row').length > 1) {
                     $(this).closest('.item-row').remove();
                     $(this).tooltip('dispose');
+                    
+                    // Reindex remaining rows
+                    $('#itemsTableBody .item-row').each(function(index) {
+                        $(this).find('input, select').each(function() {
+                            let name = $(this).attr('name');
+                            if (name) {
+                                name = name.replace(/\[\d+\]/, '[' + index + ']');
+                                $(this).attr('name', name).attr('id', name);
+                            }
+                        });
+                    });
                 } else {
                     alert("At least one item is required.");
                 }
             });
-        });
 
-    $('#CreateConsumeItem').on('click', function () {
+            // Custom validation for duplicate items
+            $.validator.addMethod("noDuplicateItems", function(value, element) {
+                let items = [];
+                let hasDuplicate = false;
+                
+                $('.item-select').each(function() {
+                    let val = $(this).val();
+                    if (val && val !== "0") {
+                        if (items.includes(val)) {
+                            hasDuplicate = true;
+                            return false;
+                        }
+                        items.push(val);
+                    }
+                });
+                
+                return !hasDuplicate;
+            }, "Duplicate items are not allowed in the consume item.");
 
-        debugger;
+            // Form submit handler
+            $("#consumeItemForm").on("submit", function (e) {
+                e.preventDefault();
+                let isValid = true;
+                let errorMessage = "";
 
-        // Initialize an object to hold all data
-         let consumeItem = {
-            ConsumeItemDetails: [],
-            consumeItemDate: $('#ConsumeItemDate').val(),
-            description: $('#Description').val()
-        };
+                // Check if all items are selected
+                $('#itemsTableBody .item-row').each(function () {
+                    let itemId = $(this).find('.item-select').val();
+                    let quantity = $(this).find('.quantity').val();
 
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
+                    if (itemId === "0" || itemId === "") {
+                        isValid = false;
+                        errorMessage = "Please select an item for each row.";
+                        return false;
+                    }
 
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
+                    if (!quantity || quantity <= 0) {
+                        isValid = false;
+                        errorMessage = "Quantity must be greater than 0 for all items.";
+                        return false;
+                    }
+                });
 
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
-
-            // Get the quantity
-            rowData.ItemQuantity = $(this).find('input[name="item.ItemQuantity"]').val();
-
-            // Add the row data to the purchaseData.items array
-            consumeItem.ConsumeItemDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-        console.log(consumeItem);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateConsumeItem", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(consumeItem),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response == "0") {
-                    window.location.href = '@Url.Action("ConsumeItemList", "Kitchen")'
+                if (!isValid) {
+                    $('#itemsError').text(errorMessage);
+                    return false;
                 }
-                else if (response == "1")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
+
+                // Check for duplicate items
+                if (!$.validator.methods.noDuplicateItems.call(this)) {
+                    $('#itemsError').text("Duplicate items are not allowed in the consume item.");
+                    return false;
                 }
-             }
-         });
-     });
-</script>
+
+                // If all validations pass, submit the form
+                if ($(this).valid()) {
+                    this.submit();
+                } else {
+                    $('#itemsError').text("Please fix the validation errors before submitting.");
+                }
+            });
+
+            // Add custom validation rules
+            $("#consumeItemForm").validate({
+                rules: {
+                    "ConsumeItemDate": "required",
+                    "Description": {
+                        maxlength: 255
+                    },
+                    ".item-select": {
+                        required: true,
+                        noDuplicateItems: true
+                    },
+                    ".quantity": {
+                        required: true,
+                        min: 1
+                    }
+                },
+                messages: {
+                    "ConsumeItemDate": "Consume Date is required",
+                    "Description": {
+                        maxlength: "Description cannot exceed 255 characters"
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    error.addClass('text-danger');
+                    error.insertAfter(element.closest('.form-floating'));
+                }
+            });
+        });
+    </script>
+}
 

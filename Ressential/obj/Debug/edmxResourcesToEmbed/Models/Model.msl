@@ -60,6 +60,7 @@
     <EntitySetMapping Name="BranchItems">
       <EntityTypeMapping TypeName="DB_RessentialModel.BranchItem">
         <MappingFragment StoreEntitySet="BranchItems">
+          <ScalarProperty Name="StockLevelState" ColumnName="StockLevelState" />
           <ScalarProperty Name="BranchItemId" ColumnName="BranchItemId" />
           <ScalarProperty Name="ItemId" ColumnName="ItemId" />
           <ScalarProperty Name="BranchId" ColumnName="BranchId" />
@@ -350,6 +351,7 @@
     <EntitySetMapping Name="PurchaseReturns">
       <EntityTypeMapping TypeName="DB_RessentialModel.PurchaseReturn">
         <MappingFragment StoreEntitySet="PurchaseReturn">
+          <ScalarProperty Name="ConfirmDuplicate" ColumnName="ConfirmDuplicate" />
           <ScalarProperty Name="PurchaseReturnId" ColumnName="PurchaseReturnId" />
           <ScalarProperty Name="PurchaseReturnDate" ColumnName="PurchaseReturnDate" />
           <ScalarProperty Name="PurchaseReturnNo" ColumnName="PurchaseReturnNo" />
@@ -379,6 +381,7 @@
     <EntitySetMapping Name="Purchases">
       <EntityTypeMapping TypeName="DB_RessentialModel.Purchase">
         <MappingFragment StoreEntitySet="Purchases">
+          <ScalarProperty Name="ConfirmDuplicate" ColumnName="ConfirmDuplicate" />
           <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
           <ScalarProperty Name="PurchaseDate" ColumnName="PurchaseDate" />
           <ScalarProperty Name="PurchaseNo" ColumnName="PurchaseNo" />

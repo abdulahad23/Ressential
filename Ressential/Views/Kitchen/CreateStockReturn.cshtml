@@ -1,214 +1,282 @@
 ﻿@model Ressential.Models.ReturnStock
 
-@{ ViewBag.Title = "CreateStockReturn";
-    Layout = "~/Views/Shared/_KitchenLayout.cshtml"; }
+@{
+    ViewBag.Title = "CreateStockReturn";
+    Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+    var returnStockDetails = Model.ReturnStockDetails.ToList();
+}
 
-
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <div class="alert alert-danger d-none" id="error-message">
-                </div>
-                <h2 class="text-secondary"><b>Create Stock Return</b></h2>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.ReturnDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Return Date", @type = "date" })
-                            <label for="floatingInput">Return Date</label>
+@using (Html.BeginForm("CreateStockReturn", "Kitchen", FormMethod.Post, new { id = "returnStockForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                            @TempData["ErrorMessage"]
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.ReferenceNo, "", new { @class = "form-control", @placeholder = "Reference No" })
-                            <label for="floatingInput">Reference No</label>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                            @TempData["SuccessMessage"]
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
-                            <label for="floatingInput">Description</label>
-                        </div>
-                    </div>
-
-                    <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                    }
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <h2 class="text-secondary"><b>Create Stock Return</b></h2>
                     <div class="row">
-                        <div class="container">
-                            <div class="table-responsive tab-content">
-                                <table id="itemsTable" class="table table-hover">
-                                    @*<table id="itemsTable" class="table items-table-without-price table-hover">*@
-                                    <tbody id="itemsTableBody">
-
-                                        @foreach (var item in Model.ReturnStockDetails)
-                                        {
-                                            <tr class="item-row">
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        <select class="form-control">
-                                                            <option value="0">Select Item</option>
-                                                            @foreach (var i in ViewBag.Items)
-                                                            {
-
-                                                                if (i.ItemId == item.ItemId)
-                                                                {
-                                                                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
- }
-                                                                else
-                                                                {
-                                                                    <option value="@i.ItemId">@i.Item.ItemName</option>
-}
-                                                            }
-                                                        </select>
-                                                        <label>Item</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
-                                                        <label>Description</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                        <label>Quantity</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-1">
-                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                            type="button" data-toggle="tooltip" data-placement="top"
-                                                            title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-}
-                                    </tbody>
-                                </table>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.ReturnDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Return Date", @type = "date" })
+                                <label for="ReturnDate">Return Date</label>
+                                @Html.ValidationMessageFor(model => model.ReturnDate, "", new { @class = "text-danger" })
                             </div>
-
-                            <!-- Add Row Button -->
-                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
-                                    type="button">
-                                <i class="fa fa-plus-square d-flex p-1">
-                                    <span class="ps-2 m-0">Add More</span>
-                                </i>
-                            </button>
                         </div>
-                        <div class="row mt-5">
-                            <div class=" row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <div class="col-sm-9">
-                                            <button id="CreateStockReturn" type="button"
-                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Save
-                                            </button>
-                                            <a class="btn btn-light ms-1 ps-4 pe-4" href="@Url.Action("StockReturnList","Kitchen")">Cancel</a>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.ReferenceNo, "", new { @class = "form-control", @placeholder = "Reference No" })
+                                <label for="ReferenceNo">Reference No</label>
+                                @Html.ValidationMessageFor(model => model.ReferenceNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
+                                <label for="Description">Description</label>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                        <div class="row">
+                            <div class="container">
+                                <span class="text-danger" id="itemsError"></span>
+                                <div class="table-responsive tab-content">
+                                    <table id="itemsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Description</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="itemsTableBody">
+                                            @for (int i = 0; i < returnStockDetails.Count; i++)
+                                            {
+                                                <tr class="item-row">
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.DropDownListFor(m => returnStockDetails[i].ItemId,
+                                                                new SelectList(ViewBag.Items, "ItemId", "Item.ItemName", returnStockDetails[i].ItemId),
+                                                                "Select Item", new { @class = "form-control item-select", @name = $"ReturnStockDetails[{i}].ItemId" })
+                                                            <label>Item</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => returnStockDetails[i].Description, new { @class = "form-control", @placeholder = "Description", @name = $"ReturnStockDetails[{i}].Description" })
+                                                            <label>Description</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => returnStockDetails[i].ItemQuantity, new { @class = "form-control quantity", @placeholder = "Quantity", @type = "number", @min = "1", @name = $"ReturnStockDetails[{i}].ItemQuantity" })
+                                                            <label>Quantity</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-1">
+                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                                type="button" data-toggle="tooltip" data-placement="top"
+                                                                title="Remove">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add Row Button -->
+                                <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
+                                        type="button">
+                                    <i class="fa fa-plus-square d-flex p-1">
+                                        <span class="ps-2 m-0">Add More</span>
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-sm-9">
+                                                <button id="CreateStockReturn" type="submit"
+                                                        class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                    Save
+                                                </button>
+                                                <a href="@Url.Action("StockReturnList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+}
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        $(document).ready(function () {
+            // Enable client-side validation
+            $.validator.unobtrusive.parse("#returnStockForm");
 
-
-<script>
-    $(document).ready(function () {
             // Add row when clicking "Add More"
             $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
-
-                // Increment row index for the new row to avoid conflicts
                 let index = $('#itemsTableBody .item-row').length;
+                let newRow = $('#itemsTableBody .item-row').first().clone();
+                
+                // Clear input values and update indices
+                newRow.find("input, select").val("").each(function() {
+                    let name = $(this).attr('name');
+                    if (name) {
+                        name = name.replace(/\[\d+\]/, '[' + index + ']');
+                        $(this).attr('name', name).attr('id', name);
+                    }
+                });
 
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="ReturnStockDetails"]').attr("name", `ReturnStockDetails[${index}].ItemId`);
-                newRow.find('input[name^="ReturnStockDetails"][name*=".Description"]').attr("name", `ReturnStockDetails[${index}].Description`);
-                newRow.find('input[name^="ReturnStockDetails"][name*=".ItemQuantity"]').attr("name", `ReturnStockDetails[${index}].ItemQuantity`);
+                // Clear validation messages
+                newRow.find('.text-danger').remove();
+                newRow.find('.input-validation-error').removeClass('input-validation-error');
 
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
+                $('#itemsTableBody').append(newRow);
+                
+                // Re-parse validation for the new row
+                $.validator.unobtrusive.parse("#returnStockForm");
             });
 
             // Remove row when clicking the remove button
-        $(document).on('click', '.removeRowBtn', function () {
+            $(document).on('click', '.removeRowBtn', function () {
                 if ($('#itemsTableBody .item-row').length > 1) {
                     $(this).closest('.item-row').remove();
                     $(this).tooltip('dispose');
+                    
+                    // Reindex remaining rows
+                    $('#itemsTableBody .item-row').each(function(index) {
+                        $(this).find('input, select').each(function() {
+                            let name = $(this).attr('name');
+                            if (name) {
+                                name = name.replace(/\[\d+\]/, '[' + index + ']');
+                                $(this).attr('name', name).attr('id', name);
+                            }
+                        });
+                    });
                 } else {
                     alert("At least one item is required.");
                 }
             });
-        });
 
-    $('#CreateStockReturn').on('click', function () {
-
-        debugger;
-
-        // Initialize an object to hold all data
-        let returnStock = {
-            ReturnStockDetails: [],
-             returnDate: $('#ReturnDate').val(),
-            description: $('#Description').val(),
-            referenceNo: $('#ReferenceNo').val()
-
-        };
-
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
-
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
-
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
-
-            // Get the quantity
-            rowData.ItemQuantity = $(this).find('input[name="item.ItemQuantity"]').val();
-
-            // Add the row data to the purchaseData.items array
-            returnStock.ReturnStockDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-        console.log(returnStock);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("CreateStockReturn", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(returnStock),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response.success) {
-                    window.location.href = '@Url.Action("StockReturnList", "Kitchen")';
-                }
-                else if (response.errorMessage) {
-                    $('#error-message').text(response.errorMessage).removeClass('d-none').show();
-                    $('html, body').animate({ scrollTop: 0 }, 'fast');
-                }
-                else {
-                    if (response.redirect) {
-                        window.location.href = response.redirect;
+            // Custom validation for duplicate items
+            $.validator.addMethod("noDuplicateItems", function(value, element) {
+                let items = [];
+                let hasDuplicate = false;
+                
+                $('.item-select').each(function() {
+                    let val = $(this).val();
+                    if (val && val !== "0") {
+                        if (items.includes(val)) {
+                            hasDuplicate = true;
+                            return false;
+                        }
+                        items.push(val);
                     }
+                });
+                
+                return !hasDuplicate;
+            }, "Duplicate items are not allowed in the return stock.");
+
+            // Form submit handler
+            $("#returnStockForm").on("submit", function (e) {
+                e.preventDefault();
+                let isValid = true;
+                let errorMessage = "";
+
+                // Check if all items are selected
+                $('#itemsTableBody .item-row').each(function () {
+                    let itemId = $(this).find('.item-select').val();
+                    let quantity = $(this).find('.quantity').val();
+
+                    if (itemId === "0" || itemId === "") {
+                        isValid = false;
+                        errorMessage = "Please select an item for each row.";
+                        return false;
+                    }
+
+                    if (!quantity || quantity <= 0) {
+                        isValid = false;
+                        errorMessage = "Quantity must be greater than 0 for all items.";
+                        return false;
+                    }
+                });
+
+                if (!isValid) {
+                    $('#itemsError').text(errorMessage);
+                    return false;
                 }
-            },
-            error: function () {
-                alert("An error occurred while creating the stock return.");
-            }
-         });
-     });
-</script>
+
+                // Check for duplicate items
+                if (!$.validator.methods.noDuplicateItems.call(this)) {
+                    $('#itemsError').text("Duplicate items are not allowed in the stock return.");
+                    return false;
+                }
+
+                // If all validations pass, submit the form
+                if ($(this).valid()) {
+                    this.submit();
+                } else {
+                    $('#itemsError').text("Please fix the validation errors before submitting.");
+                }
+            });
+
+            // Add custom validation rules
+            $("#returnStockForm").validate({
+                rules: {
+                    "ReturnDate": "required",
+                    "Description": {
+                        maxlength: 255
+                    },
+                    ".item-select": {
+                        required: true,
+                        noDuplicateItems: true
+                    },
+                    ".quantity": {
+                        required: true,
+                        min: 1
+                    }
+                },
+                messages: {
+                    "ReturnDate": "Return Date is required",
+                    "Description": {
+                        maxlength: "Description cannot exceed 255 characters"
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    error.addClass('text-danger');
+                    error.insertAfter(element.closest('.form-floating'));
+                }
+            });
+        });
+    </script>
+}
 

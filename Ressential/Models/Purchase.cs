@@ -11,7 +11,6 @@ namespace Ressential.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations.Schema;
     
     public partial class Purchase
     {
@@ -33,6 +32,7 @@ namespace Ressential.Models
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
+        public bool ConfirmDuplicate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PaymentApply> PaymentApplies { get; set; }

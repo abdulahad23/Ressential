@@ -1,0 +1,2 @@
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Release\Ressential.csproj.AssemblyReference.cache
+C:\Users\abdul\Desktop\Desktop Data\FYP Project\Ressential\Ressential\obj\Release\Ressential.csproj.CoreCompileInputs.cache

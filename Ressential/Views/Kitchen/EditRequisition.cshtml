@@ -3,209 +3,282 @@
 @{
     ViewBag.Title = "EditRequisition";
     Layout = "~/Views/Shared/_KitchenLayout.cshtml";
+    var requisitionDetails = Model.RequisitionDetails.ToList();
 }
 
-
-<div class="row">
-    <div class="col-12 grid-margin">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="text-secondary"><b>Update Requisition</b></h2>
-                @Html.HiddenFor(model => model.RequisitionId)
-                @Html.HiddenFor(model => model.RequisitionNo)
-                @Html.HiddenFor(model => model.RequisitionDetails)
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.RequisitionDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Requisition Date", @type = "date" })
-                            <label for="floatingInput">Requisition Date</label>
+@using (Html.BeginForm("EditRequisition", "Kitchen", FormMethod.Post, new { id = "requisitionForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="fa fa-exclamation-triangle pe-3" aria-hidden="true"></i>
+                            @TempData["ErrorMessage"]
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-floating mb-3 mt-3">
-                            @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
-                            <label for="floatingInput">Description</label>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fa fa-check pe-3" aria-hidden="true"></i>
+                            @TempData["SuccessMessage"]
                         </div>
-                    </div>
+                    }
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.RequisitionId)
+                    @Html.HiddenFor(model => model.RequisitionNo)
 
-
-                    <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                    <h2 class="text-secondary"><b>Update Requisition</b></h2>
                     <div class="row">
-                        <div class="container">
-                            <div class="table-responsive tab-content">
-                                <table id="itemsTable" class="table table-hover">
-                                    @*<table id="itemsTable" class="table items-table-without-price table-hover">*@
-                                    <tbody id="itemsTableBody">
-
-                                        @foreach (var item in Model.RequisitionDetails)
-                                        {
-                                            <tr class="item-row">
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        <select class="form-control">
-                                                            <option value="0">Select Item</option>
-                                                            @foreach (var i in ViewBag.Items)
-                                                            {
-
-                                                                if (i.ItemId == item.ItemId)
-                                                                {
-                                                                    <option selected value="@i.ItemId">@i.Item.ItemName</option>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <option value="@i.ItemId">@i.Item.ItemName</option>
-                                                                }
-                                                            }
-                                                        </select>
-                                                        <label>Item</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-6 col-3 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Description, new { @class = "form-control", @placeholder = "Description", })
-                                                        <label>Description</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-4 col-2 mb-3 mt-3">
-                                                    <div class="form-floating">
-                                                        @Html.TextBoxFor(m => item.Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @name = "quantity[]" })
-                                                        <label>Quantity</label>
-                                                    </div>
-                                                </td>
-                                                <td class="tbl-min-width-1">
-                                                    <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
-                                                            type="button" data-toggle="tooltip" data-placement="top"
-                                                            title="Remove">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.RequisitionDate, DateTime.Today.ToString("yyyy-MM-dd"), new { @class = "form-control", @placeholder = "Requisition Date", @type = "date" })
+                                <label for="RequisitionDate">Requisition Date</label>
+                                @Html.ValidationMessageFor(model => model.RequisitionDate, "", new { @class = "text-danger" })
                             </div>
-
-                            <!-- Add Row Button -->
-                            <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
-                                    type="button">
-                                <i class="fa fa-plus-square d-flex p-1">
-                                    <span class="ps-2 m-0">Add More</span>
-                                </i>
-                            </button>
                         </div>
-                        <div class="row mt-5">
-                            <div class=" row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <div class="col-sm-9">
-                                            <button id="CreateRequisition" type="button"
-                                                    class="btn btn-secondary mr-2 ps-4 pe-4">
-                                                Update
-                                            </button>
-                                            <button class="btn btn-light ms-1 ps-4 pe-4">Cancel</button>
+                        <div class="col-md-12">
+                            <div class="form-floating mb-3 mt-3">
+                                @Html.TextBoxFor(model => model.Description, "", new { @class = "form-control", @placeholder = "Description" })
+                                <label for="Description">Description</label>
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <h2 class="text-secondary pt-3"><b>Items</b></h2>
+                        <div class="row">
+                            <div class="container">
+                                <span class="text-danger" id="itemsError"></span>
+                                <div class="table-responsive tab-content">
+                                    <table id="itemsTable" class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Description</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="itemsTableBody">
+                                            @for (int i = 0; i < requisitionDetails.Count; i++)
+                                            {
+                                                <tr class="item-row">
+                                                    @Html.HiddenFor(m => requisitionDetails[i].RequisitionDetailId, new { @name = $"RequisitionDetails[{i}].RequisitionDetailId" })
+                                                    @Html.HiddenFor(m => requisitionDetails[i].RequisitionId, new { @name = $"RequisitionDetails[{i}].RequisitionId" })
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.DropDownListFor(m => requisitionDetails[i].ItemId, 
+                                                                new SelectList(ViewBag.Items, "ItemId", "Item.ItemName", requisitionDetails[i].ItemId),
+                                                                "Select Item", new { @class = "form-control item-select", @name = $"RequisitionDetails[{i}].ItemId" })
+                                                            <label>Item</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-6 col-3 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => requisitionDetails[i].Description, new { @class = "form-control", @placeholder = "Description", @name = $"RequisitionDetails[{i}].Description" })
+                                                            <label>Description</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-4 col-2 mb-3 mt-3">
+                                                        <div class="form-floating">
+                                                            @Html.TextBoxFor(m => requisitionDetails[i].Quantity, new { @class = "form-control quantity", @placeholder = "Quantity", @type = "number", @min = "1", @name = $"RequisitionDetails[{i}].Quantity" })
+                                                            <label>Quantity</label>
+                                                        </div>
+                                                    </td>
+                                                    <td class="tbl-min-width-1">
+                                                        <button class="btn btn-danger btn-sm rounded-2 m-2 removeRowBtn"
+                                                                type="button" data-toggle="tooltip" data-placement="top"
+                                                                title="Remove">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- Add Row Button -->
+                                <button class="btn btn-light-success btn-sm rounded-0 ms-3 mb-3" id="addRowBtn"
+                                        type="button">
+                                    <i class="fa fa-plus-square d-flex p-1">
+                                        <span class="ps-2 m-0">Add More</span>
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="row mt-5">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="col-sm-9">
+                                                <button id="UpdateRequisition" type="submit"
+                                                        class="btn btn-secondary mr-2 ps-4 pe-4">
+                                                    Update
+                                                </button>
+                                                <a href="@Url.Action("RequisitionList", "Kitchen")" class="btn btn-light ms-1 ps-4 pe-4">Cancel</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+}
 
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        $(document).ready(function () {
+            // Enable client-side validation
+            $.validator.unobtrusive.parse("#requisitionForm");
 
-
-<script>
-    $(document).ready(function () {
             // Add row when clicking "Add More"
             $('#addRowBtn').click(function () {
-                let newRow = $('#itemsTableBody .item-row').last().clone();
-                newRow.find("input").val(""); // Clear input values
-                newRow.find("select").val("0"); // Clear dropdowns
-
-                // Increment row index for the new row to avoid conflicts
                 let index = $('#itemsTableBody .item-row').length;
+                let newRow = $('#itemsTableBody .item-row').first().clone();
+                
+                // Clear input values and update indices
+                newRow.find("input, select").val("").each(function() {
+                    let name = $(this).attr('name');
+                    if (name) {
+                        name = name.replace(/\[\d+\]/, '[' + index + ']');
+                        $(this).attr('name', name).attr('id', name);
+                    }
+                });
 
-                // Update name attributes to match the model binding format
-                newRow.find('select[name^="RequisitionDetails"]').attr("name", `RequisitionDetails[${index}].ItemId`);
-                newRow.find('input[name^="RequisitionDetails"][name*=".Description"]').attr("name", `RequisitionDetails[${index}].Description`);
-                newRow.find('input[name^="RequisitionDetails"][name*=".Quantity"]').attr("name", `RequisitionDetails[${index}].Quantity`);
+                // Clear validation messages
+                newRow.find('.text-danger').remove();
+                newRow.find('.input-validation-error').removeClass('input-validation-error');
 
-                $('#itemsTableBody').append(newRow); // Append the new row to the table body
+                // Clear hidden fields for new rows
+                newRow.find('input[name$=".RequisitionDetailId"]').val('0');
+                newRow.find('input[name$=".RequisitionId"]').val($('#RequisitionId').val());
+
+                $('#itemsTableBody').append(newRow);
+                
+                // Re-parse validation for the new row
+                $.validator.unobtrusive.parse("#requisitionForm");
             });
 
             // Remove row when clicking the remove button
-        $(document).on('click', '.removeRowBtn', function () {
+            $(document).on('click', '.removeRowBtn', function () {
                 if ($('#itemsTableBody .item-row').length > 1) {
                     $(this).closest('.item-row').remove();
                     $(this).tooltip('dispose');
+                    
+                    // Reindex remaining rows
+                    $('#itemsTableBody .item-row').each(function(index) {
+                        $(this).find('input, select').each(function() {
+                            let name = $(this).attr('name');
+                            if (name) {
+                                name = name.replace(/\[\d+\]/, '[' + index + ']');
+                                $(this).attr('name', name).attr('id', name);
+                            }
+                        });
+                    });
                 } else {
                     alert("At least one item is required.");
                 }
             });
-        });
 
-    $('#CreateRequisition').on('click', function () {
+            // Custom validation for duplicate items
+            $.validator.addMethod("noDuplicateItems", function(value, element) {
+                let items = [];
+                let hasDuplicate = false;
+                
+                $('.item-select').each(function() {
+                    let val = $(this).val();
+                    if (val && val !== "0") {
+                        if (items.includes(val)) {
+                            hasDuplicate = true;
+                            return false;
+                        }
+                        items.push(val);
+                    }
+                });
+                
+                return !hasDuplicate;
+            }, "Duplicate items are not allowed in the requisition.");
 
-        debugger;
+            // Form submit handler
+            $("#requisitionForm").on('submit', function (e) {
+                e.preventDefault();
+                let isValid = true;
+                let errorMessage = "";
 
-        // Initialize an object to hold all data
-         let requisition = {
-             RequisitionDetails: [],
-             requisitionDetailId: $('#RequisitionDetailId').val(),
-            requisitionDate: $('#RequisitionDate').val(),
-             description: $('#Description').val(),
-            RequisitionId: $('#RequisitionId').val(),
-             RequisitionNo: $('#RequisitionNo').val()
-        };
+                // Check if all items are selected
+                $('#itemsTableBody .item-row').each(function () {
+                    let itemId = $(this).find('.item-select').val();
+                    let quantity = $(this).find('.quantity').val();
 
-        // Find all rows in the tbody
-        $('#itemsTableBody .item-row').each(function() {
-            // Initialize an object to hold the values for each row
-            let rowData = {};
-            rowData.RequisitionDetailId = $(this).find('input[name="item.RequisitionDetailId"]').val();
-            rowData.RequisitionId = $('#RequisitionId').val(),
-            // Get the selected item from the dropdown
-            rowData.ItemId = $(this).find('select').val();
+                    if (itemId === "0" || itemId === "") {
+                        isValid = false;
+                        errorMessage = "Please select an item for each row.";
+                        return false;
+                    }
 
-            // Get the description
-            rowData.Description = $(this).find('input[name="item.Description"]').val();
+                    if (!quantity || quantity <= 0) {
+                        isValid = false;
+                        errorMessage = "Quantity must be greater than 0 for all items.";
+                        return false;
+                    }
+                });
 
-            // Get the quantity
-            rowData.Quantity = $(this).find('input[name="item.Quantity"]').val();
-
-            // Add the row data to the purchaseData.items array
-            requisition.RequisitionDetails.push(rowData);
-        });
-
-        // Now you can use purchaseData for your purposes
-        console.log(requisition);
-
-        // Example: you might want to send this data to a server
-         $.ajax({
-             url: '@Url.Action("EditRequisition", "Kitchen")',
-             method: 'POST',
-             data: JSON.stringify(requisition),
-             contentType: 'application/json',
-             success: function (response) {
-                if (response.status == "success") {
-                    window.location.href = '@Url.Action("RequisitionList","Kitchen")'
+                if (!isValid) {
+                    $('#itemsError').text(errorMessage);
+                    return false;
                 }
-                else if (response.status == "error")
-                {
-                    window.location.href = '@Url.Action("Index","Error")'
+
+                // Check for duplicate items
+                if (!$.validator.methods.noDuplicateItems.call(this)) {
+                    $('#itemsError').text("Duplicate items are not allowed in the requisition.");
+                    return false;
                 }
-                // Handle the response
-            },
-            error: function (xhr, status, error) {
-                // Handle unexpected errors
-                alert("An unexpected error occurred: " + error);
-            }
-         });
-     });
-</script>
+
+                // If all validations pass, submit the form
+                if ($(this).valid()) {
+                    this.submit();
+                } else {
+                    $('#itemsError').text("Please fix the validation errors before submitting.");
+                }
+            });
+
+            // Add custom validation rules
+            $("#requisitionForm").validate({
+                rules: {
+                    "RequisitionDate": "required",
+                    "Description": {
+                        maxlength: 255
+                    },
+                    ".item-select": {
+                        required: true,
+                        noDuplicateItems: true
+                    },
+                    ".quantity": {
+                        required: true,
+                        min: 1
+                    }
+                },
+                messages: {
+                    "RequisitionDate": "Requisition Date is required",
+                    "Description": {
+                        maxlength: "Description cannot exceed 255 characters"
+                    }
+                },
+                errorPlacement: function(error, element) {
+                    error.addClass('text-danger');
+                    error.insertAfter(element.closest('.form-floating'));
+                }
+            });
+        });
+    </script>
+}
 

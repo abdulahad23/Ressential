@@ -143,35 +143,32 @@
     var paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
     var saveDetails = document.querySelector('input[name="optradio"]').checked;
 
-    if (confirm("Are you sure you want to place the order?")) {
-        // Create the form data or gather any necessary data
-        var formData = new FormData();
-        formData.append("paymentMethod", paymentMethod);  // Send payment method with the request
-        formData.append("saveDetails", saveDetails);      // Send checkbox state with the request
+     // Create the form data or gather any necessary data
+    var formData = new FormData();
+    formData.append("paymentMethod", paymentMethod);  // Send payment method with the request
+    formData.append("saveDetails", saveDetails);      // Send checkbox state with the request
 
-        // Gather billing details
-        formData.append("streetAddress", document.querySelector('input[name="streetAddress"]').value);
-        formData.append("city", document.querySelector('input[name="city"]').value);
-        formData.append("phone", document.querySelector('input[name="phone"]').value);
+    // Gather billing details
+    formData.append("streetAddress", document.querySelector('input[name="streetAddress"]').value);
+    formData.append("city", document.querySelector('input[name="city"]').value);
+    formData.append("phone", document.querySelector('input[name="phone"]').value);
 
-        // Send the request to the server to save the order and payment
-        fetch('@Url.Action("PlaceOrder", "Customer")', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);  // Show success message
-                window.location.href = '@Url.Action("ThankYou", "Customer")'
-            } else {
-                alert("Something went wrong. Please try again.");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("An error occurred. Please try again.");
-        });
-    }
+    // Send the request to the server to save the order and payment
+    fetch('@Url.Action("PlaceOrder", "Customer")', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = '@Url.Action("ThankYou", "Customer")'
+        } else {
+            alert("Something went wrong. Please try again.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred. Please try again.");
+    });
 });
 </script>

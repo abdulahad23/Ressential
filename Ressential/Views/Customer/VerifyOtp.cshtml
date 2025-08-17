@@ -47,6 +47,50 @@
     <link rel="stylesheet" href="~/Content/CustomerAssets/css/style2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, rgba(248, 249, 250, 0.7) 0%, rgba(233, 236, 239, 0.7) 100%), url('/Content/CustomerAssets/images/BG1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 400px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+
+        .form-floating input {
+            height: 50px;
+        }
+
+        .btn {
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
     <div class="auth-wrapper">

@@ -28,6 +28,7 @@ namespace Ressential.Models
         public System.DateTime CreatedAt { get; set; }
         public Nullable<int> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedAt { get; set; }
+        public string StockLevelState { get; set; }
     
         public virtual Branch Branch { get; set; }
         public virtual User User { get; set; }
